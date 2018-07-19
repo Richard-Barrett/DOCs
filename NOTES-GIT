@@ -219,6 +219,68 @@ git push https://github.com/efinoob/DOCs
 
 mv DOCs DOCS-USE-GIT
 
+@@@ after updating this file I commited it (or tried) and got this
+
+siggy@STRAX:~/GIT/DOCs $ git add NOTES-GIT
+siggy@STRAX:~/GIT/DOCs $ git commit -m "update NOTES-GIT"
+[master f8e07c4] update NOTES-GIT
+ Committer: s iggy <siggy@STRAX.attlocal.net>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 17 insertions(+)
+
+@@@ trying to make it pretty
+to stop ksshaskpass window from popping up.... in .bashrc put:
+unset SSH_ASKPASS
+
+@@@ to show origin URL
+siggy@STRAX:~/GIT/homebase $ git remote show origin
+* remote origin
+  Fetch URL: https://github.com/efinoob/homebase
+  Push  URL: https://github.com/efinoob/homebase
+  HEAD branch: master
+  Remote branch:
+    master tracked
+  Local branch configured for 'git pull':
+    master merges with remote master
+  Local ref configured for 'git push':
+    master pushes to master (up to date)
+
+siggy@STRAX:~/GIT/DOCs $ git remote show origin
+* remote origin
+  Fetch URL: https://github.com/efinoob/DOCs
+  Push  URL: https://github.com/efinoob/DOCs
+  HEAD branch: master
+  Remote branch:
+    master tracked
+  Local branch configured for 'git pull':
+    master merges with remote master
+  Local ref configured for 'git push':
+    master pushes to master (up to date)
+
+@@@ to NOT have to add the UserName
+siggy@STRAX:~ $ cat .gitconfig                                                                                                    
+[user]
+        name = efinoob
+         email = siggy56@pacbell.net
+[push]
+         default = simple
+[credential]
+         helper = cache --timeout=3600
+
+@@@ added id_rsa.pub to account now push does not ask for username or passwd
+**** When adding the rsa key the past put in some "\"  I went through and removed 
+     them because they don't belong.  I got an error.  When I left them in it all 
+     worked fine.  FML
 
 ^^^^^
 

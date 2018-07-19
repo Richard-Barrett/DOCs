@@ -203,6 +203,23 @@ remote: Counting objects: 3, done.
 remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
 Unpacking objects: 100% (3/3), done.
 
+git clone https://github.com/efinoob/DOCs
+
+git pull
+
+cp -r ~/DOCs/* .
+
+git add *
+
+git commit -m "initial copy of NOTES up to git"
+
+git status
+
+git push https://github.com/efinoob/DOCs
+
+mv DOCs DOCS-USE-GIT
+
+
 ^^^^^
 
 ^^^^^

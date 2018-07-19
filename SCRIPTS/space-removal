@@ -1,0 +1,7 @@
+#http://stackoverflow.com/questions/2709458/bash-script-to-replace-spaces-in-file-names
+
+#test if there are spaces
+find WIN-BU-14Nov14/ -depth -name '* *
+
+#change all spaces to "_"
+find WIN-BU-14Nov14/ -depth -name '* *' | while IFS= read -r f ; do mv -i "$f" "$(dirname "$f")/$(basename "$f"|tr ' ' _)" ; done

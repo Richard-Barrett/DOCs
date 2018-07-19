@@ -1,0 +1,1 @@
+use Shell qw(date cp ps);  # list shell commands you want to use$date = date();   # put the output of the date(1) command into $datecp("-p" "/etc/passwd", "/tmp/passwd");  # copy password file to a tmp fileprint ps("-ww");  # print the results of a "ps -ww" command

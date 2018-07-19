@@ -1,0 +1,1 @@
+# Here's the lazy way of getting degrees-to-radians.$pi = atan2(1,1) * 4;$piover180 = $pi/180;# Print table.for ($_ = 0; $_ <= 90; $_++) {    printf "%3d %7.5f\n", $_, cos($_ * $piover180);}*****sub acos { atan2( sqrt(1 - $_[0] * $_[0]), $_[0] ) }

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+echo "Please enter users login"
+read NEWUSER
+
+cp -r --preserve=all /users/$NEWUSER/.mozilla /users/$NEWUSER/ORIG-mozilla-ORIG
+
+if ( "$?" -ne "0" ); then  
+    echo "BACKUP failed.  Exiting."
+    exit 0
+fi
+
+#make firefox more forgiving
+mkdir /data/local-Firefox
+
+#figure out $newuser's default profile
+DEFAU=`cat /users/$NEWUSER/.mozilla/firefox/profiles.ini | grep Path | awk -F= '{print $2}'` | head -1
+
+PROFNUM=`cat profiles.ini | grep -v Start | grep Profile | wc -l`
+
+#cp that profile to the local machine
+cp -r --preserve=all /users/$NEWUSER/.mozilla/firefox/$DEFAU/* /data/local-Firefox
+
+cat >> /users/$NEWUSER/.mozilla/firefox/profiles.ini<<EOF
+
+[Profile$PROFNUM]
+Name=$NEWUSER-local
+IsRelative=0
+Path=/data/local-Firefox
+Default=1
+
+EOF
+

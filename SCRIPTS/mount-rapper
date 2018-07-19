@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ $? == 0 ]; then
+	echo "success"
+else
+	echo "NO love"
+fi

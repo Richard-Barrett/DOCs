@@ -1,0 +1,43 @@
+#!/bin/bash
+ME=`hostname -s`
+LOC=/misc/dsiegfriedt
+
+function getit { 
+cp -a /etc/hosts $LOC/$ME/etc-hosts
+cat /etc/fstab | sed '1,13d' > $LOC/$ME/fstab-cat
+cp -a /etc/passwd $LOC/$ME/etc-passwd
+cp -a /etc/group $LOC/$ME/etc-group
+cp -a /etc/shadow $LOC/$ME/etc-shadow
+cp -a /etc/sudoers $LOC/$ME/etc-sudoers
+cp -a /etc/ldap.conf $LOC/$ME/etc-ldap.conf
+cp -a /etc/profile $LOC/$ME/etc-profile
+cp -a /etc/resolv.conf $LOC/$ME/etc-resolv.conf
+cp -a /etc/modprobe.conf $LOC/$ME/etc-modprobe.conf
+cp -a /etc/modules.conf $LOC/$ME/etc-modules.conf
+cp -a /etc/mail/sendmail* $LOC/$ME
+cp -a /etc/sysctl.conf $LOC/$ME/etc-sysctl.conf
+cp -a /etc/security/limits.conf $LOC/$ME/etc-security-limits.conf
+cp -a /etc/security/access.netgroup.conf $LOC/$ME/etc-security-access.netgroup.conf
+cp -a /etc/ssh/sshd_config $LOC/$ME/etc-ssh-sshd_config
+cp -a /etc/pam.d/login $LOC/$ME/etc-pam.d-login
+cp -a /etc/sysconfig/network $LOC/$ME/etc-sysconfig-network
+cp -a /etc/sysconfig/network-scripts/ifcfg-eth* $LOC/$ME
+cp -a /etc/sysconfig/network-scripts/ifcfg-bond* $LOC/$ME
+cp -a /etc/sysconfig/network-scripts/ifcfg-route* $LOC/$ME
+cp -a /etc/sysconfig/network-scripts/route* $LOC/$ME
+cp -arp /home $LOC/$ME
+}
+
+#echo "\$ME = "$ME
+#echo "\$LOC = " $LOC
+
+if [ -f $LOC/$ME ]; then
+    echo "It DOES exist"
+    getit
+else
+    echo "Not there... making it now."
+    mkdir $LOC/$ME 
+    getit
+fi
+
+echo "NOTE: Make sure when you copy them back use \"-a\" flag."

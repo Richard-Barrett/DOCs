@@ -1,0 +1,103 @@
+.\"  Copyright (c) 2004, 2005, Larry Lile <lile@users.sourceforge.net>
+.\"  All rights reserved.
+.\"
+.\"  Redistribution and use in source and binary forms, with or without
+.\"  modification, are permitted provided that the following conditions
+.\"  are met:
+.\"  1. Redistributions of source code must retain the above copyright
+.\"     notice unmodified, this list of conditions, and the following
+.\"     disclaimer.
+.\"  2. Redistributions in binary form must reproduce the above copyright
+.\"     notice, this list of conditions and the following disclaimer in the
+.\"     documentation and/or other materials provided with the distribution.
+.\"
+.\"  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\"  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\"  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\"  ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\"  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\"  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\"  OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\"  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\"  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\"  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\"  SUCH DAMAGE.
+.\"
+.\"  $Id: dshbak.1.in,v 1.2 2005/10/19 20:46:14 lile Exp $
+.\"
+.Dd July 19, 2005
+.Dt DSHBAK 1
+.Os "dsh (@VERSION@)"
+.Sh NAME
+.Nm dshbak
+.Nd backend formatting filter for distributed shell
+.Sh SYNOPSIS
+.Nm
+.Op Fl c
+.Pp
+.Sh DESCRIPTION
+.Nm Dshbak
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl c
+Collapses identical output from multiple hosts so that it is only
+displayed once.
+.El
+.Sh EXAMPLES
+.Bd -literal
+$ dsh -w grainger,peacock,grace,slocombe -- uname -srm | dshbak -c
+HOSTS ------------------------------------------------------------
+grace     slocombe
+------------------------------------------------------------------
+Linux 2.4.21-27.0.2.ELsmp i686
+HOSTS ------------------------------------------------------------
+grainger
+------------------------------------------------------------------
+Linux 2.4.9-e.24enterprise i686
+HOSTS ------------------------------------------------------------
+peacock
+------------------------------------------------------------------
+Linux 2.4.9-e.40smp i686
+.Ed
+.Pp
+.Bd -literal
+$ dsh -w grainger,peacock,grace,slocombe -- uname -srm | dshbak
+HOSTS ------------------------------------------------------------
+grace
+------------------------------------------------------------------
+Linux 2.4.21-27.0.2.ELsmp i686
+HOSTS ------------------------------------------------------------
+grainger
+------------------------------------------------------------------
+Linux 2.4.9-e.24enterprise i686
+HOSTS ------------------------------------------------------------
+peacock
+------------------------------------------------------------------
+Linux 2.4.9-e.40smp i686
+HOSTS ------------------------------------------------------------
+slocombe
+------------------------------------------------------------------
+Linux 2.4.21-27.0.2.ELsmp i686
+.Ed
+.Sh DIAGNOSTICS
+.Sh COMPATIBILITY
+.Nm Dshbak
+is compatible with the IBM PSSP
+.Nm
+command.
+.Sh AUTHORS
+.Nm Dshbak
+first appeard in IBM's Parallel System Support Package for AIX.
+.Sh BUGS
+.Bl -item -width Ds
+.It
+This man page is very incomplete.
+.El
+.Sh COPYRIGHT
+Copyright \(co 2005 Larry Lile <lile@users.sourceforge.net>
+.br
+This is free software; see the source for copying conditions.  There
+is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
+.Sh SEE ALSO
+.Xr dsh 1

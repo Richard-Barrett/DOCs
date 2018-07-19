@@ -1,0 +1,60 @@
+class _Getch:
+    """
+    Gets a single character from standard input.  Does not echo to the screen.
+
+    """
+
+    def __init__(self):
+        try:
+            self.impl = _GetchWindows()
+        except ImportError:
+            try:
+                self.impl = _GetchUnix()
+            except ImportError:
+                self.impl = _GetchCarbon()
+
+    def __call__(self):
+        return self.impl()
+
+class _GetchUnix:
+    def __init__(self):
+        import tty, sys, termios
+
+    def __call__(self):
+        import sys, tty, termios
+
+        fd = sys.stdin.fileno()
+        oldSettings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, oldSettings)
+        return ch
+
+class _GetchWindows:
+    def __init__(self):
+        import msvcrt
+
+    def __call__(self):
+        import msvcrt
+        return msvcrt.getch()
+
+class _GetchCarbon:
+    def __init__(self):
+        import Carbon
+
+    def __call__(self):
+        import Carbon
+        
+        keyDownMask = 0x0008
+        charCodeMask = 0x000000FF
+        
+        if Carbon.Evt.EventAvail(keyDownMask)[0] == 0:
+            return ''
+        else:
+            (what, msg, when, where, mod) = Carbon.Evt.GetNextEvent(keyDownMask)[1]
+            return chr(msg & charCodeMask)
+
+getch = _Getch()
+            

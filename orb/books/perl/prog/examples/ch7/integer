@@ -1,0 +1,1 @@
+use integer;$x = 10/3;   # $x is now 3, not 3.33333333333333333*****use integer; print sin(3);           # 0.141120008059867print sin(3) + 4;       # 4

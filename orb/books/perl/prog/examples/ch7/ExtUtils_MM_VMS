@@ -1,0 +1,1 @@
+use ExtUtils::MM_VMS; # Done internally by ExtUtils::MakeMaker if needed

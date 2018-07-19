@@ -1,0 +1,227 @@
+Subject: FW: vmware 3.5 over nfs settings
+Date: Monday, April 14, 2008 8:37 AM
+From: Sexton, Kenny <Ksexton@edmunds.com>
+To: "Siegfriedt, Don" <DSiegfriedt@edmunds.com>
+Conversation: vmware 3.5 over nfs settings
+
+Don,
+
+Can you take a look at this system modification? This is something that
+VMware recommends on virtual host using NFS for its system volumes. This
+is to prevent the VM's from going read-only during a filer head fail
+over. Perhaps it can be scripted and we can put it in Blade.
+
+This change will be for RHEL ES4, update 5. 
+
+-----Original Message-----
+From: Leeds, Daniel 
+Sent: Monday, March 24, 2008 9:58 AM
+To: Eickler, Ron; SysOps
+Cc: Rowe, Philip
+Subject: RE: vmware 3.5 over nfs settings
+
+
+i do not think it would cause a major issue other than lengthen the
+amount of time before the disk timeout/retry interval.  of course double
+checking with redhat would not be a bad idea.
+
+
+--
+Daniel Leeds
+Manager, Storage Operations
+Edmunds, Inc. 
+1620 26th Street, Suite 400 South 
+Santa Monica, CA 90404
+
+310-309-4999 desk 
+310-430-0536 cell
+
+
+
+-----Original Message-----
+From: Eickler, Ron
+Sent: Mon 3/24/2008 9:52 AM
+To: Leeds, Daniel; SysOps
+Cc: Rowe, Philip
+Subject: Re: vmware 3.5 over nfs settings
+ 
+
+
+Any ideas what this would do (if anything) when applied to a physical
+machine?  What I'm getting at, is can we apply this change across the
+board so we don't have to have a separate profile/config for physical
+vs. virtual machines.  The more differences we have, the easier it is to
+forget to implement them.
+
+
+
+On 3/22/08 12:48 PM, "Leeds, Daniel" <dleeds@edmunds.com> wrote:
+
+
+
+	
+	
+	Solution ID: kb37986 
+	Last updated: 17 MAR 2008 
+	
+	SCSI disk timeout settings required for Guest OS which runs only
+on VMware ESX NFS Datastores 
+	
+	Symptoms 
+	During Cluster failover on NetApp FAS storage systems, in order
+to sustain longer failover time the SCSI disk timeout needs to be set in
+the Guest OS which runs on NFS Datastores.
+	
+	SCSI disk timeout settings required for Guest OS which runs only
+on VMware ESX NFS Datastores 
+	
+	Solution 
+	On Windows Guest OS: 
+	
+	Change the Registry Parameter DiskTimeOutValue in Windows Guest
+Operating System: 
+	
+	
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Disk\TimeOutValue
+to 190(Dec). 
+	
+	On RHEL4 Guest OS (2.6 kernel only): 
+	
+	Create a file under /sbin 
+	
+	# touch /sbin/scsi_disktimeout.sh 
+	
+	Edit the above file (/sbin/scsi_disktimeout.sh), add the below
+lines and save the file 
+	
+	#!/bin/bash 
+	for for device_dir in `ls -d /sys/block/sd*` 
+	do 
+	   device_name=`basename ${device_dir}` 
+	   echo "190" > /sys/block/${device_name}/device/timeout 
+	done 
+	
+	Give execute permission to /sbin/scsi_disktimeout.sh file 
+	
+	# chmod +x /sbin/scsi_disktimeout.sh 
+	
+	Create a new udev rule file 
+	
+	# touch /etc/udev/rules.d/52-netapp.rules 
+	
+	Edit /etc/udev/rules.d/52-netapp.rules file and add the below
+line. 
+	
+	BUS="scsi", PROGRAM="/sbin/scsi_timeout.sh" 
+	
+	Restart the RHEL4 Guest or restart udev to apply the changes. 
+	
+	# /sbin/udevstart  
+	
+	On RHEL5 Guest OS: 
+	
+	Backup the udev rule file 
+	
+	# cp /etc/udev/rules.d/50-udev.rules
+/etc/udev/rules.d/50-udev.rules.orig 
+	
+	Edit /etc/udev/rules.d/50-udev.rules file and modify the below
+line to set the disk timeout value to 190 seconds 
+	
+	Original: ACTION=="add", SUBSYSTEM=="scsi" ,
+SYSFS{type}=="0|7|14", RUN+="/bin/sh -c 'echo 60 >
+/sys$$DEVPATH/timeout'" 
+	
+	Modified: ACTION=="add", SUBSYSTEM=="scsi" ,
+SYSFS{type}=="0|7|14", RUN+="/bin/sh -c 'echo 190 >
+/sys$$DEVPATH/timeout'"
+	
+	Restart the RHEL5 Guest or restart udev to apply the changes. 
+	
+	            # /sbin/start_udev 
+	
+	On SLES9 Guest OS (2.6 kernel only): 
+	
+	Create a file under /sbin 
+	
+	# touch /sbin/udev.scsi_disktimeout.sh  (Note: The file naming
+convention is mandatory in SLES9 i.e. udev.<scriptname>.sh)
+	
+	Edit the above file (/sbin/ udev.scsi_disktimeout.sh), add the
+below lines and save the file 
+	
+	#!/lib/klibc/bin/sh 
+	for device_dir in `ls -d /sys/block/sd*` 
+	do 
+	   device_name=`basename ${device_dir}` 
+	   echo "190" > /sys/block/${device_name}/device/timeout 
+	done 
+	
+	Give execute permissions to /sbin/udev.scsi_disktimeout.sh file 
+	
+	# chmod +x /sbin/udev.scsi-disktimeout.sh 
+	
+	It is mandatory to copy the binaries which were used in the
+above script to /lib/klibc/bin folder 
+	
+	# cp /bin/ls  /lib/klibc/bin/ls 
+	# cp /bin/echo  /lib/klibc/bin/echo 
+	# cp /bin/basename  /lib/klibc/bin/basename 
+	
+	Backup the udev rule file 
+	
+	# cp /etc/udev/udev.rules /etc/udev/udev.rules.orig 
+	
+	Edit /etc/udev/udev.rules file, find a line "BUS="scsi",
+PROGRAM="/sbin/udev.get_persistent_device_name.sh", NAME="%k"
+SYMLINK="%c{1+}"" and above this line, add the below line.
+	
+	KERNEL="sd*" PROGRAM="/sbin/udev.scsi_timeout.sh" 
+	
+	Restart the SLES9 Guest or restart udev to apply the changes. 
+	
+	# /sbin/udevstart 
+	
+	On SLES10 Guest OS: 
+	
+	Backup the udev rule file 
+	
+	# cp /etc/udev/rules.d/50-udev-default.rules
+/etc/udev/rules.d/50-udev-default.rules.orig 
+	
+	Edit /etc/udev/rules.d/50-udev-default.rules file and modify the
+below line to set the disk timeout value to 190 seconds
+	
+	Original: ACTION=="add", SUBSYSTEM=="scsi" ,
+SYSFS{type}=="0|7|14", RUN+="/bin/sh -c 'echo 60 >
+/sys$$DEVPATH/timeout'" 
+	
+	Modified: ACTION=="add", SUBSYSTEM=="scsi" ,
+SYSFS{type}=="0|7|14", RUN+="/bin/sh -c 'echo 190 >
+/sys$$DEVPATH/timeout'"
+	
+	Restart SLES10 Guest OS or restart udev to apply the changes. 
+	
+	# /etc/init.d/boot.udev force-reload 
+	
+	On Solaris 10 Guest OS: 
+	
+	Backup the /etc/system file 
+	
+	# cp /etc/system /etc/system.orig 
+	
+	Add the below line to /etc/system file 
+	
+	set sd:sd_io_time=0xbe 
+	
+	Restart the Solaris 10 Guest OS to apply the changes 
+	
+	Environment 
+	NetApp filer (Clustered) 
+	Data ONTAP 7G and earlier 
+	NFS Datastores only 
+	VMware ESX Server 3.5 
+	
+	
+
+

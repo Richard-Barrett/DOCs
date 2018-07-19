@@ -1,0 +1,71 @@
+11Oct10  --siggy
+
+default roor shell is "sh".  Type bash to get to something faarmiliar
+
+logs => /var/adm/messages
+hostname  => /etc/nodename
+redhat-release => /etc/release
+
+/etc/product-info
+
+*****
+11Oct10  --siggy  To list running services
+
+svcs -a
+svcs -d <service> lists all dependecies
+svcs -<service> lists all dependents
+svcs -l <service> lists all available info
+svcs -p <service> lists process ids
+
+*****
+http://www.sun.com/software/solaris/howtoguides/servicemgmthowto.jsp
+
+*****
+15Oct10  --siggy  To find hardware information
+
+/usr/X11/bin/scanpci
+/usr/sbin/smbios -B
+/usr/sbin/prtconf
+
+*****
+
+# mt config
+"HP      Ultrium 4", "HP Ultrium LTO 4", "CFGHPULTRIUMLTO4";
+CFGHPULTRIUMLTO4 = 2,0x3B,0,0x18619,4,0x44,0x44,0x46,0x46,3,60,1200,600,1200,600,600,18000;
+
+# man 7 st
+
+SYNOPSIS
+     st@target,lun:l,m,h,c,ubn
+
+
+*****
+
+cat /kernel/drv/sgen.conf
+...
+#       "changer"               (type 0x08)
+
+...
+
+#begin - added by LGTOnode - do not EDIT
+device-type-config-list="direct", "sequential", "worm", "rodirect", "optical", "changer";
+
+...
+27Dec10  --siggy
+
+vi on "elron" is a PITA!
+
+vi /etc/ssh/sshd_config
+(H J K L to get around)
+PermitRootLogin yes
+esc = ^[
+:wq!
+
+svcadm restart ssh
+...
+
+  
+
+
+
+

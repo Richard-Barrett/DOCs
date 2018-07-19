@@ -1,0 +1,209 @@
+  Dashboard </dashboard.action> > Edmunds Central </display/ec> > ...
+<#> Intranet </display/ec/Intranet> > Departments
+</display/ec/Departments> > Production Operations
+</display/ec/Production+Operations> > Application Operations
+</display/ec/Application+Operations> > Production Engineering
+</display/ec/Production+Engineering> > ProdEng Projects
+</display/ec/ProdEng+Projects> > Production Engineering - Projects -
+DDoS </display/ec/Production+Engineering+-+Projects+-+DDoS> 	
+
+</display/ec> 	Production Engineering - Projects - DDoS 	Log In
+</login.action?os_destination=%2Fdisplay%2Fec%2FProduction%2BEngineering%2B-%2BProjects%2B-%2BDDoS>
+  View a printable version of the current page.
+</display/ec/Production+Engineering+-+Projects+-+DDoS?decorator=printable>
+
+    * _V_iew </display/ec/Production+Engineering+-+Projects+-+DDoS>
+      _A_ttachments (0)
+      </pages/viewpageattachments.action?pageId=47486267> _I_nfo
+      </pages/viewinfo.action?pageId=47486267>
+    * [Browse Space]  Browse Space </spaces/browsespace.action?key=ec>
+        
+
+
+Added by Jon Hart </display/~jhart> , last edited by Jon Hart
+</display/~jhart> on Nov 18, 2009  (view change
+</pages/diffpages.action?pageId=47486267&originalId=47486368>)
+Labels: 
+(None)
+
+Add Labels
+	
+Wait Image 
+Enter labels to add to this page:
+/Tip:/ Looking for a label? Just start typing.
+	
+
+	
+
+    * Introduction <#ProductionEngineering-Projects-DDoS-Introduction>
+    * DDoS Overview <#ProductionEngineering-Projects-DDoS-DDoSOverview>
+    * DDoS Mitigation Techniques
+      <#ProductionEngineering-Projects-DDoS-DDoSMitigationTechniques>
+          o Wait it out <#ProductionEngineering-Projects-DDoS-Waititout>
+          o Run <#ProductionEngineering-Projects-DDoS-Run>
+          o Pay Up <#ProductionEngineering-Projects-DDoS-PayUp>
+          o Resource Increase
+            <#ProductionEngineering-Projects-DDoS-ResourceIncrease>
+          o Pre-filtering
+            <#ProductionEngineering-Projects-DDoS-Prefiltering>
+          o Dedicated DDoS Appliance
+            <#ProductionEngineering-Projects-DDoS-DedicatedDDoSAppliance>
+          o Fight Back <#ProductionEngineering-Projects-DDoS-FightBack>
+
+
+  Introduction
+
+The purpose of this document is to bring all parties involved with
+Denial of Service (DoS) and Distributed Denial of Service (DDoS)
+fighting up to speed on the attacks and mitigation approaches.
+
+
+  DDoS Overview
+
+A DoS is a denial of service attack where the end goal is to deny the
+availability of a particular resource, either directly or indirectly. In
+the old days, these types of attacks could often be carried out with a
+minimal amount of resources, sometimes with no more than a single packet.
+
+While these types of vulnerabilities still exist from time to time, the
+most popular variant on a DoS is the DDoS wherein quality is replaced
+with quantity, shear volume is the weapon of choice and is achieved
+through distributing (the first D in DDoS) the work across many nodes.
+
+In the majority of cases, the nodes selected to do the dirty work are
+obtained first by compromising them through any number of methods and
+then installing some manner of command and control mechanism from which
+attacks can be launched in a distributed manner. The army of nodes under
+the control of a malicious third party is referred to as a botnet. While
+it is certainly the case that bots are sometimes specifically harvested
+for a task at hand, botnets can be bought, rented or stolen just like
+any other commodity. In fact, if you know the right people, a botnet can
+rented for several hours for a price as low as several cents per node.
+
+As for the actual attacks, I could write for days about how to attack
+any protocol known to man (in fact, this was my job at one point in my
+career), but a DDoS operates under one simple ideal: to deny, either
+directly or indirectly, access to a particular resource. The majority of
+the time this is done through consuming excessive resources on the
+target, where a resource is most often something like bandwidth,
+processing power, session limits, disk space, etc.
+
+
+  DDoS Mitigation Techniques
+
+The techniques most often used to combat or mitigate a DDoS attack are
+generally compromised of one or more of the following, described in a
+reasonable amount of depth in no particular order below.
+
+
+      Wait it out
+
+Sometimes a DDoS is launched simply to make a point and making a
+resource unavailable for a period of time is the only goal. Often times,
+the attacker has more resources available to them than a target could
+ever expect to combat, and attempting to do so would be a silicon
+melting, mind warping game of whack-a-mole that the target would
+ultimately lose. In some cases, simply riding out the attack is the only
+and best option.
+
+
+      Run
+
+If a business's technology and revenue model is supportive of this,
+constantly (or until the attack goes away) running away from the attack
+is a potential option. While this is entirely situation dependent,
+generally the goal is to cause the attackers or their resources to work
+unnecessarily hard to achieve their results by making yourself a moving
+target. More specifically, this can include things like round robin DNS,
+frequently changing IP addresses, hosting providers or even host names
+frequently enough such that by the time the attack catches up to your
+current location, you are already on the move.
+
+
+      Pay Up
+
+DDoS attacks are often done for direct or indirect financial gain on the
+part of the attacker. Over the past several years, organised crime
+syndicates, most notably the infamous RBN
+<http://en.wikipedia.org/wiki/Russian_Business_Network>, have been
+behind an unfortunate number of high-profile DDoS attacks and money is
+often the goal. Direct financial gain in this case is similar to ransom
+– pay the attackers and they will go away. Indirect financial gain can
+be obtained by, for example in the case of Edmunds, denying normal users
+the ability to use Edmunds properties in the hopes that they'll flock to
+a competitor. It is not unheard of for competitors to seek out DDoS
+attacks as a means for obtaining more traffic by making a competitor
+seem unappealing.
+
+
+      Resource Increase
+
+Because the core of a DoS/DDoS attack is preventing legitimate access to
+a resource, logically a good choice for mitigation is to simply add more
+resources. Resources could be any number of things, including:
+
+    * Bandwidth. Most DDoS are in the 10-100Mbs range and will cripple
+      most organisations, however multi-Gbs attacks are not unheard of.
+    * Processing power. For example, the ability to process and
+      subsequently pass or drop traffic can be greatly improved by
+      having more processing power.
+    * Connection/session limits. If a device can only handle X
+      simultaneous connections, upgrading to a device that can handle
+      2X, 3X or more is an option
+    * Distribution. While arguably a variant on a combination of all of
+      the above, if you distribute your resources far, wide and deep
+      enough all over the globe, it is possible that the DDoS, while
+      certainly annoying, may end up not hitting all of your resources
+      thereby allowing legitimate users access.
+
+
+      Pre-filtering
+
+Pre-filtering is the practice of routing a portion or all of a target's
+traffic through some sort of intermediate resource whose goal is to
+inspect and selectively filter out traffic identified as malicious.
+Companies like Akamai, Prolexic <http://www.prolexic.com> and Datapipe
+<http://www.datapipe.com> have offerings in this space.
+
+
+      Dedicated DDoS Appliance
+
+Technically a variant of a resource increase, there are numerous
+products out there (Arbor, Riorey, Intruguard, Mazu) that have purpose
+built appliances whose only goal is to detect and drop a DDoS attack.
+These are only effective if the resources upstream from the appliance
+can sustain the attack, so in the case of Edmunds LAX1 infrastructures,
+so long as Sprint, Internap and our 2 1Gpbs connections could sustain
+the load, an appliance could theoretically detect and drop a DDoS. While
+too technical to go into here, these appliances typically achieve their
+results by one or more methods:
+
+   1. Generic algorithms for detecting DDoS attacks, for example:
+         1. HTTP Floods
+         2. TCP SYN Floods
+         3. UDP Floods
+         4. Invalid IP/TCP/UDP checksum floods
+         5. Invalid L3/L4 options
+         6. (Re)Connection rates
+   2. Custom, real-time intelligence that correlates inspected traffic
+      with:
+         1. Global abuse paterns
+         2. Global black/white lists
+         3. Known current/recent attack patterns
+
+
+      Fight Back
+
+While very rarely recommended, this approach has been used in the past
+and has yielded results in some cases. Fighting back against a DDoS
+often involves targeting the resources involved in causing the DDoS
+(generally, the bots in the botnet) or the people/resources profiting
+from the DDoS.
+
+Powered by Atlassian Confluence
+<http://www.atlassian.com/software/confluence> 2.7.3, the Enterprise
+Wiki <http://www.atlassian.com/software/confluence>. Bug/feature request
+<http://jira.atlassian.com/secure/BrowseProject.jspa?id=10470> -
+Atlassian news
+<http://www.atlassian.com/about/connected.jsp?s_kwcid=Confluence-stayintouch>
+- Contact administrators </administrators.action>

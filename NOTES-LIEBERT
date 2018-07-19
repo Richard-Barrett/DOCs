@@ -1,0 +1,557 @@
+[root@la1002073d mibs]# snmpwalk -mALL -v1 -cpublic 10.130.24.55 .
+RFC1213-MIB::sysDescr.0 = ""
+RFC1213-MIB::sysObjectID.0 = OID: LIEBERT-GP-REGISTRATION-MIB::liebertGlobalProducts
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (96236) 0:16:02.36
+RFC1213-MIB::sysContact.0 = STRING: "Uninitialized"
+RFC1213-MIB::sysName.0 = STRING: "Uninitialized"
+RFC1213-MIB::sysLocation.0 = STRING: "Uninitialized"
+RFC1213-MIB::sysServices.0 = INTEGER: 72
+RFC1213-MIB::ifNumber.0 = INTEGER: 2
+RFC1213-MIB::ifIndex.1 = INTEGER: 1
+RFC1213-MIB::ifIndex.2 = INTEGER: 2
+RFC1213-MIB::ifDescr.1 = ""
+RFC1213-MIB::ifDescr.2 = ""
+RFC1213-MIB::ifType.1 = INTEGER: 62
+RFC1213-MIB::ifType.2 = INTEGER: softwareLoopback(24)
+RFC1213-MIB::ifMtu.1 = INTEGER: 1500
+RFC1213-MIB::ifMtu.2 = INTEGER: 65535
+RFC1213-MIB::ifSpeed.1 = Gauge32: 100000000
+RFC1213-MIB::ifSpeed.2 = Gauge32: 0
+RFC1213-MIB::ifPhysAddress.1 = Hex-STRING: 00 00 68 1F 54 BD 
+RFC1213-MIB::ifPhysAddress.2 = ""
+RFC1213-MIB::ifAdminStatus.1 = INTEGER: up(1)
+RFC1213-MIB::ifAdminStatus.2 = INTEGER: up(1)
+RFC1213-MIB::ifOperStatus.1 = INTEGER: up(1)
+RFC1213-MIB::ifOperStatus.2 = INTEGER: up(1)
+RFC1213-MIB::ifLastChange.1 = Timeticks: (0) 0:00:00.00
+RFC1213-MIB::ifLastChange.2 = Timeticks: (0) 0:00:00.00
+RFC1213-MIB::ifInOctets.1 = Counter32: 1837439
+RFC1213-MIB::ifInOctets.2 = Counter32: 0
+RFC1213-MIB::ifInUcastPkts.1 = Counter32: 6372
+RFC1213-MIB::ifInUcastPkts.2 = Counter32: 0
+RFC1213-MIB::ifInNUcastPkts.1 = Counter32: 12468
+RFC1213-MIB::ifInNUcastPkts.2 = Counter32: 0
+RFC1213-MIB::ifInDiscards.1 = Counter32: 0
+RFC1213-MIB::ifInDiscards.2 = Counter32: 0
+RFC1213-MIB::ifInErrors.1 = Counter32: 0
+RFC1213-MIB::ifInErrors.2 = Counter32: 0
+RFC1213-MIB::ifInUnknownProtos.1 = Counter32: 0
+RFC1213-MIB::ifInUnknownProtos.2 = Counter32: 0
+RFC1213-MIB::ifOutOctets.1 = Counter32: 3978704
+RFC1213-MIB::ifOutOctets.2 = Counter32: 0
+RFC1213-MIB::ifOutUcastPkts.1 = Counter32: 9459
+RFC1213-MIB::ifOutUcastPkts.2 = Counter32: 0
+RFC1213-MIB::ifOutNUcastPkts.1 = Counter32: 1
+RFC1213-MIB::ifOutNUcastPkts.2 = Counter32: 0
+RFC1213-MIB::ifOutDiscards.1 = Counter32: 0
+RFC1213-MIB::ifOutDiscards.2 = Counter32: 0
+RFC1213-MIB::ifOutErrors.1 = Counter32: 0
+RFC1213-MIB::ifOutErrors.2 = Counter32: 0
+RFC1213-MIB::ifOutQLen.1 = Gauge32: 0
+RFC1213-MIB::ifOutQLen.2 = Gauge32: 0
+RFC1213-MIB::ifSpecific.1 = OID: SNMPv2-SMI::zeroDotZero
+RFC1213-MIB::ifSpecific.2 = OID: SNMPv2-SMI::zeroDotZero
+RFC1213-MIB::atIfIndex.1.1.10.130.24.1 = INTEGER: 1
+RFC1213-MIB::atPhysAddress.1.1.10.130.24.1 = Hex-STRING: 00 00 0C 07 AC 18 
+RFC1213-MIB::atNetAddress.1.1.10.130.24.1 = Network Address: 0A:82:18:01
+RFC1213-MIB::ipForwarding.0 = INTEGER: not-forwarding(2)
+RFC1213-MIB::ipDefaultTTL.0 = INTEGER: 64
+RFC1213-MIB::ipInReceives.0 = Counter32: 9681
+RFC1213-MIB::ipInHdrErrors.0 = Counter32: 0
+RFC1213-MIB::ipInAddrErrors.0 = Counter32: 15
+RFC1213-MIB::ipForwDatagrams.0 = Counter32: 0
+RFC1213-MIB::ipInUnknownProtos.0 = Counter32: 0
+RFC1213-MIB::ipInDiscards.0 = Counter32: 15
+RFC1213-MIB::ipInDelivers.0 = Counter32: 9673
+RFC1213-MIB::ipOutRequests.0 = Counter32: 9497
+RFC1213-MIB::ipOutDiscards.0 = Counter32: 0
+RFC1213-MIB::ipOutNoRoutes.0 = Counter32: 0
+RFC1213-MIB::ipReasmTimeout.0 = INTEGER: 0
+RFC1213-MIB::ipReasmReqds.0 = Counter32: 0
+RFC1213-MIB::ipReasmOKs.0 = Counter32: 0
+RFC1213-MIB::ipReasmFails.0 = Counter32: 0
+RFC1213-MIB::ipFragOKs.0 = Counter32: 0
+RFC1213-MIB::ipFragFails.0 = Counter32: 0
+RFC1213-MIB::ipFragCreates.0 = Counter32: 0
+RFC1213-MIB::ipAdEntAddr.10.130.24.55 = IpAddress: 10.130.24.55
+RFC1213-MIB::ipAdEntAddr.127.0.0.1 = IpAddress: 127.0.0.1
+RFC1213-MIB::ipAdEntIfIndex.10.130.24.55 = INTEGER: 1
+RFC1213-MIB::ipAdEntIfIndex.127.0.0.1 = INTEGER: 2
+RFC1213-MIB::ipAdEntNetMask.10.130.24.55 = IpAddress: 255.255.252.0
+RFC1213-MIB::ipAdEntNetMask.127.0.0.1 = IpAddress: 255.0.0.0
+RFC1213-MIB::ipAdEntBcastAddr.10.130.24.55 = INTEGER: 1
+RFC1213-MIB::ipAdEntBcastAddr.127.0.0.1 = INTEGER: 1
+RFC1213-MIB::ipAdEntReasmMaxSize.10.130.24.55 = INTEGER: 65535
+RFC1213-MIB::ipAdEntReasmMaxSize.127.0.0.1 = INTEGER: 65535
+RFC1213-MIB::ipRouteDest.0.0.0.0 = IpAddress: 0.0.0.0
+RFC1213-MIB::ipRouteDest.10.130.24.0 = IpAddress: 10.130.24.0
+RFC1213-MIB::ipRouteDest.10.130.24.55 = IpAddress: 10.130.24.55
+RFC1213-MIB::ipRouteDest.127.0.0.0 = IpAddress: 127.0.0.0
+RFC1213-MIB::ipRouteIfIndex.0.0.0.0 = INTEGER: 1
+RFC1213-MIB::ipRouteIfIndex.10.130.24.0 = INTEGER: 1
+RFC1213-MIB::ipRouteIfIndex.10.130.24.55 = INTEGER: 1
+RFC1213-MIB::ipRouteIfIndex.127.0.0.0 = INTEGER: 2
+RFC1213-MIB::ipRouteMetric1.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric1.10.130.24.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric1.10.130.24.55 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric1.127.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric2.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric2.10.130.24.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric2.10.130.24.55 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric2.127.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric3.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric3.10.130.24.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric3.10.130.24.55 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric3.127.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric4.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric4.10.130.24.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric4.10.130.24.55 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric4.127.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteNextHop.0.0.0.0 = IpAddress: 10.130.24.1
+RFC1213-MIB::ipRouteNextHop.10.130.24.0 = IpAddress: 10.130.24.55
+RFC1213-MIB::ipRouteNextHop.10.130.24.55 = IpAddress: 10.130.24.55
+RFC1213-MIB::ipRouteNextHop.127.0.0.0 = IpAddress: 127.0.0.1
+RFC1213-MIB::ipRouteType.0.0.0.0 = INTEGER: indirect(4)
+RFC1213-MIB::ipRouteType.10.130.24.0 = INTEGER: direct(3)
+RFC1213-MIB::ipRouteType.10.130.24.55 = INTEGER: direct(3)
+RFC1213-MIB::ipRouteType.127.0.0.0 = INTEGER: direct(3)
+RFC1213-MIB::ipRouteProto.0.0.0.0 = INTEGER: local(2)
+RFC1213-MIB::ipRouteProto.10.130.24.0 = INTEGER: local(2)
+RFC1213-MIB::ipRouteProto.10.130.24.55 = INTEGER: local(2)
+RFC1213-MIB::ipRouteProto.127.0.0.0 = INTEGER: local(2)
+RFC1213-MIB::ipRouteAge.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteAge.10.130.24.0 = INTEGER: 0
+RFC1213-MIB::ipRouteAge.10.130.24.55 = INTEGER: 0
+RFC1213-MIB::ipRouteAge.127.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMask.0.0.0.0 = IpAddress: 0.0.0.0
+RFC1213-MIB::ipRouteMask.10.130.24.0 = IpAddress: 255.255.252.0
+RFC1213-MIB::ipRouteMask.10.130.24.55 = IpAddress: 255.255.255.255
+RFC1213-MIB::ipRouteMask.127.0.0.0 = IpAddress: 255.0.0.0
+RFC1213-MIB::ipRouteMetric5.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric5.10.130.24.0 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric5.10.130.24.55 = INTEGER: 0
+RFC1213-MIB::ipRouteMetric5.127.0.0.0 = INTEGER: 0
+RFC1213-MIB::ipRouteInfo.0.0.0.0 = OID: SNMPv2-SMI::zeroDotZero
+RFC1213-MIB::ipRouteInfo.10.130.24.0 = OID: SNMPv2-SMI::zeroDotZero
+RFC1213-MIB::ipRouteInfo.10.130.24.55 = OID: SNMPv2-SMI::zeroDotZero
+RFC1213-MIB::ipRouteInfo.127.0.0.0 = OID: SNMPv2-SMI::zeroDotZero
+RFC1213-MIB::ipNetToMediaIfIndex.1.10.130.24.1 = INTEGER: 1
+RFC1213-MIB::ipNetToMediaPhysAddress.1.10.130.24.1 = Hex-STRING: 00 00 0C 07 AC 18 
+RFC1213-MIB::ipNetToMediaNetAddress.1.10.130.24.1 = IpAddress: 10.130.24.1
+RFC1213-MIB::ipNetToMediaType.1.10.130.24.1 = INTEGER: dynamic(3)
+RFC1213-MIB::ipRoutingDiscards.0 = Counter32: 0
+RFC1213-MIB::icmpInMsgs.0 = Counter32: 2
+RFC1213-MIB::icmpInErrors.0 = Counter32: 0
+RFC1213-MIB::icmpInDestUnreachs.0 = Counter32: 0
+RFC1213-MIB::icmpInTimeExcds.0 = Counter32: 0
+RFC1213-MIB::icmpInParmProbs.0 = Counter32: 0
+RFC1213-MIB::icmpInSrcQuenchs.0 = Counter32: 0
+RFC1213-MIB::icmpInRedirects.0 = Counter32: 0
+RFC1213-MIB::icmpInEchos.0 = Counter32: 2
+RFC1213-MIB::icmpInEchoReps.0 = Counter32: 0
+RFC1213-MIB::icmpInTimestamps.0 = Counter32: 0
+RFC1213-MIB::icmpInTimestampReps.0 = Counter32: 0
+RFC1213-MIB::icmpInAddrMasks.0 = Counter32: 0
+RFC1213-MIB::icmpInAddrMaskReps.0 = Counter32: 0
+RFC1213-MIB::icmpOutMsgs.0 = Counter32: 2
+RFC1213-MIB::icmpOutErrors.0 = Counter32: 0
+RFC1213-MIB::icmpOutDestUnreachs.0 = Counter32: 0
+RFC1213-MIB::icmpOutTimeExcds.0 = Counter32: 0
+RFC1213-MIB::icmpOutParmProbs.0 = Counter32: 0
+RFC1213-MIB::icmpOutSrcQuenchs.0 = Counter32: 0
+RFC1213-MIB::icmpOutRedirects.0 = Counter32: 0
+RFC1213-MIB::icmpOutEchos.0 = Counter32: 0
+RFC1213-MIB::icmpOutEchoReps.0 = Counter32: 2
+RFC1213-MIB::icmpOutTimestamps.0 = Counter32: 0
+RFC1213-MIB::icmpOutTimestampReps.0 = Counter32: 0
+RFC1213-MIB::icmpOutAddrMasks.0 = Counter32: 0
+RFC1213-MIB::icmpOutAddrMaskReps.0 = Counter32: 0
+RFC1213-MIB::tcpRtoAlgorithm.0 = INTEGER: vanj(4)
+RFC1213-MIB::tcpRtoMin.0 = INTEGER: 15
+RFC1213-MIB::tcpRtoMax.0 = INTEGER: 240000
+RFC1213-MIB::tcpMaxConn.0 = INTEGER: 0
+RFC1213-MIB::tcpActiveOpens.0 = Counter32: 0
+RFC1213-MIB::tcpPassiveOpens.0 = Counter32: 20
+RFC1213-MIB::tcpAttemptFails.0 = Counter32: 0
+RFC1213-MIB::tcpEstabResets.0 = Counter32: 0
+RFC1213-MIB::tcpCurrEstab.0 = Gauge32: 14
+RFC1213-MIB::tcpInSegs.0 = Counter32: 0
+RFC1213-MIB::tcpOutSegs.0 = Counter32: 7767
+RFC1213-MIB::tcpRetransSegs.0 = Counter32: 1281
+RFC1213-MIB::tcpConnState.0.0.0.0.23.0.0.0.0.0 = INTEGER: listen(2)
+RFC1213-MIB::tcpConnState.0.0.0.0.80.0.0.0.0.0 = INTEGER: listen(2)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.115.48679 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.115.48682 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.115.48683 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.115.48692 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.176.43402 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.176.43403 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.176.43404 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.8.176.43405 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.11.250.55466 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.11.250.55467 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.11.250.55468 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.11.250.55469 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.11.250.55471 = INTEGER: established(5)
+RFC1213-MIB::tcpConnState.10.130.24.55.80.10.130.11.250.55473 = INTEGER: established(5)
+RFC1213-MIB::tcpConnLocalAddress.0.0.0.0.23.0.0.0.0.0 = IpAddress: 0.0.0.0
+RFC1213-MIB::tcpConnLocalAddress.0.0.0.0.80.0.0.0.0.0 = IpAddress: 0.0.0.0
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.115.48679 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.115.48682 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.115.48683 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.115.48692 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.176.43402 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.176.43403 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.176.43404 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.8.176.43405 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.11.250.55466 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.11.250.55467 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.11.250.55468 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.11.250.55469 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.11.250.55471 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalAddress.10.130.24.55.80.10.130.11.250.55473 = IpAddress: 10.130.24.55
+RFC1213-MIB::tcpConnLocalPort.0.0.0.0.23.0.0.0.0.0 = INTEGER: 23
+RFC1213-MIB::tcpConnLocalPort.0.0.0.0.80.0.0.0.0.0 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.115.48679 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.115.48682 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.115.48683 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.115.48692 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.176.43402 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.176.43403 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.176.43404 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.8.176.43405 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.11.250.55466 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.11.250.55467 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.11.250.55468 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.11.250.55469 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.11.250.55471 = INTEGER: 80
+RFC1213-MIB::tcpConnLocalPort.10.130.24.55.80.10.130.11.250.55473 = INTEGER: 80
+RFC1213-MIB::tcpConnRemAddress.0.0.0.0.23.0.0.0.0.0 = IpAddress: 0.0.0.0
+RFC1213-MIB::tcpConnRemAddress.0.0.0.0.80.0.0.0.0.0 = IpAddress: 0.0.0.0
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.115.48679 = IpAddress: 10.130.8.115
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.115.48682 = IpAddress: 10.130.8.115
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.115.48683 = IpAddress: 10.130.8.115
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.115.48692 = IpAddress: 10.130.8.115
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.176.43402 = IpAddress: 10.130.8.176
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.176.43403 = IpAddress: 10.130.8.176
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.176.43404 = IpAddress: 10.130.8.176
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.8.176.43405 = IpAddress: 10.130.8.176
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.11.250.55466 = IpAddress: 10.130.11.250
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.11.250.55467 = IpAddress: 10.130.11.250
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.11.250.55468 = IpAddress: 10.130.11.250
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.11.250.55469 = IpAddress: 10.130.11.250
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.11.250.55471 = IpAddress: 10.130.11.250
+RFC1213-MIB::tcpConnRemAddress.10.130.24.55.80.10.130.11.250.55473 = IpAddress: 10.130.11.250
+RFC1213-MIB::tcpConnRemPort.0.0.0.0.23.0.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::tcpConnRemPort.0.0.0.0.80.0.0.0.0.0 = INTEGER: 0
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.115.48679 = INTEGER: 48679
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.115.48682 = INTEGER: 48682
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.115.48683 = INTEGER: 48683
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.115.48692 = INTEGER: 48692
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.176.43402 = INTEGER: 43402
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.176.43403 = INTEGER: 43403
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.176.43404 = INTEGER: 43404
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.8.176.43405 = INTEGER: 43405
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.11.250.55466 = INTEGER: 55466
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.11.250.55467 = INTEGER: 55467
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.11.250.55468 = INTEGER: 55468
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.11.250.55469 = INTEGER: 55469
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.11.250.55471 = INTEGER: 55471
+RFC1213-MIB::tcpConnRemPort.10.130.24.55.80.10.130.11.250.55473 = INTEGER: 55473
+RFC1213-MIB::tcpInErrs.0 = Counter32: 0
+RFC1213-MIB::tcpOutRsts.0 = Counter32: 0
+RFC1213-MIB::udpInDatagrams.0 = Counter32: 646
+RFC1213-MIB::udpNoPorts.0 = Counter32: 3257
+RFC1213-MIB::udpInErrors.0 = Counter32: 0
+RFC1213-MIB::udpOutDatagrams.0 = Counter32: 648
+RFC1213-MIB::udpLocalAddress.0.0.0.0.161 = IpAddress: 0.0.0.0
+RFC1213-MIB::udpLocalAddress.0.0.0.0.4999 = IpAddress: 0.0.0.0
+RFC1213-MIB::udpLocalPort.0.0.0.0.161 = INTEGER: 161
+RFC1213-MIB::udpLocalPort.0.0.0.0.4999 = INTEGER: 4999
+RFC1213-MIB::snmpInPkts.0 = Counter32: 654
+RFC1213-MIB::snmpOutPkts.0 = Counter32: 654
+RFC1213-MIB::snmpInBadVersions.0 = Counter32: 0
+RFC1213-MIB::snmpInBadCommunityNames.0 = Counter32: 0
+RFC1213-MIB::snmpInBadCommunityUses.0 = Counter32: 0
+RFC1213-MIB::snmpInASNParseErrs.0 = Counter32: 0
+RFC1213-MIB::snmpInTooBigs.0 = Counter32: 0
+RFC1213-MIB::snmpInNoSuchNames.0 = Counter32: 0
+RFC1213-MIB::snmpInBadValues.0 = Counter32: 0
+RFC1213-MIB::snmpInReadOnlys.0 = Counter32: 0
+RFC1213-MIB::snmpInGenErrs.0 = Counter32: 0
+RFC1213-MIB::snmpInTotalReqVars.0 = Counter32: 661
+RFC1213-MIB::snmpInTotalSetVars.0 = Counter32: 0
+RFC1213-MIB::snmpInGetRequests.0 = Counter32: 2
+RFC1213-MIB::snmpInGetNexts.0 = Counter32: 666
+RFC1213-MIB::snmpInSetRequests.0 = Counter32: 0
+RFC1213-MIB::snmpInGetResponses.0 = Counter32: 0
+RFC1213-MIB::snmpInTraps.0 = Counter32: 0
+RFC1213-MIB::snmpOutTooBigs.0 = Counter32: 0
+RFC1213-MIB::snmpOutNoSuchNames.0 = Counter32: 3
+RFC1213-MIB::snmpOutBadValues.0 = Counter32: 0
+RFC1213-MIB::snmpOutGenErrs.0 = Counter32: 0
+RFC1213-MIB::snmpOutGetRequests.0 = Counter32: 0
+RFC1213-MIB::snmpOutGetNexts.0 = Counter32: 0
+RFC1213-MIB::snmpOutSetRequests.0 = Counter32: 0
+RFC1213-MIB::snmpOutGetResponses.0 = Counter32: 678
+RFC1213-MIB::snmpOutTraps.0 = Counter32: 0
+RFC1213-MIB::snmpEnableAuthenTraps.0 = INTEGER: disabled(2)
+SNMPv2-MIB::snmpSilentDrops.0 = Counter32: 0
+SNMPv2-MIB::snmpProxyDrops.0 = Counter32: 0
+UPS-MIB::upsIdentManufacturer.0 = STRING: Liebert Corporation
+UPS-MIB::upsIdentModel.0 = STRING: Npower
+UPS-MIB::upsIdentUPSSoftwareVersion.0 = STRING: V 1.28 
+UPS-MIB::upsIdentAgentSoftwareVersion.0 = STRING: 3.120.7
+UPS-MIB::upsIdentName.0 = STRING: Uninitialized
+UPS-MIB::upsBatteryStatus.0 = INTEGER: batteryNormal(2)
+UPS-MIB::upsSecondsOnBattery.0 = INTEGER: 0 seconds
+UPS-MIB::upsEstimatedMinutesRemaining.0 = INTEGER: 65535 minutes
+UPS-MIB::upsEstimatedChargeRemaining.0 = INTEGER: 100 percent
+UPS-MIB::upsBatteryVoltage.0 = INTEGER: 5380 0.1 Volt DC
+UPS-MIB::upsBatteryCurrent.0 = INTEGER: 0 0.1 Amp DC
+UPS-MIB::upsBatteryTemperature.0 = INTEGER: 26 degrees Centigrade
+UPS-MIB::upsInputLineBads.0 = Counter32: 0
+UPS-MIB::upsInputNumLines.0 = INTEGER: 3
+UPS-MIB::upsInputFrequency.1 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsInputFrequency.2 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsInputFrequency.3 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsInputVoltage.1 = INTEGER: 206 RMS Volts
+UPS-MIB::upsInputVoltage.2 = INTEGER: 209 RMS Volts
+UPS-MIB::upsInputVoltage.3 = INTEGER: 207 RMS Volts
+UPS-MIB::upsInputCurrent.1 = INTEGER: 793 0.1 RMS Amp
+UPS-MIB::upsInputCurrent.2 = INTEGER: 830 0.1 RMS Amp
+UPS-MIB::upsInputCurrent.3 = INTEGER: 868 0.1 RMS Amp
+UPS-MIB::upsOutputSource.0 = INTEGER: normal(3)
+UPS-MIB::upsOutputFrequency.0 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsOutputNumLines.0 = INTEGER: 3
+UPS-MIB::upsOutputVoltage.1 = INTEGER: 120 RMS Volts
+UPS-MIB::upsOutputVoltage.2 = INTEGER: 120 RMS Volts
+UPS-MIB::upsOutputVoltage.3 = INTEGER: 120 RMS Volts
+UPS-MIB::upsOutputCurrent.1 = INTEGER: 631 0.1 RMS Amp
+UPS-MIB::upsOutputCurrent.2 = INTEGER: 849 0.1 RMS Amp
+UPS-MIB::upsOutputCurrent.3 = INTEGER: 667 0.1 RMS Amp
+UPS-MIB::upsOutputPower.1 = INTEGER: 7000 Watts
+UPS-MIB::upsOutputPower.2 = INTEGER: 10000 Watts
+UPS-MIB::upsOutputPower.3 = INTEGER: 8000 Watts
+UPS-MIB::upsOutputPercentLoad.1 = INTEGER: 31 percent
+UPS-MIB::upsBypassFrequency.0 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsBypassNumLines.0 = INTEGER: 3
+UPS-MIB::upsBypassVoltage.1 = INTEGER: 206 RMS Volts
+UPS-MIB::upsBypassVoltage.2 = INTEGER: 209 RMS Volts
+UPS-MIB::upsBypassVoltage.3 = INTEGER: 207 RMS Volts
+UPS-MIB::upsAlarmsPresent.0 = Gauge32: 0
+UPS-MIB::upsConfigInputVoltage.0 = INTEGER: 208 RMS Volts
+UPS-MIB::upsConfigInputFreq.0 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsConfigOutputVoltage.0 = INTEGER: 208 RMS Volts
+UPS-MIB::upsConfigOutputFreq.0 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsConfigOutputVA.0 = INTEGER: 100000 Volt-Amps
+UPS-MIB::upsConfigLowBattTime.0 = INTEGER: 5 minutes
+LIEBERT-GP-AGENT-MIB::lgpAgentIdentManufacturer.0 = STRING: Liebert Corporation
+LIEBERT-GP-AGENT-MIB::lgpAgentIdentModel.0 = STRING: IntelliSlot Web/485 Card
+LIEBERT-GP-AGENT-MIB::lgpAgentIdentFirmwareVersion.0 = STRING: 3.120.7
+LIEBERT-GP-AGENT-MIB::lgpAgentIdentSerialNumber.0 = STRING: 416791G411T2009AUG110000
+LIEBERT-GP-AGENT-MIB::lgpAgentIdentPartNumber.0 = STRING: OCWEB-ADPT
+LIEBERT-GP-AGENT-MIB::lgpAgentDeviceIndex.1 = INTEGER: 1
+LIEBERT-GP-AGENT-MIB::lgpAgentDeviceId.1 = OID: LIEBERT-GP-REGISTRATION-MIB::lgpNpower
+LIEBERT-GP-AGENT-MIB::lgpAgentDeviceManufacturer.1 = STRING: Liebert Corporation
+LIEBERT-GP-AGENT-MIB::lgpAgentDeviceModel.1 = STRING: Npower
+LIEBERT-GP-AGENT-MIB::lgpAgentDeviceFirmwareVersion.1 = STRING: V 1.28 
+LIEBERT-GP-AGENT-MIB::lgpAgentDeviceUnitNumber.1 = INTEGER: 1
+LIEBERT-GP-AGENT-MIB::lgpAgentReboot.0 = INTEGER: 0
+LIEBERT-GP-CONDITIONS-MIB::lgpConditionsPresent.0 = Gauge32: 0
+LIEBERT-GP-POWER-MIB::lgpPwrConfigLowBatteryWarningTime.0 = INTEGER: 5 minutes
+LIEBERT-GP-POWER-MIB::lgpPwrBatteryTimeRemaining.0 = INTEGER: 65535 minutes
+LIEBERT-GP-POWER-MIB::lgpPwrBatteryCapacity.0 = INTEGER: 100 percent
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointId.1 = OID: LIEBERT-GP-POWER-MIB::lgpPwrSource1Input
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointId.2 = OID: LIEBERT-GP-POWER-MIB::lgpPwrMeasBypass
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointId.3 = OID: LIEBERT-GP-POWER-MIB::lgpPwrOutputToLoad
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNumLines.1 = INTEGER: 3 Count
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNumLines.2 = INTEGER: 3 Count
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNumLines.3 = INTEGER: 3 Count
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNomVolts.1 = INTEGER: 208 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNomVolts.2 = INTEGER: 208 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNomVolts.3 = INTEGER: 208 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNomFrequency.1 = INTEGER: 60 Hertz
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNomFrequency.3 = INTEGER: 60 Hertz
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointFrequency.1 = INTEGER: 60 Hertz
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointFrequency.2 = INTEGER: 60 Hertz
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointFrequency.3 = INTEGER: 60 Hertz
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNomPowerFactor.3 = INTEGER: 0 .01 Power Factor
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPointNomVA.3 = INTEGER: 100000 Volt-Amp
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.1.1 = OID: LIEBERT-GP-POWER-MIB::lgpPwrSource1Input
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.1.2 = OID: LIEBERT-GP-POWER-MIB::lgpPwrSource1Input
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.1.3 = OID: LIEBERT-GP-POWER-MIB::lgpPwrSource1Input
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.2.1 = OID: LIEBERT-GP-POWER-MIB::lgpPwrMeasBypass
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.2.2 = OID: LIEBERT-GP-POWER-MIB::lgpPwrMeasBypass
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.2.3 = OID: LIEBERT-GP-POWER-MIB::lgpPwrMeasBypass
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.3.1 = OID: LIEBERT-GP-POWER-MIB::lgpPwrOutputToLoad
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.3.2 = OID: LIEBERT-GP-POWER-MIB::lgpPwrOutputToLoad
+LIEBERT-GP-POWER-MIB::lgpPwrMeasurementPoint.3.3 = OID: LIEBERT-GP-POWER-MIB::lgpPwrOutputToLoad
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.1.1 = INTEGER: 205 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.1.2 = INTEGER: 209 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.1.3 = INTEGER: 208 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.2.1 = INTEGER: 206 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.2.2 = INTEGER: 209 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.2.3 = INTEGER: 207 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.3.1 = INTEGER: 208 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.3.2 = INTEGER: 208 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLL.3.3 = INTEGER: 208 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLN.3.1 = INTEGER: 120 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLN.3.2 = INTEGER: 120 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVoltsLN.3.3 = INTEGER: 120 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementCurrent.1.1 = INTEGER: 79 Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementCurrent.1.2 = INTEGER: 83 Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementCurrent.1.3 = INTEGER: 87 Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementCurrent.3.1 = INTEGER: 63 Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementCurrent.3.2 = INTEGER: 85 Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementCurrent.3.3 = INTEGER: 67 Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVA.3.1 = INTEGER: 8000 Volt-Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVA.3.2 = INTEGER: 10000 Volt-Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementVA.3.3 = INTEGER: 8000 Volt-Amp
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementTruePower.3.1 = INTEGER: 7000 Watt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementTruePower.3.2 = INTEGER: 10000 Watt
+LIEBERT-GP-POWER-MIB::lgpPwrLineMeasurementTruePower.3.3 = INTEGER: 8000 Watt
+LIEBERT-GP-POWER-MIB::lgpPwrDcMeasurementPointId.1 = OID: LIEBERT-GP-POWER-MIB::lgpPwrMeasBattery
+LIEBERT-GP-POWER-MIB::lgpPwrDcMeasurementPointId.2 = OID: LIEBERT-GP-POWER-MIB::lgpPwrMeasDcBus
+LIEBERT-GP-POWER-MIB::lgpPwrDcMeasurementPointSubID.1 = INTEGER: 1 Count
+LIEBERT-GP-POWER-MIB::lgpPwrDcMeasurementPointSubID.2 = INTEGER: 1 Count
+LIEBERT-GP-POWER-MIB::lgpPwrDcMeasurementPointVolts.1 = INTEGER: 537 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrDcMeasurementPointCurrent.1 = INTEGER: 0 Amp
+LIEBERT-GP-POWER-MIB::lgpPwrDcMeasurementPointNomVolts.2 = INTEGER: 540 Volt
+LIEBERT-GP-POWER-MIB::lgpPwrUPSTopDualInput.0 = INTEGER: no(2)
+SNMPv2-MIB::snmpSetSerialNo.0 = INTEGER: 0
+End of MIB
+=====
+22Jun15  --siggy  Multilink tool
+
+~dsiegfri/MultiLink_Linux_x86_4.2.3
+
+needs to run as root
+
+=====
+
+[root@lasysmon2 ~]# date
+Wed Jul  1 11:03:04 PDT 2015
+[root@lasysmon2 ~]# snmpget -mALL -v1 -Oqv -cpublic 10.130.24.55 UPS-MIB::upsOutputSource.0
+normal
+
+[root@lasysmon2 ~]# snmpget -mALL -v1 -cpublic 10.130.24.55 UPS-MIB::upsOutputSource.0
+UPS-MIB::upsOutputSource.0 = INTEGER: normal(3)
+
+cd /usr/share/snmp/mibs
+less RFC1628_UPS_MIB.MIB
+{SNIP}
+upsOutputSource OBJECT-TYPE
+       SYNTAX     INTEGER {
+           other(1),
+           none(2),
+           normal(3),
+           bypass(4),
+           battery(5),
+           booster(6),
+           reducer(7)
+       }
+{SNIP}
+
+
+dsiegfri@la1002073d:~ $ snmpget -mALL -v1 -cpublic 10.130.24.77 ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1 = INTEGER: 1090
+
+
+
+dsiegfri@la1002073d:~ $ snmpget -mALL -v1 -cpublic 10.130.24.55 lgpPwrBatteryCapacity.0
+LIEBERT-GP-POWER-MIB::lgpPwrBatteryCapacity.0 = INTEGER: 98 percent
+
+=====
+
+dsiegfri@la1002073d:~/REPUBLIC/LIEBERT $ snmpget -mALL -v1 -cpublic 10.130.24.55 lgpPwrConfigLowBatteryWarningTime.0
+LIEBERT-GP-POWER-MIB::lgpPwrConfigLowBatteryWarningTime.0 = INTEGER: 5 minutes
+
+lgpPwrConfigLowBatteryWarningTime OBJECT-TYPE
+    SYNTAX      Integer32
+    UNITS       "minutes"
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "The value of the device's estimated minutes of remaining battery
+        at which a lgpEventLowBatteryWarning notification will be sent."
+    ::= { lgpPwrBattery 5 }
+
+
+
+=====
+[root@lasysmon mibs]# snmpget -mALL -v1 -cpublic 10.130.24.55 UPS-MIB::upsBatteryStatus.0
+UPS-MIB::upsBatteryStatus.0 = INTEGER: batteryNormal(2)
+
+[root@la1002073d mibs]# less RFC1628_UPS_MIB.MIB
+[SNIP]
+upsBatteryStatus OBJECT-TYPE
+       SYNTAX     INTEGER {
+           unknown(1),
+           batteryNormal(2),
+           batteryLow(3),
+           batteryDepleted(4)
+       }
+[SNIP]
+=====
+
+[root@lasysmon mibs]# snmpget -mALL -v1 -cpublic 10.130.24.55 UPS-MIB::upsSecondsOnBattery.0
+UPS-MIB::upsSecondsOnBattery.0 = INTEGER: 0 seconds
+
+[root@la1002073d mibs]# less RFC1628_UPS_MIB.MIB
+[SNIP]
+upsSecondsOnBattery OBJECT-TYPE
+       SYNTAX     NonNegativeInteger
+       UNITS      "seconds"
+       MAX-ACCESS read-only
+       STATUS     current
+       DESCRIPTION
+               "If the unit is on battery power, the elapsed time
+               since the UPS last switched to battery power, or the
+               time since the network management subsystem was last
+               restarted, whichever is less.  Zero shall be returned
+               if the unit is not on battery power."
+       ::= { upsBattery 2 }
+[SNIP]
+=====
+
+[root@lasysmon mibs]# snmpget -mALL -v1 -cpublic 10.130.24.55 UPS-MIB::upsEstimatedChargeRemaining.0
+UPS-MIB::upsEstimatedChargeRemaining.0 = INTEGER: 100 percent
+
+[root@la1002073d mibs]# less RFC1628_UPS_MIB.MIB
+[SNIP]
+
+upsEstimatedChargeRemaining OBJECT-TYPE
+       SYNTAX     INTEGER (0..100)
+       UNITS      "percent"
+       MAX-ACCESS read-only
+       STATUS     current
+       DESCRIPTION
+               "An estimate of the battery charge remaining expressed
+               as a percent of full charge."
+       ::= { upsBattery 4 }
+
+[SNIP]
+
+=====
+
+[root@lasysmon mibs]# snmpget -mALL -v1 -cpublic 10.130.24.55 UPS-MIB::upsEstimatedMinutesRemaining.0
+UPS-MIB::upsEstimatedMinutesRemaining.0 = INTEGER: 65535 minutes
+
+[root@la1002073d mibs]# less RFC1628_UPS_MIB.MIB
+[SNIP]
+upsEstimatedMinutesRemaining OBJECT-TYPE
+       SYNTAX     PositiveInteger
+       UNITS      "minutes"
+       MAX-ACCESS read-only
+       STATUS     current
+       DESCRIPTION
+               "An estimate of the time to battery charge depletion
+               under the present load conditions if the utility power
+               is off and remains off, or if it were to be lost and
+               remain off."
+       ::= { upsBattery 3 }
+[SNIP]
+
+=====
+

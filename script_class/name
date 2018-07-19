@@ -1,0 +1,1 @@
+#! /bin/kshecho "Enter your name :\c" # no new lineread NAME JUNKecho " Welcome to UNIX II, $NAME"

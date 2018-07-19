@@ -1,0 +1,1 @@
+use lib LIST;no lib LIST;*****use lib LIST;*****BEGIN { unshift(@INC, LIST) }*****use Config;$archname = $Config{'archname'};*****no lib LIST*****no lib qw(:ALL .);*****@INC = @lib::ORIG_INC;

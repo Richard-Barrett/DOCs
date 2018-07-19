@@ -1,0 +1,12 @@
+#! /bin/ksh
+
+echo My name is $0
+echo My current process id is $$
+echo I recieved $# parameters
+echo There are $*
+echo 1=$1, 2=$2, 3=$3, 4=$4, 5=$5, 6=$6, 7=$7, 8=$8, 9=$9, 10=$10
+shift
+echo My name is still $0
+echo Number of paramerteres is noe $#
+echo They are now $*		#all parameters -1
+echo 0=$0, 1=$1, 2=$2, 3=$3, 4=$4, 5=$5, 6=$6, 7=$7, 8=$8, 9=$9, 10=$10

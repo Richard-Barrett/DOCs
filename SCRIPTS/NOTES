@@ -1,0 +1,16 @@
+24nov09  --siggy
+
+die(){ result=$1;shift;[ -n "$*" ]&&printf "%s\n" "$*" >&2;exit $result;}
+
+Shell function to exit script with error in exit status and print optional message to stderr
+
+&&&&&
+
+http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_07_01.html
+
+has all the tests for files
+
+&&&&&
+http://www.linuxjournal.com/magazine/work-shell-parsing-command-line-options-getopt
+
+&&&&&

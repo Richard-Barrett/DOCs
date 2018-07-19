@@ -1,0 +1,1 @@
+#! /bin/ksh# By default strings are text strings#time script, calculatetravel timeecho 'Enter distance (miles) and speed (mph):/c' #in ksh#echo -e 'Enter distance (miles) and speed (mph):/c' #in bashread DIST SPEED JUNKTIME=`expr $DIST / $SPEED` 	# back quote = command substitution				# expr does not do floating pointecho "Travel time = $TIME hours"

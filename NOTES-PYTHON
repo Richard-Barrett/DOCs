@@ -1,0 +1,33 @@
+Other platforms
+
+gzip-compressed source code: Python-2.5.4.tgz
+
+bzip2-compressed source code: Python-2.5.4.tar.bz2, the source archive.
+
+The bzip2-compressed version is considerably smaller, so get that one if your system has the appropriate tools to deal with it.
+
+Unpack the archive with tar -zxvf Python-2.5.4.tgz (or bzcat Python-2.5.4.tar.bz2 | tar -xf -). Change to the Python-2.5.4 directory and run the "./configure", "make", "make install" commands to compile and install Python. The source archive is also suitable for Windows users who feel the need to build their own version.
+
+
+
+*****
+
+http://lwn.net/Articles/328323/
+
+Find a new release of python-ldap:
+
+  http://python-ldap.sourceforge.net/
+
+python-ldap provides an object-oriented API to access LDAP directory
+servers from Python programs. It mainly wraps the OpenLDAP 2.x libs for
+that purpose. Additionally it contains modules for other LDAP-related
+stuff (e.g. processing LDIF, LDAPURLs and LDAPv3 schema).
+
+Note that the download page has changed recently. You can now find the
+source distribution at PyPI:
+
+  http://pypi.python.org/pypi/python-ldap/
+
+Ciao, Michael.
+
+*****

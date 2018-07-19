@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# take the db.blah file from named adn make a hosts file from it.
+#  --siggy  24jun08
+
+for i in `ls | grep db`
+do
+echo $i
+cat $i | awk '{print $4"\t\t"$1}' | sed s/$/`echo $i | awk -F. '{ print "."$2"."$3"."$4 }'`/  >> /tmp/host_list-siggy-24jun08
+done
+
+
+
+# cat /tmp/host_list-siggy-24jun08 | sort > /tmp/host_list-siggy-24jun08-sorted
+# hand edit a bunch of lines at the bottom (easier than scripting)
+
+# some hosts didn't have .com (????)
+# cat /tmp/host_list-siggy-24jun08-sorted | grep -v .com | sed s/$/.com > /tmp/host_list-siggy-24jun08-SORTED
+
+# To place a <CR> at the end of every 10 lines (to make it easier to read)
+# sed "10~10G" /tmp/host_list-siggy-24jun08-SORTED > /tmp/host_list-siggy-24jun08-sort-space
+
+

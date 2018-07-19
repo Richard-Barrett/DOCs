@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#  --siggy Jul06
+# find files that have not been accessed for 30 days and delete them
+# croned for 2:00am on Sundays
+
+find /var/spool/PBS/mom_logs -atime +30 -exec rm -f '{}' ';'
+find /var/spool/PBS/mom_priv -atime +30 -exec rm -f '{}' ';'
+find /var/spool/PBS/sched_logs -atime +30 -exec rm -f '{}' ';'
+find /var/spool/PBS/server_logs -atime +30 -exec rm -f '{}' ';'
+find /var/spool/PBS/undelivered -atime +30 -exec rm -f '{}' ';'
+find /var/spool/PBS/server_priv/accounting -atime +30 -exec rm -f '{}' ';'
+find /var/spool/PBS/spool -atime +30 -exec rm -f '{}' ';'

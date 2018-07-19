@@ -1,0 +1,246 @@
+
+##############################################
+Backup DMZ config files
+
+rsync -e 'ssh -l backup -i /home/backup/.ssh/id_rsa' --rsync-path='sudo rsync' -a pl1rns700.admin.edmunds.com:'/etc/hosts /etc/auto.misc /etc/auto.net' /tmp/pl1rns700 > /dev/null 2>&1
+
+
+##############################################
+6aug08  hosts-fix
+
+host `cat hosts-bad | grep 127 | awk '{print $2}'` | awk '{print $4"\t\t"$1"\t"$1}' | cut -d. -f1-7 >> Blah
+
+##############################################
+6aug08  sysconfig-network-fix
+
+#!/bin/bash
+
+cp /etc/sysconfig/network /etc/sysconfig/network-NEW
+
+echo "## This file has been deployed via BladeLogic (LAX1 Media Core)  ##" >> /etc/sysconfig/network-NEW
+
+if [ `cat /etc/sysconfig/network | grep IPV6=yes` ];
+then
+   sed s/yes/no/ /etc/sysconfig/network > /etc/sysconfig/network-NEW
+else [ echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network-NEW ]
+fi
+mv /etc/sysconfig/network-NEW /etc/sysconfig/network 
+
+##############################################
+
+6aug08  --siggy
+# rsync with "--file-from=" test
+
+#works for the 3 files listed....
+rsync -e 'ssh -l backup -i /home/backup/.ssh/id_rsa' --rsync-path='sudo rsync' -a pl1rns700.admin.edmunds.com:'/etc/hosts /etc/auto.misc /etc/auto.net' /tmp > /dev/null 2>&1
+
+# no workie
+rsync --no-relative --files-from=/tmp/file-list -e 'ssh -l backup -i /home/backup/.ssh/id_rsa' --rsync-path='sudo rsync' -a pl1rns700.admin.edmunds.com:/ /tmp/pl1rns700
+throws:
+rsync: link_stat "//etc/auto.misc " failed: No such file or directory (2)
+client: nothing to do: perhaps you need to specify some filenames or the --recursive option?
+rsync error: some files could not be transferred (code 23) at main.c(723)
+
+# no workie
+rsync -e 'ssh -l backup -i /home/backup/.ssh/id_rsa' --rsync-path='sudo rsync' -a --no-relative --files-from=/tmp/file-list pl1rns700.admin.edmunds.com:/ /tmp/pl1rns700
+throws:
+rsync: link_stat "//etc/auto.misc " failed: No such file or directory (2)
+client: nothing to do: perhaps you need to specify some filenames or the --recursive option?
+rsync error: some files could not be transferred (code 23) at main.c(723)
+
+#working
+rsync --no-relative --files-from=/tmp/file-list -e 'ssh -l backup -i /home/backup/.ssh/id_rsa' --rsync-path='sudo rsync' -a pl1rns700.admin.edmunds.com:/ /tmp/pl1rns700 > /dev/null 2>&1
+
+cat /tmp/file-list # not complete !!!! for test only
+/etc/hosts
+/etc/postfix
+/etc/resolv.conf
+/etc/fstab
+/etc/passwd
+/etc/shadow
+/etc/group
+/etc/ntp.conf
+/etc/sudoers
+/etc/sysconfig/network
+/etc/sysconfig/network-scripts/ifcfg-eth0
+/etc/sysconfig/network-scripts/ifcfg-eth1
+
+
+##############################################
+10sep08  --siggy
+
+cat ORD-siggy-ver1.5.csv | grep rad | awk '{print $2"\t\t"$1}' | sed s/$/.admin.edmunds.com/ | awk '{print $2}'|awk -F. '{print $1}'
+
+##############################################
+13Oct08  --siggy
+
+find www.hot.blah.blah -name "*.jpg | awk -F/ '{print $3"-"$4}"
+for i in `ls`; do cp $i ../../../`pwd | awk -F/ '{print $8"-"}'`$i; done
+
+##############################################
+14oct08  --siggy
+Bash upper to lower case conversion
+
+echo $i | tr "[:upper:]" "[:lower:]"
+echo $i | tr "[:lower:]" "[:upper:]"
+
+tr 'a-z' 'A-Z'
+tr 'A-Z' 'a-z'
+
+##############################################
+24oct08  --siggy
+
+zones-reverse testing
+
+to make the rev-map-test file
+find . -type f -exec grep IN * '{}' ';' | grep PTR | sed s/:/./ | sed s/IN// | sed s/db\.// | sed s/PTR// > ~dsiegfriedt/rev-map-test
+
+for i in `ls`; do  echo $i | sed s/db\.//;  cat $i | grep PTR | sed s/\\tPTR// | sed s/com\./com/; done
+for i in `ls`; do  echo $i | sed s/db\.//;  cat $i | grep PTR | sed s/PTR// | sed s/IN// | sed s/com\./com/; done
+for i in `ls`; do  echo $i| sed s/db\.//; done  # list of rev maps (without the leading db.)
+for i in `ls`; do echo $i | awk -F. '{print $2"."$3"."$4}'; cat $i | grep PTR | awk '{print $1"\t\t"$3}' | sed s/$\.//; done
+find . -type f -exec grep IN * '{}' ';' | grep PTR | sed s/:/./ | sed s/IN// | sed s/db\.// | sed s/PTR//
+find . \( -name 'archives' -prune -o -name '*' \) 
+find db.66.180.197 | xargs grep -F 'PTR' | sed s/\\t\\tPTR// | sed s/com\./com/
+find . | xargs grep -F 'PTR' | sed s/:/./ | sed s/IN// | sed s/db\.// | sed s/PTR// | sed s/com\./com/ | grep -v archives > /tmp/rev-map-test
+	in emacs get rid of ./
+cat /tmp/rev-map-test | awk '{print $1"\t\t"$2}' > /tmp/rev-map-test1
+mv /tmp/rev-map-test1 /tmp/rev-map-test
+
+
+to test effectivness of script
+for i in `cat SIGGY-LOCAL/rev-map-test | grep SMDC | awk '{print $1}'`; do grep $i | awk -F. '{print $4}' zones-reverse/; done
+
+##############################################
+
+cat corezones.conf | sed '1,32d'| awk '{print $7}' | awk -F. '{print $2"."$3"."$4}' | sed 's/\";//' 
+
+cat corezones.conf | sed /^$/d | sed '1,31d' | awk '{print $7}' | awk -F. '{print $2"."$3"."$4}' | sed 's/\";//' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 
+
+##############################################
+4mar11  --siggy   loop until correct
+
+#ask for the IP address 
+echo "Please enter the IP address for this machine"
+read NEWIP
+
+HACKEDIP=`echo $NEWIP| awk -F. '{print $4}'`
+
+until  [ $HACKEDIP -ne 1 ] && [ $HACKEDIP -ne 254 ]
+do
+    echo "The final octet can NOT be 1 or 254"
+    echo "Please enter the IP address for this machine"
+    read NEWIP
+    HACKEDIP=`echo $NEWIP| awk -F. '{print $4}'`
+done
+##############################################
+2Jan13  --siggy rename mp3
+
+for i in `ls /data/SIGGY-STUFF/MUSIC/NEW-MUSIC/`; do echo $i | cut -d_ -f3-; done
+
+from 9_-_Yesterdays.mp3
+to Yesterdays.mp3
+
+##############################################
+17Jan14  danmo & siggy  add me and change root passwd
+
+log into each server and run:
+
+sed -i '1i root:$1$wSAlTvV.$gr05gHbHdmFmrtafzCkWW0:16087:0:99999:7:::' /etc/shadow;  sed -i '2d' /etc/shadow; USER=`cat /etc/passwd |grep dsieg |wc -l`; if [ $USER -eq 0 ]; then /usr/sbin/useradd dsiegfri; fi; DON=`cat /etc/sudoers |grep dsieg |wc -l`; if [ $DON -eq 0 ]; then sed -i /danmo/s/$/,\ dsiegfri/ /etc/sudoers; fi
+
+##############################################
+7Mar14  --siggy   Helping Paul with sorting ports open on servers
+
+#this will list all the servers that have port 22 open.
+cat out1.xml | grep -B7 portid=\"22\" | grep ipv4 | awk '{print $2}' | sed s/addr=\"// | sed s/\"//
+
+#to find all the unique ports
+root@kali-2:/s_scan# cat out1.xml | grep portid | sort -u | wc -l
+157
+
+#Create a sorted unique list of ports
+  736  cat out1.xml | grep portid | sort -u > sorted-port-list
+  737  cat sorted-port-list 
+  738  cat sorted-port-list | awk '{print $2}'
+  739  cat sorted-port-list | awk '{print $3}'
+  740  cat sorted-port-list | awk '{print $3}' > sorted-port-list-narrowed1
+  741  mv sorted-port-list-narrowed1 sorted-port-list
+  742  cat sorted-port-list
+  743  cat sorted-port-list | sed s/\"//
+  744  cat sorted-port-list | sed s/\"//g
+  745  cat sorted-port-list | sed -i s/\"//g
+  746  sed -i s/\"//g sorted-port-list 
+  747  sed s/><state//g sorted-port-list 
+  748  sed s/\>\<state//g sorted-port-list 
+  749  sed -i s/\>\<state//g sorted-port-list 
+  750  cat sorted-port-list | sort -n
+  751  cat sorted-port-list | sort -k 3
+  752  cat sorted-port-list | sort -k3
+  753  cat sorted-port-list | sort -k3 -n
+  754  cat sorted-port-list | sort -t = -k 3 -n
+  755  sed s/\=/"\t"/
+  756  sed s/\=/"\t"/ sorted-port-list 
+  757  sed -i s/\=/"\t"/ sorted-port-list 
+  758  cat sorted-port-list | sort -k2 -n
+  759  cat sorted-port-list | sort -k2 -n > sorted-port-list1
+  760  mv sorted-port-list1 sorted-port-list
+root@kali-2:/s_scan# cat sorted-port-list | wc -l
+157
+
+##############################################
+11Mar14  --siggy   cifsuser added to sudoers (NOTHING is ever easy!)
+
+[root@lasysmon scripts]# cat cifs-to-sudoers 
+#!/bin/bash
+
+#11 Mar14  --siggy
+# Trouble ticket # 55540 to add the cifsuser to sudoers on all linux machines, for NetApp Balance.
+
+# Can NOT edit /etc/sudoers in place :^(
+cp /etc/sudoers /tmp/sudoers.new
+
+#needs to be writeable
+/bin/chmod +w /tmp/sudoers.new
+
+#look for my name in sudoers and add to the EOL
+sed -i /dsiegfri/s/$/,\ cifsuser/ /tmp/sudoers.new 
+
+#syntax check of your changes
+visudo -c -f /tmp/sudoers.new
+
+#test if syntax check completed with no errors.  If it did cp sudoers back to /etc.
+if [ "$?" -eq "0" ]; then
+    cp /tmp/sudoers.new /etc/sudoers
+fi
+
+# clean up
+rm -f /tmp/sudoers.new 
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+
+##############################################
+

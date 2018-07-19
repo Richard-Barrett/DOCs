@@ -1,0 +1,77 @@
+[root@lacchttpqac1 certs]# pwd
+/etc/pki/tls/certs
+[root@lacchttpqac1 certs]# ll
+total 960
+-rw-r--r-- 1 root root 468638 May 15  2012 ca-bundle.crt
+-rw-r--r-- 1 root root 468638 Jan 18  2012 ca-bundle.crt.rpmnew
+-rw-r--r-- 1 root root    810 Dec  2  2013 lacchttpqac1.cert
+-rw-r--r-- 1 root root    891 Dec  2  2013 lacchttpqac1.cert.key
+-rw-r--r-- 1 root root    631 Dec  2  2013 lacchttpqac1.ssl.csr
+-rw------- 1 root root   1468 Dec 22  2010 localhost.crt
+-rwxr-xr-x 1 root root    610 May 15  2012 make-dummy-cert
+-rw-r--r-- 1 root root   2292 May 15  2012 Makefile
+-rw-r--r-- 1 root root    963 Dec  2  2013 privkey.pem
+
+
+[root@lacchttpqac1 certs]# ll /etc/java/security/security.d/
+total 0
+-rw-r--r-- 1 root root 0 May 24  2008 1000-gnu.java.security.provider.Gnu
+-rw-r--r-- 1 root root 0 May 24  2008 1001-gnu.javax.crypto.jce.GnuCrypto
+-rw-r--r-- 1 root root 0 May 24  2008 1002-gnu.javax.crypto.jce.GnuSasl
+-rw-r--r-- 1 root root 0 May 24  2008 1003-gnu.javax.net.ssl.provider.Jessie
+-rw-r--r-- 1 root root 0 May 24  2008 1004-gnu.javax.security.auth.callback.GnuCallbacks
+
+
+[root@lacchttpqac1 certs]# ll /var/log/httpd/
+total 70156
+-rw-r--r-- 1 root root   409399 Jul 29 09:11 access_log
+-rw-r--r-- 1 root root  1079020 Jul 25 16:34 access_log.1
+-rw-r--r-- 1 root root  2115025 Jul 19 10:39 access_log.2
+-rw-r--r-- 1 root root  3957955 Jul 11 18:06 access_log.3
+-rw-r--r-- 1 root root   402894 Jul  3 15:14 access_log.4
+-rw-r--r-- 1 root root     1028 Jul 27 04:02 error_log
+-rw-r--r-- 1 root root     1104 Jul 27 04:02 error_log.1
+-rw-r--r-- 1 root root    11418 Jul 20 04:02 error_log.2
+-rw-r--r-- 1 root root     1104 Jul 13 04:02 error_log.3
+-rw-r--r-- 1 root root     1104 Jul  6 04:02 error_log.4
+-rw-r--r-- 1 root root      448 Apr  1  2012 jk-runtime-status.12408
+-rw-r--r-- 1 root root        1 Apr  1  2012 jk-runtime-status.12408.lock
+-rw-r--r-- 1 root root      448 Jan 22  2012 jk-runtime-status.18040
+-rw-r--r-- 1 root root        1 Jan 22  2012 jk-runtime-status.18040.lock
+-rw-r--r-- 1 root root      448 Oct 18  2011 jk-runtime-status.28583
+-rw-r--r-- 1 root root        1 Oct 18  2011 jk-runtime-status.28583.lock
+-rw-r--r-- 1 root root      448 Apr 17  2012 jk-runtime-status.3668
+-rw-r--r-- 1 root root        1 Apr 15  2012 jk-runtime-status.3668.lock
+-rw-r--r-- 1 root root      448 Apr  3  2012 jk-runtime-status.3670
+-rw-r--r-- 1 root root        1 Apr  2  2012 jk-runtime-status.3670.lock
+-rw-r--r-- 1 root root      448 Jan 26  2012 jk-runtime-status.3671
+-rw-r--r-- 1 root root        1 Jan 26  2012 jk-runtime-status.3671.lock
+-rw-r--r-- 1 root root        0 Apr 22  2012 mod_jk.log
+-rw-r--r-- 1 root root      115 Apr 15  2012 mod_jk.log.1
+-rw-r--r-- 1 root root      115 Apr  8  2012 mod_jk.log.2
+-rw-r--r-- 1 root root      806 Apr  5  2012 mod_jk.log.3
+-rw-r--r-- 1 root root      348 Mar 26  2012 mod_jk.log.4
+-rw-r--r-- 1 root root        0 Jul 15  2012 ssl_access_log
+-rw-r--r-- 1 root root  3770350 Jul 11  2012 ssl_access_log.1
+-rw-r--r-- 1 root root 10613139 Jul  6  2012 ssl_access_log.2
+-rw-r--r-- 1 root root  9533848 Jun 29  2012 ssl_access_log.3
+-rw-r--r-- 1 root root  6769285 Jun 22  2012 ssl_access_log.4
+-rw-r--r-- 1 root root      221 Jul 29 09:07 ssl_error_log
+-rw-r--r-- 1 root root      766 Jul 23 11:42 ssl_error_log.1
+-rw-r--r-- 1 root root   491169 Jul 19 09:46 ssl_error_log.2
+-rw-r--r-- 1 root root     5389 Jul 11 11:17 ssl_error_log.3
+-rw-r--r-- 1 root root      424 Jul  1 20:59 ssl_error_log.4
+-rw-r--r-- 1 root root        0 Jul 15  2012 ssl_request_log
+-rw-r--r-- 1 root root  4015586 Jul 11  2012 ssl_request_log.1
+-rw-r--r-- 1 root root 11249752 Jul  6  2012 ssl_request_log.2
+-rw-r--r-- 1 root root 10051957 Jun 29  2012 ssl_request_log.3
+-rw-r--r-- 1 root root  7137412 Jun 22  2012 ssl_request_log.4
+
+
+[root@lacchttpqac1 certs]# ll /etc/httpd
+total 16
+drwxr-xr-x 2 root root 4096 Jan 15  2013 conf
+drwxr-xr-x 2 root root 4096 Jul 29 11:07 conf.d
+lrwxrwxrwx 1 root root   19 Jan 15  2013 logs -> ../../var/log/httpd
+lrwxrwxrwx 1 root root   29 Jan 15  2013 modules -> ../../usr/lib64/httpd/modules
+lrwxrwxrwx 1 root root   13 Jan 15  2013 run -> ../../var/run

@@ -1,0 +1,438 @@
+# Need to know:
+#	- Manager LDAP password
+
+# Backup current LDAP users
+Before any changes, backup LDAP on suplier
+ssh pl1rad702.admin.edmunds.com
+sudo su -
+cd /root/LDAPControl
+
+------
+
+#
+# adding user
+#
+
+1. create user and home directory
+
+./getnewPeople.sh
+
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -b "ou=People,dc=edmunds,dc=com" > People.ldif
+
+./backupusers.sh
+
+#!/bin/sh
+TIME=`date "+%Y%m%d-%H%M%S"`
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x -L -L -L > ./backupusers/ldap_users_backup_${TIME}.ldif
+
+./createuser.sh
+
+(See bottom of file)
+
+2. add nodes for users
+
+./user_search.sh uid=<user_id> > <user_id>-mod.ldif 
+       (example: $ ./user_search.sh uid=jdoe > jdoe-mod.ldif)
+	- edit file
+		- keep this line -> dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		- remove the rest of the lines
+		- add changetype: modify
+		- place new credentials
+	- example:
+		<-- SNIP -->
+		dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		changetype: modify
+		replace: host
+		host: *
+		<-- SNIP -->
+./user_modify.sh <user_id>-mod.ldif
+
+
+#
+# removing and disabling users
+#
+./backupusers.sh #backs up the whole LDAP user list
+./user_search.sh uid=<user_id> > <user_id>-mod.ldif 
+     (example: $ ./user_search.sh uid=jdoe > jdoe-mod.ldif)
+	- edit file
+		- keep this line -> dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		- remove the rest of the lines
+		- add changetype: modify
+		- place new credentials
+	- example:
+		<-- SNIP -->
+		dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		changetype: modify
+		replace: loginShell
+		loginShell: /bin/false
+		- 
+		replace: host
+		host: null
+		<-- SNIP -->
+./user_modify.sh <user_id>-mod.ldif
+
+# home_directories
+No change
+
+#
+# Reseting passwords to changemenow
+# Below is an example of jdoe-mod.ldif
+#
+<-- SNIP -->
+dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+changetype: modify
+replace: userPassword
+userPassword: {SSHA}/z5NCrPnCiKQtYpX9WPcUyJ+4x5UVW98
+<-- SNIP -->
+
+
+# Note: how changemenow was hashed LDAP passwd line
+ldap_server$ slappasswd -h {SSHA} -s changemenow
+
+
+
+-----------------------------------------------------------
+# Additional documents and script locations
+
+pl1rad504:/admin/docs/access/users_and_groups.txt
+
+Note: bastion jump servers
+pl1rad507.media.edmunds.com
+pl1rad513.media.edmunds.com
+
+Server -> http://www.openldap.org/
+Client Browser -> http://www-unix.mcs.anl.gov/~gawor/ldap/
+Note: LDAP servers for media
+pl1rad502.media.edmunds.com - supplier
+pl1rad508.media.edmunds.com - consumer
+
+-----------------------------------------------------------
+
+#
+# EIS
+#
+pl1rad005:/admin/conf/admin/ldif/users 
+     (your password, if your password doesn't work your login has to be added on ldap conf)
+
+15Apr08  --siggy
+
+Added stuff from all the scripts plus NOTES I took from Amanda's teaching session
+
+New host pl1rad702.admin.edmunds.com
+
+
+cat getnewPeople.sh 
+#!/bin/sh
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -b "ou=People,dc=edmunds,dc=com" > People.ldif
+
+cat backupusers.sh 
+#!/bin/sh
+TIME=`date "+%Y%m%d-%H%M%S"`
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x -L -L -L > ./backupusers/ldap_users_backup_${TIME}.ldif
+
+cat createuser.sh
+#!/bin/sh
+
+# Edmunds.com
+# 2006.01.05
+# mmarschall@edmunds.com
+# Create DC3 Media Interactive Acconts Stored in LDAP
+
+# Needed:
+# A way to add access to hosts via this script (should be 
+# fairly easy to do). 
+# Checking against the directory for the available uid/gid
+# and not just according to local files. This is pretty 
+# easy as well and will be done with time.
+# The use of arrays instead of a temp file.
+
+#LDIFDIR=/admin/conf/admin/ldif/users
+LDIFDIR=/root/LDAPControl
+
+cd $LDIFDIR
+ 
+# Find the last used UID/GID combination and store it 
+# for later. This should probably be searching the ldap directory 
+# and I will set it to do so when I get more time. For now 
+# we search the locally created People.ldif file.
+# Run getnewPeople.sh to get the latest list from the directory.
+
+#LASTUID=`cat * | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+LASTUID=`cat People.ldif | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+
+NEXTUID=`expr $LASTUID + 1`
+
+# Let's Give Some Info
+echo ""
+echo "Creating new DC3 Media LDAP User Account"
+echo ""
+echo "The last used UID/GID pair was: $LASTUID"
+echo ""
+echo "The UID/GID pair for this user will be: $NEXTUID"
+echo ""
+echo -n "Enter the username for the new user: "
+read USERNAME
+echo ""
+echo -n "Enter the Full Name of the new user: "
+read FULLNAME
+echo ""
+echo -n "Shall we create the account? [y/n]: "
+read ANSWER
+if [ $ANSWER = y ]; then 
+	echo ""
+	echo "Creating ldif file: $USERNAME.ldif"
+	echo "This can be used later for manual editing"
+	echo ""
+	echo "dn: uid=$USERNAME,ou=People,dc=edmunds,dc=com" > $USERNAME.ldif
+	echo "userPassword: {SSHA}/z5NCrPnCiKQtYpX9WPcUyJ+4x5UVW98" >> $USERNAME.ldif
+	echo "loginShell: /bin/bash" >> $USERNAME.ldif
+	echo "uidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "shadowMax: 99999" >> $USERNAME.ldif
+	echo "objectClass: account" >> $USERNAME.ldif
+	echo "objectClass: posixAccount" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "objectClass: shadowAccount" >> $USERNAME.ldif
+	echo "uid: $USERNAME" >> $USERNAME.ldif
+	echo "gecos: $FULLNAME" >> $USERNAME.ldif
+	echo "shadowLastChange: 13069" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "homeDirectory: /misc/$USERNAME" >> $USERNAME.ldif
+	echo "shadowWarning: 7" >> $USERNAME.ldif
+	echo "host: *" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "dn: cn=$USERNAME, ou=UPG, ou=Groups, dc=edmunds,dc=com" >> $USERNAME.ldif
+	echo "objectClass: posixGroup" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "userPassword: {crypt}x" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	
+	echo "Adding user to LDAP Directory"
+	ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f $USERNAME.ldif
+	
+	echo ""
+	echo "NOTE: Home Directory Creation depends greatly on"
+	echo "the automounted home directory volume being mounted"
+	echo "locally at /misc."
+	echo ""
+	echo -n "Shall we create a home directory for this user? [y/n]: " 
+	read HOMEANSWER
+	if [ $HOMEANSWER = y ]; then
+		sudo mkdir /misc/$USERNAME
+		sudo cp /etc/skel/.bash* /misc/$USERNAME
+		sudo chown -R $NEXTUID:$NEXTUID /misc/$USERNAME
+		sudo chmod 700 /misc/$USERNAME
+	elif [ $HOMEANSWER = n ]; then
+		echo "Exiting"
+		exit 5 
+	else
+		:
+	fi	
+elif [ $ANSWER = n ]; then 
+	echo "Exiting"
+	exit 3
+else
+	:	
+fi
+
+%%%%%
+
+cat user_modify.sh 
+#!/bin/sh
+
+ldapmodify -x -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -f $1
+
+%%%%%
+
+cat user_search.sh 
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x $1 
+
+EXAMPLE: /root/LDAPControl/user_search.sh uid=dsiegfriedt
+
+%%%%%
+
+Changes to groups and netgroups are done seperately (one for each section).
+
+cat DataQA-mod.ldif
+dn: cn=DataQA,ou=Teams,ou=Groups,dc=edmunds,dc=com
+changetype: modify
+replace: memberUid
+memberUid: cnaber
+memberUid: dangel
+memberUid: jghazizadeh
+memberUid: sbeitel
+memberUid: nalexander
+memberUid: gsimkin
+memberUid: knguyenvu
+memberUid: hrodarte
+
+cat Netgrou-DataQA-mod.ldif
+dn: cn=DataQA,ou=Teams,ou=NetGroups,dc=edmunds,dc=com
+changetype: modify
+replace: nisNetgroupTriple
+nisNetgroupTriple: (-,cnaber,-)
+nisNetgroupTriple: (-,dangel,-)
+nisNetgroupTriple: (-,jghazizadeh,-)
+nisNetgroupTriple: (-,sbeitel,-)
+nisNetgroupTriple: (-,nalexander,-)
+nisNetgroupTriple: (-,gsimkin,-)
+nisNetgroupTriple: (-,knguyenvu,-)
+nisNetgroupTriple: (-,hrodarte,-)
+
+
+*****
+
+***** The other way is to use the LDAP browser ****
+ 
+  --siggy21Apr08
+
+NOTE: pl1rad702.admin.edmunds.com is the LDAP server
+
+%%%%%
+
+more getnewPeople.sh
+#!/bin/sh
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -b "ou=People,dc=edmunds,dc=com" > People.ldif
+
+%%%%%
+
+more backupusers.sh
+#!/bin/sh
+TIME=`date "+%Y%m%d-%H%M%S"`
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x -L -L -L > ./backupusers/ldap_users_backup_${TIME}.ldif
+
+%%%%%
+
+more createuser.sh
+#!/bin/sh
+
+# Edmunds.com
+# 2006.01.05
+# mmarschall@edmunds.com
+# Create DC3 Media Interactive Acconts Stored in LDAP
+
+# Needed:
+# A way to add access to hosts via this script (should be 
+# fairly easy to do). 
+# Checking against the directory for the available uid/gid
+# and not just according to local files. This is pretty 
+# easy as well and will be done with time.
+# The use of arrays instead of a temp file.
+
+#LDIFDIR=/admin/conf/admin/ldif/users
+LDIFDIR=/root/LDAPControl
+
+cd $LDIFDIR
+ 
+# Find the last used UID/GID combination and store it 
+# for later. This should probably be searching the ldap directory 
+# and I will set it to do so when I get more time. For now 
+# we search the locally created People.ldif file.
+# Run getnewPeople.sh to get the latest list from the directory.
+
+#LASTUID=`cat * | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+LASTUID=`cat People.ldif | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+
+NEXTUID=`expr $LASTUID + 1`
+
+# Let's Give Some Info
+echo ""
+echo "Creating new DC3 Media LDAP User Account"
+echo ""
+echo "The last used UID/GID pair was: $LASTUID"
+echo ""
+echo "The UID/GID pair for this user will be: $NEXTUID"
+echo ""
+echo -n "Enter the username for the new user: "
+read USERNAME
+echo ""
+echo -n "Enter the Full Name of the new user: "
+read FULLNAME
+echo ""
+echo -n "Shall we create the account? [y/n]: "
+read ANSWER
+if [ $ANSWER = y ]; then 
+	echo ""
+	echo "Creating ldif file: $USERNAME.ldif"
+	echo "This can be used later for manual editing"
+	echo ""
+	echo "dn: uid=$USERNAME,ou=People,dc=edmunds,dc=com" > $USERNAME.ldif
+	echo "userPassword: {SSHA}/z5NCrPnCiKQtYpX9WPcUyJ+4x5UVW98" >> $USERNAME.ldif
+	echo "loginShell: /bin/bash" >> $USERNAME.ldif
+	echo "uidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "shadowMax: 99999" >> $USERNAME.ldif
+	echo "objectClass: account" >> $USERNAME.ldif
+	echo "objectClass: posixAccount" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "objectClass: shadowAccount" >> $USERNAME.ldif
+	echo "uid: $USERNAME" >> $USERNAME.ldif
+	echo "gecos: $FULLNAME" >> $USERNAME.ldif
+	echo "shadowLastChange: 13069" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "homeDirectory: /misc/$USERNAME" >> $USERNAME.ldif
+	echo "shadowWarning: 7" >> $USERNAME.ldif
+	echo "host: *" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "dn: cn=$USERNAME, ou=UPG, ou=Groups, dc=edmunds,dc=com" >> $USERNAME.ldif
+	echo "objectClass: posixGroup" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "userPassword: {crypt}x" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	
+	echo "Adding user to LDAP Directory"
+	ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f $USERNAME.ldif
+	
+	echo ""
+	echo "NOTE: Home Directory Creation depends greatly on"
+	echo "the automounted home directory volume being mounted"
+	echo "locally at /misc."
+	echo ""
+	echo -n "Shall we create a home directory for this user? [y/n]: " 
+	read HOMEANSWER
+	if [ $HOMEANSWER = y ]; then
+		sudo mkdir /misc/$USERNAME
+		sudo cp /etc/skel/.bash* /misc/$USERNAME
+		sudo chown -R $NEXTUID:$NEXTUID /misc/$USERNAME
+		sudo chmod 700 /misc/$USERNAME
+	elif [ $HOMEANSWER = n ]; then
+		echo "Exiting"
+		exit 5 
+	else
+		:
+	fi	
+elif [ $ANSWER = n ]; then 
+	echo "Exiting"
+	exit 3
+else
+	:	
+fi
+
+%%%%%
+
+more user_search.sh 
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x $1 
+
+%%%%%
+
+more user_modify.sh 
+#!/bin/sh
+
+ldapmodify -x -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -f $1
+
+%%%%%
+
+1) ./backupusers.sh
+2) ./user_serach.sh cn=<GroupName>
+3) ./user_serach.sh cn=<GroupName> > GroupName-MOD.ldif
+4) vi GroupName-MOD.ldif
+      make you changes
+5) ./user_modify.sh GroupName-MOD.ldif
+6) FIX ANY ERRORS!!!! It will give you line numbers but they are not reliable.
+
+
+

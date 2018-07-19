@@ -1,0 +1,66 @@
+I use specific file names but you can use anything you want.
+
+so you start with a plain text file (and I think the Macs use bash shells) I use vi and add login and passwd to a file named "deleteme.txt"
+
+Once you have saved the file you type these 2 commands:
+
+openssl aes-256-cbc -a -salt -in deleteme.txt -out .encryptedfile.txt 
+rm -f deleteme.txt
+
+This gives you an encrypted file using aes256 encryption.  Deleting the original txt file means that no one else can see your passwds
+
+ 
+to de-crypt type:
+
+openssl aes-256-cbc -d -a -salt -in .encryptedfile.txt -out deleteme.txt
+
+this creates a file "deleteme.txt" which is plain text file.
+
+
+WAAYY too much typing so I created aliases in my .bashrc file
+
+alias makesecret='openssl aes-256-cbc -a -salt -in deleteme.txt -out .encryptedfile.txt; rm -f deleteme.txt'
+
+alias secrets='openssl aes-256-cbc -d -a -salt -in .encryptedfile.txt -out deleteme.txt'
+
+"makesecret" encrypts your deleteme.txt file then deletes it
+
+"secrets" de-crypts your .encrypted file and creates (plane text) deleteme.txt file. 
+
+
+OTHER Hints:
+Because I am dumb and have left my list of passwd in my account I have automated the deletion with cron.
+
+dsiegfriedt@dts3329:~ $ crontab -l
+9 * * * * rm -f ~dsiegfriedt/deleteme.txt
+
+This deletes any "deleteme.txt" files from your home account.
+
+I have also found that it is easier to find logins/passwd when I lead the line with "*****" and I add dates to the accounts.
+
+EXAMPLE from my last job:
+
+***********************************************************************************************
+***********************************************************************************************
+********************************** Republic Indemnity **************************************
+************************************************************************************************
+************************************************************************************************
+
+*****https://email3.gaic.com/owa/ (13Apr16)
+ri-net@dsiegfri
+current AD passwd
+
+*****lasan4 backup (16Mar16)
+clyde
+Nqawa$1! (Nothing quite as wondeful as $ 1 !)
+
+user: clyde
+group: "Backup Operators"
+role: backup
+
+*****ri powerdown
+hades
+stmtF1hmos (stop telling me the Facts 1 have my own story)
+
+
+Let me know if you have questions

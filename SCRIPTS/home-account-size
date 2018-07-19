@@ -1,0 +1,60 @@
+#!/bin/bash
+#*****************************************************************
+# Name: home-account-size
+#
+# Purpose: Small script to emial users when their home accounts exceed 5GB
+#
+# Author	  Date		  Version	  Comments
+# ---------------+----------------+---------------+-------------
+# Siggy		  1may08           1.0
+# siggy           20may08          2.0            Correct size now, and -c tested
+# siggy           22may08          3.0            Spoofed Frm: field
+#
+# Mail-size will walk through any dirctory and compare the directory size 
+# to 5GB.  If the directory exceeds this limit it will echo the directory 
+# name to the screen (as a test).  Eventually the mail line can send email 
+# to the offending party with the content of memofile.txt
+
+# This needs to be run on pl1rad702.admin.edmunds.com
+
+
+# Your home account has exceeded the 5GB threshold.  Please take some time
+# to examine your home directory and purge any old/un-used/out-of-date
+# data.
+#
+# If you need to keep the data for some reason (i.e. file sharing within
+# your department), please send a "Shared Volume" request to ServiceDesk
+# (servicedesk@edmunds.com).
+#
+# This email has been sent to sysops also for monitoring.
+#
+# 1) Failure to comply will result in you being added to more and more meetings.
+# 2) Please comply or corrective actions will have to be taken.
+# 3) We’ve looked through your porn and it is not that good….get rid of it.
+#
+#
+# Thank you
+# SysOps
+
+#*****************************************************************
+# clear
+# echo "Running $0..."
+# echo ""
+#
+
+#!/bin/bash
+
+for i in `find /misc/ -maxdepth 1 -type d ! -name "."`
+do
+SIZE=`du -bs $i | awk '{print $1}'`
+	if [ $SIZE -gt 5000000000 ]; then
+# first test
+#	echo $i" needs to be pruned"
+#first mail test
+#   	mail -s "$i home account size" dsiegfriedt@edmunds.com -c gfontejon@edmunds.com < /root/memofile.txt
+# first mail test with spoofed "From: "
+#	mail -s "$i home account size" $i@edmunds.com -c sysops@edmunds.com -- -f sysops@edmunds.com < /root/memofile.txt
+# double check it works
+	mail -s "$i home account size" dsiegfriedt@edmunds.com -c gfontejon@edmunds.com -- -f sysops@edmunds.com < /root/memofile.txt
+fi
+done

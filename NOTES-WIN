@@ -1,0 +1,225 @@
+**********************************************************************
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+**********************************************************************
+MS Stuff
+
+**********************************************************************
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+**********************************************************************
+
+Share network drive
+
+	Click right on My Computer
+	  Map Network Drive 
+**********************************************************************
+Changeing domains	Philip 10Oct03
+
+These are the steps I've been doing to fix Nick's Win2K PC:
+
+DISJOIN PC FROM OUR CINESITE DOMAIN:
+* Start/Settings/Control Panel
+* System
+* Network Identification
+* Properties
+* Select (Member of) Workgroup, type in anything, it shouldn't
+  matter. I usually use 'NONE'.
+* Wait for a bit, it takes awhile. A message will pop-up telling
+  you the PC has been removed from CINESITE and is now in the
+  workgroup NONE. You don't need to reboot it yet.
+
+JOIN PC TO THE CINESITE DOMAIN:
+(Assuming you've done all of the above to get to this point)
+* Select (Member of) Domain, type in 'cinesite'. It will ask you
+  for a login/password that has permission to join the domain.
+  I've setup each of our Windows 2000 accounts so that we can
+  join PCs to the domain.
+* Wait for a bit, it takes awhile. Once it's joined it will tell
+  you and prompt you for a reboot. You'll need to reboot the PC
+  once this is done.
+**********************************************************************
+fdisk to look at partitions
+**********************************************************************
+
+To add to domain:
+Control Panel => System => NetID - Properties
+	cinesite
+	Administrator
+	root PW
+**********************************************************************
+Philip Rowe 21nov03
+
+If you're adding a new windows client (or troubleshooting why one a client
+won't connect) make sure it has an entry in the win2k server's DNS. windows
+has to have this in order for active directory to work properly.
+
+go to mothership, open the dns icon, forward lookup zones, hollywood.cinesite.com.
+you can access/add entries from there.
+
+**********************************************************************
+19Jul04 siggy
+Where the file for the task bar and startup menu is:
+
+C:\Documents and Settings\dsiegfri\Application Data\Microsoft\Internet Explorer\Quick Launch
+**********************************************************************
+13Dec04  --siggy
+Your local profile
+
+http://www.comptechdoc.org/os/windows/win2k/win2kusers.html
+
+# Local profile - Stored in the C:\Documents and Settings\username folder. The profiles file is 
+NTUSER.DAT in the directory called by the user's name. A mandatory profile which discards any 
+changes the user makes to their profile at logoff time, can be implemented by modifying the name 
+of the user profile file from NTUSER.DAT to NTUSER.MAN. The ntuser.ini file is used to set up the 
+user roaming profile components that are not copied to the server. The ntuser.dat.LOG file is used 
+for NTUSER.DAT file recovery in the case of an error. Additional folders in the C:\Documents and 
+Settings\username folder are:
+
+    * Application Data - Refers to data used by application programs that the user may modify when they change a setting in the application.
+    * Cookies
+    * Desktop - Refers to desktop and briefcase shortcuts.
+    * Favorites - Application favorites such as web site favorites on IE and favorite programs.
+    * FrontPageTempdir - Only on Windows 2000 Servers for files made by Microsoft FrontPage
+    * Local Settings - Settings used by common applications such as IE.
+    * My Documents
+    * NetHood - Network servers or shared network folder shortcuts.
+    * PrintHood - Network printers.
+    * Recent - Shortcuts to documents recently used.
+    * SendTo - Shortcuts to places where files are copied.
+    * Start Menu - The user's start menu and shortcuts.
+    * Templates - Application templates. 
+**********************************************************************
+11Jan05  Romeo
+
+if ipconfig /all shows 196.254.x.y it means that DHCP does not have available IP addresses,
+
+**********************************************************************
+21Feb05 Perry
+
+To allow drive mapping
+	RT click MyComputer
+	Manage
+	Click domainname
+	Click Add
+	find domainname
+	add name
+**********************************************************************
+
+17Apr12  AMPL
+
+To add a printer at DirecTV
+RT click START
+  explore
+double click on:
+   Common on "Q'drive on EWINPF01 (Ewinpf01)'(Q:)
+double click on "printers"
+double click on "LA4 13th floor"
+double click on "LA4-1379-HP4250-PCL6"
+double click on "LA4-1379-HP4700-PCL6"
+
+**********************************************************************
+15Aug 12    --siggy    windows uptime
+
+In a command window type:
+Systeminfo | Find "Up Time"
+**********************************************************************
+26Sep12  --siggy  remove temp files (boot faster?)
+http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/disk_cleanup_overview.mspx?mfr=true
+
+Start => Run
+cleanmgr (in the "run" window)
+
+**********************************************************************
+5Oct12  --siggy   Screen capture
+
+PrintScn    captures the desktop (paste to doc)
+Ctrl-Alt-PrtScn capures the active window
+**********************************************************************
+16Oct12  --siggy brute force backup of mail and others (Outlook local folders)
+
+C:\Documents and Settings\453617\Local Settings\Application Data\Microsoft\Outlook
+
+C:\Documents and Settings\453617\My Documents
+
+14Nov14  --siggy  ri-net.com
+
+Use winscp to copy
+c:\Users\dsiegfri to linux box
+		  (NOTE:  all mail files are in a pst on the desktop)
+
+**********************************************************************
+14Nov12  Larry  RDT from CentOS 6.3
+(08:20:54 AM) Larry Lile: <Start> -> Right Click Computer -> Properties
+(08:21:09 AM) Larry Lile: Remote Settings
+(08:21:11 AM) Larry Lile: Remote
+(08:21:22 AM) Larry Lile: X Allow Remote Assistance
+(08:21:54 AM) Larry Lile: X Allow connections from computers running any version of remote desktop (less secure)
+(08:22:14 AM) Larry Lile: Select Users...
+(08:22:27 AM) Larry Lile: Add...
+(08:22:32 AM) Larry Lile: <add yourself> (453617)
+(08:24:28 AM) Larry Lile: alias rdp='rdesktop -u 455339 -d la -g 1280x1024 -a 16 !*'
+alias laptop='rdesktop -u 455339 -d la -g 1280x1024 -f -a 16 -r sound:local els-h53935'
+
+(08:24:48 AM) Larry Lile: Change your laptop hostname from els-h53935 to whatever yours is
+
+**********************************************************************
+17jan13  --siggy     DHCP
+
+in a command shell
+
+ipconfig /release
+
+ipconfig /renew
+**********************************************************************
+16Sep13   Capture a menu
+
+Snipit tool
+Esc
+open menu
+Ctrl+PrtScn
+mark and paste
+**********************************************************************
+20Nov13  --siggy  cd away from c:
+cd /d d:\bin64\MySQL
+**********************************************************************
+4Dec13  --siggy  What version am I running
+
+1) in a DOS window type "ver"
+2) click START => RT click Computer => Poperties
+3) click START in the search field type "winver"
+**********************************************************************
+17Jan14  Denise  (same as env) 
+set
+
+look for "LOGINSERVER" to check domain auth controller
+**********************************************************************
+12Nov15  --siggy   to see who is logged into a win VM
+
+https://www.devopsonwindows.com/3-ways-remotely-view-who-is-logged-on/
+query user /server:<server-name>
+
+query user /server:drvcms2
+**********************************************************************
+
+**********************************************************************
+
+**********************************************************************
+
+**********************************************************************
+
+**********************************************************************
+
+**********************************************************************
+
+**********************************************************************
+
+**********************************************************************
+
+**********************************************************************
+
+
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+#! /bin/bash
+#*****************************************************************
+# Name: NewPanfsUser
+#
+# Purpose: To add new panfs users to the s018 cluster.
+#          
+#
+# Calls To: None
+#
+# Usage: NewPanfsUser
+#
+#
+# Author	  Date		  Version	  Comments
+# ---------------+----------------+---------------+-------------
+# Ron M. & Siggy  11/16/07         1.0
+#
+#*****************************************************************
+clear
+echo "Running $0..."
+echo ""
+#
+# Prompt for account to create
+#
+echo -n "Enter account to create: "
+read ACCOUNT
+#
+echo "Fingering $ACCOUNT..."
+MYUSER=`finger $ACCOUNT | grep Name | awk -F: '{print $3}' | sed 's/^ *//'`
+MYUIDNUM=`id $ACCOUNT  | awk '{print $1}' | sed s/....// | sed s/\(.*.//`
+MYGIDNUM=`id $ACCOUNT  | awk '{print $2}' | sed s/....// | sed s/\(.*.//`
+MYSITENAME=`id $ACCOUNT | awk -F\( '{print $4}' | awk -F\) '{print $1}'`
+LOGINNAME=$ACCOUNT
+#
+#********************************************
+#* Check if 2nd character of account is v *
+#********************************************
+if [ ${ACCOUNT:1:1} == "v" ]; then
+  PROJECT=v
+  echo ""
+  mkdir /panfs/ms/$PROJECT/$ACCOUNT
+  chown $ACCOUNT.$MYSITENAME /panfs/ms/$PROJECT/$ACCOUNT
+else
+  PROJECT=u
+  echo ""
+  mkdir /panfs/ms/$PROJECT/$MYSITENAME/$ACCOUNT
+  chown $ACCOUNT.$MYSITENAME /panfs/ms/$PROJECT/$MYSITENAME/$ACCOUNT
+fi

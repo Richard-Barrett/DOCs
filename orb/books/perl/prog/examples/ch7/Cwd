@@ -1,0 +1,1 @@
+use Cwd;$dir = cwd();           # get current working directory safest way$dir = getcwd();        # like getcwd(3) or getwd(3)$dir = fastcwd();       # faster and more dangeroususe Cwd 'chdir';        # override chdir; keep PWD up to datechdir "/tmp";print $ENV{PWD};        # prints "/tmp"

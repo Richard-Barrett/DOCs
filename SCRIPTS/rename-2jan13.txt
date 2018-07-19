@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#for i in `ls /data/SIGGY-STUFF/MUSIC/NEW-MUSIC/`; do echo $i | cut -d_ -f3-; done
+
+for i in `ls`
+do 
+echo "this is dollar i "$i
+NEWNAME=`echo $i | cut -d_ -f3-`
+echo "this is dollar NEWNAME "$NEWNAME
+mv $i $NEWNAME
+done

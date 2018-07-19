@@ -1,0 +1,1 @@
+use File::Pathmkpath(['/foo/bar/baz', 'blurfl/quux'], 1, 0711);rmtree(['/foo/bar/baz', 'blurfl/quux'], 1, 1);

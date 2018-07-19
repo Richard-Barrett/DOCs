@@ -1,0 +1,97 @@
+#! /bin/bash
+#*****************************************************************
+# Name: NewServer
+#
+# Purpose: To create a new virtual server from a template server.
+#
+#
+# Calls To: None
+#
+#
+# Usage: NewServer
+#
+#
+# Author	      Date		  	Version  Comments
+# ---------------+----------------+---------+--------------------
+# R. Midiri       10/5/10          1.0
+#
+#****************************************************************
+clear
+#
+# Prompt for template to copy
+#
+ls /etc/libvirt/qemu/*.xml
+#
+echo -n "Enter template file (w/o .xml extension): "
+read TEMPLATE
+
+#
+# Prompt for name of new server
+#
+echo -n "Enter new Server name: "
+read SERVER
+
+echo ""
+echo "*********************************"
+echo "Template File: ${TEMPLATE}.xml"
+echo "New Server Name: ${SERVER}.xml"
+echo "*********************************"
+echo ""
+echo -n "Is the above information correct? (Y or N): "
+read CORRECT
+if [ $CORRECT = "N" ] || [ $CORRECT = "n" ]; then
+  echo "Exiting program..."
+  exit 0
+fi
+
+#
+# Copy the template file to the new server file 
+#
+cp /etc/libvirt/qemu/${TEMPLATE}.xml /etc/libvirt/qemu/${SERVER}.xml
+
+#
+# Copy the image file to the new server image file 
+#
+echo -n "Copying image file ... "
+cp /home/images/${TEMPLATE}.img /home/images/${SERVER}.img
+echo "Finished"
+#
+# Edit the new Server .xml file 
+#
+echo -n "Modifying ${SERVER}.xml file... "
+cat /etc/libvirt/qemu/${SERVER}.xml | /bin/sed s/$TEMPLATE/$SERVER/ > /etc/libvirt/qemu/${SERVER}.tmp
+mv -f /etc/libvirt/qemu/${SERVER}.tmp  /etc/libvirt/qemu/${SERVER}.xml 
+
+#
+# Grep all .xml files for mac address
+# 
+grep "mac address" /etc/libvirt/qemu/*.xml 
+
+echo -n "Enter last 3 sets of numbers for mac address (xx:xx:xx):"
+read MACADD
+
+cat /etc/libvirt/qemu/${SERVER}.xml | sed "s/<mac address=.*/<mac address=\'54:52:00:${MACADD}\' \/>/" > /etc/libvirt/qemu/${SERVER}.tmp
+mv -f /etc/libvirt/qemu/${SERVER}.tmp  /etc/libvirt/qemu/${SERVER}.xml 
+
+#
+# Generate a unique Windows ID for the new Server 
+#
+NEWID=`/usr/bin/uuidgen`
+cat /etc/libvirt/qemu/${SERVER}.xml | sed "s/<uuid>.*/<uuid>${NEWID}<\/uuid>/" > /etc/libvirt/qemu/${SERVER}.tmp
+mv -f /etc/libvirt/qemu/${SERVER}.tmp  /etc/libvirt/qemu/${SERVER}.xml 
+
+#
+# Use the KVM command-line tool to define the new server
+#
+virsh define /etc/libvirt/qemu/${SERVER}.xml
+
+#
+# Set privileges on newly created files 
+#
+chmod 600 /etc/libvirt/qemu/${SERVER}.xml 
+chmod 755 /home/images/${SERVER}.img 
+
+#************************
+#*    End of Script     * 
+#************************
+

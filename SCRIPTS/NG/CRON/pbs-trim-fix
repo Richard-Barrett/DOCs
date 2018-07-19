@@ -1,0 +1,9 @@
+
+#!/bin/bash
+
+sed s/139/142/ /var/spool/cron/root > /var/spool/cron/root.NEW
+
+mv /var/spool/cron/root.NEW /var/spool/cron/root
+
+
+

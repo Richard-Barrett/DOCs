@@ -1,0 +1,7 @@
+#! /bin/ksh
+
+echo My name is $0
+echo My current process id is $$
+echo I recieved $# parameters
+echo There are $*
+echo 1=$1, 2=$2, 3=$3

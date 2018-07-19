@@ -1,0 +1,7 @@
+30jun14  OT  connect and get a list of VMs
+
+connect-viserver drvcms2
+
+get-vm # to see the list
+get-vm > c:\<whatever you want to name the file>
+

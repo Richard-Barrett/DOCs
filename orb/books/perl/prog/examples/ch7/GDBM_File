@@ -1,0 +1,1 @@
+use GDBM_File;tie %hash, "GDBM_File", $filename, &GDBM_WRCREAT, 0644);# read/writes of %hash are now read/writes of $filenameuntie %hash;

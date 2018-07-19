@@ -1,0 +1,138 @@
+cat > $WORKINGDIR/ifcfg-bond0.2007 <<EOF
+DEVICE=bond0.2007
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br2007
+
+EOF
+
+cat > $WORKINGDIR/ifcfg-br2007 <<EOF
+DEVICE=br2007
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.2008 <<EOF
+DEVICE=bond0.2008
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br2008
+
+EOF
+
+cat > $WORKINGDIR/ifcfg-br2008 <<EOF
+DEVICE=br2008
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.2013 <<EOF
+DEVICE=bond0.2013
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br2013
+
+EOF
+
+cat > $WORKINGDIR/ifcfg-br2013 <<EOF
+DEVICE=br2013
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.2014 <<EOF
+DEVICE=bond0.2014
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br2014
+
+EOF
+
+cat > $WORKINGDIR/ifcfg-br2014 <<EOF
+DEVICE=br2014
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.2020 <<EOF
+DEVICE=bond0.2020
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br2020
+
+EOF
+
+cat > $WORKINGDIR/ifcfg-br2020 <<EOF
+DEVICE=br2020
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.2021 <<EOF
+DEVICE=bond0.2021
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br2021
+
+EOF
+
+cat > $WORKINGDIR/ifcfg-br2021 <<EOF
+DEVICE=br2021
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.2240 <<EOF
+DEVICE=bond0.2240
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br2240
+
+
+cat > $WORKINGDIR/ifcfg-br2240 <<EOF
+DEVICE=br2240
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+

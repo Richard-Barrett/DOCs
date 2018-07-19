@@ -1,0 +1,97 @@
+#!/bin/bash
+############################################################################
+#
+#       Name: Newuser
+#
+#       Purpose: Add a new user to the TRAX Linux Server.
+#
+#       Usage: Newuser [Full Name]
+#
+#  9Mar06 Fixed sort to not see 65534 as a uid.  --siggy
+#
+############################################################################
+#
+#	Prompt user for Input
+#
+if [ $# -lt 2 ]; then
+  echo "Enter the user's full name: "
+  read fullname
+else
+  fullname=$1" "$2
+fi
+#
+#	Check if bignum file exists
+#
+if [ -e /usr/local/bignum ]; then
+  rm -f /usr/local/bignum
+fi
+#
+cat /etc/passwd | awk -F: '{print $3}' | sort -nr | sed s/65534// | sed /^$/d > /usr/local/bignum
+#
+Lastuid=`awk '{if (NR == 1) print $1}' /usr/local/bignum`
+let Newuid=Lastuid+1
+#
+lcname=`echo $fullname | tr '[A-Z]' '[a-z]'`
+Fname=`echo ${lcname:0:1}`
+Lname=`echo $lcname | cut -d" " -f2`
+Loginname=`echo $Fname$Lname`
+#
+#	Check if user already exists
+#
+if grep $Loginname /etc/passwd 
+then
+  echo -e "User $Loginname already exists...terminating program\n"
+  exit 0
+fi
+#
+echo -e "Adding an account for $fullname with UserID of $Newuid...\n"
+#
+#        Add user to the /etc/passwd file
+#
+echo "$Loginname:x:$Newuid:$Newuid:$fullname:/home/$Loginname:/bin/bash"  >> /etc/passwd
+#
+#        Add user to the /etc/group file
+#
+echo "$Loginname:x:$Newuid:" >> /etc/group
+#
+#       Create a home directory for the user
+#
+mkdir /home/$Loginname
+#
+#       Copy the /etc/skel into the /home directory of the user
+#
+cp -R /etc/skel/.[a-z]*  /home/$Loginname
+#
+#	Change owner and group on proper files
+#
+chown -R $Loginname /home/$Loginname
+chgrp -R $Loginname /home/$Loginname
+#
+#       Clean up temp files
+#
+rm -f /usr/local/bignum
+#
+#	Adding user to /etc/samba/smbusers
+#	added by siggy 8dec05
+
+#echo -e "Adding user to Samba list"
+#echo "$Loginname = $Loginname" >> /etc/samba/smbusers
+#echo -e "This will be your Samba passwd"
+#smbpasswd -a $Loginname
+
+#	Add new user to the /etc/aliases
+#	added by siggy 8dec05
+
+#echo "Please type your email address you want RT email sent."
+#read EMAILADDR
+#echo "$Loginname:\t$EMAILADDR" >> /etc/aliases
+
+#service sendmail restart
+
+#	Set password for new user
+#
+echo -e "Set password for new user\n"
+# 	Activate the /etc/shadow
+/usr/sbin/pwconv
+passwd $Loginname
+

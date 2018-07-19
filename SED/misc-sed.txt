@@ -1,0 +1,296 @@
+
+Don Siegfriedt <siggy@cinesite.com>
+
+     $d               # delete the last line of the file
+     /[0-9]\{3\}/p    # print lines with 3 consecutive digits
+     5!s/ham/cheese/  # except on line 5, replace 'ham' with 'cheese'
+     /awk/!s/aaa/bb/  # unless 'awk' is found, replace 'aaa' with 'bb'
+     17,/foo/d        # delete all lines from line 17 up to 'foo'
+
+*****
+
+2. Common one-line sed scripts
+
+  A separate document of over 70 handy "one-line" sed commands is
+  available at <http://www.cornerstonemag.com/sed/sed1line.txt>. Here
+  are fourteen of the most common sed commands for one-line use.
+  MS-DOS users should replace single quotes ('...') with double
+  quotes ("...") in these examples. A specific filename ("file")
+  usually follows the script, though the input may also come via
+  piping ("sort somefile | sed 'somescript'").
+
+  # 1. Double space a file
+  sed G file
+
+  # 2. Triple space a file
+  sed 'G;G' file
+
+  # 3. Under UNIX: convert DOS newlines (CR/LF) to Unix format
+  sed 's/.$//' file    # assumes that all lines end with CR/LF
+  sed 's/^M$// file    # in bash/tcsh, press Ctrl-V then Ctrl-M
+
+  # 4. Under DOS: convert Unix newlines (LF) to DOS format
+  sed 's/$//' file                     # method 1
+  sed -n p file                        # method 2
+
+  # 5. Delete leading whitespace (spaces/tabs) from front of each line
+  # (this aligns all text flush left). '^t' represents a true tab
+  # character. Under bash or tcsh, press Ctrl-V then Ctrl-I.
+  sed 's/^[ ^t]*//' file
+
+  # 6. Delete trailing whitespace (spaces/tabs) from end of each line
+  sed 's/[ ^t]*$//' file               # see note on '^t', above
+
+  # 7. Delete BOTH leading and trailing whitespace from each line
+  sed 's/^[ ^t]*//;s/[ ^]*$//' file    # see note on '^t', above
+
+  # 8. Substitute "foo" with "bar" on each line
+  sed 's/foo/bar/' file        # replaces only 1st instance in a line
+  sed 's/foo/bar/4' file       # replaces only 4th instance in a line
+  sed 's/foo/bar/g' file       # replaces ALL instances within a line
+
+  # 9. Substitute "foo" with "bar" ONLY for lines which contain "baz"
+  sed '/baz/s/foo/bar/g' file
+
+  # 10. Delete all CONSECUTIVE blank lines from file except the first.
+  # This method also deletes all blank lines from top and end of file.
+  # (emulates "cat -s")
+  sed '/./,/^$/!d' file       # this allows 0 blanks at top, 1 at EOF
+  sed '/^$/N;/\n$/D' file     # this allows 1 blank at top, 0 at EOF
+
+  # 11. Delete all leading blank lines at top of file (only).
+  sed '/./,$!d' file
+
+  # 12. Delete all trailing blank lines at end of file (only).
+  sed -e :a -e '/^\n*$/N;/\n$/ba' file
+
+  # 13. If a line ends with a backslash, join the next line to it.
+  sed -e :a -e '/\\$/N; s/\\\n//; ta' file
+
+  # 14. If a line begins with an equal sign, append it to the
+  # previous line (and replace the "=" with a single space).
+  sed -e :a -e '$!N;s/\n=/ /;ta' -e 'P;D' file
+
+****
+Remove all the ^Ms using the following line:
+
+tr -d '\r' < file-in > file-out
+
+*****
+delete # (comments) from specific line
+
+sed /10.1.10.21/s/#// /home/siggy/resolv.siggy
+
+*****
+# remove most HTML tags (accommodates multiple-line tags)
+ sed -e :a -e 's/<[^<]*>/ /g;/</{N;s/\n/ /;ba;}'
+
+Sed is often used as a find-and-replace tool.
+
+      sed 's/Glenn/Harold/g' oldfile >newfile
+
+Next, I found that sed could show me only (say) lines 12-18 of a
+   file and not show me the rest. This was very handy when I needed to
+   review only part of a long file and I didn't want to alter it.
+
+      sed -n 12,18p myfile   # the 'p' stands for print
+
+o match a block of two or more lines, there are 3 basic choices:
+ (1) use the 'N' command to add the Next line to the pattern space;
+ (2) use the 'H' command at least twice to append the current line
+ to the Hold space, and then retrieve the lines from the hold space
+ with x, g, or G; or (3) use address ranges (see section 3.3, above)
+ to match lines between two specified addresses.
+   
+ Choices (1) and (2) will put an \n into the pattern space, where it
+ can be addressed as desired ('s/ABC\nXYZ/alphabet/g'). One example
+ of using 'N' to delete a block of lines appears in section 4.13
+ ("How do I delete a block of specific consecutive lines?"). This
+ example can be modified by changing the delete command to something
+ else, like 'p' (print), 'i' (insert), 'c' (change), 'a' (append),
+ or 's' (substitute).
+
+ Choice (3) will not put an \n into the pattern space, but it does
+ match a block of consecutive lines, so it may be that you don't
+ even need the \n to find what you're looking for. Since GNU sed
+ version 3.02.80 now supports this syntax:
+
+    sed '/start/,+4d'  # to delete "start" plus the next 4 lines,
+
+ in addition to the traditional '/from here/,/to there/{...}' range
+ addresses, it may be possible to avoid the use of \n entirely.
+
+2.9 How do i append before the regular expression line?
+
+For more extensive information, please refer to the sed and awk man files.
+
+If i had to add to a document that needed to have appended before the we might do a:
+
+/< BODY >/i\
+Hello World\
+This one has happened b4\.
+
+This can be quite useful especially for redundant tasks. It is up to you to take 
+the foundation of anything and expand its consciousness:) The above works providing 
+what experiment and learn. 
+
+2.10 How do i insert after the regular expression line?
+
+For more extensive information, please refer to the sed and awk man files.
+
+this very simular to the insert example that was illustrated above. Just do a:
+
+/< BODY>/a\
+Hello World\
+This one comes after\.
+
+So that means at this time you are now able to alter text on a specific line basis, 
+add text before a specific line or after a specific line.
+
+2.11 How do i change a specific pattern in lines?
+
+For more extensive information, please refer to the sed and awk man files.
+
+Change is very powerful so consider that you needed to make all your file Header 
+tags a bit smaller or rather more accurately deeper subheadings. How would you do 
+that so they all were say from < H1> to < H3> ??? Well this is how although i leave 
+the advanced logic to the reader's imagination and workmanship.
+
+/< H1>/c\
+< H3>
+
+This would change everything when it came to the < H1> tag this tag would no longer be 
+< H1> rather it would globally now be called < H3> which is a lot smaller or deeper 
+depending on how you look at things.
+
+
+
+    * The '^' character means the beginning of the line.
+
+>sed 's/^Thu /Thursday/' filename 
+
+# The '$' character means the end of the line.
+
+>sed 's/ $//' filename
+
+
+You can "replace" the end of the line, like this:
+
+>sed 's/$/EOL/' filename 
+
+http://www.cs.hmc.edu/tech_docs/qref/sed.html
+
+http://queen.rett.polimi.it/~paolob/seders/tutorials/do_it_with_sed.txt
+
+http://queen.rett.polimi.it/~paolob/seders/tutorials/
+
+append	[line-address]a\
+	text
+insert	[line-address]i\
+	text
+change	[address]c\
+	text
+
+http://www.math.fu-berlin.de/~leitner/sed/tutorial.html
+
+http://www.student.northpark.edu/pemente/sed/sed1line.txt
+
+http://www-h.eng.cam.ac.uk/help/tpl/unix/sed.html
+
+*****
+to look at poboxx's /var/log/messages without dhcpd errors
+
+sed /dhcpd/d /home/siggy/TMP/messages | more
+
+*****
+to make a machine list (from ypcat hosts)
+
+ypcat hosts | awk '{print $3, $4}' | sort -fuo ~siggy/hostlist
+
+-f ignore case
+-u unique
+-o output file
+
+on laurel
+
+cat  /etc/NIS/hosts | awk '{print $3, $5}' | sort -fu
+
+will give you a list with machine type (for the most part) if 
+the machine has no aliases
+
+*****
+To remove all instaces of "gate-<whatever>" in a file
+
+sed s/gate-\*//g gen3n > blorf1
+
+*****
+To get a list of users (ONLY) and output to a file...
+ypcat passwd | awk -F":" '{print $1}' | sort -fuo /home/siggy/<filename>
+*****
+22Dec05 for SED version 4.1.2-4 (so far)
+
+To add line to the correct place in a fstab file.....
+
+#cat fstab | grep data | sed '2/i\ adding-new-stuff-here\n2ndline to be added' 
+cow:/stuff1             /data/stuff1            ext3    defaults        0 0
+adding-new-stuff-here
+2ndline to be added
+manfred:/stuff2         /data/stuff2            ext3    defaults        0 0
+pavel:/stuff3           /data/stuff3            ext3    defaults        1 1
+hagen:stuff4            /data/stuff4            ext3    defaults        1 1
+*****
+The range for deletions can be regular expressions pairs to mark the begin and end of the operation. Or it can be a single regular expression. Deleting all lines that start with a "#" is easy:
+
+sed '/^#/ d'
+
+Removing comments and blank lines takes two commands. The first removes every character from the "#" to the end of the line, and the second deletes all blank lines:
+
+sed -e 's/#.*//' -e '/^$/ d'
+
+A third one should be added to remove all blanks and tabs immediately before the end of line:
+
+sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/ d' 
+
+*****
+
+7May08  --siggy
+
+sed '/SYSOPS/s/$/\nSTOROPS         ALL=(ALL)      NOPASSWD\: ALL/' /Etc/sudoers > /tmp/siggy-test
+
+
+sed '/SECURITY=/s/$/\nUser_Alias      STOROPS=%StorOps/' /etc/sudoers > /tmp/siggy-test
+
+# together it looks like this
+sed -e '/SECURITY=/s/$/\nUser_Alias      STOROPS=%StorOps/' -e '/SYSOPS/s/$/\nSTOROPS         ALL=(ALL)      NOPASSWD\: ALL/' /etc/sudoers > /tmp/siggy-test
+
+*****
+2Sep08  --siggy
+
+to add (insert) a blank line, every 10 lines (number of lines = number of n;)
+
+sed "n;n;n;n;n;n;n;n;n;G;"  ORD-new-prod-list.txt
+
+*****
+12sep08  --siggy some stuff for DNS creation of an et/hosts type file from DNS map
+
+cat db.admin.edmunds.com | awk '{print $4"\t\t"$1}' | sed s/$/.admin.edmunds.com/ > etc-hosts-admin
+sed /^$/d etc-hosts-admin > etc-hosts-admin.1
+5)  This will edit the options file to make sure all the subnets get created correctly
+        cat etc-hosts-admin.1 | awk '{print $1}' | awk -F. '{print $1"."$2"."$3}' | sort -u | grep 10. | sed s/^/-n" "/ >> h2n-options 
+sed -e /\;/d -e /^$/d -e /CNAME/d db.admin.edmunds.com.bk091208  > blah
+
+sed -e /\;/d -e /^$/d -e /CNAME/d db.admin.edmunds.com.bk091208 | awk '{print $4"\t\t"$1}' | sed s/$/.siggy.test.com/ > blah
+
+sed -e /\;/d -e /^$/d -e /CNAME/d -e '1,13d' db.admin.edmunds.com.bk091208 | awk '{print $4"\t\t"$1}' | sed s/$/.siggy.test.com/ > blah
+
+
+
+*****
+12sep08  --siggy  to delete the top 10 lines  
+
+sed '1,10d'
+
+*****
+
+
+

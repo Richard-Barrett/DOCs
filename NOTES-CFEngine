@@ -1,0 +1,129 @@
+19Feb13  
+
+on etna
+/var/cfengine/masterfiles/engineering_support
+
+&&&&&
+ssh etna
+
+cd /var/cfengine/masterfiles/engineering_support/
+vim yum.cf 
+cf-agent -K -f failsafe
+cf-promises 
+less packages.cf 
+
+&&&&&
+
+cfengine HINT:   24Apr13  Larry
+
+make changes to the local machine that you are testing.  Then run cf-agent -K -f failsafe
+
+ALSO
+
+protect your changes (keep an open editor with your changes) as cf-agent may run and overwrite any chnages you have made.
+
+&&&&&
+21jun13   OT session to update for sweng-svn adn sweng-rep-svn
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+on my machine (as me)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+svn checkout http://172.31.59.84/cfengine cfengine   ***** this will transfer YOUR working copy of cfengine to your home account
+svn up	     				  	     ***** this will update any working copies you may have
+cd cfengine
+svn up	     				  	     ***** this will update any working copies you may have in this directory
+
+/users/support/bin/asset.pl -q --svctag 4KF9ZV1	     ***** make sure machine was in LDAP correctly (had multiple unused names)
+
+cd engineering_support/
+
+cat es_ldap_data.cf 
+
+vi yum.cf 
+vi packages.cf 
+vi newsvn_httpd.cf 
+vi service_control.cf 
+
+svn commit -m "seperated svn from svn_rep, http off on svn_rep, same html files" packages.cf newsvn_httpd.cf service_control.cf 
+    	      		     	  	   	    *****Above represents a "check in"
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+on etna
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+cd /var/cfengine/
+cd masterfiles/engineering_support/
+cat es_ldap_data.cf 
+cat README.cfengine						*****commands below are listed in this README
+svn --force export http://172.31.59.84/cfengine/masterfiles/trunk /var/cfengine/masterfiles
+svn --force export http://172.31.59.84/cfengine/repository/trunk /var/cfengine/repository
+cf-agent -Kf failsafe						*****run the existing cf-agent in FAILSAFE mode
+cf-promises  							*****check to see if there are any outstanding promises
+cf-agent -K							*****run the existing cf-agent in STANDARD mode
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+on sweng-svn
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+service cfengine3 status					*****see if cfengine3 is running (had stopped it for testing)
+service cfengine3 start						
+cf-agent -Kf failsafe						*****run the existing cf-agent in FAILSAFE mode
+cat /var/cfengine/inputs/engineering_support/newsvn_httpd.cf	*****see if cfengine3 file changes have been completed
+ll /var/www/html/						*****see if files have been updated from cfengine3 (ctime)
+cat /var/www/html/index.html 					*****see if file have been updated from cfengine3 
+
+&&&&&
+24jun13  cfengine3 logs
+
+/root/kickstart/cfengine.log
+&&&&&
+25Mar15  OT/siggy
+
+#clean install
+yum -y erase cfengine-nova-3.6.1-1.x86_64
+rm -rf /var/cfengine
+
+#reinstall
+yum -y localinstall /scripts/cfengine-nova-3.6.2-1.x86_64.rpm 
+
+#bootstrap
+cf-agent --bootstrap 10.130.25.41 -D cfclass=desktop
+
+#test
+cf-agent -KI | grep desktop
+
+&&&&&
+31Mar15  OT
+
+lacfe = 10.130.25.41
+
+/var/cfengine/masterfiles/ri/(sido-yum-automount)
+
+in hosts.cf create a class and add the hostnames you want to recieve from this class.  These VMs wiil recieve the DBADIRECT users file into /etc/sudoers.d
+
+	"dbadirect"	or => { "lacccmqa1", "laccod1", "laccodqa1", "laccpsap1", 
+				"laccpsqa1", "lacmpol1", "lacmpolqa1", "lawasdb1",
+				"lawasqa1", "lawasdv2", "lawps1", "lawpsqa1" };
+
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+

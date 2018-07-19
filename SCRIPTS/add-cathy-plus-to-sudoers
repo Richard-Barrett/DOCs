@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#add-cathy-plus-to-sudoers
+#3Mar15  --siggy
+#ICM0112765
+
+cp /etc/sudoers /tmp
+sed -i '/robertma/s/$/, cathleenm, dsanden, chuckl, adbarton/' /tmp/sudoers
+sed -i s/\ fredpa\,// /tmp/sudoers
+visudo -c -f /tmp/sudoers
+mv -f /tmp/sudoers /etc

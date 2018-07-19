@@ -1,0 +1,2181 @@
+1==========================================================================================================================================
+==========================================================================================================================================
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                              MYSQL
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+==========================================================================================================================================
+==========================================================================================================================================
+
+20Nov13  --siggy  MySQL commands
+
+show databases;
+connect or use <results>;
+show tables;
+show grants;
+use mysql;
+
+21Nov13  --siggy CC Wiki dump 
+
+$mysqladmin -u root -p ping
+	      	      shutdown  (to stop mysql)
+		      status
+		      extended-status
+		      variables
+		      processlist
+		      full-processlist
+		      password 'newpasswd'  (NOTE:   this will include the ticks in the passwd)
+
+STOP mysql
+$cd /d d:\bin64\MySQL\MySQL Server 5.1\bin
+
+c:\\mysql-init.txt =
+	 UPDATE mysql.user SET Password=PASSWORD('12345') WHERE User='root';
+	 FLUSH PRIVILEGES;
+
+$mysqld --init-file=c:\\mysql-init.txt
+
+test login
+$mysql -u root -p
+
+>update user set password=PASSWORD("12345") where User='root'
+
+in a different shell
+$mysqldump --single-transaction -u root -p DBname > c:\\DBname-dump.mysql
+
+	   DBname=information_schema, mysql, test, wikidb
+
+.....
+22Nov13  --siggy   innodb FPoS!
+
+data lives in => d:\appconfig\mediawiki\mysql\innodb\ibdata1
+.....
+9Dec2013  --siggy find and replace
+
+UPDATE table_name SET field_name = replace( field_name, 'string_to_find', 'string_to_replace' ) ;
+
+.....
+10dec13  --siggy  login to mysql
+
+from the console.. open a shell
+
+mysql -u root
+show databases;     #works
+.....
+11dec13  --siggy
+
+http://www.thegeekstuff.com/2008/09/backup-and-restore-mysql-database-using-mysqldump/
+
+mysqldump -u root --all-databases > d:\tmp\11dec13-alldb-dump.sql
+.....
+11dec13 mysql-history
+
+cd /d d;\bin64\MySQL\MySQL<TAB>\bin
+
+mysql -u root -p
+
+connect OR use wikidb;
+
+show tables;
+
+show columns from <table from tablenames>
+
+select * from information_schema.columns where table_schema = 'wikidb' order by table_name,ordinal_position;
+
+select * from `cc_pagelinks` where `pl_namespace` = 'lasan1';
+
+update cc_pagelinks set pl_namespace = replace(pl_namespace,'lasan1','lasan4');
+
+.....
+12dec13  from the live isportal
+$mysqldump -u root --all-databases > c:\\12dec13-database-dump
+
+.....
+12dec13 
+MySQL
+
+@@@ Connect to the database:
+mysql [-u username] [-h hostname] database-name
+
+@@@ To list all databases, in the MySQL prompt type:
+show databases
+
+@@@ Then choose the right database:
+use <database-name>
+
+@@@ List all tables in the database:
+show tables
+
+@@@ Describe a table:
+desc <table-name>
+.....
+12dec13   mysql restore
+DOH   previous command is wrong!!!!
+mysql -uroot -pgrepsedawk < 12dec13-database-dump.sql
+
+.....
+12dec13  resetting root passwd for mysql
+as root (administrator)
+mysqladmin -u root password 'grepsedawk'
+
+.....
+12dec13 testing on my linux box
+
+# yum -y install mysql-server
+# service mysqld start
+# ll /var/lib
+# mysqladmin -u root password 'grepsedawk'
+  $ mysql -uroot -p < 12dec13-database-dump.ORIG 
+  $mysql -uroot -p
+    mysql> use wikidb;
+    mysql> select * from `cc_pagelinks` where `pl_namespace` = 'lasan1';
+  $ mysql -uroot -p < 12dec13-database-dump.sql 
+  $ mysql -uroot -p
+    mysql> use wikidb;
+    mysql> select * from `cc_pagelinks` where `pl_namespace` = 'lasan1';
+.....
+12dec13   create user
+CREATE USER 'siggy'@'localhost' IDENTIFIED BY 'grepsedawk';
+
+.....
+13dec13  --siggy
+create usr 'siggy'@'localhost' identified by 'grepsedawk';
+grant all privileges on *.* to 'siggy'@'localhost';
+show grants for 'siggy'@'localhost';
+
+.....
+13dec13  --siggy doc
+~/REPUBLIC/mysql-lasan1-to-4.docx
+
+.....
+17Feb12   copied from hero:/home/jsandoval/notes/mysql
+
+mysql -A
+
+mysql -h localhost -u root -p 
+
+create user 'eklusman'@'localhost' identified by '0v3rsee';
+
+GRANT SELECT ON ``.* TO 'eklusman'@'host';
+
+show grants for 'rsorensen'@'%';
+
+show grants for 'eklusman'@'host';
+
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'eklusman'@'host';
+
+GRANT SELECT ON `lowfares`.* TO 'eklusman'@'host';
+
+DROP USER 'eklusman'@'host';
+
+select User, Host from mysql.user;
+
+flush privileges;
+
+use $DB;
+
+select $DB;
+
+show tables;
+
+show create table $TABLE\G
+
+show table status like '%';
+
+#Shows the size of the DB
+select SUM(data_length) + SUM(index_length) as size from information_schema.tables where table_schema = 'domainauction';
+
+desc information_schema.tables;
+
+##Mysql dump
+mkdir -p /var/tmp/domainauction
+chown mysql:mysql /var/tmp/domainauction
+mysqldump --tab=/var/tmp/domainauction --opt domainauction
+
+#####
+
+.....
+17Aug17  mysql install for zabbix (on zabbixtwo)
+
+@@@ if there is a conflict remove any existing zabbix installations (from standard build)
+yum install ~dsiegfriedt/Downloads/mysql57-community-release-el7-11.noarch.rpm
+yum install mysql-community-server
+
+
+????????????????????????????
+[root@zabbixtwo ZABBIX]# which mysql
+/bin/mysql
+[root@zabbixtwo ZABBIX]#  mysql -uroot -pN...
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+[root@zabbixtwo ZABBIX]# 
+[root@zabbixtwo ZABBIX]# 
+[root@zabbixtwo ZABBIX]# 
+[root@zabbixtwo ZABBIX]#  mysql
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+[root@zabbixtwo ZABBIX]# 
+????????????????????????????
+
+@@@ DUH
+[root@zabbixtwo ZABBIX]# systemctl status mysqld
+[root@zabbixtwo ZABBIX]# systemctl start mysqld
+
+[root@zabbixtwo ZABBIX]# cat /var/log/mysqld.log | grep temporary
+2017-08-17T23:04:48.447788Z 1 [Note] A temporary password is generated for root@localhost: yk)Qtcry7Mai
+
+@@@ after MANY tries Changing the root passwd has a timer on a retry count (I guess)
+
+
+[root@zabbixtwo ZABBIX]#   mysql --connect-expired-password -uroot -p"yk)Qtcry7Mai"
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 5.7.19
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+mysql> update user set password=PASSWORD('N...') where User='root';
+ERROR 1046 (3D000): No database selected
+mysql> SET PASSWORD = PASSWORD('N...');
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> SET PASSWORD = PASSWORD('my-passwd');
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> 
+
+.....
+21Aug17
+
+@@@ installing the zabbix-server-mysql RPM will give you all the stuff you need.
+
+mkdir SIGGY
+cp /usr/share/doc/zabbix-server-mysql-3.2.7/create.sql.gz .
+
+mv create.sql.gz SIGGY/
+cd SIGGY/
+ll
+total 1136
+-rw-r--r--. 1 root root 1161488 Aug 21 17:18 create.sql.gz
+
+gunzip create.sql.gz 
+
+ll
+total 3064
+-rw-r--r--. 1 root root 3137133 Aug 21 17:18 create.sql
+
+[root@zabbixtwo SIGGY]# mysql -u root -p < create.sql 
+Enter password: N...!
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+
+OR
+
+/////
+
+[root@zabbixtwo SIGGY]# mysql -uroot -p < create.sql 
+Enter password: 
+ERROR 1046 (3D000) at line 1: No database selected
+
+/////
+
+[root@zabbixtwo SIGGY]# mysql -u root -p 
+Enter password: N...! 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 5.7.19 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.01 sec)
+
+mysql> create database zabbix;
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| zabbix             |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> 
+mysql> exit
+
+@@@@@
+https://stackoverflow.com/questions/17666249/how-to-import-an-sql-file-using-the-command-line-in-mysql
+@@@@@
+
+@@@WOOHOO  .sql file works better with FQPN
+[root@zabbixtwo SIGGY]# mysql -u root -p zabbix < /root/siggy/SIGGY/create.sql 
+Enter password: 
+[root@zabbixtwo SIGGY]# 
+
+@@@ if I am going to import existing DB you will have to delete DB
+mysql> drop database zabbix;
+
+@@@ import existing DB
+[root@zabbixtwo ~]# mysql -uroot -p < /disney/home/dsiegfriedt/JOBS/DISNEYTS/ZABBIX/dumpfilename.sql 
+Enter password: 
+
+@@@ continue with zabbix install
+https://www.zabbix.com/documentation/3.2/manual/installation/install_from_packages/server_installation_with_mysql
+@@@ and den
+https://www.zabbix.com/documentation/3.2/manual/installation/install#installing_frontend
+@@@ and den
+https://www.zabbix.com/documentation/3.2/manual/quickstart/login
+@@@  BEW!!  may have to start over
+
+https://www.zabbix.com/forum/showthread.php?t=55660
+
+OK, I currently have:
+
+Zabbix 2.4.8 on CentOS 6, zabbix 3.2 apparently is not compatible with CentOS 6. 
+
+I have built a CentOS 7 server and want to install Zabbix 3.2 and migrate my data and configuration to it.
+
+Can I:
+1. Export the database (MySQL) from 2.4.8.
+2. Install 3.2 on new server (do not create database).
+3. Modify config files in accordance with old server.
+4. Import the 2.4.8 database into MySQL.
+5. Start zabbix server 3.2 and have it upgrade the database as if it was an in place upgrade
+
+Is this the best approach for this?
+
+22AAug17
+@@@ going to delete zabbixtwo and re-spin/install/and import DB from mayday
+@@@ using mysqldump from 11Dec13 and mysql
+
+@@@ export
+@@@ did not work.... mysqldump -u root -p mysql > dumpfilename.sql
+
+[root@mayday ~]# mysqldump --databases zabbix > /tmp/dumpfilename.sql
+
+@@@ import
+mysql -u root -p mysql < dumpfilename.sql
+
+
+2==========================================================================================================================================
+==========================================================================================================================================
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                              MARIA DB
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+==========================================================================================================================================
+==========================================================================================================================================
+
+.....
+22Aug17  on mayday looking for the size of the zabbix db (MariaDB)
+
+https://stackoverflow.com/questions/14714750/how-to-get-true-size-of-mysql-database
+
+[root@mayday ~]# mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3965694
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SELECT table_schema "zabbix",
+    -> sum( data_length + index_length ) / 1024 / 1024 "Data Base Size in MB",
+    -> sum( data_free )/ 1024 / 1024 "Free Space in MB"
+    -> FROM information_schema.TABLES
+    -> GROUP BY table_schema ;
++--------------------+----------------------+------------------+
+| zabbix             | Data Base Size in MB | Free Space in MB |
++--------------------+----------------------+------------------+
+| information_schema |           0.15625000 |       0.00000000 |
+| mysql              |           0.88393974 |       0.00000000 |
+| performance_schema |           0.00000000 |       0.00000000 |
+| zabbix             |       28942.57812500 |     343.00000000 |
++--------------------+----------------------+------------------+
+4 rows in set (1.06 sec)
+
+MariaDB [(none)]> 
+
+.....
+27Aug17
+
+[root@zabbixtwo ~]# cat /var/log/mysqld.log | grep temporary
+2017-08-27T17:49:04.855321Z 1 [Note] A temporary password is generated for root@localhost: F8%I-.AqAz:Q
+2017-08-27T17:49:09.156963Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+[root@zabbixtwo ~]# 
+
+.....
+28AUg17   import zabbix DB
+
+mysql -u root -p mysql < dumpfilename.sql
+
+@@@ will wait till tonight for changeover
+.....
+17Jan18 @@@ as part of the migration... I checked what DBs live on what machines
+
+root@vmmariadb1
+
+cat /etc/init.d/mysql 
+#!/bin/sh
+# Copyright Abandoned 1996 TCX DataKonsult AB & Monty Program KB & Detron HB
+# This file is public domain and comes with NO WARRANTY of any kind
+
+# MySQL daemon start/stop script.
+
+# Usually this is put in /etc/init.d (at least on machines SYSV R4 based
+# systems) and linked to /etc/rc3.d/S99mysql and /etc/rc0.d/K01mysql.
+# When this is done the mysql server will be started when the machine is
+# started and shut down when the systems goes down.
+
+# Comments to support chkconfig on RedHat Linux
+# chkconfig: 2345 64 36
+# description: A very fast and reliable SQL database engine.
+
+# Comments to support LSB init script conventions
+### BEGIN INIT INFO
+# Provides: mysql
+# Required-Start: $local_fs $network $remote_fs
+# Should-Start: ypbind nscd ldap ntpd xntpd
+# Required-Stop: $local_fs $network $remote_fs
+# Default-Start:  2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop MySQL
+# Description: MySQL is a very fast and reliable SQL database engine.
+### END INIT INFO
+ 
+# If you install MySQL on some other places than /usr, then you
+# have to do one of the following things for this script to work:
+#
+# - Run this script from within the MySQL installation directory
+# - Create a /etc/my.cnf file with the following information:
+#   [mysqld]
+#   basedir=<path-to-mysql-installation-directory>
+# - Add the above to any other configuration file (for example ~/.my.ini)
+#   and copy my_print_defaults to /usr/bin
+# - Add the path to the mysql-installation-directory to the basedir variable
+#   below.
+#
+# If you want to affect other MySQL variables, you should make your changes
+# in the /etc/my.cnf, ~/.my.cnf or other MySQL configuration files.
+
+# If you change base dir, you must also change datadir. These may get
+# overwritten by settings in the MySQL configuration files.
+
+basedir=
+datadir=
+
+# Default value, in seconds, afterwhich the script should timeout waiting
+# for server start. 
+# Value here is overriden by value in my.cnf. 
+# 0 means don't wait at all
+# Negative numbers mean to wait indefinitely
+service_startup_timeout=900
+
+# Lock directory for RedHat / SuSE.
+lockdir='/var/lock/subsys'
+lock_file_path="$lockdir/mysql"
+
+# The following variables are only set for letting mysql.server find things.
+
+# Set some defaults
+mysqld_pid_file_path=
+if test -z "$basedir"
+then
+  basedir=/usr
+  bindir=/usr/bin
+  if test -z "$datadir"
+  then
+    datadir=/var/lib/mysql
+  fi
+  sbindir=/usr/sbin
+  libexecdir=/usr/sbin
+else
+  bindir="$basedir/bin"
+  if test -z "$datadir"
+  then
+    datadir="$basedir/data"
+  fi
+  sbindir="$basedir/sbin"
+  if test -f "$basedir/bin/mysqld"
+  then
+    libexecdir="$basedir/bin"
+  else
+    libexecdir="$basedir/libexec"
+  fi
+fi
+
+# datadir_set is used to determine if datadir was set (and so should be
+# *not* set inside of the --basedir= handler.)
+datadir_set=
+
+#
+# Use LSB init script functions for printing messages, if possible
+#
+lsb_functions="/lib/lsb/init-functions"
+if test -f $lsb_functions ; then
+  . $lsb_functions
+else
+  log_success_msg()
+  {
+    echo " SUCCESS! $@"
+  }
+  log_failure_msg()
+  {
+    echo " ERROR! $@"
+  }
+fi
+
+PATH="/sbin:/usr/sbin:/bin:/usr/bin:$basedir/bin"
+export PATH
+
+mode=$1    # start or stop
+
+[ $# -ge 1 ] && shift
+
+case `echo "testing\c"`,`echo -n testing` in
+    *c*,-n*) echo_n=   echo_c=     ;;
+    *c*,*)   echo_n=-n echo_c=     ;;
+    *)       echo_n=   echo_c='\c' ;;
+esac
+
+parse_server_arguments() {
+  for arg do
+    case "$arg" in
+      --basedir=*)  basedir=`echo "$arg" | sed -e 's/^[^=]*=//'`
+                    bindir="$basedir/bin"
+		    if test -z "$datadir_set"; then
+		      datadir="$basedir/data"
+		    fi
+		    sbindir="$basedir/sbin"
+                    if test -f "$basedir/bin/mysqld"
+                    then
+                      libexecdir="$basedir/bin"
+                    else
+                      libexecdir="$basedir/libexec"
+                    fi
+		    libexecdir="$basedir/libexec"
+        ;;
+      --datadir=*)  datadir=`echo "$arg" | sed -e 's/^[^=]*=//'`
+		    datadir_set=1
+	;;
+      --log-basename=*|--hostname=*|--loose-log-basename=*)
+        mysqld_pid_file_path=`echo "$arg.pid" | sed -e 's/^[^=]*=//'`
+	;;
+      --pid-file=*) mysqld_pid_file_path=`echo "$arg" | sed -e 's/^[^=]*=//'` ;;
+      --service-startup-timeout=*) service_startup_timeout=`echo "$arg" | sed -e 's/^[^=]*=//'` ;;
+    esac
+  done
+}
+
+# Get arguments from the my.cnf file,
+# the only group, which is read from now on is [mysqld]
+if test -x ./bin/my_print_defaults
+then
+  print_defaults="./bin/my_print_defaults"
+elif test -x $bindir/my_print_defaults
+then
+  print_defaults="$bindir/my_print_defaults"
+elif test -x $bindir/mysql_print_defaults
+then
+  print_defaults="$bindir/mysql_print_defaults"
+else
+  # Try to find basedir in /etc/my.cnf
+  conf=/etc/my.cnf
+  print_defaults=
+  if test -r $conf
+  then
+    subpat='^[^=]*basedir[^=]*=\(.*\)$'
+    dirs=`sed -e "/$subpat/!d" -e 's//\1/' $conf`
+    for d in $dirs
+    do
+      d=`echo $d | sed -e 's/[ 	]//g'`
+      if test -x "$d/bin/my_print_defaults"
+      then
+        print_defaults="$d/bin/my_print_defaults"
+        break
+      fi
+      if test -x "$d/bin/mysql_print_defaults"
+      then
+        print_defaults="$d/bin/mysql_print_defaults"
+        break
+      fi
+    done
+  fi
+
+  # Hope it's in the PATH ... but I doubt it
+  test -z "$print_defaults" && print_defaults="my_print_defaults"
+fi
+
+#
+# Read defaults file from 'basedir'.   If there is no defaults file there
+# check if it's in the old (depricated) place (datadir) and read it from there
+#
+
+extra_args=""
+if test -r "$basedir/my.cnf"
+then
+  extra_args="-e $basedir/my.cnf"
+else
+  if test -r "$datadir/my.cnf"
+  then
+    extra_args="-e $datadir/my.cnf"
+  fi
+fi
+
+parse_server_arguments `$print_defaults $extra_args --mysqld mysql.server`
+parse_server_arguments "$@"
+
+# wait for the pid file to disappear
+wait_for_gone () {
+  pid="$1"           # process ID of the program operating on the pid-file
+  pid_file_path="$2" # path to the PID file.
+
+  i=0
+  crash_protection="by checking again"
+
+  while test $i -ne $service_startup_timeout ; do
+
+    if kill -0 "$pid" 2>/dev/null; then
+      :  # the server still runs
+    else
+      if test ! -s "$pid_file_path"; then
+        # no server process and no pid-file? great, we're done!
+        log_success_msg
+        return 0
+      fi
+
+      # pid-file exists, the server process doesn't.
+      # it must've crashed, and mysqld_safe will restart it
+      if test -n "$crash_protection"; then
+        crash_protection=""
+        sleep 5
+        continue  # Check again.
+      fi
+
+      # Cannot help it
+      log_failure_msg "The server quit without updating PID file ($pid_file_path)."
+      return 1  # not waiting any more.
+    fi
+
+    echo $echo_n ".$echo_c"
+    i=`expr $i + 1`
+    sleep 1
+
+  done
+
+  log_failure_msg
+  return 1
+}
+
+wait_for_ready () {
+
+  i=0
+  while test $i -ne $service_startup_timeout ; do
+
+    if $bindir/mysqladmin ping >/dev/null 2>&1; then
+      log_success_msg
+      return 0
+    elif kill -0 $! 2>/dev/null ; then
+      :  # mysqld_safe is still running
+    else
+      # mysqld_safe is no longer running, abort the wait loop
+      break
+    fi
+
+    echo $echo_n ".$echo_c"
+    i=`expr $i + 1`
+    sleep 1
+
+  done
+
+  log_failure_msg
+  return 1
+}
+#
+# Set pid file if not given
+#
+if test -z "$mysqld_pid_file_path"
+then
+  mysqld_pid_file_path=$datadir/`hostname`.pid
+else
+  case "$mysqld_pid_file_path" in
+    /* ) ;;
+    * )  mysqld_pid_file_path="$datadir/$mysqld_pid_file_path" ;;
+  esac
+fi
+
+# source other config files
+[ -f /etc/default/mysql ] && . /etc/default/mysql
+[ -f /etc/sysconfig/mysql ] && . /etc/sysconfig/mysql
+[ -f /etc/conf.d/mysql ] && . /etc/conf.d/mysql
+
+case "$mode" in
+  'start')
+    # Start daemon
+
+    # Safeguard (relative paths, core dumps..)
+    cd $basedir
+
+    echo $echo_n "Starting MySQL"
+    if test -x $bindir/mysqld_safe
+    then
+      # Give extra arguments to mysqld with the my.cnf file. This script
+      # may be overwritten at next upgrade.
+      $bindir/mysqld_safe --datadir="$datadir" --pid-file="$mysqld_pid_file_path" "$@" >/dev/null 2>&1 &
+      wait_for_ready; return_value=$?
+
+      # Make lock for RedHat / SuSE
+      if test -w "$lockdir"
+      then
+        touch "$lock_file_path"
+      fi
+
+      exit $return_value
+    else
+      log_failure_msg "Couldn't find MySQL server ($bindir/mysqld_safe)"
+    fi
+    ;;
+
+  'stop')
+    # Stop daemon. We use a signal here to avoid having to know the
+    # root password.
+
+    if test -s "$mysqld_pid_file_path"
+    then
+      mysqld_pid=`cat "$mysqld_pid_file_path"`
+
+      if (kill -0 $mysqld_pid 2>/dev/null)
+      then
+        echo $echo_n "Shutting down MySQL"
+        kill $mysqld_pid
+        # mysqld should remove the pid file when it exits, so wait for it.
+        wait_for_gone $mysqld_pid "$mysqld_pid_file_path"; return_value=$?
+      else
+        log_failure_msg "MySQL server process #$mysqld_pid is not running!"
+        rm "$mysqld_pid_file_path"
+      fi
+
+      # Delete lock for RedHat / SuSE
+      if test -f "$lock_file_path"
+      then
+        rm -f "$lock_file_path"
+      fi
+      exit $return_value
+    else
+      log_failure_msg "MySQL server PID file could not be found!"
+    fi
+    ;;
+
+  'restart')
+    # Stop the service and regardless of whether it was
+    # running or not, start it again.
+    if $0 stop  "$@"; then
+      $0 start "$@"
+    else
+      log_failure_msg "Failed to stop running server, so refusing to try to start."
+      exit 1
+    fi
+    ;;
+
+  'reload'|'force-reload')
+    if test -s "$mysqld_pid_file_path" ; then
+      read mysqld_pid <  "$mysqld_pid_file_path"
+      kill -HUP $mysqld_pid && log_success_msg "Reloading service MySQL"
+      touch "$mysqld_pid_file_path"
+    else
+      log_failure_msg "MySQL PID file could not be found!"
+      exit 1
+    fi
+    ;;
+  'status')
+    # First, check to see if pid file exists
+    if test -s "$mysqld_pid_file_path" ; then 
+      read mysqld_pid < "$mysqld_pid_file_path"
+      if kill -0 $mysqld_pid 2>/dev/null ; then 
+        log_success_msg "MySQL running ($mysqld_pid)"
+        exit 0
+      else
+        log_failure_msg "MySQL is not running, but PID file exists"
+        exit 1
+      fi
+    else
+      # Try to find appropriate mysqld process
+      mysqld_pid=`pidof $libexecdir/mysqld`
+
+      # test if multiple pids exist
+      pid_count=`echo $mysqld_pid | wc -w`
+      if test $pid_count -gt 1 ; then
+        log_failure_msg "Multiple MySQL running but PID file could not be found ($mysqld_pid)"
+        exit 5
+      elif test -z $mysqld_pid ; then 
+        if test -f "$lock_file_path" ; then 
+          log_failure_msg "MySQL is not running, but lock file ($lock_file_path) exists"
+          exit 2
+        fi 
+        log_failure_msg "MySQL is not running"
+        exit 3
+      else
+        log_failure_msg "MySQL is running but PID file could not be found"
+        exit 4
+      fi
+    fi
+    ;;
+  'configtest')
+    # Safeguard (relative paths, core dumps..)
+    cd $basedir
+    echo $echo_n "Testing MySQL configuration syntax"
+    daemon=$bindir/mysqld
+    if test -x $libexecdir/mysqld
+    then
+      daemon=$libexecdir/mysqld
+    elif test -x $sbindir/mysqld
+    then
+      daemon=$sbindir/mysqld
+    elif test -x `which mysqld`
+    then
+      daemon=`which mysqld`
+    else
+      log_failure_msg "Unable to locate the mysqld binary!"
+      exit 1
+    fi
+    help_out=`$daemon --help 2>&1`; r=$?
+    if test "$r" != 0 ; then
+      log_failure_msg "$help_out"
+      log_failure_msg "There are syntax errors in the server configuration. Please fix them!"
+    else
+      log_success_msg "Syntax OK"
+    fi
+    exit $r
+    ;;
+  *)
+      # usage
+      basename=`basename "$0"`
+      echo "Usage: $basename  {start|stop|restart|reload|force-reload|status|configtest}  [ MySQL server options ]"
+      exit 1
+    ;;
+esac
+
+exit 0
+--------------------------------
+
+[root@vmmariadb1 ~]# ps -fe | grep mysql
+root     12910 12852  0 10:45 pts/0    00:00:00 grep --color=auto mysql
+root     14626     1  0 Mar03 ?        00:00:00 /bin/sh /bin/mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306
+mysql    14746 14626  0 Mar03 ?        01:40:49 /usr/sbin/mysqld --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --basedir=/usr --datadir=/DB/mariadb/10.0/p3306/data --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --log-error=/DB/mariadb/10.0/p3306/log/mysql.err --pid-file=/DB/mariadb/10.0/p3306/sysfiles/mysql.pid --socket=/DB/mariadb/10.0/p3306/sysfiles/mysql.sock --port=3306
+
+
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+[root@vmmariadb2 ~]# mysql -u root -p mysql
+Enter password: K...
+
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+
+
+MariaDB [mysql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| depot_dev          |
+| depot_production   |
+| dtsweb             |
+| faceroll           |
+| faceroll_django    |
+| information_schema |
+| joomla             |
+| mediawiki          |
+| mysql              |
+| notification       |
+| performance_schema |
+| rt4                |
+| test               |
+| tracker            |
++--------------------+
+
+dsiegfriedt@dts3329:~ $ ssh root@vmmariadb2
+
+MariaDB [mysql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| depot_dev          |
+| depot_production   |
+| dtsweb             |
+| faceroll           |
+| faceroll_django    |
+| information_schema |
+| joomla             |
+| mediawiki          |
+| mysql              |
+| notification       |
+| performance_schema |
+| rt4                |
+| stu                |
+| test               |
+| tracker            |
++--------------------+
+
+.....
+15Feb18  vmcodadb1 looking for "show databases;"
+
+@@@ history shows (pruned dupes)
+[root@vmcodadb1 ~]# history | grep -i sql
+
+   14  mysql -usupersa -p -h vmcodadb1
+   15  mysql -uroot -p 
+   19  cd mysql/
+   33  mysql -u root
+
+   35  mysql -uroot @@@ worked
+
+   44  mysqldump -uroot coda_5 > coda_5.sql
+   46  vi coda_5.sql 
+   48  mysqldump -uroot coda_5 > coda_5.sql
+   49  scp coda_5.sql vmcodadb2:/DB
+   69  ps -elf | grep mysql
+   71  ps -elf | grep mysql
+   73  ps -elf | grep mysql
+   75  ps -elf | grep mysql
+   79  chown mysql:mysql relay_logs/
+   95   mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  115  chown mysql:mysql data
+  118  mysql_install_db --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf
+  120  chown -R mysql:mysql data/
+  122  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  127  mysql -u root
+  130  cd mysql/
+  133  su mysql
+  134  ln -s /DB/mariadb/10.0/p3306/sysfiles/mysql.sock mysql.sock
+  135  su mysql
+  136  mysql -u root
+  137  mysql -usupersa -p -hvmcodadb2
+  138  mysql -ucodadbadmin -p -hvmcodadb2
+  139  mysql -ucodadbadmin -p -hvmcodadb1
+  140  mysql -usupersa -p -hvmcodadb2
+  141  mysql -usupersa -p -hvmcodadb1
+  142  mysql -usupersa -p 
+  144  mysql -ucodadbadmin -p -h vmcodadbAdmin! 
+  145  mysql -ucodadbadmin -p -h vmcodadb2
+  166  mysql -uroot
+  173  mysql -uroot
+  176  mysql -uroot coda_5 < coda_5.sql 
+  190  mysqladmin -uroot shutdown
+  192  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  198  mysql -uroot
+  199  mysql -urepluser -p -h vmcodadb2
+  200  mysql -uroot
+  203  mysql -uroot
+  206  mysql -uroot
+  208  mysql -uroot
+  219  mysql -u root
+  238  mysql -u root
+  247  chown mysql:mysql trans*
+  251  mysql -u root
+  259  mysql -uroot
+  266  mysql -u root
+  271   mysqladmin shutdown -uroot  --port=3306
+  281  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  288  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  305  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  317  mysqlbinlog trans.000001 
+  320  mysql -uroot
+  322  mysqlbinlog trans.000001 
+  323  mysqlbinlog trans.000001 > trans.out
+  343  mysql -uroot
+  360  mysql -uroot
+  361  ps -elf | grep mysql
+  367  ps -elf | grep mysql
+  372  ps -elf | grep mysql
+  375  ps -elf | grep mysql
+  377  ps -elf | grep mysql
+  379  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  380  mysql -uroot
+  381  ps -elf | grep mysql
+  382  cd /var/lib/mysql
+  386  ln -s /DB/mariadb/10.0/p3306/sysfiles/mysql.sock mysql.sock
+  388  mysql -uroot
+  390  mysql -uroot
+  391  mysql -urepluser -prepluser! -hvmcodadb1
+  392  mysql -urepluser -prepluser! 
+  393  mysql -urepluser -p -hvmcodadb1
+  394  mysql -uroot
+  395  mysql -urepluser -prepluser! -hvmcodadb1
+  396  mysql -urepluser -prepluser! 
+  398  mysql -uroot
+  399  mysql -urepluser -p 
+  400  mysql -urepluser -p -hvmcodadb1
+  401  mysql -uroot
+  411  mysql -uroot
+  413  mysql -uroot -p -hvmcodadb1 -P3306
+  414  mysql -uroot -hvmcodadb1 -P3306
+  422  mysql -uroot
+  430  mysql -uroot
+  434  mysql -u root
+  442  init.d/mysql status
+  443  init.d/mysql -h
+  444  init.d/mysql configtest
+  445  init.d/mysql stop
+  447  init.d/mysql start
+  461  mysql -u root
+  481  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  482  mysql -uroot -hvmcodadb1 -P3306
+  484  ps -ef|grep -i mysql
+  485  mysql -usupersa -p -hvmcodadb1 -P3306
+  486  mysql -uroot -p -hvmcodadb1 -P3306
+  499  mysqladmin shutdown -uroot -p --port=3306
+  500  ps -ef|grep -i mysql
+  513  top |grep -i mysqld
+  559  mysql -usupersa -p -hvmcodadb1 -P3306
+  560  mysql -uroot -p -hvmcodadb1 -P3306
+  561  mysql -uroot -hvmcodadb1 -P3306
+  562  lsof | grep mysql | grep delete
+  563  lsof | grep mysql | grep tempdir
+  564  lsof | grep mysql
+  565  lsof-h | grep mysql
+  566  lsof | grep mysql
+  569  lsof | grep mysql
+  570  lsof | grep mysql | grep delet
+  576  lsof | grep mysql | grep relay-log
+  600  ps -ef | grep mysql
+  608  rpm -qa | grep mysql
+  610  lsof | grep mysql
+  619  lsof | grep mysql
+  623  lsof | grep mysql
+  624  date;lsof | grep mysql
+  628  ps -ef | grep mysql
+  635  mysql -uroot -hvmcodadb1
+  637   ps -ef|grep -i mysql
+  640  mysql
+  653  mysql 
+  658  mysql
+  660  mysql
+  663  mysql
+  694  mysql
+  710  chown mysql:mysql backup
+  711  mysql coda_5 < backup/coda_5.sql 
+  713  mysql
+  714  mysql coda_5 < backup/coda_5.sql 
+  716  mysql
+  722  mysqladmin shutdown --port=3306
+  723  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  724  mysql
+  729  mysql coda_5;
+  732  ps -elf |grep -i mysql
+  733  mysql
+  734  mysql coda_5;
+  735  mysql
+  812  mysql -u codadbadmin -p coda_5
+  879  mysql -usupersa -p 
+  880  mysql -usupersa -p -hvmcodadb1
+  881  mysql -uroot
+  883  mysql -uroot
+  887  mysql -uroot
+  888  mysql -urepluser -p -hvmcodadb2.disneytoonstudios.com
+  889  mysql -uroot
+  890  mysql -urepluser -p -hvmcodadb1.disneytoonstudios.com
+  891  mysql -uroot
+  892  mysql -urepluser -p -hvmcodadb2.disneytoonstudios.com
+  899  mysql -urepluser -p -hvmcodadb2
+  902  mysqladmin -urepl0user -P3306 -prepluser! -hvmcodadb1 extended-status | grep Slave_running | cut -d'|' -f3 | sed -e 's/\ //g
+  903  mysqladmin -urepl0user -P3306 -prepluser! -hvmcodadb1 extended-status | grep Slave_running | cut -d'|' -f3 | sed -e 's/\ //g'
+  904  mysqladmin -urepluser -P3306 -prepluser! -hvmcodadb1 extended-status | grep Slave_running | cut -d'|' -f3 | sed -e 's/\ //g'
+  909  mysql -u codadbadmin -p coda_5
+  910  mysql -uroot
+  914  mysql -uroot coda_5 < coda_5_test.sql 
+  915  mysql -uroot 
+  923  mysql -uroot
+  957  mysql -u root -p mysql
+  958  mysql -u codauser -p mysql
+  959  mysql -u codauser -p
+  999  mysql -u root -p mysql
+ 1000  ps -fe | grep -i sql
+ 1001  mysql -u root -p mysql
+ 1002  histoy | grep -i sql
+ 1003  history | grep -i sql
+.....
+[root@vmcodadb1 ~]# mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 1362353
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| coda_5             |
+| information_schema |
+| mysql              |
+| newtest            |
+| performance_schema |
+| test               |
++--------------------+
+6 rows in set (0.00 sec)
+
+MariaDB [(none)]> 
+
+^^^^^
+dsiegfriedt@vmcodadb2:~ $ mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 9029
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| coda_5             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| test               |
++--------------------+
+5 rows in set (0.01 sec)
+
+MariaDB [(none)]> 
+
+.....
+15Feb18  list of DB users
+
+MariaDB [(none)]> SELECT User FROM mysql.user;
+
+%%%%%
+@@@ on vmcodadb1
+
+https://www.cyberciti.biz/faq/how-to-show-list-users-in-a-mysql-mariadb-database/
+
+
+MariaDB [(none)]> SELECT User FROM mysql.user;
++-------------+
+| User        |
++-------------+
+| codadbadmin |
+| repluser    |
+| supersa     |
+| root        |
+| root        |
+|             |
+| repluser    |
+| root        |
+|             |
+| repluser    |
+| root        |
++-------------+
+11 rows in set (0.01 sec)
+
+MariaDB [(none)]> 
+
+MariaDB [(none)]> SELECT host, user, password FROM mysql.user;
++---------------------------------+-------------+-------------------------------------------+
+| host                            | user        | password                                  |
++---------------------------------+-------------+-------------------------------------------+
+| localhost                       | root        |                                           |
+| vmcodadb1.disneytoonstudios.com | root        |                                           |
+| 127.0.0.1                       | root        |                                           |
+| ::1                             | root        |                                           |
+| localhost                       |             |                                           |
+| vmcodadb1.disneytoonstudios.com |             |                                           |
+| %                               | supersa     | *192238469AE4C8FE6E7C19C42006A53E7F54C42B |
+| %                               | codadbadmin | *A64F7D0B74D60C91E4492A7108381129C9DFA9CF |
+| %                               | repluser    | *75CB1A286808D20451E618EBD0726BB6A42A6B67 |
+| vmcodadb1.disneytoonstudios.com | repluser    | *75CB1A286808D20451E618EBD0726BB6A42A6B67 |
+| localhost                       | repluser    |                                           |
++---------------------------------+-------------+-------------------------------------------+
+11 rows in set (0.01 sec)
+
+MariaDB [(none)]> 
+
+
+%%%%%
+@@@ uptime for vmcodadb1
+[root@vmcodadb1 ~]# uptime
+ 12:52:07 up 654 days,  3:14,  1 user,  load average: 0.15, 0.11, 0.13
+[root@vmcodadb1 ~]# date -d "654 days ago"
+Mon May  2 13:52:23 PDT 2016
+
+.....
+27Feb18  zabbix upgrade based on Mariadb
+
+dsiegfriedt@mayday:~ $ ll /DB/mariadb/10.0/p3306/data/
+total 8.4G
+drwxr-xr-x. 6 mysql mysql 4.0K Feb 27 04:55 .
+drwxr-xr-x. 9 mysql mysql 4.0K Oct 24  2016 ..
+-rw-rw----. 1 mysql mysql  16K Oct 24  2016 aria_log.00000001
+-rw-rw----. 1 mysql mysql   52 Oct 24  2016 aria_log_control
+-rw-rw----. 1 mysql mysql  76M Feb 27 12:38 ibdata1
+-rw-rw----. 1 mysql mysql 1.0G Feb 27 12:38 ib_logfile0
+-rw-rw----. 1 mysql mysql 1.0G Feb 27 12:38 ib_logfile1
+-rw-rw----. 1 mysql mysql  147 Feb 27 04:55 mariadb-bin.index
+-rw-rw----  1 mysql mysql 1.1G Feb 20 12:38 mariadb-bin.000540
+-rw-rw----  1 mysql mysql 1.1G Feb 21 21:36 mariadb-bin.000541
+-rw-rw----  1 mysql mysql 1.1G Feb 23 06:03 mariadb-bin.000542
+-rw-rw----  1 mysql mysql 1.1G Feb 24 14:24 mariadb-bin.000543
+-rw-rw----  1 mysql mysql 1.1G Feb 25 21:57 mariadb-bin.000544
+-rw-rw----  1 mysql mysql 1.1G Feb 27 04:55 mariadb-bin.000545
+-rw-rw----  1 mysql mysql 259M Feb 27 12:38 mariadb-bin.000546
+-rw-r-----. 1 mysql root  6.8M Feb 27 01:00 mayday.disneytoonstudios.com.err
+-rw-rw----. 1 mysql mysql  63K Aug 23  2017 mayday-slow.log
+-rw-rw----. 1 mysql mysql    0 Oct  6  2015 multi-master.info
+drwx------. 2 mysql root  4.0K Oct  6  2015 mysql
+drwx------. 2 mysql mysql 4.0K Oct  6  2015 performance_schema
+drwx------. 2 mysql root  4.0K Oct  6  2015 test
+drwx------. 2 mysql mysql  12K Oct  6  2015 zabbix
+
+[root@mayday ~]# mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 6470378
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| test               |
+| zabbix             |
++--------------------+
+5 rows in set (0.00 sec)
+
+MariaDB [(none)]> SELECT User FROM mysql.user;
++-------------+
+| User        |
++-------------+
+| backupadmin |
+| zabbix      |
+| root        |
+| root        |
+|             |
+| root        |
+| zabbix      |
+|             |
+| root        |
++-------------+
+9 rows in set (0.02 sec)
+
+MariaDB [(none)]> SELECT host, user, password FROM mysql.user;
++------------------------------+-------------+-------------------------------------------+
+| host                         | user        | password                                  |
++------------------------------+-------------+-------------------------------------------+
+| localhost                    | root        |                                           |
+| mayday.disneytoonstudios.com | root        |                                           |
+| 127.0.0.1                    | root        |                                           |
+| ::1                          | root        |                                           |
+| localhost                    |             |                                           |
+| mayday.disneytoonstudios.com |             |                                           |
+| %                            | zabbix      | *DEEF4D7D88CD046ECA02A80393B7780A63E7E789 |
+| localhost                    | zabbix      | *DEEF4D7D88CD046ECA02A80393B7780A63E7E789 |
+| %                            | backupadmin | *81A01ECB2AD2EF880D8A2432C4D052EA37DD1073 |
++------------------------------+-------------+-------------------------------------------+
+9 rows in set (0.00 sec)
+
+@@@ not in /etc/passwd
+
+[root@mayday ~]# id zabbix
+uid=992(zabbix) gid=990(zabbix) groups=990(zabbix),1100(prodctn)
+[root@mayday ~]# 
+
+..........................................................................................................
+1Mar18  vmmariadb1 replication check
+
+@@@ replication commands
+https://mariadb.com/kb/en/library/replication-commands/
+
+MariaDB [mysql]> SHOW MASTER STATUS;
++--------------+----------+--------------+------------------+
+| File         | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++--------------+----------+--------------+------------------+
+| trans.000086 | 24629052 |              | mysql,test       |
++--------------+----------+--------------+------------------+
+1 row in set (0.00 sec)
+
+[root@vmmariadb1 ~]# ll /DB/mariadb/10.0/
+               ^
+total 0
+drwxr-xr-x. 8 mysql mysql 78 Jun 19  2015 p3306
+drwxr-xr-x. 8 mysql mysql 78 Apr  5  2016 p4096
+
+[root@vmmariadb1 ~]# systemctl status mysql
+● mysql.service - LSB: start and stop MySQL
+   Loaded: loaded (/etc/rc.d/init.d/mysql)
+   Active: failed (Result: exit-code) since Mon 2016-03-28 19:56:35 PDT; 1 years 11 months ago
+     Docs: man:systemd-sysv-generator(8)
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
+
+MariaDB [mysql]> show master status;
++--------------+----------+--------------+------------------+
+| File         | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++--------------+----------+--------------+------------------+
+| trans.000086 | 24645017 |              | mysql,test       |
++--------------+----------+--------------+------------------+
+1 row in set (0.00 sec)
+
+MariaDB [mysql]> show slave status;
+Empty set (0.00 sec)
+
+MariaDB [mysql]> show slave hosts;
++-----------+------+------+-----------+
+| Server_id | Host | Port | Master_id |
++-----------+------+------+-----------+
+|         2 |      | 3306 |         1 |
++-----------+------+------+-----------+
+1 row in set (0.00 sec)
+
+[root@vmmariadb1 ~]# service mysql status
+MySQL is running but PID file could not be found           [FAILED]
+
+yum provides */init.d/mysql
+MariaDB-server-10.0.24-1.el7.centos.x86_64 : MariaDB: a very fast and robust SQL database server
+Repo        : @mariadb
+Matched from:
+Filename    : /etc/init.d/mysql
+
+
+
+################################
+
+[root@vmmariadb2 ~]# ll /DB/mariadb/10.0/
+               ^
+total 0
+drwxr-xr-x. 9 mysql mysql 94 Apr  1  2016 p3306
+
+
+MariaDB [mysql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| depot_dev          |
+| depot_production   |
+| dtsweb             |
+| faceroll           |
+| faceroll_django    |
+| information_schema |
+| joomla             |
+| mediawiki          |
+| mysql              |
+| notification       |
+| performance_schema |
+| rt4                |
+| stu                |
+| test               |
+| tracker            |
++--------------------+
+15 rows in set (0.00 sec)
+
+[root@vmmariadb2 ~]# systemctl status mysql
+● mysql.service - LSB: start and stop MySQL
+   Loaded: loaded (/etc/rc.d/init.d/mysql)
+   Active: inactive (dead)
+     Docs: man:systemd-sysv-generator(8)
+
+MariaDB [mysql]> show slave status;
+
+***** LOTS O STUFF *****
+
+MariaDB [mysql]> show master status;
++--------------+----------+--------------+------------------+
+| File         | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++--------------+----------+--------------+------------------+
+| trans.000074 | 16580877 |              | mysql,test       |
++--------------+----------+--------------+------------------+
+1 row in set (0.00 sec)
+
+[root@vmmariadb2 ~]# service mysql status
+MySQL is running but PID file could not be found           [FAILED]
+
+yum provides */init.d/mysql
+MariaDB-Galera-server-10.0.24-1.el7.centos.x86_64 : MariaDB: a very fast and robust SQL database
+                                                  : server
+Repo        : @mariadb
+Matched from:
+Filename    : /etc/init.d/mysql
+
+
+################################
+.....
+2Mar18  dtsweb has mariadb server running (WTF?) dtsweb has an instance on vmmariadb[1-2]
+
+[root@vmdtsweb ~]# mysql -u mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 4732
+Server version: 5.5.56-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| test               |
++--------------------+
+2 rows in set (0.01 sec)
+
+MariaDB [(none)]> show full tables from test;
+Empty set (0.00 sec)
+
+show full tables from information_schema;
+{SNIP}
+62 rows in set (0.03 sec)
+
+
+@@@ So it looks like dtsweb is running mariadb-server but all tables are empty
+
+.....
+3Mar18 vmmariadb1  did not start at reboot :^(
+
+!254 worked  YAY
+
+mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+mysqld_safe --defaults-file=/DB/mariadb/10.0/p4096/etc/my.cnf --port=4096 &
+.....
+6Mar18  mariadb install for monitor (the new zabbix server)
+
+https://mariadb.com/kb/en/library/yum/
+
+create MariaDB.repo
+yum install MariaDB-server MariaDB-client
+
+.....
+
+See NOTES-DTS 6Mar18  granting priv on mayday for zabbix backup
+
+.....
+7Mar18  what version am I running
+
+SELECT VERSION();
+SELECT @@version;
+
+MariaDB [(none)]> status;
+
+.....
+2Apr18  can't log into vmmariadb1(2)
+
+[root@vmmariadb1 ~]# mysql -u mysql
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2 "No such file or directory")
+
+
+@@@ in history I found
+
+  325  cd /var/lib/mysql/
+  328  ln -s /DB/mariadb/10.0/p3306/sysfiles/mysql.sock mysql.sock
+
+!!!! WORKED !!!!
+
+@@@ no passwd
+
+[root@vmmariadb1 mysql]# mysql -u mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 56245
+Server version: 10.0.24-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| test               |
++--------------------+
+2 rows in set (0.08 sec)
+
+MariaDB [(none)]> 
+
+MariaDB [(none)]> status;
+--------------
+mysql  Ver 15.1 Distrib 10.0.24-MariaDB, for Linux (x86_64) using readline 5.1
+
+Connection id:		56267
+Current database:	
+Current user:		mysql@localhost
+SSL:			Not in use
+Current pager:		stdout
+Using outfile:		''
+Using delimiter:	;
+Server:			MariaDB
+Server version:		10.0.24-MariaDB MariaDB Server
+Protocol version:	10
+Connection:		Localhost via UNIX socket
+Server characterset:	latin1
+Db     characterset:	latin1
+Client characterset:	utf8
+Conn.  characterset:	utf8
+UNIX socket:		/var/lib/mysql/mysql.sock
+Uptime:			29 days 13 hours 18 min 32 sec
+
+Threads: 8  Questions: 2251432  Slow queries: 382  Opens: 7628  Flush tables: 178  Open tables: 63  Queries per second avg: 0.881
+--------------
+@@@ vmcodadb1
+
+[root@vmcodadb1 ~]# mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 117488
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| coda_5             |
+| information_schema |
+| mysql              |
+| newtest            |
+| performance_schema |
+| test               |
++--------------------+
+6 rows in set (0.08 sec)
+
+MariaDB [(none)]> status;
+--------------
+mysql  Ver 15.1 Distrib 10.0.24-MariaDB, for Linux (x86_64) using readline 5.1
+
+Connection id:		117488
+Current database:	
+Current user:		root@localhost
+SSL:			Not in use
+Current pager:		stdout
+Using outfile:		''
+Using delimiter:	;
+Server:			MariaDB
+Server version:		10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+Protocol version:	10
+Connection:		Localhost via UNIX socket
+Server characterset:	utf8
+Db     characterset:	utf8
+Client characterset:	utf8
+Conn.  characterset:	utf8
+UNIX socket:		/var/lib/mysql/mysql.sock
+Uptime:			43 days 14 hours 49 min 58 sec
+
+Threads: 1  Questions: 613237988  Slow queries: 0  Opens: 59  Flush tables: 1  Open tables: 122  Queries per second avg: 162.723
+--------------
+
+@@@ vmcodadb2
+
+[root@vmcodadb2 ~]# mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 720
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| coda_5             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| test               |
++--------------------+
+5 rows in set (0.01 sec)
+
+MariaDB [(none)]> status;
+--------------
+mysql  Ver 15.1 Distrib 10.0.20-MariaDB, for Linux (x86_64) using readline 5.1
+
+Connection id:		720
+Current database:	
+Current user:		root@localhost
+SSL:			Not in use
+Current pager:		stdout
+Using outfile:		''
+Using delimiter:	;
+Server:			MariaDB
+Server version:		10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+Protocol version:	10
+Connection:		Localhost via UNIX socket
+Server characterset:	utf8
+Db     characterset:	utf8
+Client characterset:	utf8
+Conn.  characterset:	utf8
+UNIX socket:		/var/lib/mysql/mysql.sock
+Uptime:			43 days 14 hours 42 min 46 sec
+
+Threads: 46  Questions: 1425748612  Slow queries: 51  Opens: 6828954  Flush tables: 1  Open tables: 135  Queries per second avg: 378.366
+--------------
+
+
+.....
+
+
+.....
+
+3==========================================================================================================================================
+==========================================================================================================================================
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                              POSTGRES
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+==========================================================================================================================================
+==========================================================================================================================================
+
+24/25Feb18
+
+systemctl start postgresql
+@@@NOPE
+
+cd /DB/pgsql/9.4/bin/
+@@@ turns out this was only a partial start.  There are multiple dbs that have to be started individually.
+./pg_ctl start -D /DB/pgsql/9.4/p5432/data/ &
+
+/DB/pgsql/9.4/bin/pg_ctl restart -D /DB/pgsql/9.4/p5438/data/
+
+@@@ journalctl -xe didn't really give me any hints as to WTF was going on (knowing why came later)
+
+[root@vmpostgres1 ~]# /DB/pgsql/9.4/bin/postgresql94-check-db-dir /DB/pgsql/9.4/p5442/data
+
+gracet [1:35 PM]
+https://techweb.disneyanimation.com/docs/DOC-32811
+
+gracet [1:40 PM]
+Reach out to zach and stuart and das if you get stuck withe these dbs
+
+don.siegfriedt [1:41 PM]
+zac and stuart... what are their last names
+
+gracet [1:41 PM]
+Zach stokes
+stuart.mcdougal@disneyanimation.com
+They setup those dbs
+
+@@@ with what Grace gave me.....I got it going
+@@@ https://techweb.disneyanimation.com/docs/DOC-32811
+@@@ you have to start them all individually as the user postgres
+@@ it states:
+Startup PlaybookStartup DB instances on Remington:
+
+systemctl start postgresql-9.6-p5*** each individually
+Startup DB instances on Mysa:
+
+systemctl start postgresql-9.6-p5*** each individually
+Startup Rama (NFS storage for Shotgun)
+
+Startup Nick, Hopps - the Prodman init scripts should do the right thing here
+
+Startup Anna, Simba - the Prodman init scripts should do the right thing here
+
+Startup Phao
+
+Slack the prodman-dev channel for the team to check services
+
+@@@ after I started them all I was able to start up dpix
+
+-bash-4.2$ ll /DB/pgsql/9.4/
+total 0
+lrwxrwxrwx. 1 postgres postgres 18 Feb 24 18:24 bin -> /usr/pgsql-9.4/bin
+drwxr-xr-x. 3 postgres postgres 17 Jun 15  2015 p5432
+drwxr-xr-x. 3 postgres postgres 17 Jun 15  2015 p5434
+drwxr-xr-x. 3 postgres postgres 17 Jun 23  2015 p5436
+drwxr-xr-x. 3 postgres postgres 17 Jun 16  2015 p5438
+drwxr-xr-x. 3 postgres postgres 17 Aug 10  2015 p5440
+drwxr-xr-x. 3 postgres postgres 17 Aug 25  2015 p5442
+drwxr-xr-x. 3 postgres postgres 17 Oct 15  2015 p5444
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5432/data
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:16.491 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:16.516 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:16.516 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5434/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:27.690 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:27.717 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:27.717 PST >HINT:  Future log output will appear in directory "pg_log". 
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5436/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:37.296 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:37.320 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:37.320 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5438/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:47.424 PST >FATAL:  lock file "postmaster.pid" already exists
+< 2018-02-25 13:52:47.424 PST >HINT:  Is another postmaster (PID 4497) running in data directory "/DB/pgsql/9.4/p5438/data"?
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5440/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:58.237 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:58.263 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:58.263 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5442/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:53:06.902 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:53:06.927 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:53:06.927 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5444/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:53:14.529 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:53:14.553 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:53:14.553 PST >HINT:  Future log output will appear in directory "pg_log".
+
+<<<<<>>>>>
+26Feb18 vmpostgres2
+
+@@@ looking for what db should be running
+
+[root@vmpostgres2 ~]# ll /DB
+total 0
+drwxr-xr-x. 2 postgres postgres 6 Mar 30  2016 pgsql
+drwxr-xr-x. 2 postgres postgres 6 Mar 30  2016 pgsql_backup
+[root@vmpostgres2 ~]# ll /DB/pgsql/
+total 0
+
+@@@ seems like autofs in not mounting "9.4"
+@@@ didn't find any evidence that postgres has run on this VM.   Sent amil to Zach (Stokes) and Stuart (McDougal)
+@@@ asking about 1) starting at boot 2) WTF does vmpostgres2 do
+
+=======================
+26Feb18 startup/shutdown/restart
+
+[root@vmpostgres1 ~]# /DB/pgsql/9.4/bin/pg_ctl --help
+pg_ctl is a utility to initialize, start, stop, or control a PostgreSQL server.
+
+Usage:
+  pg_ctl init[db]               [-D DATADIR] [-s] [-o "OPTIONS"]
+  pg_ctl start   [-w] [-t SECS] [-D DATADIR] [-s] [-l FILENAME] [-o "OPTIONS"]
+  pg_ctl stop    [-W] [-t SECS] [-D DATADIR] [-s] [-m SHUTDOWN-MODE]
+  pg_ctl restart [-w] [-t SECS] [-D DATADIR] [-s] [-m SHUTDOWN-MODE]
+                 [-o "OPTIONS"]
+  pg_ctl reload  [-D DATADIR] [-s]
+  pg_ctl status  [-D DATADIR]
+  pg_ctl promote [-D DATADIR] [-s]
+  pg_ctl kill    SIGNALNAME PID
+
+Common options:
+  -D, --pgdata=DATADIR   location of the database storage area
+  -s, --silent           only print errors, no informational messages
+  -t, --timeout=SECS     seconds to wait when using -w option
+  -V, --version          output version information, then exit
+  -w                     wait until operation completes
+  -W                     do not wait until operation completes
+  -?, --help             show this help, then exit
+(The default is to wait for shutdown, but not for start or restart.)
+
+If the -D option is omitted, the environment variable PGDATA is used.
+
+Options for start or restart:
+  -c, --core-files       allow postgres to produce core files
+  -l, --log=FILENAME     write (or append) server log to FILENAME
+  -o OPTIONS             command line options to pass to postgres
+                         (PostgreSQL server executable) or initdb
+  -p PATH-TO-POSTGRES    normally not necessary
+
+Options for stop or restart:
+  -m, --mode=MODE        MODE can be "smart", "fast", or "immediate"
+
+Shutdown modes are:
+  smart       quit after all clients have disconnected
+  fast        quit directly, with proper shutdown
+  immediate   quit without complete shutdown; will lead to recovery on restart
+
+Allowed signal names for kill:
+  ABRT HUP INT QUIT TERM USR1 USR2
+
+Report bugs to <pgsql-bugs@postgresql.org>.
+=======================
+26Feb19 postgresql.service (see flag meanings above)
+
+[root@vmpostgres1 ~]# cat /usr/lib/systemd/system/postgresql.service
+[Unit]
+Description=PostgreSQL database server
+After=network.target
+
+[Service]
+Type=forking
+
+User=postgres
+Group=postgres
+
+# Where to send early-startup messages from the server (before the logging
+# options of postgresql.conf take effect)
+# This is normally controlled by the global default set by systemd
+# StandardOutput=syslog
+
+# Disable OOM kill on the postmaster
+OOMScoreAdjust=-1000
+# ... but allow it still to be effective for child processes
+# (note that these settings are ignored by Postgres releases before 9.5)
+Environment=PG_OOM_ADJUST_FILE=/proc/self/oom_score_adj
+Environment=PG_OOM_ADJUST_VALUE=0
+
+# Maximum number of seconds pg_ctl will wait for postgres to start.  Note that
+# PGSTARTTIMEOUT should be less than TimeoutSec value.
+Environment=PGSTARTTIMEOUT=270
+
+#Environment=PGDATA=/usr/local/pgsql/data
+Environment=PGDATA=/DB/pgsql/9.4/
+
+#ExecStart=/usr/local/pgsql/bin/pg_ctl start -D ${PGDATA} -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5432/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5434/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5436/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5438/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5440/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5442/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5444/data -s -w -t ${PGSTARTTIMEOUT}
+ 
+#ExecStop=/usr/local/pgsql/bin/pg_ctl stop -D ${PGDATA} -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5432/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5434/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5436/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5438/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5440/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5442/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5444/data -s -m fast
+
+#ExecReload=/usr/local/pgsql/bin/pg_ctl reload -D ${PGDATA} -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5432/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5434/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5436/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5438/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5440/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5442/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5444/data -s -w -t ${PGSTARTTIMEOUT}
+
+# Give a reasonable amount of time for the server to start up/shut down.
+# Ideally, the timeout for starting PostgreSQL server should be handled more
+# nicely by pg_ctl in ExecStart, so keep its timeout smaller than this value.
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+
+[root@vmpostgres1 ~]# systemctl enable postgresql.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/postgresql.service to /usr/lib/systemd/system/postgresql.service.
+
+=======================
+1Mar18  PoM script check postgres    status
+
+dsiegfriedt@vmpostgres1:~ $ /DB/pgsql/9.4/bin/pg_isready
+/var/run/postgresql:5432 - accepting connections
+
+
+=======================
+2Apr18  check who is attached to the db
+
+[root@vmpostgres1 ~]# /DB/pgsql/9.4/bin/psql --username=postgres
+psql (9.4.6)
+Type "help" for help.
+
+postgres=# select * from pg_user;
+ usename  | usesysid | usecreatedb | usesuper | usecatupd | userepl |  passwd  | valuntil | useconfig 
+----------+----------+-------------+----------+-----------+---------+----------+----------+-----------
+ dpixuser |    16385 | f           | f        | f         | f       | ******** |          | 
+ postgres |       10 | t           | t        | t         | t       | ******** |          | 
+(2 rows)
+
+postgres=# 
+                                 List of databases
+   Name    |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges   
+-----------+----------+----------+-------------+-------------+-----------------------
+ dpix_dev  | dpixuser | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+ postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+ template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+           |          |          |             |             | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+           |          |          |             |             | postgres=CTc/postgres
+(4 rows)
+
+@@@ dpix accesss the DB from teh application so as long as the DB is up.... so is "dpix"
+
+@@@ vmpostgres2 not running postgres
+
+=======================
+2Apr18  command lines for postgres
+
+\l # list of databases
+\q # quit
+
+=======================
+23Apr18
+
+@@@ vmpostgres1
+postgres=# \l
+                                  List of databases
+   Name    |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges   
+-----------+----------+----------+-------------+-------------+-----------------------
+ dpix_dev  | dpixuser | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+ postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+ template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+           |          |          |             |             | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+           |          |          |             |             | postgres=CTc/postgres
+(4 rows)
+
+==========================================================================================================================================
+==========================================================================================================================================
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                              DB2
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+==========================================================================================================================================
+==========================================================================================================================================
+9Apr14  db2 not starting
+
+[root@lapcpsdv1 bin]# su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+SQL1072C  The database manager resources are in an inconsistent state.  The database manager might have been incorrectly terminated, or another application might be using system resources in a way that conflicts with the database manager's use of system resources.  System resource cleanup might be required.
+
+1041  /opt/IBM/WebSphere/ProcServ/db2/adm/db2set -g DB2SYSTEM=lapcpsdv1.ri-net.com
+
+http://publib.boulder.ibm.com/infocenter/db2luw/v9r5/index.jsp?topic=%2Fcom.ibm.db2.luw.messages.sql.doc%2Fdoc%2Fmsql01072c.html
+
+[root@lapcpsdv1 bin]# pwd
+/opt/IBM/WebSphere/ProcServ/db2/bin
+[root@lapcpsdv1 bin]# ./db2ftok
+
+[root@lapcpsdv1 bin]# su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+SQL1063N  DB2START processing was successful.
+
+[root@lapcpsdv1 bin]# /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/bin/startServer.sh server1
+ADMU0116I: Tool information is being logged in file
+           /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/logs/server1/startServer.log
+ADMU0128I: Starting tool with the qbpmaps profile
+ADMU3100I: Reading configuration for server: server1
+ADMU3200I: Server launched. Waiting for initialization status.
+ADMU3000I: Server server1 open for e-business; process id is 6804
+[root@lapcpsdv1 bin]# 
+
+5May14  --siggy/Vimel
+
+Poweroutage and db did not restart on lapcpsdv1.
+
+service process_server stop
+/opt/IBM/WebSphere/ProcServ/db2/adm/db2set -g DB2SYSTEM=lapcpsdv1.ri-net.com
+cd /opt/IBM/WebSphere/ProcServ/db2/bin/db2_ps/
+./db2ftok
+su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+service process_server start
+
+Submit an ICM to check dbstart befor starting process server.
+
+$$$$$
+10Apr14  --siggy  Found on Voldamort's wall
+
+DB2 Commands
+db2 activate database <database name>			activates a database
+db2 backup database <database name>			backs up the database
+db2 list active databases     				list all active databases on server
+db2 list directory					list all databases on server
+db2 list application					list of all applications for each database
+db2 quiece  <database name>				quieces the database
+db2 unquiece  <database name>				unquieces the database
+db2 recover database  <database name>			recovers a backed up database
+db2 set write suspend for <database name>		suspends all writes to a specific database
+db2 set write resume for  <database name>		resumes writes to the database
+
+DB2 locations
+DAS home directory					/home/dasuser1
+DAS information						/home/dasuser1/das
+database configuration file SQLDBCON			/home/db2inst1/db2inst1/NODE0000/SQL00001
+
+datebase dir contains files for:			/home/db2inst1/db2inst1/NODE0000/SQL00001
+buffer pool info
+historical info
+log control files
+storage path info
+table space info
+
+database manager config file db2systm			/home/db2inst/sqllib
+
+db2 commands	 	     				/opt/IBM/db2/V9.5/bin
+db2 error messages					/home/db2inst1/sqllib/db2dump/db2diag.log
+db2 installation path					/opt/IBM/db2/V9.5
+directory for event monitor data			/home/db2inst1/db2inst1/NODE0000/SQL00001/db2event
+directory for transaction log 				/home/db2inst1/db2inst1/NODE0000/SQL00001/SQLLOGDIR
+installation log	  				/opt/IBM/db2/V9.5/logs/db2install.history
+instance home directory					/home/db2inst1
+instance information					/home/db2inst1/sqllib
+local database directory for instance			/home/db2inst1db2inst1/NODE0000/sqldbdir
+partition database environment 				/home/db2inst1/sqllib
+system database directory				/home/db2inst1/sqllib/sqldbdir
+
+$$$$$
+Change to lapcpsdv1:/etc/init.d/process_server  5May14  --siggy
+
+[root@lapcpsdv1 ~]# cat process_server 
+#!/bin/bash
+#
+# Startup script for Process Server node and server
+#
+# chkconfig: 2345 99 90
+# description: Process Server suite including, dmgr, node and wps_server1
+# start, debug, stop, and status functions
+start() {
+	su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+# Check to see if the db started correctly, exit on error.  --siggy 5May14
+# To correct:
+#    /opt/IBM/WebSphere/ProcServ/db2/adm/db2set -g DB2SYSTEM=lapcpsdv1.ri-net.com
+#    /opt/IBM/WebSphere/ProcServ/db2/bin/db2ftok
+#    service process_server start
+
+	if [ $? -ne 0 ]; then
+	   logger -s -t DB2STARTFAILED "db2 failed to start correctly.  EXITING"
+	   exit 0
+	fi
+#       Start PS in normal mode
+#	WEB_PORT=`netstat -vatn|grep LISTEN|grep 9405|wc -l`
+#	if [ $WEB_PORT -ne 0 ]; then
+#       echo "Process Server is already started"
+#       else
+# Changed echo to logger  --siggy 5May14
+	   logger -s -t PROCESSSERVERSTART "Staring Process Server"
+	   /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/bin/startServer.sh server1
+#	fi
+}
+
+stop() {
+# Changed echo to logger
+	   logger -s -t PROCESSSERVERSTOP "Stopping Process Server"
+	   /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/bin/stopServer.sh server1 -user admin -password admin
+# Added stoping the DB  --siggy 5may14
+	   logger -s -t DB2STOP "Stopping DB2"
+	   su - bpminst -c '/home/bpminst/sqllib/adm/db2stop'
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  debug)
+        debug
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  redebug)
+        stop
+        debug
+        ;;
+  status)
+        status
+        ;;
+  *)
+        echo "Usage: $0 {start|debug|stop|restart|redebug|status}"
+        exit 1
+esac
+
+$$$$$
+STATUS
+
+at the OS level in Unix ps -ef|grep db2 or it has many version.
+
+at db2 prompt.
+
+get connection state
+list active databases
+list applications
+
+
+[root@laccodqa1 ondemand]# db2 get connection state
+
+   Database Connection State
+
+ Connection state       = Connectable and Unconnected
+ Connection mode        =
+ Local database alias   =
+ Database name          =
+ Hostname               =
+ Service name           =
+
+[root@laccodqa1 ondemand]#  db2 list active databases
+
+                           Active Databases
+
+Database name                              = ARCHIVE
+Applications connected currently           = 0
+Database path                              = /home/archive/archive/NODE0000/SQL00001/
+
+[root@laccodqa1 ondemand]# db2 list applications
+SQL1611W  No data was returned by Database System Monitor.
+
+
+$$$$$
+12Dec14  --siggy
+
+http://scn.sap.com/docs/DOC-43859
+
+Login = db2inst1
+passwd = integrit intergritie 
+
+db2 CONNECT TO reldb
+db2 list database directory
+db2 list database directory | grep -i rel
+db2level
+db2 list tablespaces show detail
+db2 connect reset
+
+
+db2
+   quit (to exit from db2 prompt)
+   -DIS DB
+
+_____________________________________________________________________
+
+END
+
+_____________________________________________________________________

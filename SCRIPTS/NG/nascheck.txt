@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+for i in `cat /etc/beowulf/bcs/gand-list`
+do 
+  echo $i
+    ssh $i '(/HYDRA/bin/status; cat /HYDRA/tmp/envminfo; dmesg | grep AEN; cat /var/log/messages | grep -i error; cat /var/log/messages | grep -i fail; )'
+done
+echo "**********************************************************"
+echo "**********************************************************"
+echo "******************* DONE *********************************"
+echo "**********************************************************"
+echo "**********************************************************"

@@ -1,0 +1,1 @@
+use Term::Complete;$input = Complete('prompt_string', \@completion_list);$input = Complete('prompt_string', @completion_list);*****$Term::Complete::complete = "\001";  # use ctrl-a instead of ctrl-d

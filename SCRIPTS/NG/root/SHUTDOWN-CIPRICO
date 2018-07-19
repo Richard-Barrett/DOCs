@@ -1,0 +1,20 @@
+!/bin/bash
+#******************************************************************
+# Name: SHUTDOWN-CIPRICO
+#
+# Purpose: This is the Ciprico shutdown script.  It shuts down all 
+#          gandalfs 12 through 40, orc1, orc2, & backup.
+#
+# Calls To: None
+#
+#  Author	Date		Version
+# -------------+----------------+-----------
+# Siggy         17Sep07		 1.0
+#
+#*******************************************************************
+for i in `cat /etc/beowulf/bcs/GAND-SHUT-LIST`
+do
+echo $i
+ssh $i /sbin/init 0
+done
+

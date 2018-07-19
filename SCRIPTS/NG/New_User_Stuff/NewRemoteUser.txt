@@ -1,0 +1,177 @@
+#! /bin/bash
+#*****************************************************************
+# Name: NewRemoteUser
+#
+# Purpose: To add new remote users to the s018 cluster.
+#          
+#
+# Calls To: None
+#
+# Usage: NewRemoteUser
+#
+#
+# Author	  Date		  Version	  Comments
+# ---------------+----------------+---------------+-------------
+# Ron M. & Siggy  11/16/07         1.0
+#
+#*****************************************************************
+clear
+echo "Running $0..."
+echo ""
+#
+# Prompt for account to create
+#
+echo -n "Enter account to create: "
+read ACCOUNT
+#
+echo "Please wait while I finger this account: $ACCOUNT..."
+echo ""
+MYUSER=`finger $ACCOUNT | grep Name | awk -F: '{print $3}' | sed 's/^ *//'`
+MYUIDNUM=`id $ACCOUNT  | awk '{print $1}' | sed s/....// | sed s/\(.*.//`
+MYGIDNUM=`id $ACCOUNT  | awk '{print $2}' | sed s/....// | sed s/\(.*.//`
+MYSITENAME=`id $ACCOUNT | awk -F\( '{print $4}' | awk -F\) '{print $1}'`
+LOGINNAME=$ACCOUNT
+echo ""
+echo "*********************************"
+echo "User's Name is : $MYUSER"
+echo "User's ID is: $MYUIDNUM"
+echo "User's Group ID is: $MYGIDNUM"
+echo "User's Site is: $MYSITENAME"
+echo "Login Name is: $LOGINNAME"
+echo "*********************************"
+echo ""
+echo -n "Is this correct? (Y or N): "
+read CORRECT
+#
+if [ $CORRECT = "N" ] || [ $CORRECT = "n" ]; then
+  echo ""
+  echo "Exiting program..."
+  exit 0
+fi
+#
+#*******************************************
+#* Check if second character of account is v
+#*******************************************
+if [ ${ACCOUNT:1:1} == "v" ]; then
+  PROJECT=v
+  echo ""
+  echo "Creating Home account on ORC1..."
+  HOMEDIR=orc1
+  HOMEDIRPATH=/base/homev1/$MYSITENAME/$ACCOUNT
+  ssh orc1 "(if [ ! -e /base/homev1/$MYSITENAME ]; then mkdir /base/homev1/$MYSITENAME; fi;mkdir /base/homev1/$MYSITENAME/$ACCOUNT)"
+else
+#
+# Set Project to u
+#
+PROJECT=u
+#
+# Check gandalf12 for space for new home account
+  echo ""
+  echo "Disk usage for gandalf12..."
+  ssh gandalf12 df -h
+#
+# Check gandalf25 for space for new home account
+  echo ""
+  echo "Disk usage for gandalf25..."
+  ssh gandalf25 df -h
+#
+echo -n "Which gandalf do you want the home directory created  (12 or 25)? "
+read HOMEDIR
+echo ""
+echo ""
+echo "Creating home account on gandalf $HOMEDIR"
+#
+#********Gandalf12************
+if [ $HOMEDIR = "12" ]; then
+   DEVICE=gandalf12:/home1
+   HOMEDIRPATH=/base/home1/$ACCOUNT
+   #
+   # Check for the existence of /ms/<group name>/<site> directory
+   # If it doesn't exist create it.
+   #
+   ssh gandalf12 "(if [ ! -e /base/home1/$MYSITENAME ]; then mkdir /base/home1/$MYSITENAME; chown root.${MYSITENAME} /base/home1/$MYSITENAME; fi;mkdir /base/home1/$MYSITENAME/$ACCOUNT)"
+#
+fi
+#********Gandalf25************
+if [ $HOMEDIR = "25" ]; then
+   DEVICE=gandalf25:/ms25_1/u
+   HOMEDIRPATH=/base/ms25_1/u/$MYGIDNUM/$ACCOUNT
+   #
+   # Check for the existence of /ms/<group name>/<site> directory
+   # If it doesn't exist create it.
+   #
+   ssh gandalf25 "(if [ ! -e /base/ms25_1/u/$MYSITENAME ]; then  mkdir /base/ms25_1/u/$MYSITENAME; chown root.${MYSITENAME} /base/ms25_1/u/$MYSITENAME; fi;mkdir /base/ms25_1/u/$MYSITENAME/$ACCOUNT)"
+#
+fi
+
+#
+fi
+#
+# Tasks to be performed on NetSun
+#
+#**** Edit passwd, shadow, & auto_Group and push maps
+#
+echo "Going to NETSUN..."
+#
+ssh netsun "(chmod 744 /etc/passwd;echo "$LOGINNAME:x:$MYUIDNUM:$MYGIDNUM:$FULLNAME:/$PROJECT/$MYSITENAME/$LOGINNAME:/bin/bash"  >> /etc/passwd;sort /etc/passwd > /etc/passwd.TMP;mv /etc/passwd.TMP /etc/passwd;chmod 444 /etc/passwd;chmod 744 /etc/shadow;echo "$LOGINNAME:x:13531::::::" >> /etc/shadow;sort /etc/shadow > /etc/shadow.TMP;mv /etc/shadow.TMP /etc/shadow;chmod 444 /etc/shadow;cd /var/yp;make;echo -e \"$ACCOUNT \t\t\t $DEVICE/$MYSITENAME/$ACCOUNT\" >> /etc/auto_$MYSITENAME;make)"
+#*******************
+#* Back on Aragorn *
+#*******************
+#
+if [ PROJECT = "u" ] || [ PROJECT = "U" ]; then
+  if [ $HOMEDIR = "12" ]; then
+    ssh gandalf12 chown $ACCOUNT.$MYSITENAME /base/home1/$MYSITENAME $ACCOUNT
+  else 
+    ssh gandalf25 chown $ACCOUNT.$MYSITENAME /base/ms25_1/$MYSITENAME $ACCOUNT
+  fi
+else
+  ssh orc1 chown $ACCOUNT./$MYSITENAME /base/homev1/$MYSITENAME/$ACCOUNT
+fi
+#
+# Need to read the passwd file and get the length of the 4th field (Group ID).
+# if field length=4 then U account, if length=5 then V account.
+#***********************************
+#*          Mass Storage           *
+#***********************************
+#find space on RAID > 9 then create account
+#
+df -h | grep gandalf | grep -v home | grep -v shared | grep -v s018 | grep -v public | awk '{ print $5"\t"$6 }'
+#
+echo -n "Choose where to put mass storage from list above(Eg. ms30-1)No SLASH: "
+read MASSSTORENAME
+#
+TMP=`(ypcat passwd | grep $ACCOUNT | awk -F: '{print $4}')`
+LENGTH=${#TMP}
+if [ $LENGTH = 4 ]; then
+GRPNAME=u
+else
+GRPNAME=v
+fi 
+#
+# CD to Raid with space to create home directory
+#
+cd /${MASSSTORENAME}
+#
+# Check for the existence of /ms/<group name>/<site> directory
+# If it doesn't exist create it.
+#
+if [ ! -e /MASSSTORENAME/$GRPNAME/$MYSITENAME ]; then
+  mkdir /MASSSTORENAME/$GRPNAME/$MYSITENAME
+fi
+#
+# Makes the MASS storage directory for the account (Eg. /u/s018/ebb142)
+#
+mkdir /$MASSSTORENAME/$GRPNAME/$MYSITENAME/$ACCOUNT
+#
+# Change ownership to user and group to Site.
+#
+chown ${ACCOUNT}.${MYSITENAME} /$MASSSTORENAME/$GRPNAME/$MYSITENAME/$ACCOUNT
+#
+# Setup link to follow DCF's path name nomenclature
+#
+cd /ms/$GRPNAME/$MYSITENAME
+ln -s /$MASSSTORENAME/$GRPNAME/$MYSITENAME/$ACCOUNT $ACCOUNT
+#
+# Verify the account is OK, after setting privileges
+#
+ls -la /ms/$GRPNAME/$MYSITENAME/$ACCOUNT

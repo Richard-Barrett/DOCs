@@ -1,0 +1,326 @@
+22May18
+
+@@@ install video
+https://www.youtube.com/watch?v=b4BqC_WXARk
+@ min 4 (and @ 12:30) they talk about Write cache
+
+When the VM is instantly recovered it is read only... the cach is where write are stored until the VM is fully 
+recovered on real storage, then the "journal" is written to disk
+DEFAULT is "C" drive on server
+
+
+Veeam B/U and Proxy (on one machine)
+      VM or physical (merits to both ways.... leaning to VM because it can be backed up fully and it is not a multi step process to recover server)
+
+1 - windows box
+
+    B/U - Enterprise Manager
+    B/U - Replication Console
+
+
+Repository Server
+
+1 - Linux machine
+      VM or physical (leaning towards VM... just a mount point to get to storage)
+
+
+
+(1)
+https://www.veeam.com/blog/physical-virtual-backup-server-placement-configuration.html
+
+Veeam servers at off site location
+
+Veeam agent for all (Windows and Linux)
+
+
+(2)
+https://www.veeam.com/blog/vmware-backup-proxy-transport-modes-configuration.html
+
+Hot Add proxy (for restores only)
+Direct NFS Access 
+
+(3)
+https://www.veeam.com/blog/vmware-backup-repository-configuration-best-practices.html
+
+(4)
+https://www.veeam.com/blog/disaster-recovery-cloud-connect-replication.html
+
+(5)
+https://www.veeam.com/blog/backup-copy-job-it-can-do-more-than-just-a-copy.html
+
+
+24May18
+
+mercury = Windows machine for Veeam
+apollo = test vm for veeam to backup
+pioneer = test vm for veeam to backup
+
+&&&&&
+
+@@@ physical machine will need an agent installed/running
+
+dsiegfriedt@dts3329:~/Downloads $ sudo yum install ./veeam-release-el7-1.0.5-1.i386.rpm
+
+@@@ apollo will be teh mount point
+@@@ I will just be using a veeam directory as a test on this test VM
+
+dsiegfriedt@dts3329:~ $ ssh apollo
+Last login: Thu May 24 09:45:51 2018 from dts3329.disneytoonstudios.com
+dsiegfriedt@apollo:~ $ cd /disney/depts/tech/syseng/backops/veeam
+dsiegfriedt@apollo:/disney/depts/tech/syseng/backops/veeam $ ll
+total 36K
+drwxr-xr-x.  2 root prodctn   0 May 24 14:04 .
+drwxrwxr-x. 22 root prodctn 499 May 24 14:04 ..
+
+
+4Jun18
+
+File/directory level restore (linux VM to Linux physical (dts3329) in a different location)
+
+vSphere Web Client
+
+open a console on "mercury"
+open Veeam BU and Replication
+Home; Restore (VMWare vSphere backup...) @@@ this will open teh BU wizard
+(testing file restore so select "Guest files (other OS)) and "Next"
+
+This will start a VM as a BU Helper (I selected "vsphere-prod-01" as teh host to create teh VM)
+
+Guest Wizard:
+select VM that you want to restore FROM "Next" (dippertwo)
+restore point "Next"
+restore reason "Next"
+
+@@@ a "Helper Appliance" VM will now boot to run FLR (File Level Restore) appliance.  (S-L-O-W says 20 seconds... but it isn't)
+
+Click Finish to get the FLR to boot....
+
+@@@ to get files...
+LVM/myvg-root/var/ <ctrl-a>
+Click "Copy To" icon
+Slect Dest (host) "Specify a differnt host " in the Server pull down
+Hostname (dts3329) and creds (pulldown... root)
+Select Destination ... brows to /tmp
+click Restore
+
+Calculates total size of teh restore (8.7GB)
+
+Progress bar....
+
+Time Elapsed:      Transfered:
+Time Remaining:	   Trandsfer Rate:
+
+ 
+
+
+ 
+
+
+
+
+RESTORE 
+pioneer:/var (9.6GB)
+TO:
+dts3329:/tmp
+
+Veeam will install 
+
+[root@d20735 ~]# rpm -qa | grep veeam
+veeam-2.0.0.400-1.el7.x86_64
+kmod-veeamsnap-2.0.0.400-1.el7.x86_64
+
+
+@@@ if you type veeam it brings a config GUI  (or should)
+
+
+@@@ comment about a bare metal too for a physical machine
+veeamconfig config patchiso
+
+veeamconfig repository list
+Error: This operation is not permitted in Managed by backup server mode.
+
+
+veeamconfig repository delete
+
+
+[root@d20735 ~]# rpm -ql veeam-2.0.0.400-1.el7.x86_64
+/etc/bash_completion.d/veeam
+/etc/veeam
+/etc/veeam/veeam.ini
+/lib/systemd/system/veeamservice.service
+/usr/bin/veeam
+/usr/bin/veeamconfig
+/usr/sbin/veeamagent
+/usr/sbin/veeamjobman
+/usr/sbin/veeammount
+/usr/sbin/veeamservice
+/usr/share/doc/veeam
+/usr/share/doc/veeam/copyright
+/usr/share/man/man8/veeamconfig.8
+/usr/share/veeam
+/usr/share/veeam/lpb_scheme.sql
+/usr/share/veeam/lpb_upgrade_scheme.sql
+[root@d20735 ~]# 
+[root@d20735 ~]# rpm -ql kmod-veeamsnap-2.0.0.400-1.el7.x86_64
+/etc/depmod.d/kmod-veeamsnap.conf
+/lib/modules/3.10.0-123.el7.x86_64
+/lib/modules/3.10.0-123.el7.x86_64/extra
+/lib/modules/3.10.0-123.el7.x86_64/extra/veeamsnap.ko
+[root@d20735 ~]# 
+
+
+[root@dts3329 ~]# rpm -ql veeam-release-el7-1.0.5-1.x86_64
+/etc/pki/RPM-EFDCEA77
+/etc/pki/RPM-EFDCEA77.asc
+/etc/pki/rpm-gpg/RPM-EFDCEA77
+/etc/pki/rpm-gpg/RPM-GPG-KEY-VeeamSoftwareRepo
+/etc/pki/rpm-gpg/RPM-GPG-KEY-VeeamSoftwareRepo.asc
+/etc/yum.repos.d/veeam.repo
+
+yum --enablerepo=veeam clean metadata
+
+yum install veeam
+
+Resolving Dependencies
+--> Running transaction check
+---> Package veeam.x86_64 0:2.0.0.400-1.el7 will be installed
+--> Processing Dependency: veeamsnap = 2.0.0.400 for package: veeam-2.0.0.400-1.el7.x86_64
+--> Running transaction check
+---> Package veeamsnap.noarch 0:2.0.0.400-1 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+===========================================================================================================================================================
+ Package                              Arch                              Version                                     Repository                        Size
+===========================================================================================================================================================
+Installing:
+ veeam                                x86_64                            2.0.0.400-1.el7                             veeam                             29 M
+Installing for dependencies:
+ veeamsnap                            noarch                            2.0.0.400-1                                 veeam                             86 k
+
+Transaction Summary
+===========================================================================================================================================================
+Install  1 Package (+1 Dependent package)
+
+Total download size: 29 M
+Installed size: 77 M
+Is this ok [y/d/N]: y
+Downloading packages:
+warning: /var/cache/yum/x86_64/7Workstation/veeam/packages/veeamsnap-2.0.0.400-1.noarch.rpm: Header V4 RSA/SHA1 Signature, key ID efdcea77: NOKEY
+Public key for veeamsnap-2.0.0.400-1.noarch.rpm is not installed
+(1/2): veeamsnap-2.0.0.400-1.noarch.rpm                                                                                             |  86 kB  00:00:00     
+(2/2): veeam-2.0.0.400-1.el7.x86_64.rpm                                                                                             |  29 MB  00:00:01     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                       24 MB/s |  29 MB  00:00:01     
+Retrieving key from http://repository.veeam.com/keys/RPM-GPG-KEY-VeeamSoftwareRepo
+Importing GPG key 0x8AADDC66:
+ Userid     : "Veeam Software Repository key for RPM <support@veeam.com>"
+ Fingerprint: e020 7ae2 46e6 905b 7d52 591d 5a6a 9563 8aad dc66
+ From       : http://repository.veeam.com/keys/RPM-GPG-KEY-VeeamSoftwareRepo
+Is this ok [y/N]: y
+Retrieving key from http://repository.veeam.com/keys/RPM-EFDCEA77
+Importing GPG key 0xEFDCEA77:
+ Userid     : "Veeam Software RPM Repository <support@veeam.com>"
+ Fingerprint: 1dd6 ead9 af6e 8f34 465d 790c ea4f c237 efdc ea77
+ From       : http://repository.veeam.com/keys/RPM-EFDCEA77
+Is this ok [y/N]: y
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : veeamsnap-2.0.0.400-1.noarch                                                                                                            1/2 
+Loading new veeamsnap-2.0.0.400 DKMS files...
+dpkg: warning: version '3.10.0-327.36.3.el7.x86_64' has bad syntax: invalid character in revision number
+dpkg: warning: version '3.10.0-327.36.3.el7.x86_64
+3.10.0' has bad syntax: invalid character in revision number
+dpkg: warning: version '3.10.0-327.el7.x86_64' has bad syntax: invalid character in revision number
+dpkg: warning: version '3.10.0-327.36.3.el7.x86_64
+3.10.0' has bad syntax: invalid character in revision number
+Building for 3.10.0-327.36.3.el7.x86_64 3.10.0-327.el7.x86_64
+Building initial module for 3.10.0-327.36.3.el7.x86_64
+Done.
+
+veeamsnap:
+Running module version sanity check.
+ - Original module
+   - No original module exists within this kernel
+ - Installation
+   - Installing to /lib/modules/3.10.0-327.36.3.el7.x86_64/extra/
+
+depmod....
+
+DKMS: install completed.
+Module build for kernel 3.10.0-327.el7.x86_64 was skipped since the
+kernel headers for this kernel does not seem to be installed.
+  Installing : veeam-2.0.0.400-1.el7.x86_64                                                                                                            2/2 
+Created symlink from /etc/systemd/system/multi-user.target.wants/veeamservice.service to /usr/lib/systemd/system/veeamservice.service.
+Uploading Package Profile
+  Verifying  : veeam-2.0.0.400-1.el7.x86_64                                                                                                            1/2 
+  Verifying  : veeamsnap-2.0.0.400-1.noarch                                                                                                            2/2
+
+Installed:
+  veeam.x86_64 0:2.0.0.400-1.el7                                                                                                                           
+Dependency Installed:
+  veeamsnap.noarch 0:2.0.0.400-1                                                                                                                           
+Complete!
+
+https://www.veeam.com/videos/agent-for-linux-introduction-9413.html
+
+
+12Jun18
+
+@@@ was able to backup dts33329 via veeam GUI (on dts3329)
+
+crontab -l
+#{16fbc7ca-41ff-481f-9c4f-ac6a5b1ef7ae}# Veeam backup job, do not modify this line
+0 6 * * 1,2,3,4,5 veeamconfig job start --id {16fbc7ca-41ff-481f-9c4f-ac6a5b1ef7ae} --retriable --scheduled --highpriority
+
+((((()))))
+12Jun18  veeam FAQs
+
+https://www.veeam.com/linux-backup-agent-faq.html
+
+@@@ free version does not support what we want to test
+
+((((()))))
+13Jun18  training videos
+
+https://www.veeam.com/university.html
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+((((()))))
+
+
+

@@ -1,0 +1,1 @@
+#! /bin/kshif [ -z "$1" ]then   echo "This program needs a file name"   exit 1else   if [ -f "$1" ]   then      echo "$1 is an ordnary file"   else      if [ -d "$1" ]      then	 echo "$1 is a directory"      elif [ -a "$1" ]      then 	 echo "$1 is a special file"      else	 echo "$1 does not exist"      fi   fifi

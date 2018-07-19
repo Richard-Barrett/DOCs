@@ -1,0 +1,961 @@
+27Apr12  --siggy   to get to the console
+
+login
+Troubleshooting
+   enable ssh
+   enable ESXi shell
+
+
+@@@ to get a shell on the console
+Alt-F1
+
+&&&&&
+Autostart on boot
+
+Select VM
+  Select Configuration Tab
+  Select Virtual Machine STARTUP/SHUDOWN (on Left)
+&&&&&
+NetWorking
+
+Select VM
+  Select Configuration Tab
+  Select DNS and Routing (on Left)
+  Select Properties (upper Right)
+
+&&&&&
+16Jan13  VMWare convert 
+
+https://communities.vmware.com/thread/325984
+
+NOTE:   This did not work for me
+In the Converter wizard, on Data to copy page, switch to Advanced view, select Destination, in the table 
+with target virtual disks select the one where the root partition resides and click the "To Basic" 
+button below the table. 
+
+This will trigger the old 4.3 behavior where LVM was not preserved and / will be stored in a basic volume. 
+
+The destination VM will boot, however your root folder will be no longer in a LVM volume. 
+
+If it is OK for you this is the easiest way.
+&&&&&
+3Jul14  OT   VMWare tools for the typie typie
+
+***** ALL on my linux machine *****
+
+[root@la1002073d samples]# pwd
+/usr/share/doc/vmware-vcli/samples
+[root@la1002073d samples]# ll
+total 32
+drwxr-xr-x. 2 root root 4096 Jul  3 11:11 discovery
+drwxr-xr-x. 3 root root 4096 Jul  3 11:11 host
+drwxr-xr-x. 2 root root 4096 Jul  3 11:11 performance
+drwxr-xr-x. 2 root root 4096 Jul  3 11:11 scheduled_task
+drwxr-xr-x. 2 root root 4096 Jul  3 11:11 session
+drwxr-xr-x. 2 root root 4096 Jul  3 11:11 simpleagent
+drwxr-xr-x. 2 root root 4096 Jul  3 11:11 vm
+drwxr-xr-x. 2 root root 4096 Jul  3 11:11 WSMan
+
+cd /tmp/scripts/
+./getSupportedGuestOSes.pl --cluster DEV --server lavcmssb1
+./vmhostlist.pl --datacenter Burbank_Site --server lavcmssb1
+./printperformance.pl --server lavcmssb1
+
+
+&&&&&
+15May15  --siggy OT  mounting vmdk on a VM for editing
+                     changing the admin passwd
+
+SEE ~dsiegfri/DOCx/mounting a vmdk on a new VM.docx
+
+dsiegfri@la1002073d:~ $ ssh lacfe
+dsiegfri@lacfe's password: 
+Last login: Fri Apr  3 09:48:06 2015 from 10.130.8.176
+[dsiegfri@lacfe ~]$ 
+[dsiegfri@lacfe ~]$ su -
+Password: 
+[root@lacfe ~]# 
+[root@lacfe ~]# vgscan
+  Reading all physical volumes.  This may take a while...
+  Found volume group "vg_lacfe" using metadata type lvm2
+[root@lacfe ~]# 
+[root@lacfe ~]# vgscan
+  Reading all physical volumes.  This may take a while...
+  Found volume group "smosvg" using metadata type lvm2
+  Found volume group "vg_lacfe" using metadata type lvm2
+
+[root@lacfe ~]# vgchange -a y
+  11 logical volume(s) in volume group "smosvg" now active
+  6 logical volume(s) in volume group "vg_lacfe" now active
+[root@lacfe ~]# 
+[root@lacfe ~]# lvs
+  LV            VG       Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  altrootvol    smosvg   -wi-a-----  96.00m                                                    
+  home          smosvg   -wi-a-----  96.00m                                                    
+  localdiskvol  smosvg   -wi-a-----  43.94g                                                    
+  optvol        smosvg   -wi-a----- 206.22g                                                    
+  recvol        smosvg   -wi-a-----  96.00m                                                    
+  rootvol       smosvg   -wi-a-----   3.91g                                                    
+  storeddatavol smosvg   -wi-a-----   9.75g                                                    
+  swapvol       smosvg   -wi-a-----  15.62g                                                    
+  tmpvol        smosvg   -wi-a-----   1.94g                                                    
+  usrvol        smosvg   -wi-a-----   6.81g                                                    
+  varvol        smosvg   -wi-a-----   3.91g                                                    
+  LogVol00      vg_lacfe -wi-ao----   3.91g                                                    
+  LogVol01      vg_lacfe -wi-ao----   4.88g                                                    
+  LogVol02      vg_lacfe -wi-ao----   3.91g                                                    
+  LogVol03      vg_lacfe -wi-ao----  29.30g                                                    
+  LogVol04      vg_lacfe -wi-ao----   2.93g                                                    
+  LogVol05      vg_lacfe -wi-ao----   5.86g                                                    
+[root@lacfe ~]# 
+[root@lacfe ~]# pvs
+  PV         VG       Fmt  Attr PSize   PFree 
+  /dev/sda2  vg_lacfe lvm2 a--   69.51g 18.73g
+  /dev/sdb3  smosvg   lvm2 a--  292.38g     0 
+[root@lacfe ~]# 
+[root@lacfe ~]# lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/smosvg/rootvol
+  LV Name                rootvol
+  VG Name                smosvg
+  LV UUID                6i3DpX-V1dG-ldsn-MAiK-QaIA-m1eZ-M1HgVy
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                3.91 GiB
+  Current LE             125
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:6
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/storeddatavol
+  LV Name                storeddatavol
+  VG Name                smosvg
+  LV UUID                1Jh2B6-NkfF-o2xg-6Pow-XfQR-e3Vr-82ifKI
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                9.75 GiB
+  Current LE             312
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:7
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/localdiskvol
+  LV Name                localdiskvol
+  VG Name                smosvg
+  LV UUID                Fbk9RP-5Rkr-6ohu-GEHk-xZ6K-SACA-gs7g5l
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                43.94 GiB
+  Current LE             1406
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:8
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/home
+  LV Name                home
+  VG Name                smosvg
+  LV UUID                Ka7Dl8-Wv4v-H7HK-ov9q-yTpA-1B0J-Ou5AaY
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                96.00 MiB
+  Current LE             3
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:9
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/optvol
+  LV Name                optvol
+  VG Name                smosvg
+  LV UUID                H2WXHh-VWfq-QueC-9tw6-veUv-T0z0-WBPtqG
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                206.22 GiB
+  Current LE             6599
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:10
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/varvol
+  LV Name                varvol
+  VG Name                smosvg
+  LV UUID                ER2F32-JMYV-pZLh-vYyf-BfzS-PIuc-JTqr21
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                3.91 GiB
+  Current LE             125
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:11
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/usrvol
+  LV Name                usrvol
+  VG Name                smosvg
+  LV UUID                3JY3S1-QBlu-soJw-pNwd-HHZI-jyQg-Soo2b1
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                6.81 GiB
+  Current LE             218
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:12
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/tmpvol
+  LV Name                tmpvol
+  VG Name                smosvg
+  LV UUID                XHYUcn-zhOb-y9WT-MjSG-RyRl-c9AC-QZ5p1B
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                1.94 GiB
+  Current LE             62
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:13
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/recvol
+  LV Name                recvol
+  VG Name                smosvg
+  LV UUID                5fA5Eo-BH10-ctvU-jtiD-J8Mh-FEMg-AVA72B
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                96.00 MiB
+  Current LE             3
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:14
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/altrootvol
+  LV Name                altrootvol
+  VG Name                smosvg
+  LV UUID                K0YCba-Iq1Q-4OSJ-mf1j-Jf81-WHZe-MgSwR9
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                96.00 MiB
+  Current LE             3
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:15
+   
+  --- Logical volume ---
+  LV Path                /dev/smosvg/swapvol
+  LV Name                swapvol
+  VG Name                smosvg
+  LV UUID                Lps8FU-UGWu-dR3s-goc6-c8it-WFpX-kXgAlW
+  LV Write Access        read/write
+  LV Creation host, time , 
+  LV Status              available
+  # open                 0
+  LV Size                15.62 GiB
+  Current LE             500
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:16
+   
+LOCAL vg SNIPPED
+
+   
+[root@lacfe ~]# mount /dev/smosvg/rootvol /mnt
+[root@lacfe ~]# ll /mnt
+total 216
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 altroot
+-rw-r--r--   1 root root     0 Jul  9  2014 beanCreationTimes.log
+drwxr-xr-x.  2 root root  4096 Jul  9  2014 bin
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 boot
+drwxr-xr-x.  4 root root  4096 Apr 17  2014 dev
+drwxr-xr-x. 67 root root  4096 May 15 11:11 etc
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 home
+drwxr-xr-x.  9 root root  4096 Jul  9  2014 lib
+drwxr-xr-x.  7 root root  4096 Jul  9  2014 lib64
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 localdisk
+drwx------   2 root root 16384 Apr 17  2014 lost+found
+drwxr-xr-x.  2 root root  4096 Aug  8  2008 media
+drwxr-xr-x.  2 root root  4096 Jul  9  2014 mnt
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 opt
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 proc
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 recovery
+drwxr-x---.  5 root root  4096 Jul 17  2014 root
+drwxr-xr-x.  2 root root 12288 Feb 25 20:04 sbin
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 selinux
+drwxr-xr-x.  2 root root  4096 Aug  8  2008 srv
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 storedconfig
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 storeddata
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 sys
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 tmp
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 usr
+drwxr-xr-x.  2 root root  4096 Apr 17  2014 var
+[root@lacfe ~]# ll /mnt/etc
+total 2776
+-rwxr-xr-x.  1 root root     10 Apr 17  2014 ade-version
+-rw-r--r--.  1 root root     46 May 15 10:58 adjtime
+-rw-r--r--.  1 root root   1512 Apr 25  2005 aliases
+-rw-r-----.  1 root   51  12288 Apr 17  2014 aliases.db
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 alternatives
+-rw-r--r--.  1 root root    298 Dec 18  2006 anacrontab
+-rw-------.  1 root root      1 Aug 23  2006 at.deny
+drwxr-x---.  3 root root   4096 Apr 17  2014 audisp
+drwxr-x---.  2 root root   4096 Apr 17  2014 audit
+drwxr-xr-x.  4 root root   4096 Apr 17  2014 avahi
+-rw-r--r--.  1 root root   1708 May 11  2009 bashrc
+drwxr-xr-x.  2 root root   4096 May 15 11:11 blkid
+drwxr-xr-x   2 root root   4096 Jul  9  2014 cars
+-rw-r--r--.  1 root root   6308 Jun 28  2007 conman.conf
+drwx------.  2 root root   4096 Apr 17  2014 cron.d
+drwxr-xr-x.  2 root root   4096 Jul  9  2014 cron.daily
+-rw-r--r--.  1 root root      0 Apr 17  2014 cron.deny
+drwxr-xr-x.  2 root root   4096 Jul  9  2014 cron.hourly
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 cron.monthly
+-rw-r--r--.  1 root root    255 Jul 14  2006 crontab
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 cron.weekly
+-rw-r--r--.  1 root root   1044 May 11  2009 csh.cshrc
+-rw-r--r--.  1 root root   1218 May 11  2009 csh.login
+drwxr-xr-x.  4 root root   4096 Apr 17  2014 dbus-1
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 default
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 depmod.d
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 dev.d
+-rw-r--r--.  1 root root   1061 Jul 10  2009 dhcp6s.conf
+-rw-r--r--.  1 root root   2518 Jul 13  2009 DIR_COLORS
+-rw-r--r--.  1 root root   2420 Jul 13  2009 DIR_COLORS.xterm
+-rw-rw-r--.  1 root disk      0 Apr  6  2009 dumpdates
+-rw-r--r--.  1 root root      0 May 11  2009 environment
+-rw-r--r--.  1 root root      0 Jan 12  2000 exports
+-rw-r--r--.  1 root root  22060 Jul 13  2006 fb.modes
+-rw-r--r--.  1 root root     59 Jan 31  2006 filesystems
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 firmware
+drwxr-xr-x.  4 root root   4096 Apr 17  2014 fonts
+-rw-r--r--   1 root root   1295 Feb 20 13:58 fstab
+drwxr-xr-x.  2 root root   4096 Apr  7  2009 gcrypt
+-rw-r--r--.  1 root root    643 Apr 17  2014 gpce-release
+-rw-r--r--.  1 root root     26 Apr 17  2014 gpce-version
+-rw-r--r--.  1 root root   1756 Jul 12  2006 gpm-root.conf
+-rw-r--r--   1 root root    658 May 15 11:11 group
+-rw-------.  1 root root    646 Jul  9  2014 group-
+lrwxrwxrwx.  1 root root     22 Apr 17  2014 grub.conf -> ../boot/grub/grub.conf
+-r--------   1 root root    564 Jul  9  2014 gshadow
+-rw-------   1 root root    552 Jul  9  2014 gshadow-
+-rw-r--r--.  1 root root    833 Jan 16  2007 gssapi_mech.conf
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 hal
+-rw-r--r--.  1 root root     17 Jul 23  2000 host.conf
+-rw-r--r--.  1 root root    212 May 15 11:11 hosts
+-rw-r--r--.  1 root root    161 Jan 12  2000 hosts.allow
+-rw-r--r--.  1 root root    347 Jan 12  2000 hosts.deny
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 httpd
+-rw-r--r--.  1 root root    177 May 19  2009 idmapd.conf
+lrwxrwxrwx.  1 root root     11 Apr 17  2014 init.d -> rc.d/init.d
+-rw-r--r--.  1 root root    658 Jul 13  2009 initlog.conf
+-rw-r--r--.  1 root root   1852 Apr 17  2014 inittab
+-rw-r--r--.  1 root root    758 Sep 22  2004 inputrc
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 iproute2
+-rw-r--r--.  1 root root   1069 Apr 17  2014 kdump.conf
+-rw-r--r--.  1 root root    608 Jun 24  2007 krb5.conf
+-rw-r--r--.  1 root root   9028 May 26  2009 ldap.conf
+-rw-r--r--   1 root root  43515 Feb 20 13:58 ld.so.cache
+-rw-r--r--.  1 root root     28 Oct  8  2006 ld.so.conf
+drwxr-xr-x.  2 root root   4096 Feb 20 13:58 ld.so.conf.d
+-rw-r--r--.  1 root root   3544 Jun 16  2009 lftp.conf
+-rw-r-----.  1 root root    191 Apr 21  2009 libaudit.conf
+-rw-r--r--.  1 root root   2506 Mar 25  2008 libuser.conf
+-rw-r--r--.  1 root root    118 May 15 11:11 localtime
+-rw-r--r--.  1 root root    180 May 15 11:11 login.defs
+-rw-r--r--.  1 root root    505 Apr 17  2014 logrotate.conf
+drwxr-xr-x.  2 root root   4096 Jul  9  2014 logrotate.d
+drwxr-xr-x.  4 root root   4096 Apr 17  2014 logwatch
+drwxr-xr-x.  5 root root   4096 Apr 17  2014 lvm
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 mail
+-rw-r--r--.  1 root root    293 Sep  5  2006 mailcap
+-rw-r--r--.  1 root root    112 Jul 12  2006 mail.rc
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 makedev.d
+-rw-r--r--.  1 root root   4617 Jul 12  2006 man.config
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 mgetty+sendfax
+-rw-r--r--.  1 root root  14100 Sep  5  2006 mime.types
+-rw-r--r--.  1 root root    330 Jun 30  2009 mke2fs.conf
+-rw-r--r--.  1 root root    114 Apr 17  2014 modprobe.conf
+drwxr-xr-x.  2 root root   4096 Feb 20 13:58 modprobe.d
+-rw-------.  1 root root   8781 Jan  1  2006 monit.conf
+drwxr-xr-x.  2 root root   4096 Feb 20  2007 monit.d
+-rw-r--r--.  1 root root      0 Jan 12  2000 motd
+-rw-r--r--   1 root root    748 May 15 11:11 mtab
+-rw-r--r--.  1 root root   1983 Aug  9  2006 mtools.conf
+-rw-r--r--.  1 root root   2711 Jul  8  2009 multipath.conf
+-rw-r-----.  1 root   25   1230 Jul 29  2009 named.caching-nameserver.conf
+-rw-r-----.  1 root   25    955 Jul 29  2009 named.rfc1912.zones
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 netplug
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 netplug.d
+-rw-r--r--.  1 root root   1895 Jul 17  2009 nscd.conf
+-rw-r--r--.  1 root root   1696 Sep 22  2004 nsswitch.conf
+drwxr-xr-x.  2 root root   4096 Jul  9  2014 ntp
+-rw-r--r--   1 root root    165 May 15 11:11 ntp.conf
+-rw-r--r--.  1 root root      0 Jul 12  2006 odbc.ini
+-rw-r--r--.  1 root root    389 Jul 12  2006 odbcinst.ini
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 openldap
+drwxr-xr-x.  2 root root   4096 Aug  8  2008 opt
+-rw-r--r--   1 root root     57 Jul  9  2014 oraInst.loc
+-rw-rw-r--   1  440  201     47 Jul  9  2014 oratab
+drwxr-xr-x.  2 root root   4096 Feb 20 13:58 pam.d
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 pam_pkcs11
+-rw-r--r--.  1 root root     12 Jul 12  2006 pam_smb.conf
+-rw-r--r--   1 root root   1523 May 15 11:11 passwd
+-rw-r--r--.  1 root root   1483 Jul  9  2014 passwd-
+drwxr-xr-x.  6 root root   4096 Apr 17  2014 pki
+drwxr-xr-x.  5 root root   4096 Apr 17  2014 pm
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 ppp
+-rw-r--r--   1 root root 113040 May 10 21:04 prelink.cache
+-rw-r--r--.  1 root root    973 Sep 18  2008 prelink.conf
+drwxr-xr-x.  2 root root   4096 Feb 20 13:58 prelink.conf.d
+-rw-r--r--.  1 root root    233 Mar 25  2004 printcap
+-rw-r--r--   1 root root    899 Jul  9  2014 profile
+-rw-r--r--   1 root root    898 Jul  9  2014 profile.bak
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 profile.d
+-rw-r--r--.  1 root root   6108 Oct 11  2006 protocols
+-rw-r--r--.  1 root root    220 Jul 21  2008 quotagrpadmins
+-rw-r--r--.  1 root root    290 Jul 21  2008 quotatab
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 racoon
+lrwxrwxrwx.  1 root root      7 Apr 17  2014 rc -> rc.d/rc
+lrwxrwxrwx.  1 root root     10 Apr 17  2014 rc0.d -> rc.d/rc0.d
+lrwxrwxrwx.  1 root root     10 Apr 17  2014 rc1.d -> rc.d/rc1.d
+lrwxrwxrwx.  1 root root     10 Apr 17  2014 rc2.d -> rc.d/rc2.d
+lrwxrwxrwx.  1 root root     10 Apr 17  2014 rc3.d -> rc.d/rc3.d
+lrwxrwxrwx.  1 root root     10 Apr 17  2014 rc4.d -> rc.d/rc4.d
+lrwxrwxrwx.  1 root root     10 Apr 17  2014 rc5.d -> rc.d/rc5.d
+lrwxrwxrwx.  1 root root     10 Apr 17  2014 rc6.d -> rc.d/rc6.d
+drwxr-xr-x. 10 root root   4096 Apr 17  2014 rc.d
+lrwxrwxrwx.  1 root root     13 Apr 17  2014 rc.local -> rc.d/rc.local
+lrwxrwxrwx.  1 root root     15 Apr 17  2014 rc.sysinit -> rc.d/rc.sysinit
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 readahead.d
+-rw-r--r--.  1 root root     54 Aug  4  2009 redhat-release
+-rw-r--r--   1 root root     61 May 15 11:11 resolv.conf
+lrwxrwxrwx.  1 root root     11 Apr 17  2014 rmt -> ../sbin/rmt
+-rw-r-----.  1 root   25    113 Apr 17  2014 rndc.key
+-rw-r--r--.  1 root root   1615 Aug 30  2001 rpc
+drwxr-xr-x.  2 root root   4096 Jul 23  2009 rpm
+-rw-r--r--.  1 root root    327 May 15 11:18 rsyslog.conf
+-rwxr-xr-x   1 root root      0 May 15 11:21 rsyslog-gui.conf
+-rw-r--r--.  1 root root    734 Jul 13  2009 rwtab
+drwxr-xr-x.  2 root root   4096 Jul 13  2009 rwtab.d
+drwxr-xr-x.  2 root root   4096 Apr 28  2009 sasl2
+-rw-r--r--   1 root root   7330 Nov 27  2009 screenrc
+-rw-r--r--.  1 root root    666 May  5  2009 scsi_id.config
+-rw-------.  1 root root    128 Jul  9  2014 securetty
+drwxr-xr-x.  5 root root   4096 Jul  9  2014 security
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 selinux
+-rw-r--r--.  1 root root  85179 Nov 28  2008 sensors.conf
+-rw-r--r--.  1 root root 362031 Feb 23  2006 services
+-rw-r--r--.  1 root root    216 Jul 22  2009 sestatus.conf
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 setuptool.d
+-rw-rw-rw-   1 root root    940 May 15 11:11 shadow
+-r--------.  1 root root    911 Jul  9  2014 shadow-
+-rw-r--r--.  1 root root     86 Jul  9  2014 shells
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 skel
+-rw-r--r--.  1 root root   6463 Aug  7  2008 smartd.conf
+drwxr-xr-x.  2 root root   4096 Nov 28  2006 smrsh
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 snmp
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 squid
+drwxr-xr-x.  2 root root   4096 Jul  9  2014 ssh
+drwxr-xr-x.  2 root root   4096 Sep  9  2008 stunnel
+-r--r-----.  1 root root   3185 Apr 14  2009 sudoers
+drwxr-xr-x.  8 root root   4096 May 15 11:11 sysconfig
+-rw-r--r--   1 root root   1334 Jul  9  2014 sysctl.conf
+-rw-r--r--.  1 root root    694 Mar 25  2008 sysklog.conf
+lrwxrwxrwx.  1 root root     17 Apr 17  2014 syslog.conf -> /etc/rsyslog.conf
+-rw-r--r--.  1 root root 807103 Jul 12  2006 termcap
+drwxr-xr-x.  4 root root   4096 Apr 17  2014 udev
+-rw-------   1 root root    137 Jul  9  2014 updatedb.conf
+-rw-r--r--.  1 root root   1533 Jun 12  2009 virc
+drwxr-xr-x   6 root root   4096 Feb 20 13:58 vmware-tools
+-rw-r--r--.  1 root root   2657 Jul 21  2008 warnquota.conf
+-rw-r--r--.  1 root root   4204 Apr 20  2009 wgetrc
+drwxr-xr-x.  6 root root   4096 Apr 17  2014 X11
+-rw-r--r--.  1 root root   1001 Dec  6  2006 xinetd.conf
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 xinetd.d
+drwxr-xr-x.  2 root root   4096 Apr 17  2014 xml
+drwxr-xr-x.  3 root root   4096 Apr 17  2014 yum
+-rw-r--r--.  1 root root    346 Jul  7  2009 yum.conf
+drwxr-xr-x.  2 root root   4096 Jul  7  2009 yum.repos.d
+[root@lacfe ~]# cd /mnt/etc/
+[root@lacfe etc]# cat passwd
+passwd   passwd-  
+[root@lacfe etc]# cat passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+news:x:9:13:news:/etc/news:
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+gopher:x:13:30:gopher:/var/gopher:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+vcsa:x:69:69:virtual console memory owner:/dev:/sbin/nologin
+rpm:x:37:37::/var/lib/rpm:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
+haldaemon:x:68:68:HAL daemon:/:/sbin/nologin
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+rpc:x:32:32:Portmapper RPC user:/:/sbin/nologin
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin
+smmsp:x:51:51::/var/spool/mqueue:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+pcap:x:77:77::/var/arpwatch:/sbin/nologin
+apache:x:48:48:Apache:/var/www:/sbin/nologin
+squid:x:23:23::/var/spool/squid:/sbin/nologin
+admin:x:500:110::/home/admin:/opt/system/bin/carssh.sh
+named:x:25:25:Named:/var/named:/sbin/nologin
+oracle:x:440:201::/opt/oracle:/bin/bash
+[root@lacfe etc]# cat shadow
+root:!!:13316:0:99999:7:::
+bin:*:13316:0:99999:7:::
+daemon:*:13316:0:99999:7:::
+adm:*:13316:0:99999:7:::
+lp:*:13316:0:99999:7:::
+sync:*:13316:0:99999:7:::
+shutdown:*:13316:0:99999:7:::
+halt:*:13316:0:99999:7:::
+mail:*:13316:0:99999:7:::
+news:*:13316:0:99999:7:::
+uucp:*:13316:0:99999:7:::
+operator:*:13316:0:99999:7:::
+games:*:13316:0:99999:7:::
+gopher:*:13316:0:99999:7:::
+ftp:*:13316:0:99999:7:::
+nobody:*:13316:0:99999:7:::
+dbus:!!:13316:0:99999:7:::
+vcsa:!!:13316:0:99999:7:::
+rpm:!!:13316:0:99999:7:::
+ntp:!!:13316:0:99999:7:::
+haldaemon:!!:13316:0:99999:7:::
+nscd:!!:13316:0:99999:7:::
+sshd:!!:13316:0:99999:7:::
+rpc:!!:13316:0:99999:7:::
+mailnull:!!:13316:0:99999:7:::
+smmsp:!!:13316:0:99999:7:::
+rpcuser:!!:13316:0:99999:7:::
+nfsnobody:!!:13316:0:99999:7:::
+pcap:!!:13316:0:99999:7:::
+apache:!!:13316:0:99999:7:::
+squid:!!:13316:0:99999:7:::
+admin:$1$SIKQvyW2$S75qMsEuvT0fwUM8HwbHQ.:16260:0:99999:0:0::
+oracle:!!:14671:0:99999:0:::
+
+[root@lacfe etc]# cd
+[root@lacfe ~]# umount /mnt
+[root@lacfe ~]# mount /dev/smosvg/rootvol /mnt
+[root@lacfe ~]# less /mnt/etc/shadow
+[root@lacfe ~]# umount /mnt
+[root@lacfe ~]# 
+[root@lacfe ~]# logout
+[dsiegfri@lacfe ~]$ logout
+Connection to lacfe closed.
+
+&&&&&
+3Dec15  --siggy expanding VM disk
+http://www.unixmen.com/increase-disk-space-and-memory-in-linux-vmware-virtual-machines/
+&&&&&
+
+27Jan16  --siggy   log collection and upload
+
+Collecting logs: 
+http://kb.vmware.com/kb/653
+
+Uploading logs: 
+http://kb.vmware.com/kb/1008525
+
+Server Name : ftpsite.vmware.com
+Username: inbound
+Password: inbound
+Address: ftpsite.vmware.com
+
+Directory: (Create one as per your SR number in the root directory. Then change into your directory. 
+If your sr directory already exists, just change into it.)
+Method: passive FTP
+
+Note: When logging in with the above information you can not Delete, Rename or Download any files, 
+even the files you just uploaded.
+
+&&&&&
+9Feb16  --siggy  consolidation when NOT in "Snapshot Manager"
+
+I found another VM (laccdbprd3) that had a Warning that consolidation was needed but wasn't in snapshot manager.  I found the following URL that seems to be working for this issue.
+
+http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2003638
+&&&&&
+10Mar16  OT  #Based on OT's work I found other purposes
+
+To find which VMs are on a specific host (blade) loop through the laesxi15-34 and run
+
+/bin/vim-cmd vmsvc/getallvms
+
+and you get:
+[root@lasysmon ~]# ssh laesxi15 /bin/vim-cmd vmsvc/getallvms
+Vmid      Name                            File                              Guest OS          Version             Annotation          
+15     laccapprd3    [lasan3_nfs_cc6] laccapprd3/laccapprd3.vmx       rhel5_64Guest           vmx-08    CC PRD App Batch Server       
+17     laccapprd1    [lasan3_nfs_cc6] laccapprd1/laccapprd1.vmx       rhel5_64Guest           vmx-08    CC PRD App Server 1           
+19     laccapprd2    [lasan3_nfs_cc6] laccapprd2/laccapprd2.vmx       rhel5_64Guest           vmx-08    CC PRD App Server 2           
+28     lapwclmsql1   [lasan3_nfs_prod4] lapwclmsql1/lapwclmsql1.vmx   windows8Server64Guest   vmx-08                                  
+38     laccdbprd3    [lasan3_nfs_cc6] laccdbprd3/laccdbprd3.vmx       windows7Server64Guest   vmx-08    CC PRD DB Reporting           
+39     laccbl5       [lasan3_nfs_prod4] laccbl5/laccbl5.vmx           winNetStandardGuest     vmx-08    CC PRD Bulk Loader Error Fixer
+
+To find the number of CPUs assigned to the VM (guest) you have to use the VMID from above and type:
+
+[root@lasysmon ~]# ssh laesxi15 /bin/vim-cmd vmsvc/get.summary 15 | grep -A7 name
+      name = "laccapprd3", 
+      template = false, 
+      vmPathName = "[lasan3_nfs_cc6] laccapprd3/laccapprd3.vmx", 
+      memorySizeMB = 12288, 
+      cpuReservation = 0, 
+      memoryReservation = 0, 
+      numCpu = 4, 
+      numEthernetCards = 1, 
+
+ALSO
+
+a PDF with vmsvc commands is in ~dsiegfri/REPUBLIC/VMWARE/VIM-CMD.pdf
+
+&&&&&
+27Jul16  --siggy passwdless login to esxi hosts
+https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=1002866
+
+shortcut:  Login; cd etc/ssh/key*; cat > authorized_keys; C&P the pub key here (as a single line); restart sshd
+
+&&&&&
+###############################
+26Jun14  --siggy (Denise)  Snapshot
+
+open vSphere
+select VM you want to snapshot
+RT click
+  select Snapshot
+  select Take Snapshot...
+  give a comprehensive name and click OK
+
+20Nov14  --siggy (Denise/OT) reverting to snapshot
+select VM you want to snapshot
+RT click
+  select Snapshot
+  Select "Revert to Current Snapshot"
+
+    select Snapshot
+    select Snapshot Manager
+    delete current snapshot
+
+&&&&&
+**********************************************************************************************************************************************
+**********************************************************************************************************************************************
+****************************************** Moved on to Disney ********************************************************************************
+**********************************************************************************************************************************************
+**********************************************************************************************************************************************
+4Apr17  --siggy  UPGRADE esxi-1 from version 6.0 to 6.5 (oh and rename it to follow teh existing server name (vsphere-prod-02)
+
+https://www.vladan.fr/how-to-upgrade-esxi-6-0-to-6-5-via-cli-on-line/
+
+ssh root@10.106.228.26 (vmesxi-1.disneytoonstudios.com) {S...}
+
+esxcli software sources profile list -d https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml | grep -i ESXi-6.5
+ESXi-6.5.0-20170304101-no-tools   VMware, Inc.  PartnerSupported
+ESXi-6.5.0-20170304001-no-tools   VMware, Inc.  PartnerSupported
+ESXi-6.5.0-20170104001-no-tools   VMware, Inc.  PartnerSupported
+ESXi-6.5.0-20170301001s-no-tools  VMware, Inc.  PartnerSupported
+ESXi-6.5.0-20170304001-standard   VMware, Inc.  PartnerSupported
+ESXi-6.5.0-20170104001-standard   VMware, Inc.  PartnerSupported
+ESXi-6.5.0-20170301001s-standard  VMware, Inc.  PartnerSupported
+ESXi-6.5.0-4564106-standard       VMware, Inc.  PartnerSupported
+ESXi-6.5.0-20170304101-standard   VMware, Inc.  PartnerSupported
+ESXi-6.5.0-4564106-no-tools       VMware, Inc.  PartnerSupported
+
+esxcli software profile update -p ESXi-6.5.0-20170304001-standard -d https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
+
+[DependencyError]
+VIB Hewlett-Packard_bootbank_char-hpilo_600.9.0.2.8-1OEM.600.0.0.2159203 requires vmkapi_2_0_0_0, but the requirement cannot be satisfied within the ImageProfile.
+VIB Hewlett-Packard_bootbank_char-hpcru_6.0.6.14-1OEM.600.0.0.2159203 requires vmkapi_2_0_0_0, but the requirement cannot be satisfied within the ImageProfile.
+VIB Hewlett-Packard_bootbank_char-hpcru_6.0.6.14-1OEM.600.0.0.2159203 requires com.vmware.driverAPI-9.2.0.0, but the requirement cannot be satisfied within the ImageProfile.
+VIB Hewlett-Packard_bootbank_char-hpilo_600.9.0.2.8-1OEM.600.0.0.2159203 requires com.vmware.driverAPI-9.2.0.0, but the requirement cannot be satisfied within the ImageProfile.
+ Please refer to the log file for more details.
+
+
+esxcli software profile update -p ESXi-6.5.0-20170304101-no-tools -d https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
+
+[DependencyError]
+ VIB Hewlett-Packard_bootbank_char-hpilo_600.9.0.2.8-1OEM.600.0.0.2159203 requires vmkapi_2_0_0_0, but the requirement cannot be satisfied within the ImageProfile.
+ VIB Hewlett-Packard_bootbank_char-hpcru_6.0.6.14-1OEM.600.0.0.2159203 requires vmkapi_2_0_0_0, but the requirement cannot be satisfied within the ImageProfile.
+ VIB Hewlett-Packard_bootbank_char-hpcru_6.0.6.14-1OEM.600.0.0.2159203 requires com.vmware.driverAPI-9.2.0.0, but the requirement cannot be satisfied within the ImageProfile.
+ VIB Hewlett-Packard_bootbank_char-hpilo_600.9.0.2.8-1OEM.600.0.0.2159203 requires com.vmware.driverAPI-9.2.0.0, but the requirement cannot be satisfied within the ImageProfile.
+ Please refer to the log file for more details.
+
+
+moved on to:
+https://www.vladan.fr/how-to-upgrade-a-esxi-6-0-to-esxi-6-5-via-vmware-update-manager/
+
+@@@ ran into download problem (I don't have auth) so Grace did to "/disney/depts/tech/systems/software/vmware/6.5"
+@@@ cp to ~dsiegfriedt; chmod 777
+@@@ no go :^(
+
+@@@ 5Apr17
+
+https://www.vladan.fr/how-to-upgrade-esxi-6-0-to-esxi-6-5-via-offline-bundle/
+
+esxcli software profile update -p ESXi-6.5.0-4564106-standard -d /vmfs/volumes/your_datastore/VMware-ESXi-6.5.0-4564106-depot.zip
+@@@ going to see if the esxi server can see the theorem mount.....
+
+
+@@@ this is how the esxi host lays out the disk (info on local disk....)
+https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=1014953
+
+@@@ 6Apr17
+
+https://www.vladan.fr/how-to-upgrade-esxi-6-0-to-6-5-via-cli-on-line/
+@@@ says
+Remove the VIB that created the conflict from the host and retry the upgrade.
+
+@@@ how to remove VIBs
+https://pubs.vmware.com/vsphere-51/index.jsp?topic=%2Fcom.vmware.vsphere.upgrade.doc%2FGUID-7FFEBD91-5D82-4E32-93AB-F10D8BFFECAA.html
+
+@@@ to list VIBs
+esxcli software vib list
+
+@@@ in this case
+esxcli software vib list | grep 2159203
+{SNIP}
+char-hpilo                     600.9.0.2.8-1OEM.600.0.0.2159203       Hewlett-Packard  PartnerSupported  2011-05-05
+
+@@@ to remove
+esxcli software vib remove --vibname=PatchVendor:patch42:version3
+
+@@@ in this case
+esxcli software vib remove --vibname=char-hpilo
+Removal Result
+   Message: The update completed successfully, but the system needs to be rebooted for the changes to be effective.
+   Reboot Required: true
+   VIBs Installed: 
+   VIBs Removed: Hewlett-Packard_bootbank_char-hpilo_600.9.0.2.8-1OEM.600.0.0.2159203
+   VIBs Skipped: 
+
+@@@ rebooted vmesxi-1
+@@@ then
+
+[root@localhost:~] esxcli software profile update -p ESXi-6.5.0-20170304101-no-tools -d https://hostupdate.vmware.com/software/VUM/PRO
+DUCTION/main/vmw-depot-index.xml
+ [DependencyError]
+ VIB Hewlett-Packard_bootbank_char-hpcru_6.0.6.14-1OEM.600.0.0.2159203 requires vmkapi_2_0_0_0, but the requirement cannot be satisfied within the ImageProfile.
+ VIB Hewlett-Packard_bootbank_char-hpcru_6.0.6.14-1OEM.600.0.0.2159203 requires com.vmware.driverAPI-9.2.0.0, but the requirement cannot be satisfied within the ImageProfile.
+ Please refer to the log file for more details.
+
+esxcli software vib remove --vibname=char-hpcru
+Removal Result
+   Message: The update completed successfully, but the system needs to be rebooted for the changes to be effective.
+   Reboot Required: true
+   VIBs Installed: 
+   VIBs Removed: Hewlett-Packard_bootbank_char-hpcru_6.0.6.14-1OEM.600.0.0.2159203
+   VIBs Skipped: 
+
+@@@ rebooted vmesxi-1
+@@@ then
+
+esxcli software profile update -p ESXi-6.5.0-20170304101-no-tools -d https://hostupdate.vmware.com/software/VUM/PRO
+DUCTION/main/vmw-depot-index.xml
+
+Update Result
+   Message: The update completed successfully, but the system needs to be rebooted for the changes to be effective.
+   Reboot Required: true
+   VIBs Installed: VMW_bootbank_ata-libata-92_3.00.9.2-16vmw.650.0.0.4564106, VMW_bootbank_ata-pata-amd_0.3.10-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-atiixp_0.4.6-4vmw.650.0.0.4564106, VMW_bootbank_ata-pata-cmd64x_0.2.5-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-hpt3x2n_0.3.4-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-pdc2027x_1.0-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-serverworks_0.4.3-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-sil680_0.4.8-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-via_0.3.3-2vmw.650.0.0.4564106, VMW_bootbank_block-cciss_3.6.14-10vmw.650.0.0.4564106, VMW_bootbank_char-random_1.0-3vmw.650.0.0.4564106, VMW_bootbank_ehci-ehci-hcd_1.0-4vmw.650.0.14.5146846, VMW_bootbank_elxnet_11.1.91.0-1vmw.650.0.0.4564106, VMW_bootbank_hid-hid_1.0-3vmw.650.0.0.4564106, VMW_bootbank_i40en_1.1.0-1vmw.650.0.0.4564106, VMW_bootbank_igbn_0.1.0.0-12vmw.650.0.0.4564106, VMW_bootbank_ipmi-ipmi-devintf_39.1-4vmw.650.0.0.4564106, VMW_bootbank_ipmi-ipmi-msghandler_39.1-4vmw.650.0.0.4564106, VMW_bootbank_ipmi-ipmi-si-drv_39.1-4vmw.650.0.0.4564106, VMW_bootbank_ixgben_1.0.0.0-9vmw.650.0.14.5146846, VMW_bootbank_lpfc_11.1.0.6-1vmw.650.0.0.4564106, VMW_bootbank_lsi-mr3_6.910.18.00-1vmw.650.0.0.4564106, VMW_bootbank_lsi-msgpt2_20.00.01.00-3vmw.650.0.0.4564106, VMW_bootbank_lsi-msgpt3_12.00.02.00-11vmw.650.0.0.4564106, VMW_bootbank_misc-drivers_6.5.0-0.14.5146846, VMW_bootbank_mtip32xx-native_3.9.5-1vmw.650.0.0.4564106, VMW_bootbank_ne1000_0.8.0-11vmw.650.0.14.5146846, VMW_bootbank_nenic_1.0.0.2-1vmw.650.0.0.4564106, VMW_bootbank_net-cdc-ether_1.0-3vmw.650.0.0.4564106, VMW_bootbank_net-e1000_8.0.3.1-5vmw.650.0.0.4564106, VMW_bootbank_net-e1000e_3.2.2.1-2vmw.650.0.0.4564106, VMW_bootbank_net-enic_2.1.2.38-2vmw.650.0.0.4564106, VMW_bootbank_net-fcoe_1.0.29.9.3-7vmw.650.0.0.4564106, VMW_bootbank_net-forcedeth_0.61-2vmw.650.0.0.4564106, VMW_bootbank_net-libfcoe-92_1.0.24.9.4-8vmw.650.0.0.4564106, VMW_bootbank_net-mlx4-core_1.9.7.0-1vmw.650.0.0.4564106, VMW_bootbank_net-mlx4-en_1.9.7.0-1vmw.650.0.0.4564106, VMW_bootbank_net-usbnet_1.0-3vmw.650.0.0.4564106, VMW_bootbank_net-vmxnet3_1.1.3.0-3vmw.650.0.0.4564106, VMW_bootbank_nhpsa_2.0.6-3vmw.650.0.0.4564106, VMW_bootbank_nmlx4-core_3.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nmlx4-en_3.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nmlx4-rdma_3.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nmlx5-core_4.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_ntg3_4.1.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nvme_1.2.0.32-2vmw.650.0.0.4564106, VMW_bootbank_nvmxnet3_2.0.0.22-1vmw.650.0.0.4564106, VMW_bootbank_ohci-usb-ohci_1.0-3vmw.650.0.0.4564106, VMW_bootbank_pvscsi_0.1-1vmw.650.0.0.4564106, VMW_bootbank_qedentv_2.0.3.29-1vmw.650.0.0.4564106, VMW_bootbank_qfle3_1.0.2.7-1vmw.650.0.0.4564106, VMW_bootbank_qflge_1.1.0.3-1vmw.650.0.0.4564106, VMW_bootbank_qlnativefc_2.1.30.0-11vmw.650.0.0.4564106, VMW_bootbank_sata-ahci_3.0-22vmw.650.0.0.4564106, VMW_bootbank_sata-ata-piix_2.12-10vmw.650.0.0.4564106, VMW_bootbank_sata-sata-nv_3.5-4vmw.650.0.0.4564106, VMW_bootbank_sata-sata-promise_2.12-3vmw.650.0.0.4564106, VMW_bootbank_sata-sata-sil24_1.1-1vmw.650.0.0.4564106, VMW_bootbank_sata-sata-sil_2.3-4vmw.650.0.0.4564106, VMW_bootbank_sata-sata-svw_2.3-3vmw.650.0.0.4564106, VMW_bootbank_scsi-aacraid_1.1.5.1-9vmw.650.0.0.4564106, VMW_bootbank_scsi-adp94xx_1.0.8.12-6vmw.650.0.0.4564106, VMW_bootbank_scsi-aic79xx_3.1-5vmw.650.0.0.4564106, VMW_bootbank_scsi-fnic_1.5.0.45-3vmw.650.0.0.4564106, VMW_bootbank_scsi-hpsa_6.0.0.84-1vmw.650.0.0.4564106, VMW_bootbank_scsi-ips_7.12.05-4vmw.650.0.0.4564106, VMW_bootbank_scsi-iscsi-linux-92_1.0.0.2-3vmw.650.0.0.4564106, VMW_bootbank_scsi-libfc-92_1.0.40.9.3-5vmw.650.0.0.4564106, VMW_bootbank_scsi-megaraid-mbox_2.20.5.1-6vmw.650.0.0.4564106, VMW_bootbank_scsi-megaraid-sas_6.603.55.00-2vmw.650.0.0.4564106, VMW_bootbank_scsi-megaraid2_2.00.4-9vmw.650.0.0.4564106, VMW_bootbank_scsi-mpt2sas_19.00.00.00-1vmw.650.0.0.4564106, VMW_bootbank_scsi-mptsas_4.23.01.00-10vmw.650.0.0.4564106, VMW_bootbank_scsi-mptspi_4.23.01.00-10vmw.650.0.0.4564106, VMW_bootbank_shim-iscsi-linux-9-2-1-0_6.5.0-0.0.
+   VIBs Removed: EMU_bootbank_lpfc_10.4.236.0-1OEM.600.0.0.2159203, Emulex_bootbank_elxnet_10.5.65.4-1OEM.550.0.0.1331820, Hewlett-Packard_bootbank_scsi-hpsa_5.5.0.106-1OEM.550.0.0.1331820, LSI_bootbank_scsi-mpt2sas_15.10.06.00.1vmw-1OEM.550.0.0.1198610, QLogic_bootbank_qlnativefc_2.1.20.0-1OEM.600.0.0.2159203, VMWARE_bootbank_mtip32xx-native_3.8.5-1vmw.600.0.0.2494585, VMware_bootbank_ata-pata-amd_0.3.10-3vmw.600.0.0.2494585, VMware_bootbank_ata-pata-atiixp_0.4.6-4vmw.600.0.0.2494585, VMware_bootbank_ata-pata-cmd64x_0.2.5-3vmw.600.0.0.2494585, VMware_bootbank_ata-pata-hpt3x2n_0.3.4-3vmw.600.0.0.2494585, VMware_bootbank_ata-pata-pdc2027x_1.0-3vmw.600.0.0.2494585, VMware_bootbank_ata-pata-serverworks_0.4.3-3vmw.600.0.0.2494585, VMware_bootbank_ata-pata-sil680_0.4.8-3vmw.600.0.0.2494585, VMware_bootbank_ata-pata-via_0.3.3-2vmw.600.0.0.2494585, VMware_bootbank_block-cciss_3.6.14-10vmw.600.0.0.2494585, VMware_bootbank_cpu-microcode_6.0.0-0.0.2494585, VMware_bootbank_ehci-ehci-hcd_1.0-3vmw.600.0.0.2494585, VMware_bootbank_emulex-esx-elxnetcli_10.2.309.6v-0.0.2494585, VMware_bootbank_esx-base_6.0.0-0.0.2494585, VMware_bootbank_esx-dvfilter-generic-fastpath_6.0.0-0.0.2494585, VMware_bootbank_esx-tboot_6.0.0-0.0.2494585, VMware_bootbank_esx-xserver_6.0.0-0.0.2494585, VMware_bootbank_ipmi-ipmi-devintf_39.1-4vmw.600.0.0.2494585, VMware_bootbank_ipmi-ipmi-msghandler_39.1-4vmw.600.0.0.2494585, VMware_bootbank_ipmi-ipmi-si-drv_39.1-4vmw.600.0.0.2494585, VMware_bootbank_lsi-mr3_6.605.08.00-6vmw.600.0.0.2494585, VMware_bootbank_lsi-msgpt3_06.255.12.00-7vmw.600.0.0.2494585, VMware_bootbank_lsu-hp-hpsa-plugin_1.0.0-1vmw.600.0.0.2494585, VMware_bootbank_lsu-lsi-lsi-mr3-plugin_1.0.0-1vmw.600.0.0.2494585, VMware_bootbank_lsu-lsi-lsi-msgpt3-plugin_1.0.0-1vmw.600.0.0.2494585, VMware_bootbank_lsu-lsi-megaraid-sas-plugin_1.0.0-1vmw.600.0.0.2494585, VMware_bootbank_lsu-lsi-mpt2sas-plugin_1.0.0-1vmw.600.0.0.2494585, VMware_bootbank_misc-drivers_6.0.0-0.0.2494585, VMware_bootbank_net-e1000_8.0.3.1-5vmw.600.0.0.2494585, VMware_bootbank_net-e1000e_2.5.4-6vmw.600.0.0.2494585, VMware_bootbank_net-enic_2.1.2.38-2vmw.600.0.0.2494585, VMware_bootbank_net-forcedeth_0.61-2vmw.600.0.0.2494585, VMware_bootbank_net-mlx4-core_1.9.7.0-1vmw.600.0.0.2494585, VMware_bootbank_net-mlx4-en_1.9.7.0-1vmw.600.0.0.2494585, VMware_bootbank_net-vmxnet3_1.1.3.0-3vmw.600.0.0.2494585, VMware_bootbank_nmlx4-core_3.0.0.0-1vmw.600.0.0.2494585, VMware_bootbank_nmlx4-en_3.0.0.0-1vmw.600.0.0.2494585, VMware_bootbank_nmlx4-rdma_3.0.0.0-1vmw.600.0.0.2494585, VMware_bootbank_nvme_1.0e.0.35-1vmw.600.0.0.2494585, VMware_bootbank_ohci-usb-ohci_1.0-3vmw.600.0.0.2494585, VMware_bootbank_rste_2.0.2.0088-4vmw.600.0.0.2494585, VMware_bootbank_sata-ahci_3.0-21vmw.600.0.0.2494585, VMware_bootbank_sata-ata-piix_2.12-10vmw.600.0.0.2494585, VMware_bootbank_sata-sata-nv_3.5-4vmw.600.0.0.2494585, VMware_bootbank_sata-sata-promise_2.12-3vmw.600.0.0.2494585, VMware_bootbank_sata-sata-sil24_1.1-1vmw.600.0.0.2494585, VMware_bootbank_sata-sata-sil_2.3-4vmw.600.0.0.2494585, VMware_bootbank_sata-sata-svw_2.3-3vmw.600.0.0.2494585, VMware_bootbank_scsi-aacraid_1.1.5.1-9vmw.600.0.0.2494585, VMware_bootbank_scsi-adp94xx_1.0.8.12-6vmw.600.0.0.2494585, VMware_bootbank_scsi-aic79xx_3.1-5vmw.600.0.0.2494585, VMware_bootbank_scsi-fnic_1.5.0.45-3vmw.600.0.0.2494585, VMware_bootbank_scsi-ips_7.12.05-4vmw.600.0.0.2494585, VMware_bootbank_scsi-megaraid-mbox_2.20.5.1-6vmw.600.0.0.2494585, VMware_bootbank_scsi-megaraid-sas_6.603.55.00-2vmw.600.0.0.2494585, VMware_bootbank_scsi-megaraid2_2.00.4-9vmw.600.0.0.2494585, VMware_bootbank_scsi-mptsas_4.23.01.00-9vmw.600.0.0.2494585, VMware_bootbank_scsi-mptspi_4.23.01.00-9vmw.600.0.0.2494585, VMware_bootbank_uhci-usb-uhci_1.0-3vmw.600.0.0.2494585, VMware_bootbank_xhci-xhci_1.0-2vmw.600.0.0.2494585
+   VIBs Skipped: VMW_bootbank_ima-qla4xxx_2.02.18-1vmw.650.0.0.4564106, VMW_bootbank_misc-cnic-register_1.78.75.v60.7-1vmw.650.0.0.4564106, VMW_bootbank_net-bnx2_2.2.4f.v60.10-2vmw.650.0.0.4564106, VMW_bootbank_net-bnx2x_1.78.80.v60.12-1vmw.650.0.0.4564106, VMW_bootbank_net-cnic_1.78.76.v60.13-2vmw.650.0.0.4564106, VMW_bootbank_net-igb_5.0.5.1.1-5vmw.650.0.0.4564106, VMW_bootbank_net-ixgbe_3.7.13.7.14iov-20vmw.650.0.0.4564106, VMW_bootbank_net-nx-nic_5.0.621-5vmw.650.0.0.4564106, VMW_bootbank_net-tg3_3.131d.v60.4-2vmw.650.0.0.4564106, VMW_bootbank_scsi-bnx2fc_1.78.78.v60.8-1vmw.650.0.0.4564106, VMW_bootbank_scsi-bnx2i_2.78.76.v60.8-1vmw.650.0.0.4564106, VMW_bootbank_scsi-qla4xxx_5.01.03.2-7vmw.650.0.0.4564106
+
+&&&&&
+6Apr17  Change the name of vmesxi-1 to vsphere-prod-02
+
+https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=1010821
+
+esxcli system hostname set --host=vsphere-prod-02
+esxcli system hostname set --fqdn=vsphere-prod-02.disneytoonstudios.com
+
+@@@ change IDM
+@@@ deleted vmesxi-1 and created vsphere-prod-02
+@@@ rebooted
+
+@@@ can't get to the web interface of vsphere-prod-02
+
+@@@ may be a chrome error about:
+@@@    Version 57.0.2987.110 (64-bit)
+@@@ relaunch Chrome fixed it
+
+connect to a vcenter server....
+https://pubs.vmware.com/vsphere-51/index.jsp?topic=%2Fcom.vmware.vsphere.vcenterhost.doc%2FGUID-A8071210-2F1C-447F-AFCD-A585D318F264.html
+
+@@@ since I changed the name of the host (on the host) I had to delete the existing host and create a new one.
+
+&&&&&
+7Apr17  realized I needed a different image... one WITH tools
+
+https://communities.vmware.com/thread/547533
+@@@ says "No reboot requiered" just run the update.... sounds logical since it doesn't need teh tools to run.... just to deploy.
+
+
+dsiegfriedt@dts3329:~ $ ssh root@10.106.228.26
+Password: 
+The time and date of this login have been sent to the system logs.
+
+VMware offers supported, powerful system administration tools.  Please
+see www.vmware.com/go/sysadmintools for details.
+
+The ESXi Shell can be disabled by an administrative user. See the
+vSphere Security documentation for more information.
+[root@vsphere-prod-02:~] esxcli software profile update -p ESXi-6.5.0-20170304001-standard -d https://hostupdate.vmware.com/software/V
+UM/PRODUCTION/main/vmw-depot-index.xml
+Update Result
+   Message: Operation finished successfully.
+   Reboot Required: false
+   VIBs Installed: VMware_locker_tools-light_6.5.0-0.0.4564106
+   VIBs Removed: VMware_locker_tools-light_6.0.0-0.0.2494585
+   VIBs Skipped: VMW_bootbank_ata-libata-92_3.00.9.2-16vmw.650.0.0.4564106, VMW_bootbank_ata-pata-amd_0.3.10-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-atiixp_0.4.6-4vmw.650.0.0.4564106, VMW_bootbank_ata-pata-cmd64x_0.2.5-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-hpt3x2n_0.3.4-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-pdc2027x_1.0-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-serverworks_0.4.3-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-sil680_0.4.8-3vmw.650.0.0.4564106, VMW_bootbank_ata-pata-via_0.3.3-2vmw.650.0.0.4564106, VMW_bootbank_block-cciss_3.6.14-10vmw.650.0.0.4564106, VMW_bootbank_char-random_1.0-3vmw.650.0.0.4564106, VMW_bootbank_ehci-ehci-hcd_1.0-4vmw.650.0.14.5146846, VMW_bootbank_elxnet_11.1.91.0-1vmw.650.0.0.4564106, VMW_bootbank_hid-hid_1.0-3vmw.650.0.0.4564106, VMW_bootbank_i40en_1.1.0-1vmw.650.0.0.4564106, VMW_bootbank_igbn_0.1.0.0-12vmw.650.0.0.4564106, VMW_bootbank_ima-qla4xxx_2.02.18-1vmw.650.0.0.4564106, VMW_bootbank_ipmi-ipmi-devintf_39.1-4vmw.650.0.0.4564106, VMW_bootbank_ipmi-ipmi-msghandler_39.1-4vmw.650.0.0.4564106, VMW_bootbank_ipmi-ipmi-si-drv_39.1-4vmw.650.0.0.4564106, VMW_bootbank_ixgben_1.0.0.0-9vmw.650.0.14.5146846, VMW_bootbank_lpfc_11.1.0.6-1vmw.650.0.0.4564106, VMW_bootbank_lsi-mr3_6.910.18.00-1vmw.650.0.0.4564106, VMW_bootbank_lsi-msgpt2_20.00.01.00-3vmw.650.0.0.4564106, VMW_bootbank_lsi-msgpt3_12.00.02.00-11vmw.650.0.0.4564106, VMW_bootbank_misc-cnic-register_1.78.75.v60.7-1vmw.650.0.0.4564106, VMW_bootbank_misc-drivers_6.5.0-0.14.5146846, VMW_bootbank_mtip32xx-native_3.9.5-1vmw.650.0.0.4564106, VMW_bootbank_ne1000_0.8.0-11vmw.650.0.14.5146846, VMW_bootbank_nenic_1.0.0.2-1vmw.650.0.0.4564106, VMW_bootbank_net-bnx2_2.2.4f.v60.10-2vmw.650.0.0.4564106, VMW_bootbank_net-bnx2x_1.78.80.v60.12-1vmw.650.0.0.4564106, VMW_bootbank_net-cdc-ether_1.0-3vmw.650.0.0.4564106, VMW_bootbank_net-cnic_1.78.76.v60.13-2vmw.650.0.0.4564106, VMW_bootbank_net-e1000_8.0.3.1-5vmw.650.0.0.4564106, VMW_bootbank_net-e1000e_3.2.2.1-2vmw.650.0.0.4564106, VMW_bootbank_net-enic_2.1.2.38-2vmw.650.0.0.4564106, VMW_bootbank_net-fcoe_1.0.29.9.3-7vmw.650.0.0.4564106, VMW_bootbank_net-forcedeth_0.61-2vmw.650.0.0.4564106, VMW_bootbank_net-igb_5.0.5.1.1-5vmw.650.0.0.4564106, VMW_bootbank_net-ixgbe_3.7.13.7.14iov-20vmw.650.0.0.4564106, VMW_bootbank_net-libfcoe-92_1.0.24.9.4-8vmw.650.0.0.4564106, VMW_bootbank_net-mlx4-core_1.9.7.0-1vmw.650.0.0.4564106, VMW_bootbank_net-mlx4-en_1.9.7.0-1vmw.650.0.0.4564106, VMW_bootbank_net-nx-nic_5.0.621-5vmw.650.0.0.4564106, VMW_bootbank_net-tg3_3.131d.v60.4-2vmw.650.0.0.4564106, VMW_bootbank_net-usbnet_1.0-3vmw.650.0.0.4564106, VMW_bootbank_net-vmxnet3_1.1.3.0-3vmw.650.0.0.4564106, VMW_bootbank_nhpsa_2.0.6-3vmw.650.0.0.4564106, VMW_bootbank_nmlx4-core_3.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nmlx4-en_3.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nmlx4-rdma_3.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nmlx5-core_4.16.0.0-1vmw.650.0.0.4564106, VMW_bootbank_ntg3_4.1.0.0-1vmw.650.0.0.4564106, VMW_bootbank_nvme_1.2.0.32-2vmw.650.0.0.4564106, VMW_bootbank_nvmxnet3_2.0.0.22-1vmw.650.0.0.4564106, VMW_bootbank_ohci-usb-ohci_1.0-3vmw.650.0.0.4564106, VMW_bootbank_pvscsi_0.1-1vmw.650.0.0.4564106, VMW_bootbank_qedentv_2.0.3.29-1vmw.650.0.0.4564106, VMW_bootbank_qfle3_1.0.2.7-1vmw.650.0.0.4564106, VMW_bootbank_qflge_1.1.0.3-1vmw.650.0.0.4564106, VMW_bootbank_qlnativefc_2.1.30.0-11vmw.650.0.0.4564106, VMW_bootbank_sata-ahci_3.0-22vmw.650.0.0.4564106, VMW_bootbank_sata-ata-piix_2.12-10vmw.650.0.0.4564106, VMW_bootbank_sata-sata-nv_3.5-4vmw.650.0.0.4564106, VMW_bootbank_sata-sata-promise_2.12-3vmw.650.0.0.4564106, VMW_bootbank_sata-sata-sil24_1.1-1vmw.650.0.0.4564106, VMW_bootbank_sata-sata-sil_2.3-4vmw.650.0.0.4564106, VMW_bootbank_sata-sata-svw_2.3-3vmw.650.0.0.4564106, VMW_bootbank_scsi-aacraid_1.1.5.1-9vmw.650.0.0.4564106, VMW_bootbank_scsi-adp94xx_1.0.8.12-6vmw.650.0.0.4564106, VMW_bootbank_scsi-aic79xx_3.1-5vmw.650.0.0.4564106, VMW_bootbank_scsi-bnx2fc_1.78.78.v60.8-1vmw.650.0.0.4564106, VMW_bootbank_scsi-bnx2i_2.78.76.v60.8-1vmw.650.0.0.4564106, VMW_bootbank_scsi-fnic_1.5.0.45-3vmw.650.0.0.4564106, VMW_bootbank_scsi-hpsa_6.0.0.84-1vmw.650.0.0.4564106, VMW_bootbank_scsi-ips_7.12.05-4vmw.650.0.0.4564106, VMW_bootbank_scsi-iscsi-linux-92_1.0.0.2-3vmw.650.0.0.4564106, VMW_bootbank_scsi-libfc-92_1.0.40.9.3-5vmw.650.0.0.4564106, VMW_bootbank_scsi-megaraid-mbox_2.20.5.1-6vmw.650.0.0.4564106, VMW_bootbank_scsi-megaraid-sas_6.603.55.00-2vmw.650.0.0.4564106, VMW_bootbank_scsi-megaraid2_2.00.4-9vmw.650.0.0.4564106, VMW_bootbank_scsi-mpt2sas_19.00.00.00-1vmw.650.0.0.4564106, VMW_bootbank_scsi-mptsas_4.23.01.00-10vmw.650.0.0.4564106, VMW_bootbank_scsi-mptspi_4.23.01.00-10vmw.650.0.0.4564106, VMW_bootbank_scsi-qla4xxx_5.01.03.2-7vmw.650.0.0.4564106, VMW_bootbank_shim-iscsi-linux-9-2-1-0_6.5.0-0.0.4564106, VMW_bootbank_shim-iscsi-linux-9-2-2-0_6.5.0-0.0.4564106, VMW_bootbank_shim-libata-9-2-1-0_6.5.0-0.0.4564106, VMW_bootbank_shim-libata-9-2-2-0_6.5.0-0.0.4564106, VMW_bootbank_shim-libfc-9-2-1-0_6.5.0-0.0.4564106, VMW_bootbank_shim-libfc-9-2-2-0_6.5.0-0.0.4564106, VMW_bootbank_shim-libfcoe-9-2-1-0_6.5.0-0.0.4564106, VMW_bootbank_shim-libfcoe-9-2-2-0_6.5.0-0.0.4564106, VMW_bootbank_shim-vmklinux-9-2-1-0_6.5.0-0.0.4564106, VMW_bootbank_shim-vmklinux-9-2-2-0_6.5.0-0.0.4564106, VMW_bootbank_shim-vmklinux-9-2-3-0_6.5.0-0.0.4564106, VMW_bootbank_uhci-usb-uhci_1.0-3vmw.650.0.0.4564106, VMW_bootbank_usb-storage-usb-storage_1.0-3vmw.650.0.0.4564106, VMW_bootbank_usbcore-usb_1.0-3vmw.650.0.0.4564106, VMW_bootbank_vmkata_0.1-1vmw.650.0.0.4564106, VMW_bootbank_vmkplexer-vmkplexer_6.5.0-0.0.4564106, VMW_bootbank_vmkusb_0.1-1vmw.650.0.14.5146846, VMW_bootbank_vmw-ahci_1.0.0-34vmw.650.0.14.5146846, VMW_bootbank_xhci-xhci_1.0-3vmw.650.0.0.4564106, VMware_bootbank_cpu-microcode_6.5.0-0.0.4564106, VMware_bootbank_emulex-esx-elxnetcli_11.1.28.0-0.0.4564106, VMware_bootbank_esx-base_6.5.0-0.14.5146846, VMware_bootbank_esx-dvfilter-generic-fastpath_6.5.0-0.0.4564106, VMware_bootbank_esx-tboot_6.5.0-0.0.4564106, VMware_bootbank_esx-ui_1.15.0-5069532, VMware_bootbank_esx-xserver_6.5.0-0.0.4564106, VMware_bootbank_lsu-hp-hpsa-plugin_2.0.0-3vmw.650.0.0.4564106, VMware_bootbank_lsu-lsi-lsi-mr3-plugin_1.0.0-7vmw.650.0.0.4564106, VMware_bootbank_lsu-lsi-lsi-msgpt3-plugin_1.0.0-6vmw.650.0.0.4564106, VMware_bootbank_lsu-lsi-megaraid-sas-plugin_1.0.0-7vmw.650.0.0.4564106, VMware_bootbank_lsu-lsi-mpt2sas-plugin_2.0.0-5vmw.650.0.0.4564106, VMware_bootbank_native-misc-drivers_6.5.0-0.0.4564106, VMware_bootbank_rste_2.0.2.0088-4vmw.650.0.0.4564106, VMware_bootbank_vmware-esx-esxcli-nvme-plugin_1.2.0.10-0.0.4564106, VMware_bootbank_vsan_6.5.0-0.14.5146846, VMware_bootbank_vsanhealth_6.5.0-0.14.5146846
+[root@vsphere-prod-02:~] 
+
+&&&&&
+2Oct17  using an existin vmdk to build a VM.
+https://communities.vmware.com/thread/564003
+
+&&&&&
+15Feb18  ifconfig for ESXi hosts
+
+https://pubs.vmware.com/vsphere-50/index.jsp?topic=%2Fcom.vmware.vcli.migration.doc_50%2Fcos_upgrade_technote.1.7.html
+
+esxcli network ip interface ipv4 address list
+Name  IPv4 Address   IPv4 Netmask   IPv4 Broadcast  Address Type  Gateway         DHCP DNS
+----  -------------  -------------  --------------  ------------  --------------  --------
+vmk0  10.106.229.15  255.255.252.0  10.106.231.255  DHCP          10.106.231.254      true
+vmk1  10.6.229.15    255.255.252.0  10.6.231.255    STATIC        0.0.0.0            false
+
+&&&&&
+15Feb18  Change IP on an ESXi host
+https://kb.vmware.com/s/article/2084629
+
+&&&&&
+16Feb18 ESXi mount command
+esxcli storage filesystem list
+
+@@@ changed IP addresses to static (see above)
+@@@ removed ned from cluster
+@@@ re-added ned to cluster
+@@@ used Grace's notes to add networking
+@@@ added datastore (see NOTES-DTS)
+@@@ when I check ned had VM migrating to it
+
+&&&&&
+22Mar18 vSphere HA
+
+select Cluster (Production Cluster)
+  Configure Tab
+    vSphere Availability
+      Edit (on top Right)
+        Click on "Turn on vSphere HA"
+
+BOOM baby....
+&&&&&
+26Mar18  vsphere-prod-04 to maintenance and disconnect
+	 @@@tomorrow move to sandbox AND put vsphere-prod03 into maintenance
+
+@@@ the names will have to be changed for sandbox hosts (cuz they have prod in the name)
+
+@@@ vsphere-prod-01 will move to Grace's dev cluster (and the name will be changed)
+
+&&&&&
+1May18  command line to check if in lockdown mode
+
+https://kb.vmware.com/s/article/1008077
+
+To check if Lockdown mode is enabled:	vim-cmd -U dcui vimsvc/auth/lockdown_is_enabled
+To disable Lockdown mode:    		vim-cmd -U dcui vimsvc/auth/lockdown_mode_exit
+To enable Lockdown mode: 		vim-cmd -U dcui vimsvc/auth/lockdown_mode_enter
+
+&&&&&
+14Jun18  SRM documentation site
+https://www.vmware.com/products/site-recovery-manager.html
+
+&&&&&
+27Jun18  BU ESXi host config
+https://kb.vmware.com/s/article/2042141
+
+BACKUP:
+Using the ESXi Command Line
+To synchronize the configuration changed with persistent storage, run this command:
+vim-cmd hostsvc/firmware/sync_config
+
+To backup the configuration data for an ESXi host, run this command:
+vim-cmd hostsvc/firmware/backup_config
+
+RESTORE:
+Put the host into maintenance mode by running the command:
+vim-cmd hostsvc/maintenance_mode_enter
+ 
+Copy the backup configuration file to a location accessible by the host and run the command:
+In this case, the configuration file was copied to the host's /tmp directory. For more information, see Using SCP to copy files to or from an ESX host (1918).
+vim-cmd hostsvc/firmware/restore_config /tmp/configBundle.tgz
+ 
+Note: Executing this command will initiate an automatic reboot of the host after command completion.
+
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+

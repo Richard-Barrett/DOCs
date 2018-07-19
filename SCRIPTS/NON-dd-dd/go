@@ -1,0 +1,109 @@
+#!/bin/sh
+#
+# Author: Ram Samudrala (me@ram.org)
+#
+# July 8, 2003.
+#
+# Usage: go [machine-number]
+#
+##########################################################################
+#
+# CDROM should be mounted on /cdrom.
+#
+
+# mkdir /cdrom
+# mount /dev/hdc /cdrom
+
+##########################################################################
+#
+# fdisk and mount.
+#
+
+fdisk /dev/hda < /cdrom/fdisk_hda.in
+fdisk /dev/hdb < /cdrom/fdisk_hdb.in
+
+mkswap /dev/hda1
+mke2fs /dev/hda2
+mke2fs /dev/hdb1
+tune2fs -j /dev/hda2
+tune2fs -L / /dev/hda2
+tune2fs -j /dev/hdb1
+
+mkdir /mnt
+mount /dev/hda2 /mnt
+
+##########################################################################
+#
+# slash.tgz was created using:
+# tar -czvlps --same-owner --atime-preserve -f /maxa/slash.tgz /
+#
+
+cd /mnt
+gzip -dc /cdrom/slash.tgz | tar -xvf - 
+
+##########################################################################
+#
+# Reset the ip address/hostname.
+#
+
+echo ""
+
+cd /mnt/etc/sysconfig
+echo "NETWORKING=yes" > network
+echo "HOSTNAME=fp$1.compbio.washington.edu" >> network
+echo "NISDOMAIN=compbio.washington.edu" >> network
+echo "GATEWAYDEV=eth0" >> network
+
+cat network
+
+echo ""
+
+cd /mnt/etc/sysconfig/network-scripts
+
+echo "DEVICE=eth0" > ifcfg-eth0
+echo "BOOTPROTO=static" >> ifcfg-eth0
+echo "BROADCAST=10.20.255.255" >> ifcfg-eth0
+echo "IPADDR=10.20.30.$1" >> ifcfg-eth0
+echo "NETMASK=255.255.0.0" >> ifcfg-eth0
+echo "NETWORK=10.20.0.0" >> ifcfg-eth0
+echo "GATEWAY=10.20.1.1" >> ifcfg-eth0
+echo "ONBOOT=yes" >> ifcfg-eth0
+
+cat ifcfg-eth0
+
+##########################################################################
+#
+# Cleanup.
+#
+
+cd /mnt
+rm -r tmp_mnt
+rm -r usr/tmp/*
+rm -r tmp/*
+rm -r tmp/.*
+
+##########################################################################
+# 
+# Lilo. Sometimes lilo -r /mnt will be adequate. An alternate conf is
+# required if the names of the device containing the boot record is
+# different in the kernel that comes on the CD vs. the kernel that comes
+# with the system you're installing.
+#
+
+lilo -r /mnt
+
+#cp /cdrom/lilo.conf.alternate /mnt/etc/lilo.conf.alternate
+#lilo -r /mnt -C /etc/lilo.conf.alternate
+#rm /mnt/etc/lilo.conf.alternate
+
+##########################################################################
+#
+# Unmount.
+#
+
+cd /
+umount /mnt
+umount /cdrom
+eject
+
+##########################################################################

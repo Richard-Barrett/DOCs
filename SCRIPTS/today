@@ -1,0 +1,15 @@
+#!/bin/bash
+
+for i in `ls | grep galore | grep cgi`
+do
+echo $i
+echo
+echo
+
+blorf=`echo $i | awk -F. '{print $1}'`
+
+echo $blorf
+
+mv $i $blorf.jpg 
+
+done

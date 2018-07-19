@@ -1,0 +1,312 @@
+.\"  Copyright (c) 2004, 2005, Larry Lile <lile@users.sourceforge.net>
+.\"  All rights reserved.
+.\"
+.\"  Redistribution and use in source and binary forms, with or without
+.\"  modification, are permitted provided that the following conditions
+.\"  are met:
+.\"  1. Redistributions of source code must retain the above copyright
+.\"     notice unmodified, this list of conditions, and the following
+.\"     disclaimer.
+.\"  2. Redistributions in binary form must reproduce the above copyright
+.\"     notice, this list of conditions and the following disclaimer in the
+.\"     documentation and/or other materials provided with the distribution.
+.\"
+.\"  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\"  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\"  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\"  ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\"  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\"  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\"  OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\"  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\"  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\"  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\"  SUCH DAMAGE.
+.\"
+.\"  $Id: dsh.1.in,v 1.4 2005/07/20 00:12:23 lile Exp $
+.\"
+.Dd July 6, 2005
+.Dt DSH 1
+.Os "dsh (@VERSION@)"
+.Sh NAME
+.Nm dsh
+.Nd distributed shell
+.Sh SYNOPSIS
+.Nm
+.Op Fl q
+.Pp
+.Nm
+.Op Fl h
+.Pp
+.Nm
+.Op Fl i
+.Op Fl v
+.Op Fl c
+.Op Fl t Ar csh|sh
+.Op Fl d Li | Fl D
+.Op Fl l Ar login_name
+.Op Fl w Ar {host_name|@netgroup},... | Fl
+.Op Fl f Ar fanout_value
+.Op Fl o Dq Ar flags_and_parms
+.Op Fl Y Ar domain
+.Op command
+.Sh DESCRIPTION
+.Nm Dsh
+executes commands in parallel on the machines specified in the working
+collective.
+.Nm Dsh
+works in two distinct modes, batch mode where the command to be
+executed is specified on the command line or interactive mode where a
+command line shell will be presented to the user.
+.Pp
+The working collective can be specified in two ways, either on the command
+line using
+.Fl w
+argument where hosts and netgroups can be specified in a comma separated
+list.  Alternately the working collective can be specified on stdin using
+the 
+.Fl w Fl
+with each host or netgroup on a line by itself.  The second method for
+specifying the working collective is using the
+.Ev WCOLL
+environment variable.  The
+.Ev WCOLL
+environment variable should be set to the name of a file containing the list
+of host names and netgroups listed on separate lines.  Blank lines and lines
+beginning with # will be ignored.
+.Pp
+The path used on remote systems for the command is determined by the
+.Ev DSHPATH
+environment variable.  If the
+.Ev DSHPATH
+environment variable is not set, the default path,
+.Em /usr/ucb:/bin:/usr/bin:. ,
+will be used.  If
+.Ev DSHPATH is defined but empty then no
+.Ev PATH
+will be set on the remote system, this is useful for systems with
+non standard shells.  Otherwise if
+.Ev DSHPATH
+is set then the
+.Ev PATH
+environment variable will be set on the remote system to the value in
+.Ev DSHPATH
+using the appropriate shell syntax.
+.Pp
+The number of machines that the command will be executed on in parallel is
+determined by the fanout value.  If commands are to be run serially on all
+of the hosts in the working collective a fanout value of 1 should be specified.
+The fanout value can be specified by using either the 
+.Ev FANOUT environment variable or the
+.Fl f
+command line option, if neither of these is specified the default fanout value
+of 64 will be used.  Large values for fanout should be used carefully, most
+remote shell utilities require reserved TCP/IP ports and these are a limited
+resource.  If large fanouts are specified or multiple users are using
+.Nm
+then the reserved TCP/IP ports can be easily exhausted causing failures.
+.Pp
+The exit values for remote commands are displayed in messages from
+.Nm
+if they are nonzero, a nonzero exit value from the remote command indicates
+that the command was not successful.
+.Nm
+will remove hosts from the working collective if the remote command is
+unsuccessful unless the
+.Fl c
+command line option is specified.
+.Pp
+.Bd -ragged -offset indent
+.Em Note :
+Not all remote shells return the exit status of the command properly and some
+failures may not be detected.
+.Ed
+.Pp
+.Nm
+does not work with interactive commands.  The user must ensure that the
+interactive commands can be run without prompts before attempting to use
+them with
+.Nm .
+.Pp
+The standard output and standard error for
+.Nm
+is the standard output and standard error, respectively, of the remote
+command.  Each line of output is prefixed with the host name of the host from
+which that output was received.  A ":" is used to separate the host name from
+the output.
+.Pp
+.Pp
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl q
+Displays the hosts in the current working collective, derived from either the
+.Fl w
+option or the
+.Ev WCOLL
+environment variable.  Also the current fanout value is displayed,
+determined from either the
+.Fl f 
+option or the
+.Ev FANOUT
+environment variable.
+.It Fl h
+Displays the usage information.
+.It Fl i
+When set
+.Nm
+will display the working collective and fanout values before each
+command is issued.
+.It Fl v
+Hosts are verified using ping before being added to the working collective.
+If a host is not responding it will not be added to the collective.
+.It Fl c
+If set
+.Nm
+will continue to send commands to hosts that are not responding or have
+returned a non-zero exit code.  If this flag is not set
+.Nm
+will remove hosts that are not responding or have returned a non-zero
+exit code for the remainder of the session.
+.It Fl t Ar sh|csh
+Specifies the target shell syntax.  This flag is used to create the syntax
+of the internal environment variables passed with the command.  Supported
+shells are
+.Ic sh
+and
+.Ic csh .
+The default is
+.Ic csh .
+.It Fl d
+Causes
+.Nm
+to set the
+.Fl f
+flag on the rsh command.  This option is only relevant for
+.Ic rsh .
+.It Fl D
+Causes
+.Nm
+to set the
+.Fl F
+flag on the rsh command.  This option is only relevant for
+.Ic rsh .
+.It Fl l Ar login_name
+sets the remote user name to 
+.Ar login_name .
+Otherwise, the  remote user name will be the same as the local user name.
+.It Fl w Ar {host_name|@netgroup},... | Fl
+Specifies one or more host names or netgroups, separated by commas.  No
+whitespace is allowed.  Netgroups are designated by prefixing the netgroup
+name with an @ symbol.
+.Pp
+If
+.Fl w Fl
+is specified, the working collective will be read one line at a time
+from stdin.  Host names or netgroups should be specified one per line
+until finished.  When finished
+.Sy <Ctrl-D>
+.It Fl f Ar fanout_value
+Specifies the number of hosts in the collective to execute the command
+in parallel.  The default value is 64.
+.It Fl o Ar flags_and_parms
+Allows additional arguments to be specified to the remote command program.
+The flags and parameters will need to be surrounded with single or double
+quotes.  The 
+.Fl o
+parameter can be specified multiple time to build up the argument list
+as needed.
+.It Fl Y Ar domain
+Specify the NIS domain for netgroup lookups if it is not the default
+NIS domain.
+.It Op Ar command
+The command to be executed on the hosts in the working collective.
+.El
+.Pp
+.Sh ENVIRONMENT
+The behavior of
+.Nm
+can be altered using the following environment variables.
+.Bl -tag -width Ds
+.It Ev WCOLL
+Specifies a working collective file.
+.It Ev DSHPATH
+Specifies a
+.Ev PATH
+to be set for the remote command environment.  If set, but empty no
+.Ev PATH
+will be set.
+.It Ev DSH_REMOTE_CMD
+The command to be used for remote execution, this is typically
+.Xr rsh
+or
+.Xr ssh
+but can be any suitable remote execution command.
+.It Ev RCMD_PGM
+Defines the type of remote execution command, either rsh or secrshell.
+.It Ev HN_METHOD
+Can be set to either
+.Dq reliable
+or
+.Dq initial .
+The default host name method is initial, which is the name that was specified
+by the user.  Setting the host name method to reliable will result in the canonical
+fully qualified host name being used.
+.It Ev DSH_COLLATE
+Defining
+.Ev DSH_COLLATE will cause
+.Nm
+to hold output for each host until the remote command is finished before displaying
+the output.  Use of 
+.Ev DSH_COLLATE
+is not recommended, dshbak should be used instead.
+.It Ev DSH_DEBUG
+Defining
+.Ev DSH_DEBUG
+will cause copious debugging information for
+.Nm
+to be displayed.
+.El
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa @bindir@/dshbak
+A utility provided to reformat the output of
+.Nm
+by host or alternately to collate identical output from groups of hosts.
+.It working collective file
+A file containing host names or netgroup names, one per line, used to
+define a working collective.
+.El
+.Sh EXAMPLES
+.Sh DIAGNOSTICS
+.Sh COMPATIBILITY
+.Nm Dsh
+is compatible with the IBM PSSP
+.Nm
+command, with the following exceptions.
+.Fl a , Fl G ,
+and
+.Fl N
+are not implemented as they are specific to the System Data Repository.
+.Sh AUTHORS
+.Nm Dsh
+first appeard in IBM's Parallel System Support Package for AIX.
+.Sh BUGS
+.Bl -item -width Ds
+.It
+The names of the environment variables are inconsistent, but match the
+original implementation.  The additional environment variables not defined
+by IBM are named consistently.
+.It
+This man page is very incomplete.
+.El
+.Sh COPYRIGHT
+Copyright \(co 2005 Larry Lile <lile@users.sourceforge.net>
+.br
+This is free software; see the source for copying conditions.  There
+is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
+.Sh SEE ALSO
+.Xr rsh 1 ,
+.Xr ssh 1 ,
+.Xr dshbak 1
+.Pp

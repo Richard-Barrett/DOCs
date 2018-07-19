@@ -1,0 +1,1 @@
+use Text::Wrap;$Text::Wrap::columns = 20; # default is 76$pre1 = "\t";              # prepend this to first line of paragraph$pre2 = "";                # prepend this to subsequent linesprint wrap($pre1, $pre2, "Hello, world, it's a nice day, isn't it?");

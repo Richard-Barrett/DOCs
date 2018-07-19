@@ -1,0 +1,1 @@
+use Carp;carp "Be careful!";         # warn of errors (from perspective of caller)croak "We're outta here!";  # die of errors (from perspective of caller)confess "Bye!";             # die of errors with stack backtrace

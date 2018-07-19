@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo -n "Enter a string : "
+read string
+ 
+LEN=$(echo ${#string})
+ 
+if [ $LEN -lt 5 ]; then
+        echo "$string doesn't have at least 5 characters"
+else
+        echo "$string has 5 or more characters"
+fi

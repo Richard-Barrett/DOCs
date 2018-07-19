@@ -1,0 +1,1 @@
+TCPdump NOTEStcpdump-N -vv -w /tmp/ks-testing -q -P host poboxx -q host poboxx -w /tmp/ks-testing-l #line bufferedhost <HOSTNAME>  #for traffic to and from <HOSTNAME>#25jul02 for testing dhcp connectivity to poboxx#as root on poboxxtcpdump -l host poboxx > dat4

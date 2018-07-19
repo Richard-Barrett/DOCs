@@ -1,0 +1,7 @@
+#! /bin/ksh
+
+echo "I have recieved $# arguments"
+echo "Arg #1 =${1:?'**** One arg needed! ****'}, with a length of ${#1}"
+echo "Arg #2 = $2, with a length of ${#2}"
+echo "Arg #3 = $3, with a length of ${#3}"
+

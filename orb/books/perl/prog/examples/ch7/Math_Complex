@@ -1,0 +1,1 @@
+use Math::Complex;$i = new Math::Complex;*****$i = Math::Complex->new(1, 1);*****+ - * / neg ~ abs cos sin exp sqrt*****"" (stringify)*****Re Im arg*****$i = Math::Complex->new($x, $y);

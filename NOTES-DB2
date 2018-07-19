@@ -1,0 +1,207 @@
+9Apr14  db2 not starting
+
+[root@lapcpsdv1 bin]# su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+SQL1072C  The database manager resources are in an inconsistent state.  The database manager might have been incorrectly terminated, or another application might be using system resources in a way that conflicts with the database manager's use of system resources.  System resource cleanup might be required.
+
+1041  /opt/IBM/WebSphere/ProcServ/db2/adm/db2set -g DB2SYSTEM=lapcpsdv1.ri-net.com
+
+http://publib.boulder.ibm.com/infocenter/db2luw/v9r5/index.jsp?topic=%2Fcom.ibm.db2.luw.messages.sql.doc%2Fdoc%2Fmsql01072c.html
+
+[root@lapcpsdv1 bin]# pwd
+/opt/IBM/WebSphere/ProcServ/db2/bin
+[root@lapcpsdv1 bin]# ./db2ftok
+
+[root@lapcpsdv1 bin]# su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+SQL1063N  DB2START processing was successful.
+
+[root@lapcpsdv1 bin]# /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/bin/startServer.sh server1
+ADMU0116I: Tool information is being logged in file
+           /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/logs/server1/startServer.log
+ADMU0128I: Starting tool with the qbpmaps profile
+ADMU3100I: Reading configuration for server: server1
+ADMU3200I: Server launched. Waiting for initialization status.
+ADMU3000I: Server server1 open for e-business; process id is 6804
+[root@lapcpsdv1 bin]# 
+
+5May14  --siggy/Vimel
+
+Poweroutage and db did not restart on lapcpsdv1.
+
+service process_server stop
+/opt/IBM/WebSphere/ProcServ/db2/adm/db2set -g DB2SYSTEM=lapcpsdv1.ri-net.com
+cd /opt/IBM/WebSphere/ProcServ/db2/bin/db2_ps/
+./db2ftok
+su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+service process_server start
+
+Submit an ICM to check dbstart befor starting process server.
+
+$$$$$
+10Apr14  --siggy  Found on Voldamort's wall
+
+DB2 Commands
+db2 activate database <database name>			activates a database
+db2 backup database <database name>			backs up the database
+db2 list active databases     				list all active databases on server
+db2 list directory					list all databases on server
+db2 list application					list of all applications for each database
+db2 quiece  <database name>				quieces the database
+db2 unquiece  <database name>				unquieces the database
+db2 recover database  <database name>			recovers a backed up database
+db2 set write suspend for <database name>		suspends all writes to a specific database
+db2 set write resume for  <database name>		resumes writes to the database
+
+DB2 locations
+DAS home directory					/home/dasuser1
+DAS information						/home/dasuser1/das
+database configuration file SQLDBCON			/home/db2inst1/db2inst1/NODE0000/SQL00001
+
+datebase dir contains files for:			/home/db2inst1/db2inst1/NODE0000/SQL00001
+buffer pool info
+historical info
+log control files
+storage path info
+table space info
+
+database manager config file db2systm			/home/db2inst/sqllib
+
+db2 commands	 	     				/opt/IBM/db2/V9.5/bin
+db2 error messages					/home/db2inst1/sqllib/db2dump/db2diag.log
+db2 installation path					/opt/IBM/db2/V9.5
+directory for event monitor data			/home/db2inst1/db2inst1/NODE0000/SQL00001/db2event
+directory for transaction log 				/home/db2inst1/db2inst1/NODE0000/SQL00001/SQLLOGDIR
+installation log	  				/opt/IBM/db2/V9.5/logs/db2install.history
+instance home directory					/home/db2inst1
+instance information					/home/db2inst1/sqllib
+local database directory for instance			/home/db2inst1db2inst1/NODE0000/sqldbdir
+partition database environment 				/home/db2inst1/sqllib
+system database directory				/home/db2inst1/sqllib/sqldbdir
+
+$$$$$
+Change to lapcpsdv1:/etc/init.d/process_server  5May14  --siggy
+
+[root@lapcpsdv1 ~]# cat process_server 
+#!/bin/bash
+#
+# Startup script for Process Server node and server
+#
+# chkconfig: 2345 99 90
+# description: Process Server suite including, dmgr, node and wps_server1
+# start, debug, stop, and status functions
+start() {
+	su - bpminst -c '/home/bpminst/sqllib/adm/db2start'
+# Check to see if the db started correctly, exit on error.  --siggy 5May14
+# To correct:
+#    /opt/IBM/WebSphere/ProcServ/db2/adm/db2set -g DB2SYSTEM=lapcpsdv1.ri-net.com
+#    /opt/IBM/WebSphere/ProcServ/db2/bin/db2ftok
+#    service process_server start
+
+	if [ $? -ne 0 ]; then
+	   logger -s -t DB2STARTFAILED "db2 failed to start correctly.  EXITING"
+	   exit 0
+	fi
+#       Start PS in normal mode
+#	WEB_PORT=`netstat -vatn|grep LISTEN|grep 9405|wc -l`
+#	if [ $WEB_PORT -ne 0 ]; then
+#       echo "Process Server is already started"
+#       else
+# Changed echo to logger  --siggy 5May14
+	   logger -s -t PROCESSSERVERSTART "Staring Process Server"
+	   /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/bin/startServer.sh server1
+#	fi
+}
+
+stop() {
+# Changed echo to logger
+	   logger -s -t PROCESSSERVERSTOP "Stopping Process Server"
+	   /opt/IBM/WebSphere/ProcServ/profiles/qbpmaps/bin/stopServer.sh server1 -user admin -password admin
+# Added stoping the DB  --siggy 5may14
+	   logger -s -t DB2STOP "Stopping DB2"
+	   su - bpminst -c '/home/bpminst/sqllib/adm/db2stop'
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  debug)
+        debug
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  redebug)
+        stop
+        debug
+        ;;
+  status)
+        status
+        ;;
+  *)
+        echo "Usage: $0 {start|debug|stop|restart|redebug|status}"
+        exit 1
+esac
+
+$$$$$
+STATUS
+
+at the OS level in Unix ps -ef|grep db2 or it has many version.
+
+at db2 prompt.
+
+get connection state
+list active databases
+list applications
+
+
+[root@laccodqa1 ondemand]# db2 get connection state
+
+   Database Connection State
+
+ Connection state       = Connectable and Unconnected
+ Connection mode        =
+ Local database alias   =
+ Database name          =
+ Hostname               =
+ Service name           =
+
+[root@laccodqa1 ondemand]#  db2 list active databases
+
+                           Active Databases
+
+Database name                              = ARCHIVE
+Applications connected currently           = 0
+Database path                              = /home/archive/archive/NODE0000/SQL00001/
+
+[root@laccodqa1 ondemand]# db2 list applications
+SQL1611W  No data was returned by Database System Monitor.
+
+
+$$$$$
+12Dec14  --siggy
+
+http://scn.sap.com/docs/DOC-43859
+
+Login = db2inst1
+passwd = integrit intergritie 
+
+db2 CONNECT TO reldb
+db2 list database directory
+db2 list database directory | grep -i rel
+db2level
+db2 list tablespaces show detail
+db2 connect reset
+
+
+db2
+   quit (to exit from db2 prompt)
+   -DIS DB
+
+
+
+
+

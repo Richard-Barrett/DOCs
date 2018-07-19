@@ -1,0 +1,51 @@
+http://support.dell.com/support/systemsinfo/documentation.aspx?c=us&cs=555&l=en&s=gen&~cat=6&~subcat=111
+
+
+4dec08 Tony Tejechman onsite
+
+#####
+2aug10  --siggy
+
+R710 networking 
+
+eth2  -   - eth3
+eth0  -   - eth1
+       NFS
+                   -     -     -     -
+                   eth4  eth5  eth6  eth7
+                      PROD        IPC
+
+
+bond0 = eth4 and eth5
+bond1 = eth0 and eth2
+bond2 = eth6 and eth7
+
+#####
+
+10aug10  --siggy
+
+enabling fiber on 810s
+
+<Ctrl><Alt><Delete>
+
+Install Intel braclet
+
+F11 [BIOS Boot Manager]
+
+(Down Arrow)
+
+  * Hard Drive C:
+    * Front USB: Flash Disk
+
+C:\ bootutil
+
+Get:
+1) MAC address for NIC1 (for dhcpd.conf)
+2) type bootutil -bootenable=pxe -nic=1
+
+<Ctrl><Alt><Delete>
+
+F12 to PXE boot
+
+######
+

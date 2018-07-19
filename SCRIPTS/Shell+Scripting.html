@@ -1,0 +1,1683 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title>Shell Scripting - Edmunds Central - Edmunds Intranet</title>
+
+
+            
+    
+            <link rel="stylesheet" href="Shell+Scripting_files/fonts-min.html" type="text/css">
+        <link rel="stylesheet" href="Shell+Scripting_files/menu.html" type="text/css">
+    
+                
+    <script language="javascript">
+        var contextPath = '';
+        var i18n = [];
+    </script>
+
+                            <link rel="stylesheet" href="Shell+Scripting_files/main-action.css" type="text/css">
+                    
+            <script type="text/javascript" src="Shell+Scripting_files/effects.js"></script>
+    
+            <link rel="search" type="application/opensearchdescription+xml" title="Edmunds: Confluence Search" href="http://confluence/download/attachments/11868/confluenceSearch.xml">
+<style type="text/css">
+div.auto_complete {
+    width: 350px;
+    background: #fff;
+}
+
+div.auto_complete ul {
+    border: 1px solid #888;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style-type: none;
+}
+
+div.auto_complete ul li {
+    margin: 0;
+    padding: 3px;
+}
+
+div.auto_complete ul li.selected {
+    background-color: #ffb;
+}
+
+div.auto_complete ul strong.highlight {
+    color: #800;
+    margin: 0;
+    padding: 0;
+}
+</style></head><body onload="placeFocus()">
+    
+
+
+    <script type="text/javascript">
+        function hideMessage(messageId)
+        {
+            var message = document.getElementById(messageId)
+            message.style.display = "none";
+            setCookie(messageId, true);
+        }
+    </script>
+
+        
+<div id="PageContent">
+
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+                <tbody><tr class="topBar">
+            <td align="left">
+                &nbsp;
+                <span class="topBarDiv fontSizeSmaller">             
+    <script language="JavaScript">
+        function showBreadcrumbsEllipsis()
+        {
+            document.getElementById('breadcrumbsEllipsis').style.display = 'none';
+            document.getElementById('breadcrumbsExpansion').style.display = 'inline';
+        }
+    </script>
+                                                    <a href="http://confluence/dashboard.action">Dashboard</a>
+                                     &gt;                         <a href="http://confluence/display/ec">Edmunds Central</a>
+                                                    <span id="breadcrumbs">
+                    &gt;
+                    <span id="breadcrumbsEllipsis">
+                        <a href="#" onclick="showBreadcrumbsEllipsis();return false;" title="                    Intranet             &gt;         Departments             &gt;         Production Operations             &gt;         Infrastructure Operations             &gt;         Systems Operations    ">...</a>
+                    </span>
+                    <span id="breadcrumbsExpansion" style="display: none;">
+                                <a href="http://confluence/display/ec/Intranet">Intranet</a>
+                 &gt;                     <a href="http://confluence/display/ec/Departments">Departments</a>
+                 &gt;                     <a href="http://confluence/display/ec/Production+Operations">Production Operations</a>
+                 &gt;                     <a href="http://confluence/display/ec/Infrastructure+Operations">Infrastructure Operations</a>
+                 &gt;                     <a href="http://confluence/display/ec/Systems+Operations">Systems Operations</a>
+        </span>
+                </span>
+&gt; <a href="http://confluence/display/ec/Sysops+Reference+Material">Sysops Reference Material</a>
+                                     &gt;                         <a href="http://confluence/display/ec/Shell+Scripting">Shell Scripting</a>
+                
+     </span>
+            </td>
+
+            <td style="white-space: nowrap;" align="right" valign="middle">
+                    <form id="quickSearch" method="post" action="/dosearchsite.action" name="searchForm">
+        <input name="quickSearch" value="true" type="hidden">
+        
+        <input name="searchQuery.spaceKey" value="conf_global" type="hidden">
+        <input accesskey="s" name="searchQuery.queryString" size="25" type="text">
+        <input value="Search" type="submit">
+    </form>
+            </td>
+        </tr>
+        
+                <tr>
+            <td style="padding: 5px;" colspan="2">
+            <table style="margin: 5px; padding: 0px; width: 100%;" border="0" cellpadding="1" cellspacing="0">
+                <tbody><tr>
+										<td valign="top" width="1%"><a href="http://confluence/display/ec"><img src="Shell+Scripting_files/logo.gif" align="absmiddle" border="0"></a></td>
+										<td style="padding-left: 10px;" align="left" height="22">
+                        <span class="pagetitle" style="margin: 0px; padding: 0px; text-decoration: none;">
+                                        Shell Scripting
+                            </span>
+                    </td>
+                    <td align="right" height="22" valign="top">
+                                                    
+    <span class="smalltext" id="userNavBar">
+                    
+
+            <a href="http://confluence/login.action?os_destination=%2Fdisplay%2Fec%2FShell%2BScripting">Log In</a>
+
+                                            &nbsp;
+                        </span>
+    						
+						        <a href="http://confluence/display/ec/Shell+Scripting?decorator=printable" rel="nofollow"><img src="Shell+Scripting_files/print_16.gif" alt="View a printable version of the current page." title="View a printable version of the current page." align="absmiddle" border="0" height="16" hspace="1" vspace="1" width="16"></a>
+
+                                                        
+                                                                            </td>
+                </tr>
+            </tbody></table>
+            </td>
+        </tr>
+            </tbody></table>
+
+        <!--
+    Root decorator: all decisions about how a page is to be decorated via the
+                    inline decoration begins here.
+-->
+
+
+
+<!--
+    Switch based upon the context. However, for now, just delegate to a decorator
+    identified directly by the context.
+-->
+
+
+    
+    
+
+
+    
+    
+        
+    
+    
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+    <tbody><tr>
+        <td>
+            <ul class="tabnav">
+                <li class="tabs">
+                                    <a id="viewPageLink" href="http://confluence/display/ec/Shell+Scripting" class="current" accesskey="v"><u>V</u>iew</a>
+                                    <a id="viewAttachmentsLink" href="http://confluence/pages/viewpageattachments.action?pageId=20910536" accesskey="a"><u>A</u>ttachments (0)</a>
+                                    <a id="viewPageInfoLink" href="http://confluence/pages/viewinfo.action?pageId=20910536" accesskey="i"><u>I</u>nfo</a>
+                                </li>
+                <li class="spaceActionLinks">
+                                                                	
+        
+        
+        
+                    <a href="http://confluence/spaces/browsespace.action?key=ec"><img src="Shell+Scripting_files/browse_space.gif" title="Browse Space" align="absmiddle" border="0" height="16" width="16">&nbsp;<span>Browse Space</span></a>
+		                                        </li>
+                &nbsp;
+            </ul>
+            <!-- clears the floated elements above -->
+            <br class="after-tabnav">
+        </td>
+    </tr>
+    <tr>
+        <td class="pagebody" valign="top">
+
+                        <table style="clear: both;" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody><tr>
+                    <td class="pagecontent" valign="top" width="100%">
+
+                    
+                    
+                    
+                                            <div class="viewContentIndent">
+
+                                                            
+                            <table cellspacing="0" width="100%">
+                                <tbody><tr>
+                                    <td align="left" valign="top">
+                                        <span class="smalltext">
+                                                        Added by             <a href="http://confluence/display/%7Ereickler">Ron Eickler</a>    , last edited by             <a href="http://confluence/display/%7Ereickler">Ron Eickler</a>     on Jun 03, 2008
+                      &nbsp;(<a href="http://confluence/pages/diffpages.action?pageId=20910536&amp;originalId=21748367">view change</a>)
+              
+                                            
+ 
+
+
+
+<!-- Delay the loading of the external javascript file needed for labels (as it takes too long to load and visibly holds loading of the page body) -->
+<!-- To do this without javascript errors over undefined functions, we need to declare stubs here (that are overrided later by the proper implementations) -->
+<script language="JavaScript" type="text/javascript">
+    function doAddLabel(hideTextfieldAfterAddParam)
+    {
+        // stub
+    }
+
+    function onAddLabel()
+    {
+        // stub
+    }
+
+    function showLabelsInput()
+    {
+        // stub
+    }
+</script>
+
+<!-- This is a hack to work around an apparent SiteMesh bug - http://jira.opensymphony.com/browse/SIM-198 -->
+
+
+<span class="error"><span class="errorMessage" id="errorSpan"></span></span>
+<form name="addLabelForm" method="" action="" onsubmit="doAddLabel(false); return false;" style="margin: 0px; padding: 0px;">
+    <div style="float: left;">Labels:&nbsp;</div>
+    <div id="labelsInfo" style="float: left; width: 90%;">
+        <span id="labelsList">
+                    (None)
+                </span>
+            </div>
+    <br clear="all"><!-- Do not remove this line-break. You will make Safari cry. -->
+    <div id="labelInputSpan" style="display: none; clear: both;">
+        <div style="border: 1px solid rgb(204, 204, 204); padding: 8px; background-color: rgb(240, 240, 240);">
+
+        <div id="labelOperationErrorContainer" style="display: none;"><span class="error"><span class="errorMessage" id="labelOperationErrorMessage"></span></span></div>
+
+        <table width="100%">
+            <tbody><tr>
+                <td>
+                    <div class="formtitle" style="padding-bottom: 3px; font-size: 13px;">Add Labels</div>
+                </td>
+                <td align="right"><div id="waitImageAndStatus" style="display: none; height: 16px;"><img alt="Wait Image" src="Shell+Scripting_files/wait.gif" align="absmiddle" border="0">&nbsp;<span id="labelOperationStatus" class="smalltext" style="vertical-align: middle;"></span></div></td>
+            </tr>
+            <tr><td width="50%">
+                    Enter labels to add to this page:<br>
+        <input autocomplete="off" id="labelName" name="labelsString" value="" class="monospaceInput" size="40" type="text">
+        <input onclick="doAddLabel(false); return false;" value="Add" type="submit"><input onclick="doAddLabel(true); return false;" value="Done" type="button">
+        <div style="display: none;" class="auto_complete" id="labelsAutocompleteList"></div>
+        <div class="smalltext">
+            <em>Tip:</em> Looking for a label? Just start typing.
+        </div>
+        </td>
+            <td valign="top" width="50%">
+                <div id="suggestedLabelsSpan"></div>
+            </td>
+        </tr></tbody></table>
+        </div>
+    </div>
+</form>
+    <script type="text/javascript">
+        // if there is javascript support, enable the [Edit] link that enables AJAX label adding/removing functionality
+        if (document.getElementById('editLabelsLink'))
+        {
+            document.getElementById('editLabelsLink').style.display = 'inline';
+        }
+    </script>
+                                        </span>
+                                    </td>
+                                    <td align="right" nowrap="nowrap" valign="top">
+                                                                            </td>
+                                </tr>
+                            </tbody></table>
+
+                                                        
+                            <div class="wiki-content">
+                               <!-- wiki content -->
+            <h1><a name="ShellScripting-ShellScriptingBasics"></a>Shell Scripting Basics</h1>
+
+<h3><a name="ShellScripting-Basics/Syntax"></a>Basics / Syntax</h3>
+<h4><a name="ShellScripting-Interpreter"></a>Interpreter</h4>
+
+<p>The interpreter is essentially the shell or binary that executes the
+code in your script. You define the interpreter by a hash and a shebang
+(#!) followed by the path to the binary. If the interpreter is omitted,
+your current shell will be used to execute the code. </p>
+
+<p>Some examples interpreters are:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">#!/bin/bash</pre>
+</div></div>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">#!/bin/sh</pre>
+</div></div>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">#!/usr/bin/perl</pre>
+</div></div>
+
+<h4><a name="ShellScripting-Comments"></a>Comments</h4>
+<p>Comments are creating using a hash sign (#).  </p>
+
+<p>For example:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># This is a comment.  It will not be executed or interpreted.</pre>
+</div></div>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># This is also a comment.</pre>
+</div></div>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># This is a 
+# multiple line
+# comment.</pre>
+</div></div>
+
+<h4><a name="ShellScripting-"></a></h4>
+
+<h3><a name="ShellScripting-Variables"></a>Variables</h3>
+<p>Variables in shell scripts are proceeded by a dollar sign (except
+when you are initializing them). For example, to create a new variable,
+it would look like so:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">MYVARIABLE=<span class="code-quote">"This is my variable"</span></pre>
+</div></div>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">KENNYS_SSN=7234563276</pre>
+</div></div>
+
+<p>To display the variables that were created above, you would simply
+preface the variable with a dollar sign ($) when referencing it:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">gink:~ reickler$ MYVARIABLE=<span class="code-quote">"This is my variable"</span>
+gink:~ reickler$ echo $MYVARIABLE
+This is my variable
+gink:~ reickler$</pre>
+</div></div>
+
+<p>If you wanted to display a variable in teh middle of a string, you
+can also surround the variable name with curly brackets. For example:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ VARIABLE=<span class="code-quote">"dd"</span>; echo <span class="code-quote">"There is a variable in the mi${VARIABLE}le of <span class="code-keyword">this</span> string"</span>
+There is a variable in the middle of <span class="code-keyword">this</span> string
+[reickler@pl1rad702 ~]$</pre>
+</div></div>
+
+
+<p>There are a number of built-in "special" variables in bash that come
+in really handy when scripting. Some of those examples are:</p>
+
+
+
+<table id="TBL1208234453743" class="confluenceTable"><tbody>
+<tr>
+<td style="cursor: pointer;" class="confluenceTd"> Variable </td>
+<td style="cursor: pointer;" class="confluenceTd"> Value </td>
+</tr>
+<tr>
+<td class="confluenceTd"> $0 </td>
+<td class="confluenceTd"> This is script name, including the path.  So if you were to execute /etc/init.d/nfs, $0 would contain /etc/init.d/nfs. </td>
+</tr>
+<tr bgcolor="">
+<td class="confluenceTd"> $1 - $65535 </td>
+<td class="confluenceTd"> I'm not sure how high these actually go
+(maybe less than 65535), but $1 and greater are the arguments passed to
+a script. For example, if you executed "/etc/init.d/nfs start", the
+value of $1 would be "start".</td>
+</tr>
+<tr>
+<td class="confluenceTd"> ?? </td>
+<td class="confluenceTd"> This is the PID of the current shell or shell script.  It can be useful for creating locks or PID files for scheduled jobs. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> $# </td>
+<td class="confluenceTd"> This is the number of arguments that were passed to the script. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> $@ </td>
+<td class="confluenceTd"> This contains the values of all of hte arguments passed to a script. </td>
+</tr>
+<tr bgcolor="">
+<td class="confluenceTd"> $! </td>
+<td class="confluenceTd"> This is the PID of the last command executed. </td>
+</tr>
+</tbody></table>
+
+<p>The examples above are explained in more detail in the bash man page under the script entitled 'Special Parameters'.</p>
+
+<p>In addition to the "Special Parameters", there are number of
+built-in environment variables. For example $HOSTNAME, $HOME, etc. They
+also are explained in the man page for bash.</p>
+
+<p>Although it's possible to do, it's not recommended that you
+reference the built-in variables as-is. That will leave room for them
+to change without you knowing or when entering a function. You should
+create new variables and store the built-in values and reference those
+instead. </p>
+
+<p>For example, instead of using this:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># This is bad!!
+echo <span class="code-quote">"Hello, World!!"</span>
+echo <span class="code-quote">"The <span class="code-keyword">return</span> value was $?"</span></pre>
+</div></div>
+
+<p>I would recommend something like this:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># This is gooder!!
+echo <span class="code-quote">"Hello, World!!"</span>
+RETURN=$?
+
+echo <span class="code-quote">"The <span class="code-keyword">return</span> value was $RETURN"</span></pre>
+</div></div>
+
+
+<h3><a name="ShellScripting-ReturnCodes"></a>Return Codes</h3>
+<p>One important thing to learn when scripting is return (or exit)
+codes. Each command you execute in linux returns a value which tells
+how if the command was successful of not. That value can be used in
+conditionals (explained later in the doc) to determine if the script
+should move on to the next step for example.</p>
+
+<p>Some important things to remember about return codes are:</p>
+<ul>
+	<li>The return code of the last command executed is stored in the variable $?.</li>
+	<li>A successfully executed command (whether in a script or on the command line) will typically return a "0".</li>
+	<li>An error will return a value greater than "0" (non-zero).</li>
+	<li>Each
+command can have it's own set of exit codes. They are generally listed
+in the man pages. For example, the man page for "rm" states the
+following:</li>
+</ul>
+
+
+<blockquote>
+<p>The rm utility exits 0 if all of the named files or file hierarchies
+were removed, or if the -f option was specified and all of the existing
+files or file hierarchies were removed. If an error occurs, rm exits
+with a value &gt;0.</p></blockquote>
+
+<p>Here's are some examples of how to use return codes (remember, $? is
+the value of the last commands exit code, so you can "echo $?" to
+reveal the value):</p>
+
+<p>The first example will exit successfully since the command completes without issue:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">gink:~ reickler$ ls -lad .Trash; echo $?
+drwx------   2 reickler  reickler  68 Apr  4 14:44 .Trash
+0</pre>
+</div></div>
+
+<p>The second example will fail since the directory doesn't exist:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">gink:~ reickler$ ls -la Dir_That_Doesnt_Exist; echo $?
+ls: Dir_That_Doesnt_Exist: No such file or directory
+1</pre>
+</div></div>
+
+<h3><a name="ShellScripting-Quotes"></a>Quotes</h3>
+<p>Different types of quotes are interpreted differently both in shell
+scripts as well as on the command line. For example, anything
+surrounded by double quotes (") will have any variables replaced. So in
+the example below, the value of the variable will be outputted:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">gink:~ reickler$ echo <span class="code-quote">"$MYVARIABLE"</span>
+This is my variable</pre>
+</div></div>
+
+<p>Anything surrounded by single quotes (') will be interperted
+literally. That means that a dollar sign (which represents a variable)
+will be displayed as a dollar sign and not read as a variable:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">gink:~ reickler$ echo '$MYVARIABLE'
+$MYVARIABLE</pre>
+</div></div>
+
+<p>Anything surrounded by "back tics" (`) will be executed as a
+command. This is useful for storing the output from a command as a
+variable:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">gink:~ reickler$ MYVARIABLE=`ls -lad .Trash`
+gink:~ reickler$ echo $MYVARIABLE
+drwx------ 2 reickler reickler 68 Apr 4 14:44 .Trash</pre>
+</div></div>
+
+<p>Quotes can be escaped using a blackslash so that they aren't interpreted:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">gink:~ reickler$ echo <span class="code-quote">"\"</span>"
+"</pre>
+</div></div>
+
+
+<h3><a name="ShellScripting-ConditionalsandLoops"></a>Conditionals and Loops</h3>
+<p>Conditional statements compare values or conditions to determine which code to execute next.  </p>
+
+<h3><a name="ShellScripting-IfStatements"></a>If Statements</h3>
+<p>"If" statements are a form of conditional.  They are used to compare two values.  For example:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"><span class="code-keyword">if</span> [ 1 -eq 1 ];
+then
+    echo <span class="code-quote">"The statement is <span class="code-keyword">true</span>"</span>
+<span class="code-keyword">else</span>
+    echo <span class="code-quote">"The statement is <span class="code-keyword">false</span>"</span>
+fi</pre>
+</div></div>
+
+<p>If statements must be closed out with a "fi" (if backwards) statement.  </p>
+
+<p>As mentioned earlier, you can use conditional statements to check the output of a command.  For example:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># This command should <span class="code-keyword">return</span> a non-zero value since it is gonna fail
+ls -la Dir_That_Doesnt_Exist
+
+# The value of the <span class="code-keyword">return</span> code from the 'ls' command is stored in $?.  Here we are storing it in a <span class="code-keyword">new</span> variable called REETURN.
+RETURN=$?
+
+# Check to see <span class="code-keyword">if</span> the <span class="code-keyword">return</span> code is a non-zero value
+<span class="code-keyword">if</span> [ $RETURN -ne 0 ]
+then 
+  echo <span class="code-quote">"The command failed"</span>
+fi
+
+# Here would be the output from the script above
+The command failed</pre>
+</div></div>
+
+<p>If statements can also be used to check conditions of files and directories.  Some examples are as follows:</p>
+
+<script type="text/javascript"> <!-- 
+// Copyright (c) 2005, 2007 Bob Swift and other contributors.  All rights reserved.
+/*
+ * Copyright (c) 2005, 2007 Bob Swift and other contributors
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ * 			 notice, this list of conditions and the following disclaimer in the
+ *   		 documentation and/or other materials provided with the distribution.
+ *     * The names of contributors may not be used to endorse or promote products
+ *           derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Modified and extended Dec 2005, then replaced and enhanced Dec 2006 by Bob Swift.
+ * - original code written by Danny Chen
+ *
+ * This script is compacted before being released to reduce size and improve performance.
+ * This makes it possible to comment the code without worrying about size
+ * - make sure all statements end with a semi-colon, especially inline function definitions.
+ *
+ * Compacted source copyright should be the first line of this source:
+ *  // Copyright (c) 2005, 2007 Bob Swift and other contributors.  All rights reserved.
+ *
+ * WARNING:  Do NOT use a greater than sign in this script!  This is a work around for CONF-6490.
+ *
+ */
+
+function getElementInnerText(element) {
+	var str = "";
+	for (var i=0; i<element.childNodes.length; i++) {
+        switch (element.childNodes.item(i).nodeType) {
+            case 1: //ELEMENT_NODE
+                str += getElementInnerText(element.childNodes.item(i));
+                break;
+            case 3: //TEXT_NODE
+                str += element.childNodes.item(i).nodeValue;
+                break;
+        }
+    }
+    return str;
+}
+
+// Trim function that is save to use for null or undefined strings.
+function trimSafe(v) {
+    return ((v == undefined) || (v == null)) ? "" : v.Trim();
+}
+String.prototype.Trim=new Function("return this.replace(/^\\s+|\\s+$/g,'')");
+
+// Simple number compare
+// - NaN values are always larger
+// - if both NaN, compare equal to preserve original ordering in bubble sort
+function compareNumber(v1, v2) {
+    if (isNaN(v2)) {
+        if (isNaN(v1)) return 0;
+        return -1; // NaN is bigger than all
+    }
+    if (v1 < v2) return -1;
+    if (v1 == v2) return 0;
+    return 1;
+}
+
+// Separated number compare - a separated number is represented as an int array for this function
+// - v1 < v2 if each number in v1 is <= each number in v2 and if still equal, then if v1 runs out first
+function compareSeparatedNumber(v1, v2) {
+    for (i = 0; (i < v1.length) && (i < v2.length); i++) {
+        var result = compareNumber(parseInt(v1[i]), parseInt(v2[i]));
+        if (result != 0) return result;
+    }
+    if (v1.length < v2.length) return -1;
+    if (v2.length < v1.length) return 1;
+    return 0;
+}
+
+// sort table columns by the cell provided, only table columns from firstDataRowIndex on
+// - use the column type parameter to determine:
+//   - how to get values from the cell (valueParser)
+//   - how to compare values (compareFunction)
+// - this uses a bubble sort on an array of indexes used to reference values (so values only evaluated once)
+// - optimized for reverse ordering
+function sortByCell(sortCell, firstDataRowIndex, footingCount) {
+    var compareFunction;
+    var valueParser;
+    compareFunction = compareNumber;
+    if (sortCell.columnType == "I")	{
+        valueParser = function(value) {
+            return parseInt(getElementInnerText(value));
+        };
+    } else if (sortCell.columnType == "F") {
+        valueParser = function(value) {
+            return parseFloat(getElementInnerText(value));
+        };
+    } else if (sortCell.columnType == "C") {
+        valueParser = function(value) {
+            // remove all leading and trailing characters from the first thing that looks like a number
+            return parseFloat(getElementInnerText(value).replace(/[^\d\.\,\-]*([\d\.\,\- *]*).*/, '$1'));
+        };
+    } else if (sortCell.columnType.charAt(0) == 'D') {
+        if (Date.parseString) { //date.js available
+            valueParser = function(value) {
+                var date = Date.parseString(getElementInnerText(value), sortCell.columnType.substring(1));
+                return ((date == null) ? NaN : date.getTime());
+            };
+        } else {
+            valueParser = function(value) {
+                return Date.parse(getElementInnerText(value));
+            };
+        }
+    } else if (   (sortCell.columnType == "/") || (sortCell.columnType == ".")
+               || (sortCell.columnType == "-") || (sortCell.columnType == ":")) {
+        compareFunction = compareSeparatedNumber;
+        valueParser = function(value) {
+            return getElementInnerText(value).split(sortCell.columnType);
+        };
+    } else if (sortCell.columnType == "A") { // already sorted
+        valueParser = function(value) {
+            return 0;
+        };
+    } else {  // otherwise default to string
+        compareFunction = function(v1, v2) {
+            if (v1 < v2) return -1;
+            if (v1 == v2) return 0;
+            return 1;
+        };
+        valueParser = function(value) {
+            return trimSafe(getElementInnerText(value)).toUpperCase();
+        };
+    }
+
+    //var table = sortCell.sortTable.tHead[0].concat(sortCell.sortTable.tBodies[0]).concat(sortCell.sortTable.tFoot[0]);
+
+    var headRowCount = (sortCell.sortTable.tHead == null) ? 0 : sortCell.sortTable.tHead.rows.length;
+    firstDataRowIndex = firstDataRowIndex - headRowCount;  // adjust for tHead rows
+
+    var table = sortCell.sortTable.tBodies[0];
+    var rowCount = table.rows.length - firstDataRowIndex - footingCount;  // all data rows that are not footer rows
+    var map = Array(rowCount);            // maps sorted position to column index
+    var values = Array(rowCount);         // evaluated cell values
+    var compareTest = (sortCell.sortDescending ? -1 : 1 );  // so we can switch between ascending or descending
+    sortCell.sortDescending = !sortCell.sortDescending;  // tracks direction of last sort for this column
+
+    var firstCell = table.rows[0].cells[sortCell.columnIndex];
+
+    if ((firstCell != null) && (firstCell.sortTable != null) && (firstCell.sortTable != undefined) && (firstCell.sortTable.sortImage != null) && (firstCell.sortTable.sortImage != undefined)) { // reverse sort arrow
+    	firstCell.sortTable.sortImage.setAttribute("src", firstCell.sortDescending ? firstCell.sortTable.sortAttributeDescending : firstCell.sortTable.sortAttributeAscending);
+        firstCell.appendChild(firstCell.sortTable.sortImage);   // append or move the sort icon image to this cell
+    }
+
+    var i;
+    for (i=0; i < rowCount; i++) {
+        map[i] = sortCell.sortFirstTime ? i : (rowCount - 1 - i); // favor reverse order after the first time
+        var row = table.rows[i + firstDataRowIndex];
+        var cellValue = row.cells[sortCell.columnIndex];
+        values[i] = valueParser(cellValue);   // parse and save the values only once
+    }
+    sortCell.sortFirstTime = false;
+
+    var didSwap;  // bubble sort, track whether a order swap occurred
+    do {
+        didSwap = false;
+        for (i=0; i < rowCount - 1; i++) {
+            if (compareFunction(values[map[i]], values[map[i+1]]) == compareTest) {
+               saveIndex = map[i];
+               map[i] = map[i+1];
+               map[i+1] = saveIndex;
+               didSwap = true;
+            }
+        }
+    } while (didSwap);
+
+    var tableRows = new Array();
+    for (i = 0; i < rowCount + footingCount; i++) {  // save all data and footing rows
+        tableRows.push(table.rows[i + firstDataRowIndex]);
+    }
+    for (i = 0; i < rowCount + footingCount; i++) { // remove all data and footing rows
+        table.removeChild(tableRows[i]);
+    }
+    for (i = 0; i < rowCount; i++) {        // re-populate all data rows in sorter order
+        var row = tableRows[map[i]];
+        table.appendChild(row);
+        if (row.autoNumber) {               // if this row contains an auto number column represents sorted row number
+            row.cells[0].innerHTML = i + 1; // update to current row number
+        }
+    }
+    for (i = 0; i < footingCount; i++) {   // re-populate all footer rows
+        table.appendChild(tableRows[i + rowCount]);
+    }
+}
+
+// Enable this column to be sortable
+// - note, unless this is an excluded columnType, enable header columns to be clicked
+function enableSortOnCell(cell, columnIndex, table, columnTypes, customize) {
+    cell.style.cursor = "pointer";
+    cell.sortTable = table;
+    cell.sortFirstTime = true;
+    cell.sortDescending = false;
+    cell.columnIndex = (customize.autoNumber ? (columnIndex + 1) : columnIndex);
+    if (columnIndex == -1) {
+        cell.columnType = "I";
+    } else {
+    	cell.columnType = (columnTypes && columnTypes[columnIndex]) ? columnTypes[columnIndex] : "S";
+    }
+    if (cell.columnType != "X") {
+        cell.onmouseover = function() {
+            this.saveTitle = this.getAttribute('title');
+            this.setAttribute('title', customize.sortTip + " " + ((this.saveTitle != null) && (this.saveTitle != undefined) ? this.saveTitle : ''));
+        };
+        cell.onmouseout = function() {
+            this.setAttribute('title', this.saveTitle);
+        };
+        cell.onclick = function() {
+            sortByCell(this, customize.firstDataRowIndex, customize.footingCount);
+        };
+    } else {  // covers case of auto sort of excluded column
+        cell.columnType = cell.columnType.substring(1);
+    }
+}
+
+function sumColumn(table, index, firstDataRowIndex, columnType) {
+    var total = 0;
+    for (var i = firstDataRowIndex; i < table.rows.length; i++) {
+        var cell = table.rows[i].cells[index];
+        var value;
+        if (cell) {
+            if (columnType == 'C') {
+                value = parseFloat(getElementInnerText(cell).replace(/[^\d\.\,\-]*([\d\.\,\- *]*).*/, '$1'))
+            } else {
+            	value = parseFloat(getElementInnerText(cell));
+            }
+            if (!isNaN(value)) {
+                total = total + value;
+            }
+        }
+    }
+    return total;
+}
+
+// Append a automatic total row
+function appendTotalRow(table, columnTypes, firstDataRowIndex) {
+    var row = document.createElement('tr');
+    var table = table.tBodies[0];
+    var columnCount = (0 < table.rows.length) ? table.rows[table.rows.length - 1].cells.length : 0; // number in last row
+
+    for (var columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+       	var column = document.createElement('th');
+       	column.className = 'confluenceTh';
+       	column.innerHTML =    (columnIndex < columnTypes.length
+       	                   && (   (columnTypes[columnIndex] == 'I')
+       	                       || (columnTypes[columnIndex] == 'F')
+       	                       || (columnTypes[columnIndex] == 'C')))
+                            ? sumColumn(table, columnIndex, firstDataRowIndex, columnTypes[columnIndex]) : '';
+       	row.appendChild(column);
+    }
+    table.appendChild(row); // add row after so it is not part of calculation
+}
+
+// Called for each table row to add all the appropriate attributes
+function handleRow(table, row, rowIndex, customize) {
+    var columnCount = row.cells.length;
+    for (var i=0; i < columnCount; i++) { // each column index i
+        if (customize.enableSorting && (rowIndex <= customize.lastClickableRow)) {
+             enableSortOnCell(row.cells[i], i, table, customize.columnTypes, customize);
+        }
+        // Look for any request for auto sorting
+        if (   (rowIndex == 0)     // just look through first row
+            && (customize.sortColumn != '')  // request for sorting is given
+            && (customize.sortCell == null)  // not already found
+            && (   ((i+1).toString() == customize.sortColumn)
+                || (trimSafe(getElementInnerText(row.cells[i])) == customize.sortColumn)
+                || (trimSafe(row.cells[i].getAttribute('title')) == customize.sortColumn) )) {
+            customize.sortCell = row.cells[i];
+        }
+        // Apply some default alignment for numeric column types
+        if (customize.firstDataRowIndex <= rowIndex) {
+            if ((customize.columnTypes[i] == "I") || (customize.columnTypes[i] == "F") || (customize.columnTypes[i] == "C")) {
+                row.cells[i].style.textAlign = "right";
+            }
+        }
+        if (customize.columnTypes[i] == "H") {
+            row.cells[i].style.display = "none";
+        }
+        // Apply column attributes
+        // - either on all data rows or all rows if requested
+        if (customize.enableHeadingAttributes || (customize.firstDataRowIndex <= rowIndex)) {
+            if (i < customize.attrList.length) {                            // column is still in list of attributes specified by user
+                for (var j=0; j < customize.attrList[i].length; j++) {     // loop through each attribute given
+                    var attr = customize.attrList[i][j].Trim().split("="); // "attribute = value", so split on =
+                    if (1 < attr.length) {
+                        var aName  = attr[0].Trim();
+                        var aValue = attr[1].Trim();
+                        if ((aName.toLowerCase() == "style") && (2 < aValue.length)) {
+                            if ((aValue.charAt(0) == '"')) {  // strip double quotes
+                                aValue = aValue.substring(1, aValue.length - 1);
+                            }
+                            row.cells[i].style.cssText = aValue;
+                        } else {
+                            row.cells[i].setAttribute(aName, aValue);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // if autoNumber is requested, add a new column with incremental numbers on all data rows
+    if (customize.autoNumber) {
+     	var column = document.createElement(!customize.autoNumberSort || (rowIndex < customize.firstDataRowIndex) ? 'th' : 'td');
+      	column.className = (!customize.autoNumberSort || (rowIndex < customize.firstDataRowIndex) ? 'confluenceTh' : 'confluenceTd');
+       	column.innerHTML = ((rowIndex < customize.firstDataRowIndex) || (customize.totalRowCount - customize.firstDataRowIndex - customize.footingCount < rowIndex) ? '' : customize.dataRowCount++);
+       	column.setAttribute('align', 'right');
+       	row.autoNumber = !customize.autoNumberSort;
+       	row.insertBefore(column, row.cells[0]);
+       	if (customize.enableSorting && customize.autoNumberSort && (rowIndex <= customize.lastClickableRow)) {
+       	    enableSortOnCell(column, -1, table, null, customize);
+       	}
+    }
+    // enable row highlighting if requested
+    if ((customize.highlightColor != "") && (customize.firstDataRowIndex <= rowIndex)) {
+        row.onmouseover = function() {
+            this.tableHighLightRowColor = this.bgColor;
+            this.bgColor = customize.highlightColor;
+        };
+        row.onmouseout = function() {
+            this.bgColor = this.tableHighLightRowColor;
+            this.tableHighLightRowColor = null;
+        };
+    }
+}
+
+// Setup this table for custom behavior including sorting, highlighting, etc...
+function customizeMacroTable(tableId, columnTypes, firstDataRowIndex, highlightColor,
+                             enableSorting, sortTip, sortColumn, sortDescending,
+                             autoNumber, autoNumberSort, enableHeadingAttributes, footingCount, autoTotal, iconLocation) {
+    var customize = new Object;
+    customize.columnTypes = columnTypes;
+    customize.firstDataRowIndex = firstDataRowIndex;
+    customize.highlightColor = highlightColor;
+    customize.enableSorting = enableSorting;
+    customize.sortTip = sortTip;
+    customize.sortColumn = sortColumn;
+    customize.sortDescending = sortDescending;
+    customize.autoNumber = autoNumber;
+    customize.autoNumberSort = autoNumberSort;
+    customize.enableHeadingAttributes = enableHeadingAttributes;
+    customize.footingCount = footingCount;
+    customize.autoTotal = autoTotal;
+    customize.iconLocation = iconLocation;
+
+    var table = (typeof(tableId) == "string") ? document.getElementById(tableId) : null;
+
+    if (table) {
+        if (customize.autoTotal) {
+            appendTotalRow(table, customize.columnTypes, customize.firstDataRowIndex);
+            customize.footingCount++;  // to cover added row
+        }
+        if (customize.iconLocation != "") { // setup for showing sort icon
+            table.sortAttributeAscending = contextPath + customize.iconLocation + "down.gif";
+            table.sortAttributeDescending = contextPath + customize.iconLocation + "up.gif";
+            table.sortImage = document.createElement("IMG");
+        }
+        customize.lastClickableRow = customize.firstDataRowIndex - 1;
+        if (customize.lastClickableRow < 0) {
+            customize.lastClickableRow = 0;  // ensure at least the first row is clickable
+        }
+        customize.sortCell = null;
+        customize.dataRowCount = 1;
+        var colAttrs = columnAttributes.split(",");
+        customize.attrList = Array(colAttrs.length);
+
+        for (var i = 0; i < colAttrs.length; i++) {
+            customize.attrList[i] = colAttrs[i].Trim().split(";;");
+        }
+
+        var rowIndex = 0;
+
+        var headRowCount = (table.tHead == null) ? 0 : table.tHead.rows.length;
+        var footRowCount = (table.tFoot == null) ? 0 : table.tFoot.rows.length;
+        var bodyRowCount = table.tBodies[0].rows.length;
+        customize.totalRowCount = headRowCount + footRowCount + bodyRowCount;
+
+        for (var i = 0; i < headRowCount; i++) { // each row in thead
+       	    var row = table.tHead.rows[i];
+       	    handleRow(table, row, rowIndex, customize);
+       	    rowIndex++;
+        }
+
+        for (var i = 0; i < bodyRowCount; i++) { // each row in tbodies[0]
+            var row = table.tBodies[0].rows[i];
+       	    handleRow(table, row, rowIndex, customize);
+       	    rowIndex++;
+        }
+
+        for (var i = 0; i < footRowCount; i++) { // each row in tfoot
+            var row = table.tFoot.rows[i];
+       	    handleRow(table, row, rowIndex, customize);
+       	    rowIndex++;
+        }
+
+        // If user has requested auto sorting of a column before initial display
+        if (customize.sortCell != null) {  // auto sort
+            customize.sortCell.sortDescending = customize.sortDescending;
+    	    sortByCell(customize.sortCell, customize.firstDataRowIndex, customize.footingCount);
+    	}
+    }
+    return table;
+}
+var columnTypes = ['S'];
+var columnAttributes = '';
+customizeMacroTable('TBL1208234453743', columnTypes, 1, 'lightgoldenrodyellow', true, 'Click to sort', '', false, false, false, true, 0, false, '' );
+//-->
+ </script>
+<table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"> -e </td>
+<td class="confluenceTd"> True if the file or directory exists. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> -f </td>
+<td class="confluenceTd"> True if the item checked is a file. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> -d </td>
+<td class="confluenceTd"> True if the item checked is a directory. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> -s </td>
+<td class="confluenceTd"> True if the items size is more than zero bytes. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> -x </td>
+<td class="confluenceTd"> True if the item is executable. </td>
+</tr>
+</tbody></table>
+
+
+<p>More detail as well as some less commonly used conditions can be found in the "test" man page (man test).</p>
+
+
+<h3><a name="ShellScripting-CaseStatements"></a>Case Statements</h3>
+<p>Case statements are used to compare a value against a set of other
+values. Good examples of case statements can be found in the init
+scripts in /etc/init.d. Many init scripts will use "case" to determine
+how the script was called.</p>
+
+<p>Here is an example of a case statement:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">#!/bin/sh
+
+VALUE=<span class="code-quote">"asd"</span>
+
+<span class="code-keyword">case</span> $VALUE in
+<span class="code-quote">"sdf"</span>)
+    echo <span class="code-quote">"The value is sdf"</span>
+    ;;
+<span class="code-quote">"asd"</span>)
+    echo <span class="code-quote">"The value is asd"</span>
+    ;;
+*)
+    echo <span class="code-quote">"The value is something <span class="code-keyword">else</span>"</span>
+    ;;
+esac</pre>
+</div></div>
+
+
+<p>Case statements will stop after the first match. In the example
+above, there would be a match on "asd" obviously. Each statement that
+you want to check should be terminated with two semi-colons like in the
+example above. You can also include a wildcard to match anything. The
+wildcard would obviously go last, since the statements are checked in
+order. The case statement much also be closed with an "esac" (case
+backwards).</p>
+
+<p>Another example which might be used in an init script could be:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">#!/bin/sh
+
+ARGUMENT=$1
+
+<span class="code-keyword">case</span> $ARGUMENT in
+<span class="code-quote">"start"</span>)
+    start
+    ;;
+<span class="code-quote">"stop"</span>)
+    stop
+    ;;
+<span class="code-quote">"restart"</span>)
+    stop
+    start
+    ;;
+*)
+    echo <span class="code-quote">"Invalid usage."</span>
+    echo <span class="code-quote">"Usage: $0 {start|stop|restart}"</span>
+    ;; 
+esac</pre>
+</div></div>
+
+
+
+<h3><a name="ShellScripting-Forloops"></a>For loops</h3>
+<p>For loops are used to execute code against each item in a set of
+data. For example, if you wanted to run a command against each number
+from one to three, it might look like this (I think the seq command is
+only available in linux though):</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad710 ~]$ <span class="code-keyword">for</span> i in $(seq 1 3); <span class="code-keyword">do</span> echo $i; done
+1
+2
+3</pre>
+</div></div>
+
+<p>Another use might be to execute a command against each hostname you
+had in a text file. For example, assuming "server_list.txt contained a
+list of server names, you could do something like this:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad710 ~]$ <span class="code-keyword">for</span> i in `cat server_list.txt`; <span class="code-keyword">do</span> ping -c1 $i; done
+PING ql1rap340-cre.prodint.edmunds.com (10.128.24.39) 56(84) bytes of data.
+64 bytes from ql1rap340-cre.prodint.edmunds.com (10.128.24.39): icmp_seq=0 ttl=61 time=0.420 ms
+
+--- ql1rap340-cre.prodint.edmunds.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.420/0.420/0.420/0.000 ms, pipe 2
+PING ql1rap500-cre.media.edmunds.com (10.96.55.50) 56(84) bytes of data.
+64 bytes from ql1rap500-cre.media.edmunds.com (10.96.55.50): icmp_seq=0 ttl=63 time=0.562 ms
+
+--- ql1rap500-cre.media.edmunds.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.562/0.562/0.562/0.000 ms, pipe 2
+PING ql1rap501-cre.media.edmunds.com (10.96.55.51) 56(84) bytes of data.
+64 bytes from ql1rap501-cre.media.edmunds.com (10.96.55.51): icmp_seq=0 ttl=63 time=0.701 ms
+
+--- ql1rap501-cre.media.edmunds.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.701/0.701/0.701/0.000 ms, pipe 2</pre>
+</div></div>
+
+<p>In both examples above, the "i" in "for i in" is a variable. You can
+use whichever variable you want. "i" just seems to be the most common.
+The same ping example using a more logical variable would look as
+follows:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad710 ~]$ <span class="code-keyword">for</span> servername in `cat server_list.txt`; <span class="code-keyword">do</span> ping -c1 $servername; done
+PING ql1rap340-cre.prodint.edmunds.com (10.128.24.39) 56(84) bytes of data.
+64 bytes from ql1rap340-cre.prodint.edmunds.com (10.128.24.39): icmp_seq=0 ttl=61 time=0.420 ms
+
+--- ql1rap340-cre.prodint.edmunds.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.420/0.420/0.420/0.000 ms, pipe 2
+PING ql1rap500-cre.media.edmunds.com (10.96.55.50) 56(84) bytes of data.
+64 bytes from ql1rap500-cre.media.edmunds.com (10.96.55.50): icmp_seq=0 ttl=63 time=0.562 ms
+
+--- ql1rap500-cre.media.edmunds.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.562/0.562/0.562/0.000 ms, pipe 2
+PING ql1rap501-cre.media.edmunds.com (10.96.55.51) 56(84) bytes of data.
+64 bytes from ql1rap501-cre.media.edmunds.com (10.96.55.51): icmp_seq=0 ttl=63 time=0.701 ms
+
+--- ql1rap501-cre.media.edmunds.com ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.701/0.701/0.701/0.000 ms, pipe 2</pre>
+</div></div>
+
+<h3><a name="ShellScripting-WhileandUntilloops"></a>While and Until loops</h3>
+<p>While and until loops are similar to a for loops, except instead of
+running once against each value passed, they run until a condition is
+met. </p>
+
+<p>For example, this one will run forever:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@dl1rdb300 ~]# <span class="code-keyword">while</span> <span class="code-keyword">true</span>; <span class="code-keyword">do</span> echo <span class="code-keyword">true</span>; done
+<span class="code-keyword">true</span>
+<span class="code-keyword">true</span>
+<span class="code-keyword">true</span>
+......</pre>
+</div></div>
+
+<p>Either of these will run until the value of "i" equals 10:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">i=1
+<span class="code-keyword">while</span> [ $i -le 10 ]
+<span class="code-keyword">do</span>
+  echo <span class="code-quote">"i is equal to $i"</span>
+  i=$(( $i + 1 ))
+done</pre>
+</div></div>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">i=1
+until [ $i -gt 9 ]
+<span class="code-keyword">do</span>
+  echo <span class="code-quote">"i is equal to $i"</span>
+  i=$(( $i + 1 ))
+done</pre>
+</div></div>
+
+<h4><a name="ShellScripting-Operators"></a>Operators</h4>
+
+<p>Operators are explained in a bit more detail in the bash man page.</p>
+
+
+<p>The operators available in bash are:</p>
+<table class="confluenceTable"><tbody>
+<tr>
+<td class="confluenceTd"> Operator </td>
+<td class="confluenceTd"> Type </td>
+<td class="confluenceTd"> Description </td>
+</tr>
+<tr>
+<td class="confluenceTd">-eq</td>
+<td class="confluenceTd"> Integer Comparison </td>
+<td class="confluenceTd"> True if the two values are equal. </td>
+</tr>
+<tr>
+<td class="confluenceTd">-ne </td>
+<td class="confluenceTd"> Integer Comparison </td>
+<td class="confluenceTd"> True if the two values are not equal. </td>
+</tr>
+<tr>
+<td class="confluenceTd">-lt or &lt; </td>
+<td class="confluenceTd"> Integer Comparison </td>
+<td class="confluenceTd"> True if value one is less than value two. </td>
+</tr>
+<tr>
+<td class="confluenceTd">-le or &lt;= </td>
+<td class="confluenceTd"> Integer Comparison </td>
+<td class="confluenceTd"> True if value one is less than or equal to the second value. </td>
+</tr>
+<tr>
+<td class="confluenceTd">-gt or &gt; </td>
+<td class="confluenceTd"> Integer Comparison </td>
+<td class="confluenceTd"> True if the value one is greater than value two. </td>
+</tr>
+<tr>
+<td class="confluenceTd">-ge or &gt;= </td>
+<td class="confluenceTd"> Integer Comparison </td>
+<td class="confluenceTd"> True if value one is greater than or equal to value two. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> == </td>
+<td class="confluenceTd"> String Comparison </td>
+<td class="confluenceTd"> True if string one matches string two. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> != </td>
+<td class="confluenceTd"> String Comparison </td>
+<td class="confluenceTd"> True if string one does not match string two. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> &lt; </td>
+<td class="confluenceTd"> String Comparison </td>
+<td class="confluenceTd"> True if string one comes before string two alphabetically. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> &gt; </td>
+<td class="confluenceTd"> String Comparison </td>
+<td class="confluenceTd"> True if string one comes after string two alphabetically. </td>
+</tr>
+<tr>
+<td class="confluenceTd"> -z </td>
+<td class="confluenceTd"> Single String </td>
+<td class="confluenceTd"> True if string one is empty (zero bytes). </td>
+</tr>
+<tr>
+<td class="confluenceTd"> -n </td>
+<td class="confluenceTd"> Single String </td>
+<td class="confluenceTd"> True if string one is not empty (not null).  This is essentially the opposite of "-z". </td>
+</tr>
+</tbody></table>
+
+
+<h3><a name="ShellScripting-Functions"></a>Functions</h3>
+
+<p>As with most all programming or scripting languages, you can break
+your script into sections or function. A good place to see examples of
+functions is again the init scripts in /etc/init.d. There is generally
+a function for start, stop, reload, etc. for the services in init.d. </p>
+
+<p>Here are a few simple examples:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">my_function() {
+  echo <span class="code-quote">"This is the my_function."</span>
+  echo <span class="code-quote">"It doesn\'t <span class="code-keyword">do</span> anything useful in <span class="code-keyword">this</span> <span class="code-keyword">case</span>"</span>
+}</pre>
+</div></div>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">start() {
+  echo <span class="code-quote">"Starting your service."</span>
+  daemon your_service
+}</pre>
+</div></div>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">stop() {
+  echo <span class="code-quote">"Stopping your service"</span>
+  killproc your_service
+}</pre>
+</div></div>
+
+<p>Functions are called by simply putting the name of the function in
+the script. So, to call the functions above, it would look as follows:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># Call my_function
+my_function</pre>
+</div></div>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># Call start function
+start</pre>
+</div></div>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"># Call stop
+stop</pre>
+</div></div>
+
+
+<p>Functions accept arguments as well and will use them "locally"
+within the function. Here's an example of local vs. global variables: </p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">#!/bin/sh
+
+test() {
+    # The value of $1 inside a function is the first argument passed to the function
+    echo <span class="code-quote">"The following argument was passed to the test function: $1"</span>
+}
+
+# Call the test function with an argument
+test <span class="code-quote">"I've been passed to a function"</span>
+
+# Print the current value of $1....I know I said not to use the variables directly, 
+# but it's easier to show why that is by doing it <span class="code-keyword">this</span> way.
+echo <span class="code-quote">"The following argument was passed to the script from the command line: $1"</span></pre>
+</div></div>
+
+<p>Executing the script above will output the following:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ sh test.sh <span class="code-quote">"I've been passed on the command line"</span>
+The following argument was passed to the test function: I've been passed to a function
+The following argument was passed to the script from the command line: I've been passed on the command line</pre>
+</div></div>
+
+
+<h3><a name="ShellScripting-AdditionalCommands"></a>Additional Commands</h3>
+
+<p>Below are some additional commands which I commonly use within
+scripts or on the command line. Some are functions of bash, and some
+are shell commands.</p>
+
+<h4><a name="ShellScripting-Grep(grep)"></a>Grep (grep)</h4>
+<p>Grep is by far one of the best commands you can learn. You can find
+files that contain a string, or find a string within a file. For
+example, to list the files in your current directory that contain the
+string "2,b,B", you would use:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ grep -l <span class="code-quote">"2,b,B"</span> *
+a.txt</pre>
+</div></div>
+
+<p>The "-l" tells grep to simply list the files that match. To see how
+the string appears within the file, you would simply use "grep
+&lt;string&gt; &lt;filename&gt;". A real world example would be to find
+oracle in the passwd file if I wanted to see my UID or something:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ grep oracle /etc/passwd
+oracle:x:20000:50017::/home/oracle:/bin/bash</pre>
+</div></div>
+
+<p>To do a 'reverse grep', you would use the "-v" flag. This tells grep
+to print out everything except the matching string. A real world
+example might be to find all http requests that didn't come from one of
+our own IP addresses (not a real webserver of ours, but you should get
+the idea):</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@pl1rad702 httpd]# cat access_log.1 
+10.32.35.1 - - [06/Dec/2007:14:27:50 -0800] <span class="code-quote">"GET / HTTP/1.0"</span> 403 3985 <span class="code-quote">"-"</span> <span class="code-quote">"-"</span>
+10.32.35.1 - - [06/Dec/2007:14:28:39 -0800] <span class="code-quote">"GET / HTTP/1.0"</span> 403 3985 <span class="code-quote">"-"</span> <span class="code-quote">"Lynx/2.8.6rel.4 libwww-FM/2.14 SSL-MM/1.4.1 GNUTLS/1.6.3"</span>
+10.32.35.1 - - [06/Dec/2007:14:29:03 -0800] <span class="code-quote">"GET /cacti HTTP/1.1"</span> 301 343 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.10) Gecko/20071126 Ubuntu/7.10 (gutsy) Firefox/2.0.0.10"</span>
+10.32.35.1 - - [06/Dec/2007:14:29:03 -0800] <span class="code-quote">"GET /cacti/ HTTP/1.1"</span> 200 1327 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.10) Gecko/20071126 Ubuntu/7.10 (gutsy) Firefox/2.0.0.10"</span>
+10.32.35.1 - - [06/Dec/2007:14:29:03 -0800] <span class="code-quote">"GET /cacti/images/auth_login.gif HTTP/1.1"</span> 200 21265 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/cacti/"</span> <span class="code-quote">"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.10) Gecko/20071126 Ubuntu/7.10 (gutsy) Firefox/2.0.0.10"</span>
+</span>10.32.35.1 - - [06/Dec/2007:14:29:04 -0800] <span class="code-quote">"GET /favicon.ico HTTP/1.1"</span> 404 303 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.10) Gecko/20071126 Ubuntu/7.10 (gutsy) Firefox/2.0.0.10"</span>
+10.32.35.1 - - [06/Dec/2007:14:29:07 -0800] <span class="code-quote">"POST /cacti/index.php HTTP/1.1"</span> 200 1484 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/cacti/"</span> <span class="code-quote">"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.10) Gecko/20071126 Ubuntu/7.10 (gutsy) Firefox/2.0.0.10"</span>
+</span>10.32.35.1 - - [06/Dec/2007:14:29:11 -0800] <span class="code-quote">"POST /cacti/index.php HTTP/1.1"</span> 200 1484 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/cacti/index.php"</span> <span class="code-quote">"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.10) Gecko/20071126 Ubuntu/7.10 (gutsy) Firefox/2.0.0.10"</span>
+</span>10.32.35.1 - - [06/Dec/2007:14:29:14 -0800] <span class="code-quote">"POST /cacti/index.php HTTP/1.1"</span> 200 1484 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/cacti/index.php"</span> <span class="code-quote">"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.8.1.10) Gecko/20071126 Ubuntu/7.10 (gutsy) Firefox/2.0.0.10"</span>
+</span>10.32.33.71 - - [06/Dec/2007:14:34:45 -0800] <span class="code-quote">"GET / HTTP/1.1"</span> 403 3985 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+10.32.33.71 - - [06/Dec/2007:14:34:45 -0800] <span class="code-quote">"GET /icons/apache_pb2.gif HTTP/1.1"</span> 200 2414 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+</span>10.32.33.71 - - [06/Dec/2007:14:34:46 -0800] <span class="code-quote">"GET /favicon.ico HTTP/1.1"</span> 404 303 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+10.32.33.71 - - [06/Dec/2007:14:34:53 -0800] <span class="code-quote">"GET /cacti/ HTTP/1.1"</span> 200 1327 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+10.32.33.71 - - [06/Dec/2007:14:34:53 -0800] <span class="code-quote">"GET /cacti/images/auth_login.gif HTTP/1.1"</span> 200 21265 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/cacti/"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+</span>10.32.33.71 - - [06/Dec/2007:14:34:53 -0800] <span class="code-quote">"GET /favicon.ico HTTP/1.1"</span> 404 303 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (compatible; Google Desktop)"</span>
+
+
+[root@pl1rad702 httpd]# grep -v <span class="code-quote">"10.32.35.1"</span> access_log.1
+10.32.33.71 - - [06/Dec/2007:14:34:45 -0800] <span class="code-quote">"GET / HTTP/1.1"</span> 403 3985 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+10.32.33.71 - - [06/Dec/2007:14:34:45 -0800] <span class="code-quote">"GET /icons/apache_pb2.gif HTTP/1.1"</span> 200 2414 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+</span>10.32.33.71 - - [06/Dec/2007:14:34:46 -0800] <span class="code-quote">"GET /favicon.ico HTTP/1.1"</span> 404 303 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+10.32.33.71 - - [06/Dec/2007:14:34:53 -0800] <span class="code-quote">"GET /cacti/ HTTP/1.1"</span> 200 1327 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+10.32.33.71 - - [06/Dec/2007:14:34:53 -0800] <span class="code-quote">"GET /cacti/images/auth_login.gif HTTP/1.1"</span> 200 21265 <span class="code-quote">"http:<span class="code-comment">//pl1rad702.admin.edmunds.com/cacti/"</span> <span class="code-quote">"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11"</span>
+</span>10.32.33.71 - - [06/Dec/2007:14:34:53 -0800] <span class="code-quote">"GET /favicon.ico HTTP/1.1"</span> 404 303 <span class="code-quote">"-"</span> <span class="code-quote">"Mozilla/5.0 (compatible; Google Desktop)"</span></pre>
+</div></div>
+
+<h4><a name="ShellScripting-Sed(sed)"></a>Sed (sed)</h4>
+<p>Sed can be used to substitute parts of a string. Here's a basic
+example of how sed might be used in a script (it's pretty much the only
+way I ever use sed):</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">#!/bin/sh
+
+URL=<span class="code-quote">"http:<span class="code-comment">//www.edmunds.com/This Is A Bad URL"</span>
+</span>GOODURL=`echo $URL | sed s/<span class="code-quote">" "</span>/<span class="code-quote">"_"</span>/g`
+URL=$GOODURL
+
+echo $URL</pre>
+</div></div>
+
+<p>The script above will create a variable called "URL". It then uses
+sed to replace all spaces with underscores. Lastly, it replaces the
+value of the URL variable with the value of the GOODURL variable and
+prints it out. The "s" tells it that you want to perform a
+substitution. The " " is the string that you want to replace (white
+space) and the "_" is what to replace it with. The "g" at the end tells
+it that it's a global replace, so any occurrence of the first string
+will be replaced by the second string.</p>
+
+<h4><a name="ShellScripting-Awk(awk)"></a>Awk (awk)</h4>
+
+<p>Awk, according to the man page, is a "pattern scanning and
+processing language". I find it to be useful for grabbing parts of a
+string. For example, if you had a file containing the following:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">1 a A
+2 b B
+3 c C
+4 d D
+5 e E</pre>
+</div></div>
+
+<p>And for whatever reason, you wanted to print the second column, you
+could use following command (the file is called a.txt in this example):</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ cat a.txt | awk '{print $2}'
+a
+b
+c
+d
+e</pre>
+</div></div>
+
+
+<p>Similar to the arguments for a shell script, the columns returned by
+awk are referenced by a dollar sign followed by a number. The number
+cooresponds with the column of the output. So, $1 would be the first
+column of output, $2 the second, etc.</p>
+
+<p>Additionally, there are builtin variables such as "$NF", which
+represents the number of fields in the output. So, printing "$NF" will
+print out the last column of data. For example:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ cat a.txt | awk '{print $NF}'
+A
+B
+C
+D
+E</pre>
+</div></div>
+
+<p>When using awk, I tend to use "-F" a lot. It tells awk which string
+you want to use as a field separator (the default is white space). So
+for example, if you had a csv file, you could parse it using "awk -F
+','" as in this example:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ cat a.txt 
+1,a,A
+2,b,B
+3,c,C
+4,d,D
+5,e,E
+
+[reickler@pl1rad702 ~]$ cat a.txt | awk -F <span class="code-quote">","</span> '{print $NF}'
+A
+B
+C
+D
+E</pre>
+</div></div>
+
+<p>Awk is a language in itself, and there's a lot more you can do with
+it like split strings, compare values, etc. A more complex awk example
+would be:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">echo <span class="code-quote">"This is a string that awk will process"</span> | awk '{split( $0, my_array, <span class="code-quote">" "</span>); print my_array[1], my_array[2], my_array[3], my_array[NF]; }'</pre>
+</div></div>
+
+<p>Awk 'scripts' can be in their own files, and can be called with "awk
+-f &lt;filename&gt;". So the same command above with a separate awk
+script would look like this:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ cat a.awk 
+{
+  split( $0, my_array, <span class="code-quote">" "</span>);
+  print my_array[1], my_array[2], my_array[3], my_array[NF];
+}
+
+[reickler@pl1rad702 ~]$ echo <span class="code-quote">"<span class="code-keyword">this</span> is a string that awk will process"</span> | awk -f a.awk
+<span class="code-keyword">this</span> is a process
+
+[reickler@pl1rad702 ~]$</pre>
+</div></div>
+
+
+<h4><a name="ShellScripting-WordCount(wc)"></a>Word Count (wc)</h4>
+<p>Word count is useful for counting things like the number of lines
+(-l) words (-w), etc. in a file. For example to see how many lines are
+in the file called "a.txt", you would do the following:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ cat a.txt 
+1,a,A
+2,b,B
+3,c,C
+4,d,D
+5,e,E
+
+[reickler@pl1rad702 ~]$ cat a.txt | wc -l
+5</pre>
+</div></div>
+
+<p>An real world example might be to count how many users are in our ldap directory:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[reickler@pl1rad702 ~]$ ldapsearch -x  uid | grep <span class="code-quote">"^dn:"</span>  | wc -l
+356</pre>
+</div></div>
+
+<p>When you pass a filename as an argument to wc, it will display the
+file name in the output. I typically cat the file and pipe it to wc, so
+it doesn't behave that way (as in the first example above).</p>
+
+<h4><a name="ShellScripting-BinaryCalculator(bc)"></a>Binary Calculator (bc)</h4>
+<p>The binary calculator (bc) is a command line "calculator" that can
+be used to do math (duh). I use it a lot with "wc". For example, if I
+wanted to know the combined total requests in access_log and
+access_log.1, I could do something like this:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@pl1rad702 httpd]# wc -l access_log.1
+15 access_log.1
+
+[root@pl1rad702 httpd]# wc -l access_log.4
+1345 access_log.4
+
+[root@pl1rad702 httpd]# echo <span class="code-quote">"`cat access_log.4 | wc -l ` + `cat access_log.1 | wc -l` "</span> | bc
+1360
+[root@pl1rad702 httpd]#</pre>
+</div></div>
+
+<p>The last command in the example above might seem a little confusing,
+but it actually shows a lot of the commands and techniques above.
+Remember that things between back tics (`) get executed as commands. If
+broken down into individual commands, they would look like this:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@pl1rad702 httpd]# cat access_log.4 | wc -l
+1345
+
+[root@pl1rad702 httpd]# cat access_log.1 | wc -l
+15
+
+[root@pl1rad702 httpd]# echo <span class="code-quote">"1345 + 15"</span>
+1345 + 15
+
+[root@pl1rad702 httpd]# echo <span class="code-quote">"1345 + 15"</span> | bc
+1360</pre>
+</div></div>
+
+<h4><a name="ShellScripting-Sort(sort)"></a>Sort (sort)</h4>
+
+<p>Sort should be pretty obvious. It sorts data. For example, to sort
+data. A great example would be to find which directories are taking up
+the most space (in conjunction with "du" command):</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@pl1rad702 home]# du -sk /home/* | sort -rn
+631836  /home/oracle
+160     /home/sitescope
+24      /home/sncmid
+16      /home/oemjobs
+16      /home/oem
+16      /home/lost+found
+16      /home/logs</pre>
+</div></div>
+
+<p>Passing the "-n" flag will sort numerically and "-r" will reverse the sort order, showing the highest disk usage at the top.</p>
+
+<h4><a name="ShellScripting-Unique(uniq)"></a>Unique (uniq)</h4>
+
+<p>Unique can be used to find unique strings in output. Unique only
+treats successive occurrences of a string as unique. So, in the
+following example, it only shows the same string multiple times, but
+not when the string appears twice in a row: </p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@pl1rad702 ~]# cat a.txt 
+You are not a unique snowflake
+You are not a unique snowflake
+Yes I am
+You are not a unique snowflake
+Me too
+You are not a unique snowflake
+
+
+[root@pl1rad702 ~]# cat a.txt  | uniq
+You are not a unique snowflake
+Yes I am
+You are not a unique snowflake
+Me too
+You are not a unique snowflake</pre>
+</div></div>
+
+<p>A way around this is to sort the data before passing it to uniq.  That will result in a truly unique dataset:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@pl1rad702 ~]# cat a.txt  | sort | uniq
+Me too
+Yes I am
+You are not a unique snowflake</pre>
+</div></div>
+
+
+<p>A real world example for uniq would be to find unique IP addresses
+in an access log (Ilan will appreciate this one). This example also
+uses awk to print out the first column in the access_log file:</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">[root@pl1rad702 httpd]# cat access_log.1 | awk '{print $1}' | sort -rn | uniq
+10.32.35.1
+10.32.33.71</pre>
+</div></div>
+                            </div>
+
+                            <!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+<rdf:Description
+    rdf:about="http://intranet.edmunds.hq/display/ec/Shell+Scripting"
+    dc:identifier="http://intranet.edmunds.hq/display/ec/Shell+Scripting"
+    dc:title="Shell Scripting"
+    trackback:ping="http://intranet.edmunds.hq/rpc/trackback/20910536"/>
+</rdf:RDF>
+-->
+
+                                
+                                <!--
+    Root decorator: all decisions about how a page is to be decorated via the
+                    inline decoration begins here.
+-->
+
+
+
+<!--
+    Switch based upon the context. However, for now, just delegate to a decorator
+    identified directly by the context.
+-->
+
+
+    
+    
+
+<div id="commentsSection" class="wiki-content pageSection">
+    
+    
+    
+    
+                                    </div>
+
+
+                        </div>
+                                                            </td>
+
+
+                                                    </tr>
+        </tbody></table>
+
+        
+        </td>
+    </tr>
+</tbody></table>
+
+    </div>
+
+  	                                <div class="bottomshadow"></div>
+  	<div id="poweredby" class="smalltext">
+		Powered by <a href="http://www.atlassian.com/software/confluence" class="smalltext">Atlassian Confluence</a> 2.7.3, the <a href="http://www.atlassian.com/software/confluence" class="smalltext">Enterprise Wiki</a>.
+		<a href="http://jira.atlassian.com/secure/BrowseProject.jspa?id=10470" class="smalltext">Bug/feature request</a>
+		-
+		<a href="http://www.atlassian.com/about/connected.jsp?s_kwcid=Confluence-stayintouch" class="smalltext">Atlassian news</a>
+		-
+		<a href="http://confluence/administrators.action">Contact administrators</a>
+        <br>
+	</div>
+
+<!-- delay the loading of large javascript files to the end so that they don't interfere with the loading of page content -->
+<span style="display: none;">
+    <script type="text/javascript" language="JavaScript">var domainName = 'http://intranet.edmunds.hq'; var entityId = '20910536'; var spaceKey = 'ec'</script>
+    <script type="text/javascript" language="JavaScript" src="Shell+Scripting_files/labels-javascript"></script>
+    <script>new Ajax.Autocompleter('labelName', 'labelsAutocompleteList', '20910536', { tokens: new Array(',', ' '), dwrFunction: GenerateAutocompleteLabelsListForEntity.autocompleteLabels});</script>
+</span>
+
+
+</body></html>

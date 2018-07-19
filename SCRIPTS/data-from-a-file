@@ -1,0 +1,2 @@
+There are many-many way to read file in bash script, look at the first section where I used while loop along with pipe (|) (cat $FILE | while read line; do … ) and also incremented the value of (i) inside the loop and at the end I am getting the wrong value of i, the main reason is that the usage of pipe (|) will create a new sub-shell to read the file and any operation you do within this while loop (example – i++) will get lost when this sub-shell finishes the operation.
+

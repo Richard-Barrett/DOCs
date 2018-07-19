@@ -1,0 +1,368 @@
+8May08
+http://www.cs.hmc.edu/qref/sed.html
+
+HMC Homepage <http://www.hmc.edu> CS Home <http://www.cs.hmc.edu>
+
+
+    An introduction to sed
+
+* This qref is written for a semi-knowledgable UNIX user who has just
+come up against a problem and has been advised to use /sed/ to solve it.
+Perhaps one of the examples can be quickly modified for immediate use. *
+
+------------------------------------------------------------------------
+
+    * For More Info <#info>
+    * Introduction <#intro>
+    * The Basics <#basics>
+    * Using regular expressions <#regexp>
+    * Substitution and Saving <#subsav>
+    * Sed from a file <#sedscr> 
+
+------------------------------------------------------------------------
+
+
+    For More Info
+
+A good reference for sed is the O'Reilly handbook for /sed and awk/.
+There should be a copy available in the CS Department library. Further
+references are the /UNIX in a Nutshell/ and /UNIX Power Tools/ books,
+also in the CS Department library.
+
+------------------------------------------------------------------------
+
+
+    Introduction
+
+    * /sed/ reads from a file or from its standard input, and outputs to
+      its standard output. You will generally want to redirect that into
+      a file, but that is not done in these examples just because it
+      takes up space. sed does not get along with non-text files, like
+      executables and FrameMaker files. If you need to edit those, use a
+      binary editor like hexl-mode in emacs.
+    * The most frustrating thing about trying to learn sed is getting
+      your program past the shell's parser. The proper way is to use
+      single quotes around the program, like so:
+
+      *>*sed 's/fubar/foobar/' filename
+
+      The single quotes protect almost everything from the shell. In csh
+      or tcsh, you still have to watch out for exclamation marks, but
+      other than that, you're safe.
+
+    * The second most frustrating thing about trying to learn /sed/ is
+      the lovely error messages:
+
+      	sed 's/fubar/foobar' filename
+      	sed: command garbled: s/fubar/foobar
+
+    * The GNU version of /sed/ generally has better error messages:
+
+      	gsed 's/fubar/foobar' filename
+      	gsed: Unterminated `s' command
+
+      So, if you're having problems getting /sed/ syntax correct, switch
+      to /gsed/ for a while. 
+
+back to the top <#menu>
+------------------------------------------------------------------------
+
+
+    Some basics:
+
+In all probability, the command you need most is the "s" command. It
+Substitutes one thing for another. The simplest way to do this is like
+the above examples:
+
+*>*sed 's/color/colour/g' filename
+
+The "g" at the end stands for "global". What it really means, though, is
+to replace every occurence on the line. If you leave it off, only the
+first occurence on each line will be changed.
+
+You will encounter problems if you attempt to use the following
+characters in the string to replace:
+
+	.*[]^$\
+
+These characters mean special things. If you mean to replace literal
+occurences of those characters, preface them with a backslash. So, don't do
+
+*>*sed 's/[J.S. Bach {$ for music}]/[Bach, J.S {$ for music}]/' filename
+
+Instead, do
+
+*>*sed 's/\[J\.S\. Bach {\$ for music}\]/[Bach, J.S {$ for music}]/'
+filename
+
+Note that this does not apply to the replacement string.
+
+What if you want to perform more than one such replacement at a time?
+You would try something like this:
+
+*>*sed 's/color/colour/g' 's/flavor/flavour/g' filename
+
+but it wouldn't work. sed would look for a file named "g" in the
+directory "s/flavor/flavour". The "-e" flag to sed makes it realize that
+the next option is a part of the script, instead of a filename. You also
+must use it for the first part of the script, when you have more than
+one part. So, you would use
+
+*>*sed -e 's/color/colour/g' -e 's/flavor/flavour/g' filename
+
+If you only had one replacement to do, you could still use the "-e"
+flag, but you don't need to.
+
+The various commands are applied in the order given to sed, so if you ran
+
+*>*sed -e 's/color/colour/g' -e 's/colour/color/g' filename
+
+it would turn "color" to "colour" and then back to "color". So, all
+occurences of "color" or "colour" would end up as "color". This is an
+inefficient way to do that, though.
+
+What if you want to replace something that contains a '/' character?
+This is a common problem with filenames. You could escape each one, like
+so:
+
+*>*sed 's/\/usr\/bin/\/bin/g' filename
+
+This is not fun for long pathnames. There is a nice alternative: /sed/
+will treat the character immediately after the 's' as the separator, so
+you could do something like
+
+*>*sed 's#/usr/bin#/bin#g' filename
+
+back to the top <#menu>
+
+------------------------------------------------------------------------
+
+
+      Using regular expressions
+
+/sed/ can use regular expressions just like /ed/(1) can. Here are some
+common uses of regular expressions.
+
+    * The '^' character means the beginning of the line.
+
+      *>*sed 's/^Thu /Thursday/' filename
+
+      will turn "Thu " into "Thursday", but only at the beginning of the
+      line. Note that the "g" flag is not used, since you can't have
+      multiple beginnings of a line. Also note that you don't need to
+      put the '^' in the replacement string.
+
+    * The '$' character means the end of the line.
+
+      *>*sed 's/ $//' filename
+
+      will replace any space character that occurs at the end of a line.
+      Again, the "g" flag is not used, and the '$' is not used in the
+      replacement string.
+
+      You can "replace" the end of the line, like this:
+
+      *>*sed 's/$/EOL/' filename
+
+      This does not form one long line, but it puts the string "EOL" at
+      the end of each line.
+
+      You can match a blank line by specifying an end-of-line
+      immediately after a beginning-of-line:
+
+      *>*sed 's/^$/this used to be a blank line/' filename
+
+    * The '.' character means "any character". This does not mean the
+      beginning or end of a line, though. If you were using a log file
+      which had the date in the form "Wed Dec 31 16:00:00 1969" and
+      wanted to erase the dates and times from a certain month and year,
+      you could use
+
+      *>*sed 's/Apr .. ..:..:.. 1980/Apr 1980/g' filename
+
+    * The square brackets "[]" are used to specify any one of a number
+      of characters. This is useful when you don't know if a letter will
+      be upper or lower case:
+
+      *>*sed 's/[Oo]pen[Ww]in/openwin/g' filename
+
+    * You can specify a range of characters using a '-' inside the
+      square brackets. This will include any character between (in ASCII
+      terms) the two listed. If you wanted to delete middle initials,
+      you could use
+
+      *>*sed 's/ [A-Z]\. / /g' filename
+
+      Notice that the literal period had to be escaped, as mentioned
+      above. Also, we had to go from two spaces (one on each side of the
+      middle initial) to one.
+
+    * If you want to exclude a set or range of characters, use the '^'
+      character as the first thing inside the brackets:
+
+      *>*sed 's/ [^A-DHM-Z]\. / /g' filename
+
+      This will delete any middle initials that are not
+      A,B,C,D,H,M,N,...,Z.
+
+    * The '*' character means "any number of the previous character".
+      This applies both to literal characters and to characters that are
+      a result of using "[]" or '.'. For example,
+
+      *>*sed 's/ *$//' filename
+
+      deletes all trailing spaces from each line, while
+
+      *>*sed 's/[ ]*$//' filename
+
+      deletes any sequence of trailing tabs and spaces. It also works
+      when using "[^]":
+
+      *>*sed 's/[ ][^ ]*$//' filename
+
+      deletes the last word (sequence of non-spaces) on each line.
+
+      It is important to know that '*' will match zero occurences. If
+      you need to match an integer, for example,
+
+      *>*sed 's/ [0-9]* / integer /g' filename
+
+      will turn " " into " integer ", which is not what you want. In
+      this case, you should use
+
+      *>*sed 's/ [0-9][0-9]* / integer /g' filename
+
+      which will demand at least one digit.
+
+    * The combination ".*" means any number of any character. So,
+
+      *>*sed 's/col.*lapse/collapse/g' filename
+
+      will act on any line which contains the letters "col" and then
+      "lapse", no matter what is in between. The '*' character is
+      greedy: it takes as many characters as it can. So, the above
+      script would turn
+
+      	a b col d e f lapse h i j k lapse m n
+
+      into
+
+      	a b collapse m n
+
+      instead of
+
+      	a b collapse h i j k lapse m n
+
+back to the top <#menu>
+------------------------------------------------------------------------
+
+
+      Substitution and Saving
+
+Up to this point, we have concentrated on deleting things that we match
+with "[]" and '.'. That's because we had no way of saving what we
+matched. The "\(" and "\)" operators will save whatever is found between
+them. Notice that these parentheses must be preceded by a backslash,
+while the characters ^$[].*\ don't need a backslash to act in a
+non-literal fashion. The first pair of "\(\)" saves into a place called
+"\1", and the second pair into "\2", and so on.
+
+*>*sed 's/^\([A-Z][A-Za-z]*\), \([A-Z][A-Za-z]*\)/\2 \1/' filename
+
+will turn "Lastname, Firstname" into "Firstname Lastname". Notice how
+the comma is placed outside the first pair of "\(\)" so it doesn't get
+inclued in the last name. Otherwise, the result would be "Firstname
+Lastname,".
+
+Sometimes you will want to apply a substitution only to lines that meet
+some criteria that you can't specify in the string to be replaced. You
+do this using something called an "address". It comes before the "s"
+command. You can limit the command to a range of lines:
+
+*>*sed '1,20s/foobar/fubar/g' filename
+
+The line count is cumulative across files, and starts at 1.
+
+You might want to apply a change only to lines that contain a string:
+
+*>*sed '/^Aug/s/Mon /Monday /g' filename
+
+Or to lines that don't contain a string:
+
+    * using sh or ksh or bash,
+
+      *>>*sed '/^Aug/!s/Mon /Monday /g' filename
+
+      using csh or tcsh,
+
+      *>*sed '/^Aug/\!s/Mon /Monday /g' filename
+
+You can also apply the command to all lines between (and including) a
+start string and a stop string:
+
+*>*sed '/^Aug/,/^Oct/s/Mon /Monday /g' filename
+
+Normally sed reads a line, processes it, and prints it out. If you only
+want to see the lines that your command acted upon, then you don't want
+it to print out everyting. The "-n" flag will stop sed from printing
+after processing. So,
+
+*>*sed -n 's/fubar/foobar/g' filename
+
+will print nothing at all. You must use the 'p' flag to the 's' command
+to make it print out what it has processed:
+
+*>*sed -n 's/fubar/foobar/gp' filename
+
+------------------------------------------------------------------------
+
+
+      Sed from a file
+
+If your sed script is getting long, you can put it into a file, like so:
+
+	# This file is named "sample.sed"
+	# comments can only appear in a block at the beginning
+	s/color/colour/g
+	s/flavor/flavour/g
+	s/theater/theatre/g
+
+Then call sed with the "-f" flag:
+
+*>*sed -f sample.sed filename
+
+Or, you can make an executable sed script:
+
+	#!/usr/bin/sed -f
+	# This file is named "sample2.sed"
+	s/color/colour/g
+	s/flavor/flavour/g
+	s/theater/theatre/g
+
+then give it execute permissions:
+
+*>*chmod u+x sample2.sed
+
+and then call it like so:
+
+*>*./sample2.sed filename
+
+back to the top <#menu>
+
+This documentation was originally written by Andrew M. Ross.
+
+------------------------------------------------------------------------
+
+Copyright (c) HMC Computer Science Department. Permission is granted to
+copy, distribute and/or modify this document under the terms of the GNU
+Free Documentation License, Version 1.1 or any later version published
+by the Free Software Foundation; with the no Invariant Sections, with no
+Front-Cover Texts, and with no Back-Cover Texts. A copy of the license
+is included in the section entitled ``GNU Free Documentation License
+<http://www.gnu.org/copyleft/fdl.html>.''
+
+*HMC Computer Science Department*
+Contact Information </contact.html>
+
+Last Modified Tuesday, 22-May-2001 15:28:43 PDT
+

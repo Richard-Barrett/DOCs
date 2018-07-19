@@ -1,0 +1,1 @@
+use FileCache;cacheout $path;         # open the file whose path name is $pathprint $path "stuff\n";  # print stuff to file given by $path*****cacheout $path;

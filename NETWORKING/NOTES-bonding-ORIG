@@ -1,0 +1,467 @@
+13aug10  --siggy
+
+This is a new working machine (pl1rxv910.media.edmunds.com) as of 11aug10.
+
+[root@pl1rxv910 network-scripts]# cat ifcfg-*
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+#IPADDR=10.4.28.131
+#NETMASK=255.255.254.0
+BRIDGE=br2328
+
+DEVICE=bond0.2428
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=10.4.128.130
+NETMASK=255.255.252.0
+TYPE=Ethernet
+#BONDING_OPTS="mode=4 xmit_hash_policy=layer3+4"
+VLAN=yes
+
+DEVICE=br2328
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+IPADDR=10.4.28.131
+NETMASK=255.255.252.0
+
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+HWADDR=00:1B:21:5F:D0:3E
+
+DEVICE=eth1
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+HWADDR=00:1B:21:5F:D0:14
+
+[root@pl1rxv910 network-scripts]# cat /etc/modprobe.conf 
+alias eth0 ixgbe
+alias eth1 ixgbe
+alias scsi_hostadapter megaraid_sas
+alias scsi_hostadapter1 ata_piix
+alias     bond0   bonding
+options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=1
+# Added by RPM
+blacklist net-pf-10
+blacklist ipv6
+options loop max_loop=64
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+simple-bonding-script.txt
+
+#!/bin/sh
+
+#Set GATEWAY
+cat /etc/sysconfig/network | grep GATE > /dev/null 2>&1
+if  [ ! $? -eq 0 ]; then
+GATEW=`netstat -rn | tail -1 | awk '{print $2}'`
+cat >> /etc/sysconfig/network<<EOF
+GATEWAY=$GATEW
+EOF
+fi
+
+#add to the end of /etc/modeprobe.conf
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+cat >> $MOROBEDIR/modprobe.conf<<EOF 
+alias ipv6 net-pf-10
+alias net-pf-10 off
+alias bond0 bonding
+options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=1
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/modprobeFAILED; exit 0; fi
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+COUNT=`ls /etc/sysconfig/network-scripts | grep eth[0-99] | wc -l`
+MODPROBEDIR=/etc
+SN=`hostname -s`
+DN=`dnsdomainname`
+NFSNAME="${SN}.nfs.${DN}"
+
+#Back up the files
+for i in `seq 0 $COUNT`
+do
+mv $WORKINGDIR/ifcfg-eth$i $WORKINGDIR/ORIG-ifcfg-eth$i
+done
+
+# Set up the bonds.
+for i in `seq 0 $COUNT`
+do
+IPADDR$i=`cat /etc/sysconfig/network-scripts/ORIG-ifcfg-eth$i | grep IPADDR`
+NETMASK$i=`cat /etc/sysconfig/network-scripts/ORIG-ifcfg-eth$i | grep NETMASK`
+cat > $WORKINGDIR/ifcfg-bond$i<<EOF
+DEVICE=bond$i
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+$IPADDR
+$NETMASK
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond$iFAILED; exit 0; fi
+done
+
+# Set up the ifcfg-eth?
+for i in `seq 0 $COUNT`
+do
+HWADD$i=`cat /etc/sysconfig/network-scripts/ORIG-ifcfg-eth$i | grep IPADDR`
+DEVICE=eth$i
+cat > $WORKINGDIR/ifcfg-eth$i <<EOF
+DEVICE=$DEVICE
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond$i
+$HWADD$i
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth$iFAILED; exit 0; fi
+done
+
+echo "*****************************************************************************************************"
+echo "*****************************************************************************************************"
+echo " ********** PLEASE review ALL file to make sure they are what you want. *****************************"
+echo " ********** When you are satisfied, /sbin/service network restart. **********************************"
+echo "*****************************************************************************************************"
+echo "*****************************************************************************************************"
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+13aug10  --siggy
+#This is a Backup for PreProd DOM0 network config (Media Core installation).  When we went to production (today)
+#the script was replaced with the script that follows.....
+
+#I am going to just comment the changes and have one script.
+
+#!/bin/sh
+
+/sbin/modprobe bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=3
+sleep 5
+
+#Set GATEWAY
+GATEW=`netstat -rn | tail -1 | awk '{print $2}'`
+cat >> /etc/sysconfig/network<<EOF
+GATEWAY=$GATEW
+EOF
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+
+#Back up the files
+mv $WORKINGDIR/ifcfg-eth0 $WORKINGDIR/ORIG-eth0
+mv $WORKINGDIR/ifcfg-eth1 $WORKINGDIR/ORIG-eth1
+
+SN=`hostname -s`
+DN=`dnsdomainname`
+FQDN="${SN}.nfs.${DN}"
+
+#Collect info for new files
+IPADDR0=`hostname -i`
+IPADDR1=`host $FQDN | awk '{print $NF}'`
+
+NETMASK0=`ifconfig eth0 | grep Mask | awk -F: '{print $4}'`
+NETMASK1=255.255.0.0
+
+HWADD0=HWADDR=`ifconfig eth0 | grep HWaddr | awk '{print $5}'`
+HWADD1=HWADDR=`ifconfig eth1 | grep HWaddr | awk '{print $5}'`
+
+# Set eth0
+cat > $WORKINGDIR/ifcfg-eth0 <<EOF
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD0
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth0FAILED; exit 0; fi
+
+# Set eth1
+cat > $WORKINGDIR/ifcfg-eth1 <<EOF
+DEVICE=eth1
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD1
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth1FAILED; exit 0; fi
+
+# Set bond0
+cat > $WORKINGDIR/ifcfg-bond0<<EOF
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+#IPADDR=$IPADDR0
+#NETMASK=$NETMASK0
+#BRIDGE=br2248  #******This changes.... and it doesn't seem to be based on the IP
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0FAILED; exit 0; fi
+
+#Set bond0.1111
+#cat > $WORKINGDIR/ifcfg-bond0.1111 <<EOF
+#DEVICE=bond0.1111
+#BOOTPROTO=none
+#ONBOOT=yes
+#VLAN=yes
+#BRIDGE=br1111
+#EOF
+#if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0-1111FAILED; exit 0; fi
+
+#set bridge 1111
+#cat > $WORKINGDIR/ifcfg-br1111 <<EOF
+#DEVICE=br1111
+#TYPE=Bridge
+#BOOTPROTO=static
+#ONBOOT=yes
+#DELAY=0
+#STP=off
+#IPADDR=$IPADDR1
+#NETMASK=$NETMASK1
+#EOF
+#if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br1111FAILED; exit 0; fi
+
+#set bridge 2248
+#cat > $WORKINGDIR/ifcfg-br2248 <<EOF
+#DEVICE=br2248
+#TYPE=Bridge
+#BOOTPROTO=static
+#ONBOOT=yes
+#IPADDR=$IPADDR0
+#NETMASK=$NETMASK0
+#DELAY=0
+#STP=off
+#EOF
+#if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br2248FAILED; exit 0; fi
+
+#add to the end of /etc/modeprobe.conf
+MODPROBEDIR=/etc
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+echo "alias     bond0   bonding" >> $MODPROBEDIR/modprobe.conf
+echo "options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=1" >> $MODPROBEDIR/modprobe.conf
+
+cp /etc/resolv.conf /etc/resolv.conf.predhclient
+
+/sbin/service network restart
+
+#blank line
+What it changed to 13aug10  --siggy
+
+Edumnds Redesign Media Core RHEL5
+
+#[root@pl1rxv910 network-scripts]# cat ~dsiegfriedt/Production-DOM0-Media-Core-5.5.txt 
+#!/bin/sh
+
+/sbin/modprobe bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=3
+sleep 5
+
+#Set GATEWAY
+GATEW=`netstat -rn | tail -1 | awk '{print $2}'`
+cat >> /etc/sysconfig/network<<EOF
+GATEWAY=$GATEW
+EOF
+
+#clean up files
+sed /DHCP_HOSTNAME=/d /etc/sysconfig/network
+sed /\:\:1/d /etc/hosts
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+
+#Back up the files
+mv $WORKINGDIR/ifcfg-eth0 $WORKINGDIR/ORIG-eth0
+mv $WORKINGDIR/ifcfg-eth1 $WORKINGDIR/ORIG-eth1
+
+SN=`hostname -s`
+DN=`dnsdomainname`
+FQDN="${SN}.nfs.${DN}"
+
+#Collect info for new files
+IPADDR0=`hostname -i`
+IPADDR1=`host $FQDN | awk '{print $NF}'`
+
+NETMASK0=`ifconfig eth0 | grep Mask | awk -F: '{print $4}'`
+NETMASK1=255.255.252.0
+
+HWADD0=HWADDR=`ifconfig eth0 | grep HWaddr | awk '{print $5}'`
+HWADD1=HWADDR=`ifconfig eth1 | grep HWaddr | awk '{print $5}'`
+
+# Slave eth0 to bond0
+cat > $WORKINGDIR/ifcfg-eth0 <<EOF
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD0
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth0FAILED; exit 0; fi
+
+# Slave eth1 to bond0
+cat > $WORKINGDIR/ifcfg-eth1 <<EOF
+DEVICE=eth1
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD1
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth1FAILED; exit 0; fi
+
+# Set bond0 (admin) and point it to bridge 2328
+cat > $WORKINGDIR/ifcfg-bond0<<EOF
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+#IPADDR=$IPADDR0
+#NETMASK=$NETMASK0
+BRIDGE=br2328
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0FAILED; exit 0; fi
+
+#set bridge 2328 (admin)
+cat > $WORKINGDIR/ifcfg-br2328 <<EOF
+DEVICE=br2328
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+IPADDR=$IPADDR0
+NETMASK=$NETMASK0
+DELAY=0
+STP=off
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br2328FAILED; exit 0; fi
+
+#set up bond.2428 (NFS)
+cat > $WORKINGDIR/ifcfg-bond0.2428<<EOF
+DEVICE=bond0.2428
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=$IPADDR1
+NETMASK=$NETMASK1
+TYPE=Ethernet
+#BONDING_OPTS="mode=4 xmit_hash_policy=layer3+4"
+VLAN=yes
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0.2428FAILED; exit 0; fi
+
+#add to the end of /etc/modeprobe.conf
+MODPROBEDIR=/etc
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+echo "alias     bond0   bonding" >> $MODPROBEDIR/modprobe.conf
+echo "options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=3" >> $MODPROBEDIR/modprobe.conf
+
+cp /etc/resolv.conf /etc/resolv.conf.predhclient
+
+/sbin/service network restart
+
+#blank line
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[root@pl1rad710 DUMPING-GROUND]# pwd
+/usr/src/redhat/DUMPING-GROUND
+[root@pl1rad710 DUMPING-GROUND]# cat DOM0-prep.sh 
+#!/bin/bash
+
+/bin/mkdir /usr/src/Orig-XEN-Config
+cp /etc/xen/scripts/xen-network-common.sh /usr/src/Orig-XEN-Config/
+cp /etc/xen/xend-config.sxp /usr/src/Orig-XEN-Config/
+cp /boot/grub/grub.conf /usr/src/Orig-XEN-Config/
+cp /etc/modprobe.conf /usr/src/Orig-XEN-Config/
+cp /etc/sysctl.conf /usr/src/Orig-XEN-Config/
+cp /etc/rc.d/rc.local /usr/src/Orig-XEN-Config/
+cp /etc/init.d/xendomains /usr/src/Orig-XEN-Config/
+cp /etc/fstab  /usr/src/Orig-XEN-Config/  #****** this is a new step
+
+cat >> /etc/modprobe.conf<<EOF
+# Added by RPM
+blacklist net-pf-10
+blacklist ipv6
+options loop max_loop=64
+EOF
+
+# Add cron to check watchdog
+echo "0,5,10,15,20,25,30,35,40,45,50,55 * * * * /nfs/common/xen/bin/watchdog.ksh > /dev/null 2>&1" >> /var/spool/cron/root
+
+# adding the NFS mount info
+mkdir -p /nfs/common
+echo "" >> /etc/fstab
+echo "# Added by RPM" >> /etc/fstab
+echo "#pl1nvf104-1111.nfs.edmunds.com:/vol/xen_common_preprod_media       /nfs/common    nfs                rw,rsize=32768,wsize=32768,hard,nointr,bg,tcp,vers=3,timeo=600" >> /etc/fstab
+echo "#10.4.128.16:/vol/xen_common_prod_media       /nfs/common    nfs                rw,rsize=32768,wsize=32768,hard,nointr,bg,tcp,vers=3,timeo=600" >> etc/fstab
+
+cat >> /etc/sysctl.conf<<EOF
+# Added by RPM
+# To improve bridge performance
+net.bridge.bridge-nf-call-ip6tables = 0
+net.bridge.bridge-nf-call-iptables = 0
+net.bridge.bridge-nf-call-arptables = 0
+net.ipv4.conf.default.arp_filter = 1
+EOF
+
+# Adding support for 10G cards
+TENGIG=`dmesg | grep ixgbe`
+if [ $? -eq 0 ]; then
+cat >> /etc/sysctl.conf<<WTF
+# added by RPM
+# Adding support for 10G cards
+net.core.rmem_max = 2096304
+net.core.wmem_max = 2096304
+net.core.rmem_default = 2096304
+net.core.wmem_default = 2096304
+net.core.optmem_max = 2096304
+net.core.netdev_max_backlog = 30000
+net.ipv4.tcp_timestamps = 0
+net.ipv4.tcp_sack = 0
+net.ipv4.tcp_rmem = 10000000 10000000 10000000
+net.ipv4.tcp_wmem = 10000000 10000000 10000000
+net.ipv4.tcp_mem = 10000000 10000000 10000000
+WTF
+fi
+
+# Shutting off un-needed services
+/sbin/chkconfig ip6tables off
+/sbin/chkconfig iptables off
+/sbin/chkconfig kudzu off
+/sbin/chkconfig lm_sensors off
+/sbin/chkconfig avahi-daemon off  #* This is new
+
+cat >> /etc/rc.d/rc.local<<EOF
+# Added by RPM
+# Making sure the clock is correct
+/etc/init.d/iptables stop
+/etc/init.d/ntpd stop
+/usr/sbin/ntpdate pl1rns702.admin.edmunds.com
+/etc/init.d/ntpd start
+
+# Pinning CPU of Dom-0 to physical cpu's in Node-0
+/usr/sbin/xm vcpu-pin 0 0 0
+/usr/sbin/xm vcpu-pin 0 1 2
+
+# Just in case if nfs does not get mounted.
+/bin/mount -a
+
+EOF
+
+# Put affinity start into /etc/rc.local
+echo "" >> /etc/rc.local
+echo "# Added via RPM" >> /etc/rc.local
+for i in `cat /etc/modprobe.conf | grep ixgbe | awk '{print $2}'`; do echo "/etc/init.d/set_irq_affinity.sh $i"; done >> /etc/rc.local
+for i in `cat /etc/modprobe.conf | grep ixgbe | awk '{print $2}'`; do echo "/usr/sbin/ethtool -K $i gro off"; done >> /etc/rc.local
+for i in `cat /etc/modprobe.conf | grep ixgbe | awk '{print $2}'`; do echo "/sbin/ifconfig $i txqueuelen 10000 up"; done >> /etc/rc.local
+
+sed -i /xen.gz-2.6.1[8-9]-[0-9]{2}/s/$/\ dom0_max_vcpus=2\ dom0_mem=4096MB\ numa=on/ /boot/grub/grub.conf
+sed -i 's/^(network-script network-bridge)/(network-script \/bin\/true)/' /etc/xen/xend-config.sxp
+sed -i '104i\    ip link set ${dev} txqueuelen 1000' /etc/xen/scripts/xen-network-common.sh
+sed -i /IPV6/s/yes/no/ /etc/sysconfig/network
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

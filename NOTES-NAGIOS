@@ -1,0 +1,100 @@
+5Jan12
+
+http://nagios.sourceforge.net/docs/3_0/quickstart-fedora.html
+
+&&&&&
+5Jan12  NAGIOS
+
+checks are perl scripts that live in /usr/lib64/napios/plugins
+
+[root@monitor01.sys.lax1 nagios]# ls /usr/lib64/nagios/plugins/
+2check_netapp.pl                 check_lander_extended.pl                check_overcr                check_threads_connected.pl
+check_3ware_raid.pl              check_lander.pl                         check_pdu_circuit_load      check_threads_running.pl
+check_ajp                        check_lander_test2.pl                   check_perforce.pl           check_time
+check_apt                        check_lander_test.pl                    check_pgsql                 check_turing_canned_pages.pl
+check_breeze                     check_ldap                              check_ping                  check_udp
+check_by_ssh                     check_ldaps                             check_pop                   check_ups
+check_clamd                      check_list_daemon                       check_pop.pl                check_users
+check_cluster                    check_load                              check_procs                 check_wave
+check_cpu.sh                     check_log                               check_proc_time.sh          check_win_snmp_disk.pl
+check_cricket_lockfiles.pl       check_mailq                             check_pubman.pl             check_xfetch_logs.pl
+check_crm_snapnames_login.sh     check_mem.pl                            check_real                  contrib
+check_dell_status                check_mongo.py                          check_ro_mounts.pl          dell_health.py
+check_dell_storage_array.pl      check_mregd.pl                          check_rpc                   dell_health.pyc
+check_dell_storage_array.sh      check_mrtg                              check_rtdb.pl               dell_health.pyo
+check_dig                        check_mrtgtraf                          check_semantic_engine       dsopt31_client.pl
+check_disk                       check_mysql                             check_sensors               dsopt31_client.pl.orig
+check_disk_smb                   check_mysql_extended_stats              check_simap                 eventhandlers
+check_dns                        check_mysql_extended_stats_raw.pl       check_site_maintenance      inr-dashboard.pl
+check_dns_age                    check_mysql_query                       check_smtp                  kmart-nagios.pl
+check_dns_match                  check_mysql_query_perf.sh               check_snapnames_email.py    log_processing_status.pl
+check_dsopt3_0.pl                check_mysql_replication                 check_snmp                  moniker
+check_ds_stats_db_delay.sh       check_mysql_replication_progress        check_snmp_apcups           negate
+check_dummy                      check_mysql_stats                       check_snmp_disk             passive_fail.sh
+check_ETL_progress_heavy.pl      check_nagios                            check_snmp_environment.pl   passive_ok.sh
+check_ETL_progress.pl            check_netacuity.pl                      check_snmp_memfree          passive_unknown.sh
+check_file_age                   check_netapp_env                        check_snmp_mem.pl           passive_warning.sh
+check_flexlm                     check_netapp_health                     check_snmp_proc             plugins.pm
+check_fping                      check_netapp.pl                         check_snmp_process_args.pl  pubman_login.pl
+check_ftp                        check_netapp_psu                        check_snmp_process.pl       snmpexec_wrapper2.pl
+check_goo_ads.pl                 check_netscaler_servicegroup_health.pl  check_snmp_process.sh       snmpexec_wrapper.pl
+check_goo_ads.pl.2011110700      check_nntp                              check_snmp_storage.pl       snmpextend_wrapper.pl
+check_hpjd                       check_nntps                             check_snmp_swap             table_check.pl
+check_http                       check_npower.pl                         check_snmp_win.pl           test-brocade.pl
+check_ide_smart                  check_nrpe                              check_spamhaus.sh           test_registrars.py
+check_ifoperstatus               check_nt                                check_spop                  turing
+check_ifstatus                   check_ntp                               check_ssh                   turing_babysitter_stats.pl
+check_imap                       check_ntp_peer                          check_ssl_cert              urlize
+check_innodb_free_pctg.pl        check_ntp_time                          check_ssmtp                 utils.pm
+check_ircd                       check_nwstat                            check-stats-agreement.pl    utils.py
+check_jabber                     check_oracle                            check_swap                  utils.pyc
+check_juniper_bgp_peer_state.pl  check_oracle_health                     check_tcp                   utils.sh
+check_juniper_psu                check_oracle_instant                    check_tcp_simple
+
+&&&&&
+
+[dsiegfriedt@monitor01.sys.lax1 nagios]$ rpm -qa | grep nagios
+nagios-snmp-plugins-1.1-4
+nagios-nsca-client-2.6-4
+nagios-plugins-1.4.11-1.rf.oversee
+oversee-nagios-plugins-20081202-02
+mtk-nagios-1.0-1
+nagios-3.2.0-3.el5
+nagios-nrpe-2.5.2-1.el5.rf
+nagios-nsca-server-2.6-2
+nagios-debuginfo-1.2-2
+nagios-plugins-nrpe-2.12-16.el5
+
+
+&&&&&
+30Jan12   checking config file
+
+/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+[root@monitor02 nagios]# /usr/local/nagios/bin/nagios -v /etc/nagios/nagios.cfg 
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&

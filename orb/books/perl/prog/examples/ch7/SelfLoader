@@ -1,0 +1,1 @@
+package GoodStuff;use SelfLoader;[initializing code]__DATA__sub {...};*****sub stub;*****__DATA__sub foo::bar {23}package baz;sub dob {32}

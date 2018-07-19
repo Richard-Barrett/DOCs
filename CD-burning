@@ -1,0 +1,208 @@
+
+
+XCDROAST
+
+
+
+
+First from dir above type:
+
+mkisofs -l -o name.iso FQPN/dirname
+
+&&&&&
+To break up large .iso or .bz2 files
+
+CD has 680MB of space
+
+split -b 675000000 <filename>
+
+in that directory you will get 675MB files with teh name starting with xaa, xab, etc. etc.
+
+so a DVD has 4.2GB of space
+
+split -b 395000000000 <filename>
+
+&&&&&
+
+-blank=all  will blank CD-RW
+
+&&&&&
+
+To write a CD:
+
+28nov04
+
+dvdrecord -v -eject dev=1,0,0 speed=30 -data /manfred1/xaa.iso
+
+#cdrecord -v -eject dev=1,0,0 speed=30 -data /manfred1/xaa.iso
+
+6AUG04
+
+cdrecord -v -eject dev=ATAPI:0,0,0 speed=30 -data /manfred1/xaa.iso
+
+#cdrecord -v -eject /dev/sg0 speed=4 -data FQPN.iso
+
+#cdrecord -v -eject dev=1,0,0 speed=40 -data /porn/porn.iso
+
+tar cjvf /tmp/home.bz2 /home
+tar cjvf /tmpetc.bz2 /etc
+tar cjvf /tmp/porn.bz2 /porn
+
+mkisofs -l -o /tmp/porn.iso /tmp/porn.bz2
+mkisofs -l -o /tmp/etc.iso /tmp/etc.bz2
+mkisofs -l -o /tmp/home.iso /tmp/home.bz2
+
+cdrecord -v -eject dev=1,0,0 speed=6 -data /porn/porn.iso
+cdrecord -v -eject dev=1,0,0 speed=6 -data /etc.iso
+cdrecord -v -eject dev=1,0,0 speed=6 -data /home.iso
+
+
+***** EXAMPLE *****
+
+[/usr/bin] (15)# cdrecord -v -eject dev=0,4,0 speed=4 -data /porn/porn.iso
+Cdrecord 1.10 (i686-pc-linux-gnu) Copyright (C) 1995-2001 Jörg Schilling
+TOC Type: 1 = CD-ROM
+scsidev: '0,4,0'
+scsibus: 0 target: 4 lun: 0
+Linux sg driver version: 3.1.19
+Using libscg version 'schily-0.5'
+atapi: 0
+Device type    : Removable CD-ROM
+Version        : 2
+Response Format: 2
+Capabilities   : SYNC 
+Vendor_info    : '        '
+Identifikation : 'CD-R/RW RW7060S '
+Revision       : '1.80'
+Device seems to be: Generic mmc CD-RW.
+Using generic SCSI-3/mmc CD-R driver (mmc_cdr).
+Driver flags   : SWABAUDIO
+Drive buf size : 1359872 = 1328 KB
+FIFO size      : 4194304 = 4096 KB
+Track 01: data  267 MB        
+Total size:     306 MB (30:24.24) = 136818 sectors
+Lout start:     307 MB (30:26/18) = 136818 sectors
+Current Secsize: 2048
+ATIP info from disk:
+  Indicated writing power: 4
+  Is not unrestricted
+  Is not erasable
+  Disk sub type: Medium Type A, low Beta category (A-) (2)
+  ATIP start of lead in:  -12294 (97:18/06)
+  ATIP start of lead out: 359849 (79:59/74)
+Disk type:    unknown
+Manuf. index: -1
+Manufacturer: unknown (not in table)
+Blocks total: 359849 Blocks current: 359849 Blocks remaining: 223031
+Starting to write CD/DVD at speed 4 in write mode for single session.
+Last chance to quit, starting real write in 0 seconds. Operation starts.
+Waiting for reader process to fill input buffer ... input buffer ready.
+Performing OPC...
+Starting new track at sector: 0
+Track 01:   4 of 267 MB written (fifo 100%).
+
+************************************************************
+
+For audio CDs
+
+cdrecord -v -eject dev=0,4,0 speed=4 -audio -pad /home/siggy/TRACKS/FS-side1.wav /home/siggy/TRACKS/FS-side2.wav ...
+
+
+cdrecord -v -eject dev=1,0,0 speed=6 -audio -pad /tmp/TOCD/track01.cdda.wav /tmp/TOCD/track02.cdda.wav /tmp/TOCD/track03.cdda.wav /tmp/TOCD/track04.cdda.wav /tmp/TOCD/track05.cdda.wav /tmp/TOCD/track06.cdda.wav /tmp/TOCD/track07.cdda.wav /tmp/TOCD/track08.cdda.wav /tmp/TOCD/track09.cdda.wav /tmp/TOCD/track10.cdda.wav /tmp/TOCD/track11.cdda.wav /tmp/TOCD/track12.cdda.wav /tmp/TOCD/track13.cdda.wav /tmp/TOCD/track14.cdda.wav /tmp/TOCD/track15.cdda.wav /tmp/TOCD/track16.cdda.wav /tmp/TOCD/track17.cdda.wav /tmp/TOCD/track18.cdda.wav /tmp/TOCD/track19.cdda.wav /tmp/TOCD/track20.cdda.wav /tmp/TOCD/track21.cdda.wav /tmp/TOCD/track22.cdda.wav
+
+************************************************************
+           Quick Instructions for Using the Linux CD Burner
+
+The xcdroast GUI to CD-burning is no longer available.  Instead you will
+need to use directly two programs that were previously hidden behind
+xcdroast: mkisofs and cdrecord.  The following instructions are intended as
+a quick tutorial for the basic operation of burning a CD containing file
+data or audio tracks.  For accomplishing other tasks such as copying CDs,
+etc., try carefully reading the cdrecord manual page and, if necessary,
+consulting the canonical CD recording FAQ at http://www.cdrfaq.org/.
+
+------------------------------------------------------
+
+Creating a data CD:
+
+Step 1: Make a directory to contain the files you want to place on the
+the CD.  "mkdir /image/userdir/" is the standard method.
+
+Step 2: Copy the files from wherever they are to the directory you just
+created.
+
+Step 3: Create the ISO9660 image that will be burned on the CD.  You
+do this using the mkisofs command.  An example command is:
+
+	csh> cd /image/userdir/
+	csh> mkisofs -o /image/burn-image/.iso \
+		-l -R -L -V "" -P "" -p "" -A "" .
+
+    -o:  the name of the file that will contain the image
+    -l:  use long file names
+    -R:  use Rock Ridge extensions.  This means that long file names
+	 will be used, file uid/gids and permissions will be preserved,
+	 symbolic links will be included, etc.  In other words, the
+	 CD will try hard to emulate a Unix file system.
+   [-r:  This is like the -R option, but file uid/gid are set to 0,
+	 files will be readable by anyone and all write permissions will
+	 be removed.  Use this switch if you anticipate needing to read
+         the CD in an environment where your uid/gid do not exist.  E.g.,
+	 if you are sending to CD to another institution.]
+
+    -L:  Allow file names beginning with '.'.
+    -V, -P, -p, -A:  See the mkisofs man page.
+
+    The final argument (in the example '.') is the name of the top-level
+    directory containing file data.
+
+    See the mkisofs manual page for further details.
+
+Mkisofs is fairly chatty about what it is doing, so you will know that
+progress is being made.
+
+Step 4: Burn the just-created ISO9660 image onto the CD.  First place a
+CD in drive (duh!).  Then issue the command:
+
+	csh> cdrecord -v speed=8 -pad -data /image/burn-image/.iso
+
+The drive is capable of handling re-writable media. However, re-writing is
+slower than writing for the first time and cdrecord may downgrade your
+request for speed=8 to something lower. If your CD has been written before you
+may also need to 'blank' it as well. In this case, the command line will be:
+
+	 csh> cdrecord -blank=fast -v speed=8 -pad -data \
+		/image/burn-image/.iso
+
+Step 5: CLEAN UP AFTER YOURSELF.  There is a limited amount of disk space
+available for data and images.  Don't leave your gunk laying around where
+someone will trip over it:
+
+	csh> rm -r /image/userdir/
+	csh> rm /image/burn-image/.iso
+
+------------------------------------------------------
+
+Creating audio CDs:
+
+Step 1: Make a directory to contain the files you want to place on the
+the CD.  "mkdir /image/userdir/" is the standard method.
+
+Step 2: Copy the files from wherever they are to the directory you just
+created.  This example assumes that the audio is formatted as .WAV files;
+other formats can be used with a little extra work, see the cdrecord
+man page for details.
+
+Step 3: Place a CD in drive (duh!).  Then issue the command:
+
+	csh> cdrecord -v speed=8 -pad -audio /image/userdir//*.wav
+
+The drive is capable of handling re-writable media. However, re-writing is
+slower than writing for the first time.  So if you are re-writing a CD,
+use "speed=4".
+
+Step 4: CLEAN UP AFTER YOURSELF.  There is a limited amount of disk space
+available for data and images.  Don't leave your gunk laying around where
+someone will trip over it:
+
+	csh> rm -r /image/userdir/

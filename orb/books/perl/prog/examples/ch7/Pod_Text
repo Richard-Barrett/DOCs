@@ -1,0 +1,1 @@
+use Pod::Text;pod2text("perlfunc.pod", *filehandle);  # send formatted output to file$text = pod2text("perlfunc.pod");       # assign formatted output to $text*****$Pod::Text::termcap=1*****pod2text < input.pod

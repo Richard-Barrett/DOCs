@@ -1,0 +1,2043 @@
+29Nov11  first pass at DNS change
+
+http://confluence.corp.oversee.net/display/~aaron.bandt/DNS
+
+ssh hero.sys.corp.oversee.net
+
+  233  p4 login
+  234  p4 sync
+
+path came from Aaron's wiki
+(in my home directory)
+  235  cd p4/etch/corp/sys/source/var/named/chroot/zones/ns.sys.corp.oversee.net/70.16.10.in-addr.arpa/
+  244  less 70.16.10.in-addr.arpa 
+  245  p4 edit 70.16.10.in-addr.arpa 
+  246  vi 70.16.10.in-addr.arpa 
+  247  p4 submit -d "add jmirabeau.flp.dev.corp.oversee.net as .29" 70.16.10.in-addr.arpa 
+
+  248  cd ../../
+  252  less dev.corp.oversee.net 
+  253  p4 edit (or open) dev.corp.oversee.net 
+  254  vi dev.corp.oversee.net 
+  255  p4 submit -d "added jmirabeau.flp.dev" dev.corp.oversee.net 
+
+  257  cd ~/p4/etch/configs/production/source/var/named/chroot/zones/
+  259  cd ns.oversee.net/
+  261  cd oversee.net/
+  263  p4 sync ... (current directory)
+  264  p4 open (or edit) oversee.net 
+  265  vi oversee.net 
+  266  p4 submit -d "changed marketing to CNAME www.oversee.net" oversee.net 
+
+ssh etch.lax1.oversee.net
+as root
+
+ 1001  p4 sync //etch/configs/production/source/var/named/chroot/zones/ns.oversee.net/oversee.net/oversee.net#82
+
+&&&&&
+30nov11  RDT
+
+Remmina remote Desktop Client
+ Connection => New
+  Server: cancun.corp.oversee.net
+  User Name: don.sigfriedt
+  Password:
+  Domain: CORP
+  Color Depth: True Color (24 bit)
+Connect
+
+Launch vSphere
+  vc01.sys.corp.oversee.net (check "Use Windows session credetials")
+  Login
+
+Find VM to be cloned (in LT window)
+ click "Hosts" tab
+  select click RT => clone
+   CORP => Emerging Businesses => Fareloop     Next
+    DEVQA-Travel    	       	  	       Next
+     Dev => Fareloop			       Next
+      Sort by "Free"
+       Select somwhere with the most space     Next ************NEVER "localstor*"
+        Same format as source	     	       Next
+	Do not customize		       Next
+Finish
+
+RT click "Open Console"
+Green arrow (Ctrl B)
+ click in the window (to capture the window)
+ boot in single user mode
+  make edits from:
+   http://confluence.corp.oversee.net/login.action?os_destination=%2Fdisplay%2F%7Eaaron.bandt%2FRename%2Bcloned%2Bhost
+
+   Update identity
+     vi /etc/sysconfig/nework
+     vi /etc/hosts
+
+   Update network config
+     vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+   Remove ssh keys
+     rm /etc/ssh/ssh_host_*
+
+   Re-register puppet
+    On the client machine:
+      Remove the keys
+        sudo service puppet stop
+	sudo rm -rf /var/lib/puppet/ssl/
+	sudo mkdir /var/lib/puppet/ssl/
+	sudo chmod 775 /var/lib/puppet/ssl/
+	sudo chown puppet:root /var/lib/puppet/ssl/
+
+REBOOT
+
+Once booted:
+sudo /usr/sbin/puppetd -tv --server=puppet.lax1.oversee.net
+
+&&&&&
+1Dec11  MYSQL passwd change  --Zhenhui
+
+find machine; login as root
+                                    (% is a wild card in mysql)
+mysql -A
+> select User , hosts
+> show grants for 'atp'@'%'
+> use mysql;
+mysql> update user set password=PASSWORD("passwd from passwd.gen") where User='atp'
+> flush privleges;
+
+&&&&&
+1Dec11 change sudoes on outward facing VMs  --dleeds
+
+launch vSphere client
+    vcenter01.sys/lax1.oversee.net
+
+search for group to be changed... (i.e. app)
+  this will give you the list of hosts to change....
+  ssh into these hosts and visudo
+
+&&&&&
+1Dec11  trouble logging into a machine  --dleeds
+
+ssh hermit.internal
+  try from here
+
+&&&&&
+2Dec11   perforce (p4) commands as run on hero
+
+p4 login
+
+p4 sync				#syncs MY local databse with perforce
+
+p4 client  	       	  	#edits client config file
+
+source .p4/p4.config    	      	#make sure my environment is complete for p4
+
+env | grep p4
+
+cd ~/p4/etch/configs/production/source/var/named/chroot/zones
+
+p4 edit lax1.oversee.net		#forward map
+
+p4 edit 198.22.172.in-addr.arpa  #reverse map
+
+vim 198.22.172.in-addr.arpa 
+
+p4 submit -d "added etl01.vm.lax1.oversee.net as 172.22.198.28" lax1.oversee.net    #submit with comment forward map
+
+p4 opened    	   		# which files do I have open for editing
+
+p4 revert //etch/configs/production/source/var/named/chroot/zones/ns.lad.internal/lax1.oversee.net/lax1.oversee.net                                  #revert fchanges (in this case Zhenhue had opened and edited the file before I could (race condition)   NOOOOOOOO number!  Just filename.
+
+p4 sync	  			# to get any changes... like the one Zhenhui did
+
+p4 edit lax1.oversee.net 
+
+vim lax1.oversee.net
+
+p4 submit -d "added etl01.vm.lax1.oversee.net as 172.22.198.28" lax1.oversee.net 
+
+****
+p4 groups
+p4 group
+p4 protect
+p4 help
+p4 diff //etch/configs/production/hosts.xml
+p4 revert //etch/configs/production/hosts.xml
+
+*****
+18jan12   create a creditcards.org directory in perforce
+
+http://kb.perforce.com/article/966   "Adding Empty Directories"
+Perforce does not store directories - directories are simply components of the filespec which 
+uniquely identify each file. In order to create an empty directory or structure of empty 
+directories, you need to "anchor" those directories using a place-holder file. The place-holder 
+file is added to Perforce, and then deleted, creating a deleted revision that anchors the directory. 
+
+Using the Command Line:
+The following commands reproduce the procedure decribed above. Issue these commands from the directory 
+where you wish to create the new directory.
+
+cd /to/correct/path
+mkdir credtcards.org
+cd credtcards.org
+vi .placeholder  (I inserted date)
+p4 add .placeholder
+p4 submit -d "Created credtcards.org"
+p4 delete .place-holder
+p4 submit -d "Emptied credtcards.org"
+
+NOTE:   1) remember to p4 sync <gobeldygoop> on etch.lax1.oversee.net
+        2) remember to sync with etch
+
+to create the group:
+p4 group creditcards.org
+
+drops you int a vi file to add users/owners
+
+this is what I got when I left the vi session:
+shell-init: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+Group creditcards.org created.
+
+if you mis-spell the group 
+
+p4 group -d <mis-spelled group name>
+
+
+p4 protect  (drops you into a vi session  I added the following lines to EOF)
+
+        read group creditcards.org * //etch/configs/production/source/usr/local/oversee/etc/creditcards.org/...
+        write group creditcards.org * //etch/configs/production/source/usr/local/oversee/etc/creditcards.org/...
+
+
+********SPELLING COUNTS**************
+
+&&&&&
+7Dec11  New machine (VM) steps
+
+(1) https://ipplan.sys.corp.oversee.net/index.php  to get IP
+(2) http://confluence.corp.oversee.net/display/~aaron.bandt/DNS and notes from 29Nov11
+    p4 login
+    p4 sync
+    cd .../zones (NOTE; at this poit you are chrooted)
+    cd map location
+    p4 edit (or open) <forward map name>
+    emacs <forward map name>
+    p4 submit -d "comments on what you did" <forward map name>
+    copy/save path+number     ~dsiegfriedt/temp.shit
+
+    cd ../<revese map location>
+    p4 edit (or open) <reverse map name>
+    emacs <reverse map name>
+    p4 submit -d "comments on wht you did" <reverse map name>
+    copy/save path+number     ~dsiegfriedt/temp.shit
+
+    ssh as root@etch.lax1 OR root@etch.sys.corp
+    p4 sync path+number (from ~dsiegfriedt/temp.shit (space seperated list)
+
+    ssh ns0[1-2].corp.oversee.net OR ns0[1-2].lax1.oversee.net
+    sudo /sbin/service etch run
+
+    nslookup <fqmn of the new Vm or machine>   forward and reveerse
+
+*****CLONE a VM
+
+*****Create a new VM (corp cobbler)
+
+*****Create a new VM (lax1 kickstart)
+
+ssh kickstart01.sys.lax1.oversee.net
+
+sudo /data/svc/kickstart/bin/setup-kickstart.pl 
+    -c centos5.5-x86_64-VM.ksd 
+    -n ftp01.csl.lax1.oversee.net 
+    -i 10.21.7.206 
+    -m 00:50:56:a8:00:c5
+[2011-12-09 10:01:16] [PID 11087] [INFO]  - Reading input from command line
+
+Configuration Confirmation
+------------------------------------------
+
+OS Config   :  centos5.5-x86_64-VM.ksd
+Hostname    :  ftp01.csl.lax1.oversee.net
+IP Address  :  10.21.7.206
+MAC address :  00:50:56:a8:00:c5
+Is this config Correct? (y/n) y
+[2011-12-09 10:01:39] [PID 11087] [INFO]  - Checking DHCPD Configuration
+[2011-12-09 10:01:39] [PID 11087] [INFO]  - Writing /tftpboot/linux-install/pxelinux.cfg/0A1507CE based from /tftpboot/linux-install/master.cfg/centos5.5-x86_64-VM.ksd
+[2011-12-09 10:01:39] [PID 11087] [INFO]  - Backing up /etc/dhcpd.hosts
+[2011-12-09 10:01:39] [PID 11087] [INFO]  - Moving new dhcpd config to /etc/dhcpd.hosts
+[2011-12-09 10:01:39] [PID 11087] [INFO]  - Restarting dhcpd
+Shutting down dhcpd:                                       [  OK  ]
+Starting dhcpd:                                            [  OK  ]
+
+^^^^^
+
+to edit ks image:
+cd /nfs/kickstart/confi
+^^^^^
+to be continued
+
+[root@kickstart01 ~]# cat /data/svc/kickstart/bin/setup-kickstart.pl
+#!/usr/bin/perl
+#
+# DO NOT EDIT DIRECTLY!!! This file is under subversion control. 
+# $URL: https://svn.sys.corp.oversee.net/repos/systems/source/kickstart/data/svc/kickstart/bin/setup-kickstart.pl $ $Rev: 30870 $ $Date: 2011-12-14 11:40:50 -0800 (Wed, 14 Dec 2011) $ $Author: aaron.bandt $
+#
+use File::Copy;
+use Getopt::Std;
+use strict;
+use warnings;
+use vars qw($opt_c $opt_f $opt_h $opt_i $opt_l $opt_m $opt_n $opt_r $opt_t $opt_y);
+
+# VARS
+###################################################
+
+my $ksConfig;
+my $fqdn;
+my $macaddr;
+my $hostip;
+my $hexhostip;
+my $esxtemplate;
+my $esxconf;
+my $last_octet;
+my $tftpdir = "/tftpboot/linux-install";
+my $pxecfgdir = "/tftpboot/linux-install/pxelinux.cfg";
+my $mastercfgdir = "/tftpboot/linux-install/master.cfg";
+my $confdir = "/data/svc/kickstart/configs";
+my $log_file = "/var/log/setup-kickstart.log";
+my %dhcp_conf;
+
+# temp
+my $key;
+
+# SUBROUTINES
+###################################################
+
+sub usage () {
+    print STDERR << "EOF";
+
+    This script sets up a host to be kickstarted. It checks dhcpd.hosts
+    for duplicates, re-writes the file with the new entry, and restarts
+    dhcpd.
+
+    Usage: $0 -c <kickstart config name> -n <fqdn> -i <ip address> -m <mac address> -a <second mac address>
+
+     -c        : Kickstart config name (found in $mastercfgdir).
+     -h        : This (help) message.
+     -i        : IP address of the server you are kickstarting.
+     -l        : List the available kickstart configs.
+     -m        : MAC address of server you are kickstarting.
+     -n        : FQDN of the server you are kickstarting.
+     -r        : Don't restart DHCPD
+     -y        : Force answering "yes" to all questions.
+
+    Examples: 
+
+    $0 -c ks_x86_64_rhel5_r610.ks -n www01.lax1.domain.com -i 172.21.1.10 -m 00:AA:11:BB:22:CC
+
+    Or you can run it in interactive mode by just running $0
+
+EOF
+
+   exit 1;
+}
+
+sub getDate () {
+
+   my $ldate = `date +%F' '%H:%M:%S`;
+   chomp($ldate);
+   return $ldate;
+}
+
+sub logLine (@) {
+
+   my $level = $_[0];
+   my $handle = $_[1];
+   my $text = $_[2];
+   my $level_format;
+
+   if ( $level =~ /INFO|WARN/ ) {
+      $level_format = "[$level]  -";
+   } else {
+      $level_format = "[$level] -";
+   }
+
+   my $date = getDate();
+
+   # always log to the file
+   open (LOG, ">> $log_file") || die "Cannot open $log_file: $!";
+      print LOG "[$date] [PID $$] $level_format $text\n";
+   close(LOG);
+
+   # Spit it to the screen as well if asked.
+   if ($handle) {
+      print "[$date] [PID $$] $level_format $text\n";
+   }
+}
+
+sub GetYesNo ($) {
+
+   if ($opt_y ) {
+      logLine("INFO", 1, "Answering yes due to command line override.");
+      return 1;
+   }
+   my $question = shift;
+   print "$question (y/n) ";
+   my $answer = <STDIN>;
+
+   if( $answer =~ /^y/i ) {
+      return 1;
+   } else {
+      return 0;
+   }
+}
+
+sub MenuHeader ($) {
+   my $text = shift;
+
+   print "\n$text\n";
+   print "------------------------------------------------------------------------\n\n";
+}
+
+sub getKsConfig () {
+
+   my $answer = ();
+   while ( ! $answer) {
+
+      if ($opt_l) {
+         MenuHeader("The following kickstart profiles are available");
+      } else {
+         MenuHeader("Choose A Standard OS Configuration");
+      }
+
+      opendir ( CONFIGDIR, "$mastercfgdir")  || die "Couldn't open $mastercfgdir for reading\n";
+
+      my @defaultConfigFiles = grep /\.ksd$/, readdir CONFIGDIR;
+
+      closedir( CONFIGDIR);
+
+      @defaultConfigFiles = sort(@defaultConfigFiles);
+
+      my $num_configs = scalar( @defaultConfigFiles);
+
+      foreach my $num (1..$num_configs) {
+         print "$num)\t$defaultConfigFiles[$num - 1]\n";
+      }
+
+      # Exit if we just asked for a list
+      exit 0 if ($opt_l);
+
+      print "\n\nWhich config would you like to use (number)?   ";
+      $answer = <STDIN>;
+      chomp $answer;
+
+      # Set the choice
+      if ( $answer  >= 1 && $answer <= $num_configs ) {
+         $answer = $defaultConfigFiles[$answer - 1];
+      } else {
+         logLine("ERROR", 1, "Config choice out of bounds: $answer");
+         $answer = ();
+         sleep(1);
+      }
+   }
+   return $answer;
+}
+
+sub getFQDN() {
+
+   my $answer = ();
+   while ( ! $answer) {
+
+      MenuHeader( "FQDN Selection");
+
+      print "FQDN (i.e. www01.lax1.domain.com): ";
+      $answer = <STDIN>;
+      chomp $answer;
+   }
+   return $answer;
+}
+
+sub getHostIP() {
+
+   my $answer = ();
+   while ( ! $answer) {
+
+      MenuHeader( "IP Selection");
+
+      print "Kickstart IP address: ";
+      $answer = <STDIN>;
+      chomp $answer;
+   }
+   return $answer;
+}
+
+sub getMacAddr() {
+
+   my $answer = ();
+   while ( ! $answer) {
+
+      MenuHeader( "MAC Address Selection");
+
+      print "MAC Addresss: ";
+      $answer = <STDIN>;
+      chomp $answer;
+
+      $answer = lc( $answer);
+
+      unless ( $answer =~ /[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}/ ) {
+         print "\nInvalid MAC Address: $answer\n";
+         $answer = ();
+         sleep(1);
+      }
+   }
+   return $answer;
+}
+
+sub hexIP($) {
+
+   my $hexhostip;
+   my( @IPaddr) = split( /\./, $hostip);
+
+   foreach my $octet( @IPaddr) {
+      $hexhostip .=  uc( sprintf( "%02X", $octet));
+   }
+   return $hexhostip;
+}
+
+sub createKS () {
+
+   if ( -f "$pxecfgdir/$hexhostip" ) {
+      unlink ("$pxecfgdir/$hexhostip") || die "Couldn't unlink $pxecfgdir/$hexhostip \n";
+   }
+   logLine("INFO", 1, "Writing $pxecfgdir/$hexhostip based from template $mastercfgdir/$ksConfig");
+
+   open ( TEMPLATE, "$mastercfgdir/$ksConfig" ) || die "Couldn't open $mastercfgdir/$ksConfig: $!\n";
+   open ( KS, ">>$pxecfgdir/$hexhostip" ) || die "Can't open file to write new config!\n";
+
+   while ( <TEMPLATE> ) {
+      # Sub in the mac addr
+      (s/__MAC_ADDRESS__/$macaddr/g);
+      (s/__IP_ADDRESS__/$hostip/g);
+      chomp($_);
+      print KS "$_\n";
+   }
+   close(KS);
+   close(TEMPLATE);
+
+}
+
+sub createConf () {
+
+   if ( -f "$confdir/$esxconf" ) {
+      unlink ("$confdir/$esxconf") || die "Couldn't unlink $confdir/$esxconf \n";
+   }
+   logLine("INFO", 1, "Writing $confdir/$esxconf based from template $confdir/$esxtemplate");
+
+   open ( TEMPLATE, "$confdir/$esxtemplate" ) || die "Couldn't open $confdir/$esxtemplate: $!\n";
+   open ( CONF, ">>$confdir/$esxconf" ) || die "Can't open file to write new config!\n";
+
+   while ( <TEMPLATE> ) {
+      # Sub in the mac addr
+      (s/__IP_ADDRESS__/$hostip/g);
+      (s/__HOST_NAME__/$fqdn/g);
+      (s/__LAST_OCTET__/$last_octet/g);
+      chomp($_);
+      print CONF "$_\n";
+   }
+   close(CONF);
+   close(TEMPLATE);
+
+}
+
+sub loadDHCP () {
+
+   # Open the dhcpd.hosts and load the whole thing into a hash for comparison
+   open ( DHCPD, "/etc/dhcpd.hosts" ) || die "Couldn't open /etc/dhcpd.hosts: $!\n";
+   
+      while ( <DHCPD> ) {
+   
+         # Skip the header, we'll re-add it at the end
+         if ( /^\s*#/ || /^\s*$/ ) {
+            next;
+         # If a line starts with host- concatenante it into $thisrecord until 
+         # you reach the ending curly brace. This is for comparison.
+         } elsif ( /host\s+([\w\.-]{1,})\s*\{/i ) {
+   
+            my $thisrecord = $_;
+   
+            while ( <DHCPD> ) {
+               $thisrecord .= $_;
+               if ( /[^#]*}/ ) {
+                  $dhcp_conf{$thisrecord} = "junk";
+                  last;
+               }
+            }
+         }
+      }
+   close (DHCPD);
+}
+
+sub scrubDHCP () {
+
+   # Remove entries for duplicate hostnames, ips & mac addresses
+   while ((my $key, my $value) = each(%dhcp_conf)){
+      if ($key =~ /\s$fqdn\s/ ) {
+         logLine("INFO", 1, "Found existing entry for fqdn, removing");
+         delete($dhcp_conf{$key});
+         next;
+      }
+      if ($key =~ /\s$hostip\;/ ) {
+         logLine("INFO", 1, "Found existing entry for IP Address, removing");
+         delete($dhcp_conf{$key});
+         next;
+      }
+      if ($key =~ /\s$macaddr\;/ ) {
+         logLine("INFO", 1, "Found existing entry for MAC address, removing");
+         delete($dhcp_conf{$key});
+         next;
+      }
+   }
+}
+
+sub rewriteDHCP () {
+
+   # Write all non dupes and new host to tmp file
+   open ( NEWCONF, ">>/tmp/newconf.$$" ) || die "Can't open file to write existing entries!\n";
+
+   print NEWCONF "#\n# This file is managed by /data/svc/kickstart/bin/setup-kickstart.pl\n#\n";
+
+   # Write existing entries
+   foreach $key (sort keys %dhcp_conf) {
+      chomp ($key);
+      print NEWCONF "$key\n";
+   }
+
+   # Write new entry
+   print NEWCONF "        host $fqdn {\n";
+   print NEWCONF "        \thardware ethernet $macaddr;\n";
+   print NEWCONF "        \tfixed-address $hostip;\n";
+   print NEWCONF "        \toption host-name \"$fqdn\";\n";
+   print NEWCONF "        }\n";
+
+   close (NEWCONF);
+
+}
+
+sub installDHCP () {
+
+   # Copy new file into place
+   logLine("INFO", 1, "Backing up /etc/dhcpd.hosts");
+   copy( "/etc/dhcpd.hosts", "/etc/dhcpd.hosts.bak");
+   logLine("INFO", 1, "Moving new dhcpd config to /etc/dhcpd.hosts");
+   move( "/tmp/newconf.$$", "/etc/dhcpd.hosts");
+}
+
+sub restartDHCPD () {
+
+   logLine("INFO", 1, "Restarting dhcpd");
+   system( "/sbin/service dhcpd restart");
+}
+
+# MAIN
+########################################################################
+
+unless( `/bin/hostname` =~ /^kickstart/) {
+   logLine("INFO", 1, "This script must be run from the kickstart server.");
+   exit 0;
+}
+
+# Check for command line options
+####################################
+
+getopts('f:c:n:i:lm:rhty');
+   $ksConfig=$opt_c;
+   $fqdn=$opt_n;
+   $hostip=$opt_i;
+   $macaddr=$opt_m;
+
+# Display help
+usage() if $opt_h;
+
+# INPUT METHOD
+####################################
+
+logLine("INFO", 1, "BEGIN kickstart setup for new host");
+
+# Use Command Line Options
+if ( $opt_c ) {
+
+   logLine("INFO", 1, "Reading input from command line");
+
+# Go interactive to get input
+} else {
+
+   logLine("INFO", 1, "Asking for input interactively") unless ($opt_l);
+
+   $ksConfig = getKsConfig();
+
+   $fqdn = getFQDN();
+
+   $hostip = getHostIP();
+
+   $macaddr = getMacAddr();
+}
+
+# Confirm before proceeding
+MenuHeader( "Configuration Confirmation");
+
+print "OS Config   :  $ksConfig\n";
+print "Hostname    :  $fqdn\n";
+print "IP Address  :  $hostip\n";
+print "MAC address :  $macaddr\n\n";
+
+if ( ! GetYesNo( "Is this config Correct?") ) {
+   logLine("INFO", 1, "Exiting per user input");
+   logLine("INFO", 1, "END kickstart setup for new host");
+   exit 0;
+}
+
+logLine("INFO", 1, "Configuring kickstart - CONF: $ksConfig HOSTNAME: $fqdn IP: $hostip MAC: $macaddr");
+
+# We have to do substitution and fanciness if this is an esx kickstart
+#
+# NOTE: The file names have to match exactly (except for the extension)
+# in /tftpboot/linux-install/master.cfg and /data/svc/kickstart/configs
+#
+# i.e.: 
+#
+# /tftpboot/linux-install/master.cfg/vmware-esx-4.0-u4.ksd
+# /data/svc/kickstart/configs/vmware-esx-4.0-u4.conf
+#
+if ( $ksConfig =~ /vmware-esx/ ) {
+   $esxtemplate = "$ksConfig";
+   $esxtemplate =~ s/\.ksd/\.conf/;
+   $esxconf = "$hostip-$esxtemplate";
+
+   my( @IPaddr) = split( /\./, $hostip);
+   $last_octet = $IPaddr[3];
+   chomp $last_octet;
+   
+   # Write the kickstart config from template
+   createConf();
+}
+
+# Moving on
+logLine("INFO", 1, "Checking DHCPD Configuration");
+
+# Load dhcpd.hosts into memory
+loadDHCP();
+
+# Check dhcpd.hosts for duplicates
+scrubDHCP();
+
+# Generate & hex ip config from template
+$hexhostip =  hexIP($hostip);
+
+# Create config and write it to /tftpboot/linux-install/pxelinux.cfg/<HEXADDR>
+createKS ();
+
+# Rewrite new dhcpd.hosts 
+rewriteDHCP ();
+
+# Copy in new dhcpd.hosts 
+installDHCP ();
+
+# Reload dhcpd
+restartDHCPD () if ! $opt_r;
+
+logLine("INFO", 1, "END kickstart setup for new host");
+
+# We're done
+exit 0;
+
+
+&&&&&
+
+7Dec11 NetApp filer logins   --dleeds
+
+(03:10:34 PM) Daniel Leeds: try loggong on to filer04.sys.corp.oversee.net as dsiegfriedt with pass of oversee99 	  				 	 	 	   	 	  	   		  	 
+(03:12:28 PM) don.siegfriedt@oversee.net/work: I'm in
+(03:12:50 PM) Daniel Leeds: ok
+(03:13:05 PM) Daniel Leeds: account works, will need to add your keys to all the filers 
+(03:15:07 PM) don.siegfriedt@oversee.net/work: how does one do that?
+(03:15:40 PM) Daniel Leeds: i have to slap it on every filer, if you look on hermit.internal you see all the filers under /remote/filerXX etc 
+(03:16:22 PM) Daniel Leeds: in each etc/sshd directory you create one that matches the username and then create a .ssh/authorized_keys with your key
+(03:18:24 PM) don.siegfriedt@oversee.net/work: on it
+(03:18:58 PM) Daniel Leeds: yeah do filer04 corp first and make sure it works.  then just tar the dsiegfried dir up and untar it under etc/sshd on all the other filer roots
+(03:19:16 PM) don.siegfriedt@oversee.net/work: ok
+(03:21:51 PM) don.siegfriedt@oversee.net/work: worked for filer04.sys.corp.oversee.net
+
+[root@hermit remote]# hostname
+hermit.internal
+[root@hermit remote]# pwd
+/remote
+[root@hermit remote]# for i in `ls | grep filer`; do echo $i; done
+filer001.sys.lax1_root
+filer002.sys.lax1_root
+filer01.sys.corp_root
+filer01.sys.lax1_root
+filer02.sys.corp_root
+filer02.sys.lax1_root
+filer03.sys.corp
+filer03.sys.lax1_root
+filer04.sys.corp_root
+filer04.sys.lax1_root
+filer1.lad_root
+filer1.lap_root
+filer2.lad_root
+filer2.lap_root
+
+&&&&&
+8Dec11   Change auth keys for a QA person
+
+From ~dsiegfriedt/SVN on laptop
+
+$ svn co https://svn.sys.corp.oversee.net/repos/systems
+$ svn co https://svn.sys.corp.oversee.net/repos/puppet
+$ cd ~/SVN/puppet/systems/trunk/manifests/employee/qa 
+$ vim qa.pp 
+$ svn commit -m "changed 105816: Please add Public Key to Authorized Keys." qa.pp
+
+Sending        qa.pp
+Transmitting file data .
+Committed revision 30774.
+
+27Dec11
+ 3987  27Dec11::14-21-37  svn co https://svn.sys.corp.oversee.net/repos/systems
+ 3988  27Dec11::14-23-12  cd puppet/systems/trunk/manifests/employee/admin
+ 3990  27Dec11::14-23-16  ll
+ 3993  27Dec11::14-25-06  vim sysadmin.pp 
+ 3994  27Dec11::14-28-16  svn commit -m "Added Dan Yang to the sysadmin.pp" sysadmin.pp
+
+23Jan12
+You can check your path by using typing the URL in a browser.....
+https://svn.sys.corp.oversee.net/repos/puppet/systems/trunk/manifests/employee/
+
+
+On my laptop:
+svn co https://svn.sys.corp.oversee.net/repos/puppet/systems/trunk/manifests/employee/admin
+cd ~/SVN/puppet/systems/trunk/manifests/employee/systems/trunk/manifests/employee/admin
+vim sysadmin.pp 
+svn commit -m "Adding ssh key for tthanh" sysadmin.pp 
+Sending        sysadmin.pp
+Transmitting file data .
+Committed revision 31351.
+
+&&&&&
+9Dec11  dleeds   NetApp 
+
+#ssh filer003.sys.lax1.oversee.net
+
+filer03> vol create qa_web_shared_bco -l en_US aggr0 5G
+Fri Dec  9 15:01:24 PST [filer03: vol.language.changed:info]: Language on volume qa_web_shared_bco changed to en_US
+
+The new language mappings will be available after reboot
+Fri Dec  9 15:01:24 PST [filer03: vv_config_worker:notice]: XL - Language of Volume qa_web_shared_bco has been changed to en_US.
+Creation of volume 'qa_web_shared_bco' with size 5g on containing aggregate
+'aggr0' has completed.
+
+filer03> snap reserve qa_web_shared_bco 0		# NO snaps
+
+filer03> snap sched qa_web_shared_bco 0 0 0  		# NO snaps This keeps the vol at full size (no reserve for snaps)
+
+******************************************************IMPORTANT!!!!
+
+filer03> exportfs -r		      	  		# export the newly created vol 
+
+[dsiegfriedt@hermit ~]$ hostname
+hermit.internal
+
+sudo vim /remote/filer03.sys.corp/etc/exports
+
+add 
+/vol/qa_web_shared_bco	-sec=sys,rw=www01.bco.qa.corp.oversee.net:www02.bco.qa.corp.oversee.net,root=www01.bco.qa.corp.oversee.net:www02.bco.qa.corp.oversee.net
+
+***************************************************************************
+**********there is a -sec,rw AND a root section that has to be in place
+***************************************************************************
+
+[root@www01 ~]# hostname
+www01.bco.qa.corp.oversee.net
+
+[root@www01 ~]# cat /etc/fstab
+/dev/vg1/root           /                       ext3    defaults        1 1
+LABEL=/boot             /boot                   ext3    defaults        1 2
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+/dev/vg1/swap           swap                    swap    defaults        0 0
+
+#added 9dec11  --siggy
+filer03.sys.corp.oversee.net:/vol/qa_web_shared_bco /remote/badcreditoffers.com  nfs        rw,tcp,nfsvers=3,rsize=32768,wsize=32768,hard,bg,intr 0 0
+
+REMEMBER to make the mount point and chown it to the owner (if any)
+
+exportfs -a
+
+-------
+20Dec00
+
+ssh filer002.sys.lax1.oversee.net
+
+filer002> vol create jharlan_scratch -l en_US filer002_data_aggr1 40g
+Creation of volume 'jharlan_scratch' with size 40g on containing aggregate'filer002_data_aggr1' 
+has completed.
+
+filer002> snap sched jharlan_scratch 0 0 0
+filer002> snap reserve jharlan_scratch 0
+filer002> exportfs -r
+filer002> exit
+
+ssh hermit.internal
+cd /remote/filer002.sys.lax1_root/etc
+vim exports
+  add
+    # Jason Harlan scratch
+    /vol/jharlan_scratch	-sec=sys,rw=db01-dw.vm.lax1.oversee.net:etl01.dev.lax1.oversee.net,root=db01-dw.vm.lax1.oversee.net:etl01.dev.lax1.oversee.net
+
+exportfs
+exit
+
+ssh into the filer and run
+exportfs -r
+
+ssh db01-dw.vm.lax1.oversee.net
+mkdir /nfs/scratch/jharlen
+chown jharlen.jharlenjharlen 
+
+vi /etc/fstab
+ add
+    filer002-21.sys.lax1.oversee.net:/vol/jharlan_scratch	/nfs/scratch/jharlan     nfs     rw,tcp,nfsvers=3,rsize=32768,wsize=32768,hard,bg,intr 0 0
+
+mount -a
+exit
+
+&&&&&
+12Dec11   a list of machines/URLS
+
+http://portal.oversee.net
+
+ssh hero.sys.corp.oversee.net
+ssh hermit.internal
+
+ssh root@etch.sys.corp.oversee.net
+ssh root@etch.sys.lax1.oversee.net
+
+ssh ns01.sys.corp.oversee.net
+ssh ns02.sys.corp.oversee.net
+ssh ns02.sys.lax1.oversee.net
+ssh ns02.sys.lax1.oversee.net
+
+ssh kickstart01.sys.lax1.oversee.net
+perforce01.sys.corp.oversee.net
+
+
+https://owa.oversee.net/exchange/
+mail server = fijiexchange.corp.oversee.net
+
+*****
+http://www.redhat.com
+u: oversee-rhn
+p: overseerhn
+*****
+
+cancun.corp.oversee.net
+vcenter01.sys.lax1.oversee.net
+vc01.sys.corp.oversee.net
+
+https://rt.corp.oversee.net/
+http://monitor01.sys.lax1.oversee.net/nagios/index.html
+http://noctools.dev.corp.oversee.net/network-dashboard.html
+http://gomeznetworks.com/index.asp
+https://inventory.sys.corp.oversee.net/
+https://cacti.sys.corp.oversee.net/graph_view.php
+http://cricket01.sys.lax1.oversee.net/cricket/grapher.cgi
+http://dfm01.sys.lax1.oversee.net:8080/dashboard.html
+http://apps.corp.oversee.net/calendar/
+https://svn.sys.corp.oversee.net/wsvn/repos/
+http://fedoraproject.org/wiki/Systemd#How_do_I_start.2Fstop_or_enable.2Fdisable_services.3F
+https://admin.cotendo.net/login
+http://cobbler01.sys.lax1.oversee.net/cobbler_web/system/list
+http://www.perforce.com/
+https://ipplan.sys.corp.oversee.net/index.php
+http://david.dw-perspective.org.uk/da/index.php/computer-resources/Juniper-Networks-SSL-VPN-Client-On-Linux/
+http://www.vmware.com/support/pubs/vsphere-esxi-vcenter-server-pubs.html
+
+http://confluence.sys.corp.oversee.net/display/corp/Home
+
+http://confluence.corp.oversee.net/display/~aaron.bandt/Home
+http://confluence.corp.oversee.net/display/~aaron.bandt/DNS
+http://confluence.corp.oversee.net/display/~aaron.bandt/Rename+cloned+host
+http://confluence.corp.oversee.net/display/~aaron.bandt/RB+-+bootstrapping+a+clean+install
+
+http://confluence.corp.oversee.net/display/~don.siegfriedt
+
+http://confluence.corp.oversee.net/display/systems/LF+-+cctl+environment+setup
+http://confluence.corp.oversee.net/display/systems/LDAP+account+management
+http://confluence.corp.oversee.net/display/systems/List+of+VLANs
+http://confluence.corp.oversee.net/display/systems/RB+-+Temporary+config+script
+
+http://confluence.sys.corp.oversee.net/display/import/Perforce+new+user+setup
+http://confluence.sys.corp.oversee.net/display/corp/Lunch
+
+http://www.perforce.com/perforce/doc.current/manuals/cmdref/group.html
+http://www.perforce.com/perforce/doc.current/manuals/cmdref/index.html
+
+https://svn.sys.corp.oversee.net
+
+&&&&&
+13dec11  found on a db....assume how you install mySQL
+
+  150  cd /remote/
+  151  mkdir mysql
+  152  mount -a
+  153  df -h
+  154  vi /etc/yum.repos.d/oversee.php53.repo
+  155  yum install MySQL-server perl-DBD-MySQL php53-mysql MySQL-shared-compat MySQL-client
+  156  ll
+  157  chown mysql.mysql mysql
+  158  ps -ef
+  159  top
+  160  vi /etc/my.cnf
+  161  mysql_install_db 
+  162  /etc/init.d/mysql start
+
+
+&&&&&
+12Dec11    installed thunderbird to read mail
+
+yum -y install thunderbird
+
+exchange servers = fijiexchange.corp.oversee.net  
+
+&&&&&
+12Dec11 buiding an ESX server with kickstart
+in firefox open a DRAC console to the machine
+
+drac.<machine name>.sys.lax.oversee.net
+reboot and go into BIOS
+
+set serial to 57.6kbbs
+serial over LAN
+redirect console after boot = disabed
+virtual technology = enabled
+reboot
+
+ssh kickstart01.sys.corp.oversee.net
+******OR******
+ssh kickstart01.sys.lax1.oversee.net
+root
+sudo /datqa/svc
+
+/kickstart/bin/setup-kickstart.pl
+    -c centos5.5x86-VM.ksd
+    -n <fqmn>
+    -i <IP>
+    -m <MAC>
+NOTE:     if you put no flags the script will ask for these details.
+reboot machine and it should PXE/kickstart
+
+
+to make these new ESX servers available...
+
+login to cancun
+open vSphere 
+login to vcenter01.sys.lax.oversee.net 
+OR 
+vc01.sys.corp.oversee.net
+
+rt click at top level NEW VM cluster (name)
+name
+DRS
+Next
+Next
+Enable EVC
+40um core2
+Next
+swap spec host
+Next
+Finish
+
+to add a machine to this NEW cluster
+rt click => add
+name
+  root
+  passwd  (yes)
+Next
+Next
+Next
+Finish
+
+&&&&&
+
+13Dec11  problem installing from yum
+
+
+RT#106068
+varnish would not install, complaining about glibc-devel (version difference to glibc)
+
+/sbin/service puppet stop
+/sbin/service etch stop
+
+edit /etc/yum.repos.d/Centos-Base
+
+repalace "$release" with correct version "5.5"
+
+yum install varnish
+
+/sbin/service puppet start
+/sbin/service etch start
+
+&&&&&
+
+14Dec11  --siggy  list of LDAP users
+
+ldapsearch -h 127.0.0.1 -b "ou=people, dc=oversee, dc=net" -x -W >> /tmp/deleteme
+
+&&&&&
+
+15Dec11   blocking app04 for CMR update... did not show as down on Nagios
+
+it was not configured for etch
+
+yum -y install etch   (this machine was a clone so it had etch installed)
+machine was NOt in configuration files
+
+p4 login
+p4 sync
+cd ~/p4/etch/configs
+NOTE: needs to added to base AND production
+vim base/hosts.xml
+p4 sumbit -d "comments here"
+vim production/hosts.xml
+p4 sumbit -d "comments here"
+
+ssh etch.sys.corp.oversee.net
+p4 login
+p4 sync PATH + NUMBER/REVISION
+
+&&&&&
+
+19Dec11  --siggy      SVN
+
+RT# 105816 Please add Public Key to Authorized Keys
+
+ 2299  08Dec11::11-57-11  yum -y install subversion
+ 2300  08Dec11::11-57-19  sudo su -
+ 2301  08Dec11::11-57-43  su -
+ 2302  08Dec11::11-58-25  which svn
+ 2303  08Dec11::11-59-35  mkdir SVN
+ 2304  08Dec11::11-59-38  cd SVN/
+ 2305  08Dec11::12-00-03  svn co https://svn.sys.corp.oversee.net/repos/systems
+ 2306  08Dec11::12-05-11  svn co https://svn.sys.corp.oversee.net/repos/puppet
+ 
+cd puppet/systems/trunk/manifests/employee/qa/
+vi qa.pp 
+svn commit -m "changed 105816: Please add Public Key to Authorized Keys." qa.pp
+
+Your key has been changed.   It may take some time (about and hour) for it to propagate everywhere.
+
+25jan12  --siggy
+http://www.abbeyworkshop.com/howto/misc/svn01/
+
+&&&&&
+
+20Dec11  --siggy    see if you are on a VM(vm)
+
+dmidecode -s system-manufacturer
+dmidecode | grep -1a "System Information" (CentOS release 4.4)
+dmidecode | grep -i prod
+
+&&&&&
+
+20Dec11  --siggy
+
+code snippets trying to make a machine list
+
+#on hero
+#cd ~/p4/etch/configs/production/source/var/named/chroot/zones/ns.oversee.net/oversee.net/
+cat oversee.net | sed /^$/d | grep -v ";"| grep -v CNAME | grep -v SOA | grep A | awk '{print $1".oversee.net"}' > ~dsiegfriedt/MACHINE-LIST/overseedotnet-list
+
+&&&&&
+
+23Dec11  --siggy
+
+what my LDAP account looks like:
+
+322 cn=Don Siegfriedt,ou=people,dc=oversee,dc=net
+userPassword: {crypt}$1$5PyENliB$57JMZphjOYOAwIVw4g3pp1
+gidNumber: 10336
+givenName: Don Siegfriedt
+sn: dsiegfriedt
+loginShell: /bin/bash
+uidNumber: 10336
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetorgperson
+objectClass: posixAccount
+objectClass: account
+objectClass: posixgroup
+objectClass: shadowaccount
+uid: dsiegfriedt
+mail: dsiegfriedt@oversee.net
+cn: Don Siegfriedt
+gecos: Don Siegfriedt
+homeDirectory: /home/dsiegfriedt
+
+323 cn=dsiegfriedt,ou=Groups,dc=oversee,dc=net
+memberUid: dsiegfriedt
+gidNumber: 10336
+objectClass: top
+objectClass: groupofuniquenames
+objectClass: posixgroup
+uniqueMember: cn=Don Siegfriedt, ou=people, dc=oversee,dc=net
+cn: dsiegfriedt
+
+
+&&&&&
+
+27Dec11  --siggy   mysql commands from db01.bco.lax1.oversee.net copied from Daniel's (Leeds) home account
+
+use mysql;
+select * from user;
+GRANT PROCESS, SUPER, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'systems'@'%' IDENTIFIED BY PASSWORD '*A3E0947A58B87E5BC0656D719B164F00D847354C';
+show databases;
+GRANT SELECT ON `bco`.* TO 'systems'@'%';
+GRANT SELECT ON `test`.* TO 'systems'@'%' ;
+flush privileges;
+show processlist;
+flush privileges;
+show processlist;
+
+show status;
+
+&&&&&
+
+27Dec11  Restarting net cache
+
+sudo nsscache update
+sudo nsscache status
+sudo nsscache repair to (fix Capital letter user names.   THANKS Aaron!)
+^^^^^
+sudo nsscache repair
+[dsiegfriedt@www05.lf.prod.lax1 ~]$ id gss-Sridhar
+uid=10308(gss-Sridhar) gid=10308(gss-Sridhar) groups=10308(gss-Sridhar)
+[dsiegfriedt@www05.lf.prod.lax1 ~]$ id gss-sridhar
+uid=10308(gss-Sridhar) gid=10308(gss-Sridhar) groups=10308(gss-Sridhar),5015(noc)
+[dsiegfriedt@www05.lf.prod.lax1 ~]$ nsscache repair
+WARNING:PidFile:Permission denied opening lock file: /var/run/nsscache
+ERROR:Update:Failed to acquire lock, aborting!
+[dsiegfriedt@www05.lf.prod.lax1 ~]$ sudo nsscache repair
+[dsiegfriedt@www05.lf.prod.lax1 ~]$ id gss-Sridhar
+id: gss-Sridhar: No such user
+^^^^^
+
+nsscache synchronises a local NSS cache against a remote data source.
+
+Usage: nsscache [global options] command [command options]
+
+commands:
+  status                show current cache status.
+  update                update the cache.
+  verify                verify the cache and configuration.
+  repair                repair the cache.
+  help                  show per-command help.
+
+&&&&&
+
+28Dec11  openssl encrypting/decrypting
+
+openssl des3 -salt -in enigma.txt -out enigma.enc
+
+openssl des3 -d -salt -in enigma.enc -out deleteme
+
+yum -y install cryptkeeper
+
+&&&&&
+
+29Dec11 netvault gui (until I get the CLI working)
+
+http://confluence.sys.corp.oversee.net/display/corp/Backups
+
+(11:55:08 AM) Randall Ulmer: ssh -X tapebackup01.sys.corp.oversee.net
+(11:55:18 AM) Randall Ulmer: nvgui &
+Admin
+<passwd on line>
+
+&&&&&
+
+4Jan12   How to build a machine (NON VM)
+
+How Randy set up machines
+https://inventory.sys.corp.oversee.net/front/computer.form.php?ID=11911&onglet=3
+
+Set up DNS
+http://confluence.corp.oversee.net/display/systems/DNS
+
+update IP address assignment
+https://ipplan.sys.corp.oversee.net/user/modifyarearange.php?cust=1
+
+Make sure network ports are enabled
+Zhenhui
+
+DRAC
+http://confluence.corp.oversee.net/display/systems/DRAC+setup+for+console+access
+
+BIOS settings
+http://confluence.corp.oversee.net/display/systems/Bios+Settings+-+Dell+R610
+
+BUILD with kickstart
+ssh kickstart01.sys.lax1.oversee.net
+root
+sudo /datqa/svc/kickstart/bin/setup-kickstart.pl
+    -c centos5.5x86-VM.ksd
+    -n <fqmn>
+    -i <IP>
+    -m <MAC>
+NOTE:     if you put no flags the script will ask for these details.
+reboot machine and it should PXE/kickstart
+
+login as root and run puppet
+http://confluence.corp.oversee.net/display/systems/RB+-+bootstrapping+a+clean+install
+
+
+&&&&&
+
+6Jan12   DNS
+
+http://ns1.emb.oversee.net/pdnsadmin/
+u: admin
+p: online
+
+&&&&&
+
+10Jan12   Zhenhui 
+
+ssh netscaler01-a.lax1.oversee.net
+show lb Vserver | grep <whatever>
+disable Vserver <name from above>
+save ns config
+
+FROM:
+add lb vserver staging.couponfinder.com HTTP 208.73.210.205 80 -persistenceType NONE -lbMethod ROUNDROBIN -cltTimeout 180 
+TO:
+add lb vserver staging.couponfinder.com HTTP 208.73.210.205 80 -persistenceType NONE -lbMethod ROUNDROBIN -state DISABLED -
+
+FROM:
+add lb vserver www.couponfinder.com HTTP 208.73.210.204 80 -persistenceType NONE -cltTimeout 180 	
+TO:
+add lb vserver www.couponfinder.com HTTP 208.73.210.204 80 -persistenceType NONE -state DISABLED -cltTimeout 180
+
+FROM:
+add lb vserver api.couponfinder.com HTTP 208.73.210.206 80 -persistenceType NONE -cltTimeout 180 	
+TO:
+add lb vserver api.couponfinder.com HTTP 208.73.210.206 80 -persistenceType NONE -state DISABLED -cltTimeout 180
+
+&&&&&
+
+10Jan12   ftp01.sys.lax1.oversee.net  ssh is SPECIAL
+
+vi /etc/ssh/sshd.conf   sed s/22/3822/
+
+*************** ssh  ftp01.sys.lax1.oversee.net -p 3822 ***************
+
+IP=172.22.0.48
+
+vi /etc/passwd and rm "ftp" user LEAVE it in group!
+
+follow this link:
+http://sysnetpro.net/os/linux/how-to-sftp-support-in-proftpd.html
+
+
+[root@ftp01 proftpd-1.3.2]# install_user=proftp install_group=proftp ./configure -prefix=/usr/local -sysconfdir=/etc -localstatedir=/var/run -mandir=/usr/local/man -without-pam -disable-auth-pam -enable-openssl -with-modules=mod_ratio:mod_readme:mod_sftp LDFLAGS=-static
+
+NOPE
+
+yum -y install gcc-c++
+yum -y install openssl-devel.i386 openssl-devel.x86_64
+
+YUP
+
+edit /etc/proftpd.conf (per website)
+
+/usr/src/proftpd-1.3.2/proftpd (to start by hand)
+
+11Jan12
+
+11Jan12   SFTP (proftp)
+
+email from dyang 11Jan12
+^^^^^
+
+# This is a basic ProFTPD configuration file (rename it to 
+# 'proftpd.conf' for actual use.  It establishes a single server
+# and a single anonymous login.  It assumes that you have a user/group
+# "nobody" and "ftp" for normal operation and anon.
+
+ServerName			"ProFTPD Default Installation"
+ServerType			standalone
+DefaultServer			on
+
+# Port 21 is the standard FTP port.
+Port				22
+
+# Don't use IPv6 support by default.
+UseIPv6				off
+
+# Umask 022 is a good standard umask to prevent new dirs and files
+# from being group and world writable.
+Umask				022
+
+# To prevent DoS attacks, set the maximum number of child processes
+# to 30.  If you need to allow more than 30 concurrent connections
+# at once, simply increase this value.  Note that this ONLY works
+# in standalone mode, in inetd mode you should use an inetd server
+# that allows you to limit maximum number of processes per service
+# (such as xinetd).
+MaxInstances			30
+
+# Set the user and group under which the server will run.
+User				ftp
+Group				ftp	
+
+# To cause every FTP user to be "jailed" (chrooted) into their home
+# directory, uncomment this line.
+DefaultRoot ~
+RequireValidShell off
+AuthOrder mod_auth_file.c mod_auth_unix.c
+AuthUserFile /etc/ftpd.passwd
+AuthGroupFile /etc/ftpd.group
+
+
+#  ADDED for SFTP Support 1-31-11 DYY
+<IfModule mod_sftp.c>
+        SFTPEngine on
+        SFTPLog /var/log/proftpd/sftp.log
+        Port 22
+        SFTPHostKey /etc/ssh/ssh_host_rsa_key
+        SFTPHostKey /etc/ssh/ssh_host_dsa_key
+        SFTPAuthorizedUserKeys file:~/.sftp/authorized_keys
+        SFTPCompression delayed
+        MaxLoginAttempts 6
+</IfModule>
+
+#### END 1-31-11 DYY
+
+
+# Normally, we want files to be overwriteable.
+AllowOverwrite		on
+
+# Bar use of SITE CHMOD by default
+<Limit SITE_CHMOD>
+  DenyAll
+</Limit>
+
+# A basic anonymous configuration, no upload directories.  If you do not
+# want anonymous users, simply delete this entire <Anonymous> section.
+<Anonymous ~ftp>
+  User				ftp
+  Group				ftp
+
+  # We want clients to be able to login with "anonymous" as well as "ftp"
+  UserAlias			anonymous ftp
+
+  # Limit the maximum number of anonymous logins
+  MaxClients			10
+
+  # We want 'welcome.msg' displayed at login, and '.message' displayed
+  # in each newly chdired directory.
+  DisplayLogin			welcome.msg
+  DisplayChdir			.message
+
+  # Limit WRITE everywhere in the anonymous chroot
+  <Limit WRITE>
+    DenyAll
+  </Limit>
+</Anonymous>
+
+
+^^^^^
+
+http://www.castaglia.org/proftpd/contrib/ftpasswd.html
+
+ftpasswd --passwd --name=bob --uid=1001 --home=/home/bob --shell=/bin/false
+
+ftpasswd --group --name=group-name --gid=group-id --member=user-member1 --member=user-member2 ... 
+
+ftpasswd --passwd --name=user --change-password
+
+To add disk space in VMWare:
+
+select machine
+  RT click select "Edit Settings"
+  click ADD
+  click Hard Disk
+  click Next
+  select Create new virtual disk
+  click Next
+  input size
+  click Next
+  click Next (at the SCSI(0:2))
+  click Finish
+
+reboot
+fdisk -l should show you /dev/sdb
+
+http://www.howtoforge.com/linux_lvm
+#fdisk /dev/sdb
+> n
+> p
+> 1
+>
+>
+> w
+
+# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created
+
+# vgcreate vg_export /dev/sdb1
+  Volume group "vg_export" successfully created
+
+# lvcreate --name lv_export --size 49G vg_export
+  Logical volume "lv_export" created
+
+# lvscan
+  ACTIVE            '/dev/vg_export/lv_export' [49.00 GB] inherit
+  ACTIVE            '/dev/vg_root/lv_root' [19.91 GB] inherit
+  ACTIVE            '/dev/vg_root/lv_tmp' [2.00 GB] inherit
+  ACTIVE            '/dev/vg_root/lv_var' [19.91 GB] inherit
+
+# mkfs.ext3 /dev/vg_export/lv_export
+
+# mount /dev/vg_export/lv_export /export
+
+# vim /etc/fstab
+   /dev/vg_export/lv_export	/export		ext3	defaults	1 2
+
+
+added /usr/local/bin/addftpuser
+
+/export/ftp S/B root.root and 777
+
+so add users to list in /root/scripts/userlists (NOTE:   NOOOOOO empt line at EOF, if you do you have a user named "--file")
+
+when removing users:
+
+rm -rf /export/ftp/<user>
+vim /etc/ftpd.passwd
+
+5Mar12   adding a logical volume  THANK Juan
+
+[root@monitor02 log]# /usr/sbin/lvm
+lvm> pvdisplay (physical volume)
+
+lvm> vgdisplay (volume group)
+
+lvm> lvdisplay (logical volume listing)
+
+(lvcreate <volume group name> <name of logical volume you want to create> -L <size>G
+lvm> lvcreate vg_root -n lv_export -L 350G  
+  Logical volume "lv_export" created
+
+[root@monitor02 log]# mkfs.ext3 /dev/vg_root/lv_export
+
+[root@monitor02 log]# tune2fs -m 2 /dev/vg_root/lv_export
+tune2fs 1.39 (29-May-2006)
+Setting reserved blocks percentage to 2% (1835008 blocks)
+
+&&&&&
+
+11Jan12   NetAPP commands (when logged into a filer)
+
+environment status shelf
+
+vol status
+
+&&&&&
+
+12jan12
+
+yum -y install pwgen
+
+23MAr12   random passwd
+
+pwgen -Bnyc
+-B Don't include ambiguous characters in the password
+-n Include at least one number in the password
+-y Include at least one special symbol in the password
+-c Include at least one capital letter in the password
+
+&&&&&
+
+12Jan12
+MySQL commands
+
+NOTE:  ALL commands end with ";"
+
+mysql -A
+
+select User, Host from mysql.user;
+
+show grants for 'cmarapao'@'workshop1-ds.lad.internal';
+
+cut and paste the results to a scratch file and edit:
+change username and add a passwd (clear text)
+
+mysql> GRANT SELECT, PROCESS, LOCK TABLES ON *.* TO 'rstanford'@'workshop1-ds.lad.internal' IDENTIFIED BY 'ohRai2xo' ;
+
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, CREATE TEMPORARY TABLES ON `pubman`.* TO 'rstanford'@'workshop1-ds.lad.internal';
+
+flush privileges;
+exit;
+
+&&&&&
+
+13jan12   Installing MYSQL
+
+[root@db01 ~]# rpm -qa | grep -i mysql
+MySQL-server-5.5.16-1.rhel5
+MySQL-client-5.5.16-1.rhel5
+
+use "pwgen" to select a new passwd.
+
+/usr/bin/mysqladmin -u root password 'new-password'
+/usr/bin/mysqladmin -u root -h <hostname> password 'new-password'
+
+find another db machine .... in root look at .my.cnf    copy pattern for your machine/passwd
+
+&&&&&
+
+18Jan12  --siggy MySQL
+http://confluence.sys.corp.oversee.net/display/systems/mysql
+
+***see what mysql is doing
+show processlist;
+show full processlist;
+SHOW GLOBAL STATUS LIKE 'Threads_connected';
+show status like 'Conn%';
+show variables like '%conn%';
+
+***Show all accounts in db
+select host, user, password from mysql.user;
+
+***Adding a new account
+create user 'newguy'@'localhost' identified by 'password';
+grant all privileges on crazydb.* to 'newguy'@'%';
+flush privileges;
+
+***Change user's password
+set password FOR 'bob'@'%.loc.gov' = PASSWORD('newpass');
+
+&&&&&
+
+26jan12  screencapture
+
+xfce4-screenshooter
+
+&&&&&
+
+31jan12  DNS hints  --Zhenhui
+
+aboutairportparking.com => .aap.
+airportparking => .apk.
+
+&&&&&
+
+1Feb12    Zhenhui  ... scalecluster
+
+open a browser to https://scalecluster01.sys.lax1.oversee.net
+login: admin
+passwd: k??????? from passwd list
+
+select CIFS/NFS/iSCSI
+select Shares
+select which one you want to modify (noc_data_
+click Modify [bottom RT corner]
+edit size (shows half size) [150]
+click Modify Share
+ progress bar as it makes change
+   The word from Z is that sometime it works.....other times it does not.   If it does't youhave to call support.
+
+&&&&&
+p4 access   for admin
+
+p4 group super
+p4 group admin
+
+&&&&&
+2Feb12    console server(s)
+
+in GLPI get server name
+cons23 on cons103.sys.corp.oversee.net
+
+dsiegfriedt@LT-DONSIEGFRIED:~$ ssh -l root cons103.sys.corp.oversee.net
+Password: 
+Password: 
+Last login: Thu Feb  2 13:19:16 2012 from 10.16.50.227
+
+For information/help on Logical Solutions SCS commands, type: man lsi
+
+[root@scs root]#  connect 21
+
+Esc-A to get out of console
+
+<ctrl> + E c . = logout
+<ctrl> + E c f = force other user off the console
+<ctrl> + E c ? = help
+<ctrl> + \ bb = Send reboot signal
+
+&&&&&
+10Feb12  Juan  removeing privledges from mysql
+
+revoke select on db.* from  'eklusman'@'host';
+
+wipe all:
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'eklusman'@'host';
+
+add JUST what he wants
+GRANT SELECT ON `lowfares`.* TO 'eklusman'@'host';
+
+Stuff from Juan DB buddy
+use $DB;
+select $DB;
+show tables;
+show create table $TABLE\G
+
+&&&&&
+29Feb12 VMWare migrated 
+
+Want machine (vm05.sys.lax1.oversee.net) empty to do a hardware (PS and mem) upgrade. 
+
+Had previously built vm55 as an ESX machine.
+
+vm55 was not a part of any cluster.   To use it for our upgrade plans....
+
+drag vm55 into "Production Cluster"
+
+RT click take out of maintenance mode
+put vm05 into maintanence mode
+    this will automatically migrate all VM to other machines
+WAIT for the maintenance mode icon
+rt click (vm05) "shutdown"
+
+Once the machine is back up.   RT click and take it out of maintenance mode.
+
+&&&&&
+1Mar12 added to kickstart
+
+http://confluence.corp.oversee.net/pages/viewpage.action?pageId=8948541
+
+kickstart01.sys.lax1.oversee.net:/nfs/kickstart/configs
+
+??Jan12 from standard partitioning scheme.
+
+FROM:
+clearpart --all --drives=sda --initlabel
+part /boot --ondisk=sda --size 102    --fstype ext3 --asprimary
+part swap  --ondisk=sda --size 4096   --fstype ext3 --asprimary
+part /     --ondisk=sda --size 20480  --fstype ext3 --asprimary
+part /data --ondisk=sda --size 1      --fstype ext3 --grow
+part /var  --ondisk=sda --size 20480
+
+TO:
+#changed to vg
+clearpart --all --drives=sda --initlabel
+part /boot --fstype ext3 --size=150
+part swap --size=4096
+part pv.01 --size=1 --grow
+volgroup vg_root pv.01
+logvol  /  --vgname=vg_root  --size=20408  --name=lv_root
+logvol  /var  --vgname=vg_root  --size=20408  --name=lv_var
+logvol  /tmp  --vgname=vg_root  --size=2048  --name=lv_tmp
+
+^^^^^
+
+# added to /etc/sudoers  1Mar12  --siggy
+echo >> /etc/sudoers<<EOF
+
+#begin OVERSEE-NOC
+## ===== NOC =====
+## All lines between '#begin OVERSEE-NOC' and '#end OVERSEE-NOC' will
+## be deleted upon removal of the oversee-accounts-noc package. 
+%noc ALL=NOPASSWD: /sbin/service *
+%noc ALL=NOPASSWD: /sbin/reboot
+%noc ALL=NOPASSWD: /sbin/shutdown *
+%noc ALL=NOPASSWD: /bin/ls
+%noc ALL=NOPASSWD: /usr/sbin/lshw
+%noc ALL=NOPASSWD: /usr/bin/tail
+%noc ALL=NOPASSWD: /usr/bin/du
+%noc ALL=NOPASSWD: /bin/df
+## ===== NOC =====
+#end OVERSEE-NOC
+
+#begin OVERSEE-sysadmin
+## ===== sysadmin =====
+## All lines between '#begin OVERSEE-sysadmin' and '#end OVERSEE-sysadmin' will
+## be deleted upon removal of the oversee-accounts-sysadmin package. 
+%wheel ALL=NOPASSWD: ALL
+## ===== sysadmin =====
+#end OVERSEE-sysadmin
+
+EOF
+
+&&&&&
+2Mar12  DDoS
+
+http://vm-solarwinds/Orion/SummaryView.aspx
+
+border1.onw.oversee.net
+border2.onw.oversee.net
+http://vm-solarwinds/Orion/NetPerfMon/NodeDetails.aspx?NetObject=N:19
+
+u: noc
+p: online
+
+monitor
+find domain traffic is coming from.
+dig domain work with owner of domain to drop DNS...
+If multiple ISPs isolate to one.
+work with ISP to "black hole" the offending domain.
+
+     	  11Mar12
+(04:22:17 PM) zliang-home: tcpdump -i eth0 -A -s 1024 -nn port 40001 | grep Host > /tmp/host4.txt
+(04:22:23 PM) zliang-home: maybe wait for 1 min
+(04:22:23 PM) zliang-home: then
+(04:22:31 PM) zliang-home: cat /tmp/host4.txt | rev | cut -f 1,2 -d '.' | rev | sort | uniq -c | sort -n
+
+(04:22:50 PM) zliang-home:   22 0catch.com
+     31 torrentz.eu
+     43 Host: dsnextgen.com
+     44 user-accounts.info
+     45 information.com
+   1476 Host: abouttopbar.com
+
+(04:23:31 PM) zliang-home: so abouttopbar.com was the biggest hitter
+(04:23:41 PM) zliang-home: although user-accounts.info is fishy too
+(04:23:45 PM) zliang-home: and torrentz.eu
+
+
+&&&&&
+8Mar12   Dell BIOS upgrade
+[root@extns01.sys.lax1 dsiegfriedt]# chmod +x PE1950_BIOS_LX_2.7.0.BIN 
+[root@extns01.sys.lax1 dsiegfriedt]# ./PE1950_BIOS_LX_2.7.0.BIN 
+Collecting inventory...
+....
+Running validation...
+
+BIOS
+
+The version of this Update Package is newer than the currently installed version.
+Software application name: BIOS
+Package version: 2.7.0
+Installed version: 2.3.1
+
+
+Continue? Y/N:y
+Executing update...
+WARNING: DO NOT STOP THIS PROCESS OR INSTALL OTHER DELL PRODUCTS WHILE UPDATE IS IN PROGRESS.
+THESE ACTIONS MAY CAUSE YOUR SYSTEM TO BECOME UNSTABLE!
+..............................
+The BIOS image file is successfully loaded. To apply the BIOS update successfuly, the OMSA data manager service
+is stopped. Reboot your system to complete the update. Do not shutdown, cold reboot, power cycle, or switch
+off your system before the BIOS update is complete.  Restart your system for the update to take effect since
+the update will be incomplete until you reboot the system.
+Would you like to reboot your system now?
+Continue? Y/N:y
+
+Broadcast message from root (pts/0) (Thu Mar  8 15:35:06 2012):
+
+The system is going down for reboot NOW!
+[root@extns01.sys.lax1 dsiegfriedt]# Connection to extns01.sys.lax1.oversee.net closed by remote host.
+Connection to extns01.sys.lax1.oversee.net closed.
+
+
+&&&&&
+15Mar12  PDX vmware
+
+servers
+vm01.pdx.corp.oversee.net
+vm03.pdx.corp.oversee.net
+
+jump from cancun and put in the above servers (I used root to get in)
+
+all the VMs on vm01.pdx.corp.oversee.net were powered off.
+
+&&&&&
+15Mar12   remounting rw
+
+mount -o remount,rw /local/vmware-datastore/
+
+&&&&&
+16Mar12   migrating Datastores
+
+Fire up vSphere
+  in the URL pane RT click "Inventory"
+    select "Inventory"  (again)
+       select "Datastore"  (will list all available datastores)
+
+Select the datastore you want to migrate FROM
+  Select the "Virtual Machines" tab
+
+Select the machine
+  RT click select "Migrate"
+  Select "Change Datastore"  <NEXT>
+  Select teh correct "Resource Pool"  <NEXT>
+  Select new datastore location  <NEXT>
+  (Same format as source)  <NEXT>
+  <Finish>
+
+&&&&&
+20Mar12   is a machine setup for kickstart
+
+on kickstart01.sys.lax1.oversee.net
+
+cd /tftpboot/linux-install/pxelinux.cfg
+
+the files are the HEX reprisentation of the IP address of the machine to be kickstarted
+OR you can go by time/MAC address....
+
+&&&&&
+20Mar12    GREAT idea from Daniel Yang
+
+extns01 could not be accessed by DRAC.   I was worried if it went down!
+Daniel suggested teh we could:
+
+create a virtual NIC on the other machine (extns02) with the IP of extns01 and BOOM everything would be fine.
+
+BRILLIANT idea
+
+&&&&&
+21MAr12   adding keys to group list   THANK Zhenhui
+
+cd ~/p4/etch/configs/production/source/home/rigel/.ssh
+
+p4sync ...
+
+p4 edit <filename>
+vim <filename>
+p4 submit-d "<comments"> <filename>
+
+on etch
+p4 sync blahblahblahblah
+
+&&&&&
+23Mar12  LVM    THANKS Juan!
+
+machine created with 600GB but only 10GB visable with 
+
+help lvcreate
+
+/sbin/lvm
+lvcreate vg1 -n otn-export -L 500gb
+"lvcreate <existing vg name> -n <new vg name> -L <size of vg>"
+
+Then you'll have to make a file systems on it
+mkfs.ext3 /dev/vg1/otn-export
+
+Make a mount point
+mkdir /otn
+
+Test the mount
+mount /dev/vg1/otn-export /otn
+
+Look at what mounted
+ll /otn
+
+Umount it
+umount /otn
+
+Addit to the fstab
+vim /etc/fstab
+
+Make sure it mounts on next boot
+mount -a
+
+&&&&&
+26Mar12   HTTPD/Apache errors   Juan Sandoval
+
+The apache error log indicated the following error: semget: No space left on device. This indicates that apache is out of semaphores. I ran the following commands to fix it.
+
+[root@admon01.ds.lax1 ~]# ipcs -s
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems
+0x00000000 0          apache    600        1
+0x00000000 131073     apache    600        1
+0x00000000 196610     apache    600        1
+0x00000000 229379     apache    600        1
+0x00000000 262148     apache    600        1
+0x00000000 294917     apache    600        1
+0x00000000 327686     apache    600        1
+0x00000000 393223     apache    600        1
+0x00000000 425992     apache    600        1
+0x00000000 458761     apache    600        1
+0x00000000 491530     apache    600        1
+0x00000000 622603     apache    600        1
+0x00000000 655372     apache    600        1
+<snip>
+
+[root@admon01.ds.lax1 ~]# for whatever in `ipcs -s | awk '{print $2}'`; do ipcrm -s $whatever; done
+
+##No more semaphores
+[root@admon01.ds.lax1 ~]# ipcs -s
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems
+
+##start up apache
+sudo /etc/init.d/httpd start
+
+[jsandoval@admon01.ds.lax1 httpd]$ ps -elf | grep http
+5 S root     23011     1 20  76   0 - 61224 184467 09:12 ?        00:00:02 /usr/sbin/httpd -DHAVE_USERTRACK -DHAVE_PROXY
+5 S apache   23029 23011  0  79   0 - 61224 -      09:12 ?        00:00:00 /usr/sbin/httpd -DHAVE_USERTRACK -DHAVE_PROXY
+5 S apache   23030 23011  0  78   0 - 61224 semtim 09:12 ?        00:00:00 /usr/sbin/httpd -DHAVE_USERTRACK -DHAVE_PROXY
+5 S apache   23031 23011  0  78   0 - 61224 semtim 09:12 ?        00:00:00 /usr/sbin/httpd -DHAVE_USERTRACK -DHAVE_PROXY
+5 S apache   23032 23011  0  78   0 - 61224 semtim 09:12 ?        00:00:00 /usr/sbin/httpd -DHAVE_USERTRACK -DHAVE_PROXY
+
+&&&&&
+
+26Mar12   dmesg time perl script (not sec.usec since boot)
+
+http://linuxaria.com/article/how-to-make-dmesg-timestamp-human-readable?lang=en
+
+OR
+http://www.verboom.net/blog/index.html?single=20110927.0
+gawk -v uptime=$( grep btime /proc/stat | cut -d ' ' -f 2 ) '/^[[ 0-9.]*]/ { print strftime("[%Y/%m/%d %H:%M:%S]", substr($0,2,index($0,".")-2)+uptime) substr($0,index($0,"]")+1) }' 
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+
+
+

@@ -1,0 +1,633 @@
+**********************************************************************
+  --siggy 30jun05
+
+http://theochem.weizmann.ac.il/macosx.html
+During Startup
+Keystroke 	Description
+
+
+
+Option-Command-Shift-Delete
+		during startup 	Bypass primary startup volume and seek a 
+		different startup volume (such as a CD or external disk)
+
+Press X 	Force Mac OS X startup
+Press C 	Start up from a CD that has a system folder
+Press N  	Attempt to start up from a compatible network server (NetBoot)
+Press R  	Force PowerBook screen reset
+Press T  	Start up in FireWire Target Disk mode
+Press Shift  	start up in Safe Boot mode and temporarily disable login items and non-essential kernel extension files (Mac OS X 10.2 and later)
+Press Command-V Start up in Verbose mode.
+Press Command-S Start up in Single-User mode
+**********************************************************************
+To enable root login:
+
+   1. login as any admin user (e.g. the first user you defined when you set up the machine)
+   2. Start up Netinfo Manager which sits in Applications:Utilities
+   3. Under the "Domain" menu, go to "Security", which has a submenu. One of the 
+      items is called "Enable root login". Pick the item.
+   4. You will be prompted for a root password. Enter it, then again for "Verify" 
+      so you do not lock yourself out.
+**********************************************************************
+14Apr08
+
+To get "focus follows mouse"  in a terminal window type:
+
+defaults write com.apple.Terminal FocusFollowsMouse -String YES
+
+from:
+http://macosxhints.com/article.php?story=20031029203936659
+
+6Oct17
+From:
+https://stackoverflow.com/questions/98310/focus-follows-mouse-plus-auto-raise-on-mac-os-x
+
+defaults write com.apple.Terminal FocusFollowsMouse -bool true
+
+**********************************************************************
+16apr08  --siggy  
+
+default shell is bash.  NO .bashrc :^(  
+create .bashrc
+vi /etc/bashrc
+    add source ~/.bashrc
+
+NOW you can add aliases and env variables
+**********************************************************************
+16Ap08  --siggy
+
+Assigning a Default Signature Entorage
+
+      From the Tools menu, select Accounts
+      The Accounts dialog box appears.
+
+      Select the Mail tab
+
+      Double click your email account
+      The Edit Account dialog box appears.
+
+      Select the Options tab
+
+      From the Message Options section, from the Default signature pull-down list, 
+      select the desired signature
+
+      Click OK
+**********************************************************************
+5May08  --siggy
+
+"Apple k" (Connect to Server) smb://3050ca/NT04/EDINC
+**********************************************************************
+  --siggy 9May08   .bashrc env
+http://www.oreilly.com/pub/a/mac/2004/02/24/bash.html?page=2
+
+Command  	Description				Example
+\a 	ASCII bell character				--
+\d 	the current date				Sun Feb 08
+\H 	hostname					Ginger.local
+\h 	shortened hostname				Ginger
+\u 	your username					dave
+\w 	current working directory			/Applications/Network
+\W 	basename of the current working directory 	Network
+\T 	current time (12-hour HH:MM:SS format) 		01:16:49
+\t 	current time (HH:MM:SS format) 			13:16:49
+\@ 	current time (12-hour AM/PM format) 		1:16 PM
+\n 	new line 	      	    			--
+\\ 	print a backslash				\
+
+
+\a	      an ASCII bell character (07)
+\d	      thedatein "Weekday Month Date" format (e.g. Rue May 26)
+\D{format}    the format is passed to strftime(3)andtheresultis insertedinto the prompt string; 
+	      an empty format results in a locale-specific time representation.The braces are required
+\e		 an ASCII escape character (033)
+\h  	   the hostname up to the first `.'
+\H   	       the hostname
+\j		 the number of jobs currently managed by the shell
+\l   	     the basename of the shell's terminal device name
+\n   	       newline
+\r		 carriage return
+\s		thenameof the shell the basename of $0 (the portion  following the final slash)
+\t	      the current time in 24-hour HH:MM:SS format
+\T   	     the current time in 12-hour HH:MM:SS format
+\@   	     the current time in 12-hour am/pm format
+\A   	      the current time in 24-hour HH:MM format
+\u   	     the username of the current user
+\v   	      the version of bash (e.g. 2.00)
+\V   	     the release of bash version + patchelvel (e.g. 2.00.0)
+\w   	     the current working directory
+\W   	     the basename of the current working directory
+\!   	      the history number of this command
+\#   	     the command number of this command
+\$   	     if the effective UID is 0 a # otherwise $
+\nnn	the character corresponding to the octal number nnn
+\\   	       a backslash
+\[	begin a sequence of non-printing characters which could
+ 	beusedtoembeda terminal control sequence into the
+ 	prompt
+\]		end a sequence of non-printing characters
+   PS1='[\u@TEST \w]\n \#\$ \n\
+\[\	        end a sequence of non-printing characters
+
+From the information listed in the above table, we can see that Panther's default prompt strings are created using the following commands:
+
+
+PS1="\h:\w \u$ "
+Ps2=" > "
+**********************************************************************
+MAC scripting  --siggy  15May08
+
+Because bash on a MAC (possibly a BSD thing) does not have a "seq" command.
+
+for i in `jot 10 1 10`; do echo $i; done
+
+for i in {1..10}; do echo $i; done
+**********************************************************************
+Burning a DVD  --siggy 30jun08
+
+http://www.macosxhints.com/article.php?story=20060619181010389
+
+   1. Insert a blank disc.
+   2. Start Disk Utility. (/Applications/Utilities/Disk Utility.app)
+   3. From the File menu, choose Open Disk Image and select the ISO to be burned (double click it).
+   4. In the list of volumes, you will now see an item representing the ISO file. Select it.
+   5. Click the Burn button and follow the instructions.
+**********************************************************************
+from Corey 30jun08
+
+http://download.microsoft.com/download/4/9/6/4963025f-1731-4a9e-a9e6-8f6ab6ac4625/RDC103EN.bin
+1:11 
+grab that and install it
+then u can just RDP to wad721
+**********************************************************************
+Mounting iso image by hand  18Aug08  --siggy
+
+hdiutil mount sample.iso
+with sample.iso being the path to the image you want to mount.
+**********************************************************************
+3Sep08  --siggy
+
+http://support.apple.com/kb/HT1528?viewlocale=en_US
+
+How to enable the root user
+
+Mac OS X 10.5 or later
+
+   1. From the Finder's Go menu, choose Utilities.
+   2. Open Directory Utility.
+   3. Click the lock in the Directory Utility window.
+   4. Enter an administrator account name and password, then click OK.
+   5. Choose Enable Root User from the Edit menu
+   6. Enter the root password you wish to use in both the Password and Verify fields, then click OK.
+
+**********************************************************************
+10Oct08  --siggy
+
+ps -evf
+
+-A      Display information about other users' processes, including those without controlling terminals.
+
+-e      Identical to -A.
+
+-f      Display the uid, pid, parent pid, recent CPU usage, process start time, controling tty, elapsed CPU 
+	usage, and the associated command.  If the -u option is also used, display the
+        user name rather then the numeric uid.  When -o or -O is used to add to the display following -f, the 
+	command field is not truncated as severely as it is in other formats.
+
+-v      Display information associated with the following keywords: pid, state, time, sl, re, pagein, vsz, rss, 
+	lim, tsiz, %cpu, %mem, and command.  The -v option implies the -m option.
+
+**********************************************************************
+PRAM/NVRAM  --siggy 22oct08
+
+Resetting PRAM and NVRAM
+
+   1. Shut down the computer.
+   2. Locate the following keys on the keyboard: Command, Option, P, and R. You will need to 
+      hold these keys down simultaneously in step 4.
+   3. Turn on the computer.
+   4. Press and hold the Command-Option-P-R keys. You must press this key combination before 
+      the gray screen appears.
+   5. Hold the keys down until the computer restarts and you hear the startup sound for the 
+      second time.
+   6. Release the keys.
+
+**********************************************************************
+password twice coming out of screensaver  --siggy 22oct08
+
+AppleCare told me to delete a preference file and that has solved this issue for now on my 
+MacBook Pro 10.5.4...
+
+/Users/<username>/Library/Preferences/com.apple.preference.desktopscreeneffects.plist
+
+Delete this file and it seems to work. We'll see how long it lasts though... 
+**********************************************************************
+using DNS short name(s)  17mar09  --siggy
+
+ I tried to solve a network problem by editing resolv.conf to add some new DNS records, but after a restart, 
+the original (non-working ) DNS is the only one listed in there. Some other process at startup must have 
+overridden this file, because I edited and saved it using sudo, and it certainly seemed as though the changes 
+"took". Where can I edit this property through the command line on Mac OS X 10.1.5 CLIENT (not server)?
+
+
+The nameservers entered in your Network panel (in System Prefs) are used. 
+
+**********************************************************************
+http://osxdaily.com/2007/10/29/how-to-add-a-user-from-the-os-x-command-line-works-with-leopard/
+**********************************************************************
+29may09  --siggy  Screen capture +
+
+http://guides.macrumors.com/Taking_Screenshots_in_Mac_OS_X
+
+Okay, you probably already know the ol’ Command-Shift-3 shortcut for taking a screen capture of your entire 
+screen, and you may even know about Command-Shift-4, which gives you a crosshair cursor so you can choose 
+which area of the screen you want to capture. But perhaps the coolest, most-secret hidden capture shortcut 
+is Control-Command-Shift-3 (or 4), which, instead of creating a file on your desktop, copies the capture 
+into your Clipboard memory, so you can paste it where you want. (I use this to paste screen captures right 
+into Photoshop.)
+
+Hold down the Command, Shift, and 4 keys, then press the Spacebar. Instead of a cross-hair cursor, a small 
+camera icon appears. When you move this camera icon over the element you’d like to capture, that element is 
+highlighted. Click your mouse or trackpad, and you’ve captured a screenshot of just that element — no 
+further cleanup required
+
+screencapture -iW ~/Desktop/screen.jpg
+	      space to select HOW to select.
+
+**********************************************************************
+31aug09  --siggy
+
+http://www.apple.com/pro/tips/empty_trash.html
+
+It’s simple to delete unwanted files using Mac OS X Leopard: Just drag the files onto the Trash 
+icon in the Dock (or select them and type Command-Delete), then choose Empty Trash in the Finder 
+menu (or type Command-Shift-Delete). Alternately, you can double-click on the Trash icon to open 
+it, then click on the Empty button
+
+http://mactoids.com/disable-the-empty-trash-warning/
+
+To avoid having to view this confirmation dialog on your Mac every time you empty the Trash, 
+simply hold down Option when you select Empty Trash and the Trash contents will empty instantly 
+without ever displaying the confirmation dialog.
+**********************************************************************
+10sep09  --siggy
+				   
+(dsiegfriedt)[ ~/Desktop ] {53} > defaults write com.apple.screencapture location /Users/dsiegfriedt/Desktop/Screen-Shots
+(dsiegfriedt)[ ~/Desktop ] {54} > defaults write com.apple.screencapture type jpg
+(dsiegfriedt)[ ~/Desktop ] {55} > killall SystemUIServer
+
+**********************************************************************
+25mar10  --siggy/Jason
+
+to flush the cache on a Mac
+dscacheutil -flushcache
+
+**********************************************************************
+6Oct10 --siggy
+
+Stop Mac OSX from creating .DS_Store files when interacting with a remote file server with the Finder
+# defaults write com.apple.desktopservices DSDontWriteNetworkStores true
+
+**********************************************************************
+9Jun17  
+
+@@@Karen's machine is an Avid and files being created by here were set to 700 (NOT good for production)
+Grace Thompson
+5:55 PM (14 hours ago)
+
+to tech-sys 
+let's try this on Karen's machines: 
+
+sudo launchctl config user umask 022
+
+This sets the user's umask for all apps they open, such as Finder, TextEdit, or Final Cut Pro, or apps accessed from the command line. It also controls the permissions set on new files created by any of these apps. If you see the message, "Could not write configuration: No such file or Directory" check to make sure the /private/var/db/com.apple.xpc.launchd/config directory is present. If this folder is missing, you can manually create it by using the command below. After creating this folder, try the launchctl command again.
+
+https://support.apple.com/en-us/HT201684
+
+
+**********************************************************************
+19Jul17  MAC root passswd cahnge script Gisel left us 14Jul17:^(
+
+http://www.itninja.com/question/mac-script-to-change-administrator-password
+
+#!/bin/bash
+#for when you need to change the local admin (ladmin) accounts
+
+password="your_password"
+
+/usr/bin/dscl . passwd /Users/ladmin "$password"
+
+status=$?
+
+if [ $status == 0 ]; then
+   echo "Password was changed successfully."
+   elif [ $status != 0 ]; then
+   echo "An error was encountered while attempting to change the password. /usr/bin/dscl exited $status."
+fi
+
+exit $status
+
+*****
+@@@ this worked on tomcat.... now tomcat has a NON-standard ladmin passwd
+
+https://acletras.com/2008/04/30/force-local-user-account-password-change-through-apple-remote-desktop/
+
+dscl . -passwd /Users/ladmin <OLD> <NEW>
+                              d...  C...
+ 
+13Sep17 @@@ moved it back to standard root passwd (OR did I)
+	@@@ My problem was that there was a '$' character in the password, which I didn't escape. 
+	    Consequently, the passwords were cut off to before the $ character.
+
+
+**********************************************************************
+12Sep17  rebuild mac (trashcan) [helix to be exact]
+
+vmmunki:8000
+  Manifests
+    <search name(s)>    # case counts :^(
+      Edit
+        <add stuff to "Managed Installs"
+	  SAVE	     
+
+reboot mac while holding the "n" key down until you see a spinning globe.
+
+       Enter Deployment Password               @@@ in secrets file
+
+       Select OS version
+
+       Enter <mac name>
+
+
+helix not found in on vmmunki
+
+from Gisel's doc  http://confluence.disneytoonstudios.com/display/TEC/Building+New+Macs
+
+    http://dtsweb.disneytoonstudios.com/pages/dept_tech/ai/
+      Username:
+      Password:
+
+
+**********************************************************************
+19Sep17  change UID on Calin's laptop
+
+https://www.inteller.net/notes/change-user-id-on-snow-leopard (10.6-10.12)
+
+**********************************************************************
+5Oct17  pkgutil/pkgbuild  from Grace
+
+https://m.youtube.com/watch?v=oKxjxi9Eny8   ### by Greg Neagle
+
+@@@ 40:20
+pkgutil --pkgs | grep ???
+pkgutil --files <pkg name>
+pkgutil --file-info <pkg name>
+pkgutil --pkgs-info <pkg name>
+pkgutil --payloadfiles <pkg name>
+pkgutil --forget <pkg name>    ###clean up pkg db after you have deleted something
+	--expand <pkg name> <output name>
+		ie. pkgutil --expand Install\ Wacom\ Tablet.pkg /tmp/Wacom_pkg
+	--flatten
+		ie. pkgutil --flatten /tmp/Wacom_pkg Install\ Wacom\ Tablet.pkg 
+	--bom <pkg name> <output name>
+	--payload-files
+	--check-signature
+
+
+@@@ at ~50:00 minutes
+
+@@@ pkgbuild steps   @@@ ~52:00
+cd ~/Desktop
+cp sudoers to Desktop
+
+mkdir SUDO
+   mkdir SUDO/private
+   mkdir SUDO/private/etc
+mv sudoers to SUDO/private/etc/
+
+pkgbuild --root SUDO
+	--identifier com.disneytoonstudios.dts-sudoers\
+	--version 1.0\
+	--ownership preserve\
+	dts-sudoers.pkg ### name of pkg outputting
+^^^^^
+dsiegfriedt@tomcat:/private/tmp $ 
+
+sudo pkgbuild --root SUDO --identifier com.disneytoonstudios.dts-sudoers --ownership preserve --version 1.0 dts-sudoers.pkg
+pkgbuild: Inferring bundle components from contents of SUDO
+pkgbuild: Wrote package to dts-sudoers.pkg
+^^^^^
+
+@@@ Check the work
+pkgutil --payload-files dts-sudoers.pkg   ### to see the files in the pkg
+dsiegfriedt@tomcat:/private/tmp $ sudo pkgutil --payload-files dts-sudoers.pkg
+.
+./private
+./private/etc
+./private/etc/sudoers
+
+lsbom `pkgutil --bom dts-sudoers.pkg`
+dsiegfriedt@tomcat:/private/tmp $ lsbom `pkgutil --bom dts-sudoers.pkg`
+.	40755	0/0
+./private	40755	0/0
+./private/etc	40755	0/0
+./private/etc/sudoers	100440	0/0	3078	2470143692
+
+
+^^^^^
+dsiegfriedt@tomcat:/private/tmp $ ll
+
+drwxr-xr-x   3 root         wheel   102B Oct  5 10:03 SUDO
+
+-rw-r--r--   1 root	    wheel   4.7K Oct  5 11:00 dts-sudoers.pkg
+
+^^^^^
+preinstall ###script
+postinstall ###script
+
+@@@troubleshoot @ ~1:09
+
+pkgbuild --nopayload  ### to run commands
+@@@ 1:13:02
+
+pkgbuild exercise @ 1:00:07
+
+SCRIPTING  @ 1:03:41
+	
+**********************************************************************
+5Oct17   see /private in the "Finder"
+from a terminal type:
+
+open /private
+
+**********************************************************************
+5Oct17
+dsiegfriedt@tomcat:~/Desktop/ESCOSX/Sophos Installer.app/Contents/MacOS $ ./CreateUpdatePreconfig  -PrimaryServerType 2 -PrimaryServerUserName Administrator -PrimaryServerPassword N3xtPhaze -PrimaryServerURL smb://10.106.230.131/SophosUpdate/CIDS/S000/ESCOSX
+2017-10-05 12:30:58.208 CreateUpdatePreconfig[3996:152306] You must be root in order to create configuration settings
+dsiegfriedt@tomcat:~/Desktop/ESCOSX/Sophos Installer.app/Contents/MacOS $ sudo ./CreateUpdatePreconfig  -PrimaryServerType 2 -PrimaryServerUserName Administrator -PrimaryServerPassword N3xtPhaze -PrimaryServerURL smb://10.106.230.131/SophosUpdate/CIDS/S000/ESCOSX
+2017-10-05 12:31:05.421 CreateUpdatePreconfig[3998:152326] Saving Update pre-configuration: {
+    PrimaryServerPassword = 28322f3739a089a8e69e048e660ae00a;
+    PrimaryServerType = 2;
+    PrimaryServerURL = "smb://10.106.230.131/SophosUpdate/CIDS/S000/ESCOSX";
+    PrimaryServerUserName = d58d032613f165e96fbca39bccd8cf89;
+}
+
+dsiegfriedt@tomcat:~/Desktop/ESCOSX/Sophos Installer.app/Contents/MacOS $ ll ../../../Sophos\ Installer\ Components/
+total 32
+drwxr-xr-x    8 dsiegfriedt  1825200333   272B Oct  5 12:31 .
+drwxrwxr-x   14 dsiegfriedt  1825200333   476B Aug 30 23:17 ..
+-rw-r--r--@   1 dsiegfriedt  1825200333   6.0K Sep  5 14:48 .DS_Store
+-rw-r--r--    1 dsiegfriedt  1825200333   1.0K Aug 16 20:41 ReadMe.rtf
+drwxr-xr-x  544 dsiegfriedt  1825200333    18K Aug 16 20:41 av-data
+drwxr-xr-x    6 dsiegfriedt  1825200333   204B Aug 16 20:38 rms
+drwxr-xr-x    3 dsiegfriedt  1825200333   102B Aug 16 20:41 savi.bundle
+-rw-r--r--    1 root         1825200333   508B Oct  5 12:31 updateconfig.plist
+
+dsiegfriedt@tomcat:~/Desktop/ESCOSX/Sophos Installer.app/Contents/MacOS $ cat ../../../Sophos\ Installer\ Components/updateconfig.plist 
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PrimaryServerPassword</key>
+	<string>28322f3739a089a8e69e048e660ae00a</string>
+	<key>PrimaryServerType</key>
+	<integer>2</integer>
+	<key>PrimaryServerURL</key>
+	<string>smb://10.106.230.131/SophosUpdate/CIDS/S000/ESCOSX</string>
+	<key>PrimaryServerUserName</key>
+	<string>d58d032613f165e96fbca39bccd8cf89</string>
+</dict>
+</plist>
+
+dsiegfriedt@tomcat:~/Desktop/ESCOSX $ pwd
+/Users/dsiegfriedt/Desktop/ESCOSX
+
+dsiegfriedt@tomcat:~/Desktop $ sudo pkgbuild --root ESCOSX --identifier com.disneytoonstudios.dts-sophos.mac --ownership preserve --version 1.0 dts-sophos.mac.pkg
+Password:
+pkgbuild: Inferring bundle components from contents of ESCOSX
+pkgbuild: Adding component at Sophos Installer.app
+pkgbuild: Adding component at Sophos Installer Components/savi.bundle
+pkgbuild: Wrote package to dts-sophos.mac.pkg
+
+@@@ FAIL.... ownership was wrong in the ESCOSX dir.
+cd /Users/dsiegfriedt/Desktop/ESCOSX
+sudo chown -R root:wheel ./*
+
+@@@ installed in the wrong location also.  
+
+@@@ lets try making a package out of this
+cp /disney/home/dsiegfriedt/JOBS/DISNEYTS/SOPHOS/MAC-Sophos-Installer.app ~/Desktop
+
+@@@ found LOTS of cruft from sophos
+
+/Library/Logs/SophosDiag*
+
+@@@ on the train......
+
+5Oct17  make a sops.pkg
+
+dsiegfriedt@tomcat:~/Desktop $ sudo pkgbuild --root Library --identifier com.disneytoonstudios.dts-sophos.mac --ownership preserve --version 1.0 dts-sophos.mac.pkg
+
+sudo pkgutil --payload-files dts-sophos.mac.pkg  | wc -l
+     975
+
+Need pre/post install scripts moved to ~/Desktop/Library/ . . . 
+then rebuild
+
+test install
+
+**********************************************************************
+5Oct17   See NOTES-DTS
+
+**********************************************************************
+6Oct17  TESTING
+
+1) cp -r ~/Desktop/SUDO /tmp
+   cd /tmp/SUDO   ### this step changes the install location of the package.  Preventing overwriting existing files.
+   mv Private tmp
+   cd ..
+   pkgbuild --root SUDO --identifier com.disneytoonstudios.dts-sudoers --ownership preserve --version 1.0 dts-sudoers.pkg
+   double click on dts-sudoers.pkg on the mac adn follow install instructions
+   ll /tmp/private
+      total 0
+      drwxrwxr-x   3 dsiegfriedt  wheel   102B Oct  5 19:31 .
+      drwxrwxrwt  20 root         wheel   680B Oct  6 09:20 ..
+      drwxrwxr-x   3 dsiegfriedt  wheel   102B Oct  5 19:31 etc
+      dsiegfriedt@tomcat:/tmp $ ll /tmp/private/etc/
+      total 8
+      drwxrwxr-x  3 dsiegfriedt  wheel   102B Oct  5 19:31 .
+      drwxrwxr-x  3 dsiegfriedt  wheel   102B Oct  5 19:31 ..
+      -r--r-----  1 root         wheel   3.0K Oct  5 19:31 sudoers
+### checksum both file
+   sudo md5 /tmp/private/etc/sudoers
+   sudo md5 /private/etc/sudoers
+
+WE HAVE A MATCH.....
+
+2) cp -r ~Desktop/Library /tmp
+   cd /tmp/Library
+   mkdir tmp
+   mv Application Support tmp   ### this step changes the install location of the package.  Preventing overwriting existing files.
+   cd ..
+   sudo pkgbuild --root Library --identifier com.disneytoonstudios.dts-sophos.mac --ownership preserve --version 1.0 dts-sophos.mac.pkg
+
+pkgutil --payload-files dts-sophos.mac.pkg | wc -l
+     978
+
+
+
+**********************************************************************
+6Oct17  install via command line
+
+@@@ trying to install a package as root but I had reveerted sudoers to NOT contain me.   DOH
+
+as root:
+/usr/sbin/installer -pkg dts-sudoers.pkg -target /
+{SNIP}
+installed correctly
+
+@@@ had to install on an infected mac    TRIAL BY FIRE
+
+https://stackoverflow.com/questions/28315383/how-to-silently-install-a-pkg-file-in-mac-os-x
+
+ssh dts2886 and become root
+
+echo "<ladmin passwd>" | installer -allowUntrusted -verboseR -pkg /disney/home/dsiegfriedt/JOBS/DISNEYTS/SOPHOS/dts-sophos.mac.pkg -target /
+{SNIP}
+installed correctly
+
+@@@ Joel said the problem just "stopped" (shrug/yay)
+
+**********************************************************************
+8Feb18
+
+installed iogen driver for my USB to serial adapter with steps above
+
+@@@ driver downloaded from:
+https://www.iogear.com/support/dm/driver/GUC232A
+
+**********************************************************************
+28Mar18  attach serial adapter to a screen
+https://supportforums.cisco.com/t5/getting-started-with-lans/how-to-use-a-mac-for-connecting-through-the-console-port/td-p/2392883
+
+ll -tr /dev @@@ look for tty at the bottom  (should appear when you plug in your serial adapter)
+
+screen /dev/ttys001
+
+To Disconnect 
+Enter Ctrl+A followed by Ctrl+\
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+

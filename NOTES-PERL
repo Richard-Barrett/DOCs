@@ -1,0 +1,8 @@
+3jul13  --siggy   time 
+
+use POSIX qw/strftime/;
+
+#my $WHEN=`echo $(date +%d%b%C%y"-"%H%M-%S)`;
+my $WHEN = strftime "%d%h%y-%H%M-%S", localtime;
+
+&&&&&&&&&&&&&&

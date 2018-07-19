@@ -1,0 +1,487 @@
+﻿Q: Name the Seven layers in the OSI Model.
+A: Appication, Presentation, Session, Transport, Network, Data Link, Phyiscal
+&&&&&
+Job Scheduling  (crontab, at)
+&&&&&
+Difference between hard link & softlink?
+&&&&&
+What can you do with a "soft" link that can't be done with a "hard" link?
+&&&&&
+you have a file (1)... you create a "hard" link to it (2).  rm -f 1..... is 2 still available?
+&&&&&
+
+How to list only the directories inside a directory (ls -l | grep "^d")
+&&&&&
+How to recover a system whose root password has lost? (boot to single user mode)
+&&&&&
+How do you boot to single user mode? (init 1, stop grub and add "1")
+&&&&&
+What is a daemon?
+&&&&&
+What is diff between grep & find? (grep finds INSIDE the file...find looks for filenames)
+&&&&&
+What is a superblock?
+&&&&&
+What is the big difference between ext2 and ext3? (journeling)
+&&&&&
+Can not write a file .... you have room (df -h) what is next?
+&&&&&
+What happens when we create a file system? 
+&&&&&
+Q: What is stored in an inode?
+A: The inode contains information about the file size, file location,
+   ownership, etc. Plus, it contains a pointer to the first few blocks of data
+   in the file.
+&&&&&
+What happens to a child process that dies and has no parent process to wait for it and what 
+is bad about this?
+&&&&&
+How do you find these processes?
+&&&&&
+Can you stop/kill these processes?
+&&&&&
+How do you find the version of Linux running  (uname, cat /etc/issue, cat /etc/redhat-release).
+&&&&&
+How do you setup multiple IP address on one NIC
+> "ifcfg-eth0:1" with the new IP address information in it.
+&&&&&
+How many and what are the fields of the password file? (7 login:passwd:UID:GID:GCOS:DIR:shell)
+&&&&&
+What are the perms of /etc/passwd and why? (644)
+&&&&&
+What are the perms of /tmp and why? (1777)
+&&&&&
+What is in /etc/shadow and why? perms? (400)
+&&&&&
+What do you run at home?
+&&&&&
+What are you interested in?
+&&&&&
+What editor do you use?  (hint: a wrong answer here will heavily influence the interview...  
+what is on ALL Unix systems? ;)
+&&&&&
+What UID does root have across an NFS mount by default (-2 (65534 on 16 bit numbers))?
+&&&&&
+What command will tell you have much memory a system has (free -m (mega) or -g (giga))
+&&&&&
+How do you get a system to single user mode? (init 1...)
+&&&&&
+What is wrong with SUID scripts?
+&&&&&
+Can you write a command to search for SUID files? (hint:  man 2 chmod)
+&&&&&
+Boot process (startup scripts) Systen V vs BSD
+How does the boot process (init levels) work on Linux (System V)? 
+How is it different from Solaris (BSD)?
+&&&&&
+Common runlevel values on RHEL? (3,5)
+&&&&&
+How can you check the current runlevel? (who -r, runlevel)
+&&&&&
+Difference between "logical path name" and a "relative path name"?
+&&&&&
+What does $? give you?
+&&&&&
+List of files contained in an RPM (rpm -ql <rpmname>)
+&&&&&
+How do you install a RPM? (-ihv)
+&&&&&
+Can you expand RTFM? BOFH? 
+&&&&&
+What to do, if the newly build kernel does not boot? (single user edit grub.conf)
+&&&&&
+NOTES 1) do you take them b) could the process be followed?
+&&&&&
+Communication
+&&&&&
+Shell
+&&&&&
+3 default descriptors (stdin, stdout, stderror)
+&&&&&
+Add passwd to GRUB
+&&&&&
+Add passwd to single user mode (edit  /etc/rc1.d/S99single and add "exec sbin/sulogin" before "exec init -t1 S"
+&&&&&
+Problem with using compression for backups?
+&&&&&
+umask (binary subtraction to get 755 your umask S/B 022)  
+&&&&&
+of Ping, HTTP, Streaming video 
+match to 
+ICMP, TCP, and UDP
+
+ping		= ICMP
+http		= TCP
+streaming video = UDP
+&&&&&
+What signal does kill send as default? (1)
+&&&&&
+Given a RAID array (of any size).  What should you consider before creating a filesystem?
+&&&&&
+What are the RAID levels
+        RAID 0 (block-level striping without parity or mirroring)
+        RAID 1 (mirroring without parity or striping)
+        RAID 2 (bit-level striping with dedicated Hamming-code parity)
+        RAID 3 (byte-level striping with dedicated parity)
+        RAID 4 (block-level striping with dedicated parity) 
+        RAID 5 (block-level striping with distributed parity) 
+        RAID 6 (block-level striping with double distributed parity)
+	RAID 0+1: striped sets in a mirrored set
+    	RAID 1+0 is that RAID 0+1 creates a second striped set to mirror a primary striped set.
+    	RAID 1+0: (a.k.a. RAID 10) mirrored sets in a striped set
+	RAID 5+1: mirrored striped set with distributed parity
+&&&&&
+Can you tell me how the TCP (3 way) handshake works to establish a connection?
+
+SYN =>
+SYN-ACK <=
+ACK =>
+
+teardown
+
+FIN =>
+FIN-ACK <=
+FIN =>
+FIN =>  (if app doesn't wait for this you have a "half-open socket"  netstat will show a 
+TCPTimeWait (or something like that))
+&&&&&
+How/where do you disable root login
+A: in /etc/ssh/sshd_config uncomment PermitRootLogin no
+&&&&&
+IP/CIDR 	Δ to last IP addr 	Mask			Hosts (*) 		Class
+a.b.c.d/32 	+0.0.0.0 			255.255.255.255 	1 			1/256 C
+a.b.c.d/31 	+0.0.0.1 			255.255.255.254 	2 			1/128 C
+a.b.c.d/30 	+0.0.0.3 			255.255.255.252 	4 			1/64 C
+a.b.c.d/29 	+0.0.0.7 			255.255.255.248 	8 			1/32 C
+a.b.c.d/28 	+0.0.0.15 			255.255.255.240 	16 			1/16 C
+a.b.c.d/27 	+0.0.0.31 			255.255.255.224 	32 			1/8 C 
+a.b.c.d/26 	+0.0.0.63 			255.255.255.192 	64 			1/4 C 
+a.b.c.d/25 	+0.0.0.127 			255.255.255.128 	128 			1/2 C 
+a.b.c.0/24 	+0.0.0.255 			255.255.255.000 	256 			1 C
+a.b.c.0/23 	+0.0.1.255 			255.255.254.000 	512 			2 C
+a.b.c.0/22 	+0.0.3.255 			255.255.252.000 	1,024 		4 C
+a.b.c.0/21 	+0.0.7.255 			255.255.248.000 	2,048 		8 C
+a.b.c.0/20 	+0.0.15.255 		255.255.240.000 	4,096 		16 C
+a.b.c.0/19 	+0.0.31.255 		255.255.224.000 	8,192 		32 C
+a.b.c.0/18 	+0.0.63.255 		255.255.192.000 	16,384 		64 C
+a.b.c.0/17 	+0.0.127.255 		255.255.128.000 	32,768 		128 C
+a.b.0.0/16 	+0.0.255.255 		255.255.000.000 	65,536 		256 C = 1 B
+a.b.0.0/15 	+0.1.255.255 		255.254.000.000 	131,072 		2 B
+a.b.0.0/14 	+0.3.255.255 		255.252.000.000 	262,144 		4 B
+a.b.0.0/13 	+0.7.255.255 		255.248.000.000 	524,288 		8 B
+a.b.0.0/12 	+0.15.255.255 		255.240.000.000 	1,048,576 		16 B
+a.b.0.0/11 	+0.31.255.255 		255.224.000.000 	2,097,152 		32 B
+a.b.0.0/10 	+0.63.255.255 		255.192.000.000 	4,194,304 		64 B
+a.b.0.0/9 	+0.127.255.255 		255.128.000.000 	8,388,608 		128 B
+a.0.0.0/8 	+0.255.255.255 		255.000.000.000 	16,777,216 		256 B = 1 A
+a.0.0.0/7 	+1.255.255.255 		254.000.000.000 	33,554,432 		2 A
+a.0.0.0/6 	+3.255.255.255 		252.000.000.000 	67,108,864 		4 A
+a.0.0.0/5 	+7.255.255.255 		248.000.000.000 	134,217,728 	8 A
+a.0.0.0/4 	+15.255.255.255 		240.000.000.000 	268,435,456 	16 A
+a.0.0.0/3 	+31.255.255.255 		224.000.000.000 	536,870,912 	32 A
+a.0.0.0/2 	+63.255.255.255 		192.000.000.000 	1,073,741,824 	64 A
+a.0.0.0/1 	+127.255.255.255 		128.000.000.000 	2,147,483,648 	128 A
+0.0.0.0/0 	+255.255.255.255 		000.000.000.000 	4,294,967,296 	256 A
+
+&&&&&
+What happens when you type a URL into your browser?
+
+In an extremely rough and simplified sketch, assuming the simplest possible HTTP request, 
+no proxies and IPv4 (this would work similarly for IPv6-only client, but I have yet to see 
+such workstation):
+
+    1. browser checks cache; if requested object is in cache and is fresh, skip to #9
+    2. browser asks OS for server's IP address
+    3. OS makes a DNS lookup and replies the IP address to the browser
+    4. browser opens a TCP connection to server (this step is much more complex with HTTPS)
+    5. browser sends the HTTP request through TCP connection
+    6. browser receives HTTP response and may close the TCP connection, or reuse it for 
+       another request
+    7. browser checks if the response is a redirect (3xx result status codes), authorization
+       request (401), error (4xx and 5xx), etc.; these are handled differently from normal 
+       responses (2xx)
+    8. if cache-able, response is stored in cache
+    9. browser decodes response (e.g. if it's gzipped)
+    10. browser determines what to do with response (e.g. is it a HTML page, is it an 
+        image, is it a sound clip?)
+    11. browser renders response, or offers a download dialog for unrecognized types
+
+Again, discussion of each of these points have filled countless pages; take this as a 
+starting point. Also, there are many other things happening in parallel to this 
+(processing typed-in address, adding page to browser history, displaying progress to user, 
+notifying plugins and extensions, rendering the page while it's downloading, pipelining, 
+connection tracking for keep-alive, etc.).
+&&&&&
+What happens when you send/receive and email?
+
+http://email.about.com/cs/standards/a/smtp.htm
+http://luxsci.com/extranet/articles/email.html
+
+Simple Mail Transfer Protocol (SMTP)
+Your email program becomes an SMTP client, connects to port 25
+
+&&&&&
+Can you write a script to find the next highest UID (in the passwd file)?
+
+BIGNUM=cat /etc/passwd | awk -F: '{print $4}' | sort -n
+NEXTUID=$BIGNUM+1
+&&&&&
+for SGI.... what is the "death grip" (Ctl-Alt-F12-"+"(on number pad))
+&&&&&
+What does the load in "top" represent?
+&&&&&
+What does PAM stand for? (Pluggable Authentication Module)
+&&&&&
+How does ARP work? (MAC to IP translation)
+&&&&&
+What questions do you ask when interviewing a SA?
+&&&&&
+Why are you looking?
+&&&&&
+How would you rate yourself as a SA?
+&&&&&
+ldd linked libraries
+&&&&&
+vmstat (mem&cpu)
+&&&&&
+sar => sa
+&&&&&
+Explain from power on what happens till you see a login screen.
+&&&&&
+NOSQL claim to fame (non-relational, open source, schema free, key=value pairs)
+&&&&&
+What is the difference between symetric vs asymetric encryption?
+(symetric=sercret key, asysmetric=public key)
+&&&&&
+What are some default ports / where would you find them? (/etc/services)
+DNS 42
+FTP 21
+SSH 22
+SNMP 161
+HTTPS 443
+HTTP 80
+LDAP 398
+telnet 23
+dhcpserv 547
+tftp 69
+dhcpclient 546
+VNC 5900
+&&&&&
+How do you find what is going on? (top)
+&&&&&
+If "top" were broken what tools would you use to see the state of a machine?
+     free, iostat, vmstat,df
+&&&&&
+How do you remove a file with a "-" as the name? (rm -f --, rm ./-)
+&&&&&
+Given crontab -l gives you 15 * * * 1,3,5 cow
+When does cow run?  (15min past every hour Mon, Wed, Fri)
+&&&&&
+NETWORK
+  layer1 = hub
+  layer2 = bridge
+  layer3 = router
+  layer4 = NET-load balancer
+&&&&&
+umount fails... what tools do you use to find out why? (fuser, lsof)
+&&&&&
+Manually transfer a DNS zone file? (dig @server axfr)
+&&&&&
+Name some types of DNS records (A, PTR, CNAME, MX, SOA)
+&&&&&
+What is used to comment something in a DNS record? (;)  why? (it is C)
+&&&&&
+How do you find what is bound to port 9000?  (netstat --numeric-ports)
+&&&&&
+Name the fields of the SOA line in a DNS record. (S/N, refresh, retry, expire, minimum)
+   what is the S/N used for? (version control)
+&&&&&
+MYSQL
+How do you show someone's permissions? (show grants;)
+&&&&&
+Do you know what su does/stands for?  (substitute user)
+&&&&&
+What are the steps to add an new drive to a machine? (enable in BIOS, create mount point, create partition, mkfs, mount, fstab)
+&&&&&
+How do you get the output to your script to screen AND to a file? (tee)
+&&&&&
+What file do you edit to change the default runlevel? (/etc/inittab)
+&&&&&
+How do you get "rm" to confirm the removal of a file? (rm -i)
+&&&&&
+How do you find which modules are loaded?
+&&&&&
+Explain what a module is
+&&&&&
+What do you call a kernel with all necessary modules compiled in? (monolithic)
+&&&&&
+How do you bond 2 ethernet ports together?
+&&&&&
+How do you build an RPM?
+&&&&&
+What is boot order?
+&&&&&
+How do find the stop/start order for say.....autofs?
+&&&&&
+How would you get a script to start at boot time?
+&&&&&
+Write a script to print a-z in a single column (for i in {a..z} do; echo $i; done)
+&&&&&
+Write a script to find all files accessed in the last 30 days (find / -type f -atime -30)
+&&&&&
+How does traceroute work?
+
+When you execute a traceroute command, your machine sends out 3 UDP packets with a TTL (Time-to-Live) of 1.  
+When those packets reach the next hop router, it will decrease the TTL to 0 and thus reject the packet.  
+It will send an ICMP Time-to-Live Exceeded (Type 11), TTL equal 0 during transit (Code 0) back to your 
+machine - with a source address of itself, therefore you now know the address of the first router in the path.
+etc. etc. etc.
+&&&&&
+write a script/command the searches for zero length files.   Optionally list  the files
+      (find / -type f -size 0 [-ls])
+&&&&&
+regex to find empty lines/lines with white space
+      ( /^$/ OR /\s+$/ )
+&&&&&
+What is a sparse file sysetem? (meta data for empty blocks)
+&&&&&
+What is a squashfs? (compressed, read only)
+&&&&&
+How would you change the root passwd on a machine that you don't know the root passwd?
+&&&&&
+why are manhole covers round?
+&&&&&
+How many months have 28 days?
+&&&&&
+A man builds a house rectangular in shape. All sides have southern exposure.
+A big bear walks by. What color is the bear? Why?
+&&&&&
+If there are 3 apples and you take away two, how many do you have?
+&&&&&
+If you have only one match and you walked into a room where was an
+oil burner, a kerosene lamp, and a wood burning stove, which one would you light first?
+&&&&&
+A clerk in the butcher shop is 5'10'' tall. What does he weigh?
+&&&&&
+What would be the next 3 letters in the pattern?     O T T F F S S E__ __ __ 
+&&&&&
+What is the answer to Life, the Universe, and Everything?
+&&&&&
+In baseball, how many outs in an inning (game)? 6,54
+&&&&&
+“You are outside a room. Inside the room there are two light bulbs. One  light bulb is on all the time, the other light bulb only turns on when  you open the door. How do you determine which light 
+bulb is on all the  time?” 
+&&&&&
+A word... 
+the first 2 letters are masculine
+the first 3 letters are feminine
+the first 4 letters are masculine
+and 
+the whole word is feminine
+&&&&&
+What has 4 letters
+Sometimes has 9 letters,
+but never has 5 letters.
+&&&&&
+Please discuss the pros and cons of using communication infrastructure utilizing RFC 1149 specifications.
+&&&&&
+What do you get when you type "wget http://www.google.com"?
+&&&&&
+What is myip.org?
+&&&&&
+if I knew nothing about computers, explaine
+a filesystem
+a superblock
+an inode
+&&&&&
+Tell me the top 5 SA best practices for server administration
+    1. keep it patched
+    2. keep it secure
+    3. keep an eye on it (monitor)
+    4. init 3
+    5. limit logins
+    6. limit what is installed
+&&&&&
+How does SSL work?
+    browser request (https://)
+    server sends public key and certificate
+    browser checks cert
+    browser uses public key to create and transfer a symetric key
+    server decrypts sysmetric key and uses it to encrypt URL/http data
+    browser decryts URL/http data with symetric key
+&&&&&
+Q: - Can we change files parameters placed under /proc directory?
+Yes
+To change the value of a virtual file, use the echo command and a greater than symbol (>) to redirect the new value to the file. For example, to change the hostname on the fly, type:
+echo http://www.nextstep4it.com > /proc/sys/kernel/hostname 
+&&&&&
+How would you troubleshoot:  (file blah)
+cat blah | grep blorf   doesn't show blorf
+cat blah   shows blorf
+
+How would you fix it?   (iconv)
+&&&&&
+***********************************************
+write a script/cmdline to print out the 10 column on IP addresses, sort them, count them, and 
+report which IP was in the list the most & what the IP was
+***********************************************
+&&&&&
+What happens if you remove /dev? How can you restore it? (/etc/init.d/udev restart)
+&&&&&
+How would you replace the occurrence of string1 with string2 in all the files in /etc?
+    (for i in 'ls /etc' do, sed -i s/string1/string2/ $i; done)
+&&&&&
+the chmod command gets its execute bit turned off. How can you fix it? 
+    (/usr/bin/setfacl --set u::rwx,g::r-x,o::r-x /bin/chmod)
+    (/lib/ld-linux.so.2 /bin/chmod +x /bin/chmod)
+    (/usr/bin/perl -e 'chmod 0755, qw(/bin/chmod)')
+&&&&&
+Explain how DHCP works.  Power a machine on and go from there.
+&&&&&
+Files deleted but size doesn't reflect change....
+(sudo lsof | grep "(deleted)$" | sed -re 's/^\S+\s+(\S+)\s+\S+\s+([0-9]+).*/\1\/fd\/\2/' | while read file; do sudo bash -c ": > /proc/$file"; done)
+
+Can also be a long running process (check lsof)
+
+&&&&&
+What is used to modify kernel parameters at runtime? (edit sysctl.conf; sysctl -p)
+&&&&&
+How do you find directory size? (du -sh)
+&&&&&
+if ifconfig didn't work, what could you use? (ip)
+&&&&&
+2x="blah"
+xb="${blorf}" vs xb='${blorf}'
+&&&&&
+you have set the perms of /bin/chmod to 000 how do you get it back to the correct perms? (sudo /lib/*/ld*.so /bin/chmod 755 /bin /bin/chmod)
+&&&&&
+What command do you use to give a logical volume more space?
+&&&&&
+Why would you NOT put the /boot partition in a logical volume?
+&&&&&
+How can you find the date a machine was built (tune2fs -l /dev/root | grep "Filesystem created")
+&&&&&
+VM running on a snapshot..... how do you fix this?
+&&&&&
+How would you zero out a log file whitout stopping the application? (:>filename      cat /dev/null > filename) 
+&&&&&
+Starting apache gives and error..... where do you start troubleshooting?
+	 /var/www/html/favicon.ico
+	 /var/log/httpd/error_log
+	 /etc/httpd/Welcome.conf
+		"Options -Indexes"
+                       ^ 
+&&&&&
+if you use the "-v" flag with grep, what does it do?
+&&&&&
+how would you copy the /etc/hosts file from all machines/VMs to a non-local machine/VM
+    (scp $i:/etc/hosts <IP/homestan>:/tmp/hosts/$i)
+&&&&&
+fizzbuzz
+Fizz buzz is a group word game for children to teach them about division.[1] Players take turns to count incrementally, replacing any number divisible by three with the word "fizz", and any number divisible by five with the word "buzz". (and if it is divisible by 3 and 5 output fizzbuzz)
+&&&&&
+kickstart... how would you create a ks.cfg?
+&&&&&
+http://www.businessinsider.com/the-tricky-interview-question-facebook-uses-to-weed-out-selfish-candidates-2016-6
+Among the questions Parikh said Facebook uses to measure teamwork abilities is: "Can you tell me about four people whose careers you have fundamentally improved?" 
+&&&&&

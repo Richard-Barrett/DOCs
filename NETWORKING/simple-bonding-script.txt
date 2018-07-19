@@ -1,0 +1,74 @@
+#!/bin/sh
+
+#Set GATEWAY
+cat /etc/sysconfig/network | grep GATE > /dev/null 2>&1
+if  [ ! $? -eq 0 ]; then
+GATEW=`netstat -rn | tail -1 | awk '{print $2}'`
+cat >> /etc/sysconfig/network<<EOF
+GATEWAY=$GATEW
+EOF
+fi
+
+#add to the end of /etc/modeprobe.conf
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+cat >> $MOROBEDIR/modprobe.conf<<EOF 
+alias ipv6 net-pf-10
+alias net-pf-10 off
+alias bond0 bonding
+options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=1
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/modprobeFAILED; exit 0; fi
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+COUNT=`ls /etc/sysconfig/network-scripts | grep eth[0-99] | wc -l`
+MODPROBEDIR=/etc
+SN=`hostname -s`
+DN=`dnsdomainname`
+NFSNAME="${SN}.nfs.${DN}"
+
+#Back up the files
+for i in `seq 0 $COUNT`
+do
+mv $WORKINGDIR/ifcfg-eth$i $WORKINGDIR/ORIG-ifcfg-eth$i
+done
+
+# Set up the bonds.
+for i in `seq 0 $COUNT`
+do
+IPADDR$i=`cat /etc/sysconfig/network-scripts/ORIG-ifcfg-eth$i | grep IPADDR`
+NETMASK$i=`cat /etc/sysconfig/network-scripts/ORIG-ifcfg-eth$i | grep NETMASK`
+cat > $WORKINGDIR/ifcfg-bond$i<<EOF
+DEVICE=bond$i
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+$IPADDR
+$NETMASK
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond$iFAILED; exit 0; fi
+done
+
+# Set up the ifcfg-eth?
+for i in `seq 0 $COUNT`
+do
+HWADD$i=`cat /etc/sysconfig/network-scripts/ORIG-ifcfg-eth$i | grep IPADDR`
+DEVICE=eth$i
+cat > $WORKINGDIR/ifcfg-eth$i <<EOF
+DEVICE=$DEVICE
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond$i
+$HWADD$i
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth$iFAILED; exit 0; fi
+done
+
+echo "*****************************************************************************************************"
+echo "*****************************************************************************************************"
+echo " ********** PLEASE review ALL file to make sure they are what you want. *****************************"
+echo " ********** When you are satisfied, /sbin/service network restart. **********************************"
+echo "*****************************************************************************************************"
+echo "*****************************************************************************************************"
+

@@ -1,0 +1,1235 @@
+12Jun15  OT  snmp   (this IP is the Alber battery monitor appliance)
+
+yum -y install net-snmp-devel net-snmp-utils net-snmp
+
+http://www.linuxhomenetworking.com/wiki/index.php/Quick_HOWTO_:_Ch22_:_Monitoring_Server_Performance#.VXsIAINlD0o
+
+Simple Network Management Protocol (SNMP).
+Management Information Base (MIB)
+object identifiers (OIDs)
+structure of management information (SMI)
+
+snmpwalk -mALL -v1 -cpublic 10.130.24.77
+SNMPv2-MIB::sysDescr.0 = STRING: Albercorp BDS/MPM SNMP Agent            
+SNMPv2-MIB::sysObjectID.0 = OID: SNMPv2-SMI::enterprises.21735.1.1.1
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (94668779) 10 days, 22:58:07.79
+SNMPv2-MIB::sysContact.0 = STRING: 
+SNMPv2-MIB::sysName.0 = STRING: 
+SNMPv2-MIB::sysLocation.0 = STRING: 
+SNMPv2-MIB::sysServices.0 = INTEGER: 12
+IF-MIB::ifNumber.0 = INTEGER: 1
+IF-MIB::ifIndex.1 = INTEGER: 1
+IF-MIB::ifDescr.1 = STRING: Network
+IF-MIB::ifType.1 = INTEGER: ethernetCsmacd(6)
+IF-MIB::ifMtu.1 = INTEGER: 1500
+IF-MIB::ifSpeed.1 = Gauge32: 10000000
+IF-MIB::ifPhysAddress.1 = STRING: 0:20:4a:f8:52:f1
+IF-MIB::ifAdminStatus.1 = INTEGER: up(1)
+IF-MIB::ifOperStatus.1 = INTEGER: up(1)
+IF-MIB::ifLastChange.1 = Timeticks: (0) 0:00:00.00
+IF-MIB::ifInOctets.1 = Counter32: 908985906
+IF-MIB::ifInUcastPkts.1 = Counter32: 11288722
+IF-MIB::ifInNUcastPkts.1 = Counter32: 0
+IF-MIB::ifInDiscards.1 = Counter32: 408
+IF-MIB::ifInErrors.1 = Counter32: 0
+IF-MIB::ifInUnknownProtos.1 = Counter32: 0
+IF-MIB::ifOutOctets.1 = Counter32: 1085501
+IF-MIB::ifOutUcastPkts.1 = Counter32: 14799
+IF-MIB::ifOutNUcastPkts.1 = Counter32: 5258
+IF-MIB::ifOutDiscards.1 = Counter32: 0
+IF-MIB::ifOutErrors.1 = Counter32: 0
+IF-MIB::ifOutQLen.1 = Gauge32: 2
+IF-MIB::ifSpecific.1 = OID: ccitt
+IP-MIB::ipForwarding.0 = INTEGER: notForwarding(2)
+IP-MIB::ipDefaultTTL.0 = INTEGER: 31
+IP-MIB::ipInReceives.0 = Counter32: 3121517
+IP-MIB::ipInHdrErrors.0 = Counter32: 0
+IP-MIB::ipInAddrErrors.0 = Counter32: 0
+IP-MIB::ipForwDatagrams.0 = Counter32: 0
+IP-MIB::ipInUnknownProtos.0 = Counter32: 0
+IP-MIB::ipInDiscards.0 = Counter32: 0
+IP-MIB::ipInDelivers.0 = Counter32: 3121523
+IP-MIB::ipOutRequests.0 = Counter32: 0
+IP-MIB::ipOutDiscards.0 = Counter32: 0
+IP-MIB::ipOutNoRoutes.0 = Counter32: 0
+IP-MIB::ipReasmTimeout.0 = INTEGER: 0 seconds
+IP-MIB::ipReasmReqds.0 = Counter32: 0
+IP-MIB::ipReasmOKs.0 = Counter32: 0
+IP-MIB::ipReasmFails.0 = Counter32: 0
+IP-MIB::ipFragOKs.0 = Counter32: 0
+IP-MIB::ipFragFails.0 = Counter32: 0
+IP-MIB::ipFragCreates.0 = Counter32: 0
+IP-MIB::ipAdEntAddr.10.130.24.77 = IpAddress: 10.130.24.77
+IP-MIB::ipAdEntIfIndex.10.130.24.77 = INTEGER: 1
+IP-MIB::ipAdEntNetMask.10.130.24.77 = IpAddress: 255.255.252.0
+IP-MIB::ipAdEntBcastAddr.10.130.24.77 = INTEGER: 1
+IP-MIB::ipAdEntReasmMaxSize.10.130.24.77 = INTEGER: 0
+IP-MIB::icmpInMsgs.0 = Counter32: 134
+IP-MIB::icmpInErrors.0 = Counter32: 0
+IP-MIB::icmpInDestUnreachs.0 = Counter32: 72
+IP-MIB::icmpInTimeExcds.0 = Counter32: 0
+IP-MIB::icmpInParmProbs.0 = Counter32: 0
+IP-MIB::icmpInSrcQuenchs.0 = Counter32: 0
+IP-MIB::icmpInRedirects.0 = Counter32: 0
+IP-MIB::icmpInEchos.0 = Counter32: 61
+IP-MIB::icmpInEchoReps.0 = Counter32: 0
+IP-MIB::icmpInTimestamps.0 = Counter32: 1
+IP-MIB::icmpInTimestampReps.0 = Counter32: 0
+IP-MIB::icmpInAddrMasks.0 = Counter32: 0
+IP-MIB::icmpInAddrMaskReps.0 = Counter32: 0
+IP-MIB::icmpOutMsgs.0 = Counter32: 61
+IP-MIB::icmpOutErrors.0 = Counter32: 0
+IP-MIB::icmpOutDestUnreachs.0 = Counter32: 63
+IP-MIB::icmpOutTimeExcds.0 = Counter32: 0
+IP-MIB::icmpOutParmProbs.0 = Counter32: 0
+IP-MIB::icmpOutSrcQuenchs.0 = Counter32: 0
+IP-MIB::icmpOutRedirects.0 = Counter32: 0
+IP-MIB::icmpOutEchos.0 = Counter32: 0
+IP-MIB::icmpOutEchoReps.0 = Counter32: 61
+IP-MIB::icmpOutTimestamps.0 = Counter32: 0
+IP-MIB::icmpOutTimestampReps.0 = Counter32: 0
+IP-MIB::icmpOutAddrMasks.0 = Counter32: 0
+IP-MIB::icmpOutAddrMaskReps.0 = Counter32: 0
+RFC1213-MIB::udpInDatagrams.0 = Counter32: 17838
+RFC1213-MIB::udpNoPorts.0 = Counter32: 3036508
+RFC1213-MIB::udpInErrors.0 = Counter32: 4294935552
+RFC1213-MIB::udpOutDatagrams.0 = Counter32: 1618
+
+[root@lasysmon tmp]# snmpget -mALL -v1 -cpublic 10.130.24.77 .
+
+[root@lasysmon siggy]# snmpget -mALL -v -cpublic 10.130.24.77 .
+Invalid version specified after -v flag: -cpublic
+USAGE: snmpget [OPTIONS] AGENT OID [OID]...
+
+  Version:  5.3.2.2
+  Web:      http://www.net-snmp.org/
+  Email:    net-snmp-coders@lists.sourceforge.net
+
+OPTIONS:
+  -h, --help		display this help message
+  -H			display configuration file directives understood
+  -v 1|2c|3		specifies SNMP version to use
+  -V, --version		display package version number
+SNMP Version 1 or 2c specific
+  -c COMMUNITY		set the community string
+SNMP Version 3 specific
+  -a PROTOCOL		set authentication protocol (MD5|SHA)
+  -A PASSPHRASE		set authentication protocol pass phrase
+  -e ENGINE-ID		set security engine ID (e.g. 800000020109840301)
+  -E ENGINE-ID		set context engine ID (e.g. 800000020109840301)
+  -l LEVEL		set security level (noAuthNoPriv|authNoPriv|authPriv)
+  -n CONTEXT		set context name (e.g. bridge1)
+  -u USER-NAME		set security name (e.g. bert)
+  -x PROTOCOL		set privacy protocol (DES|AES)
+  -X PASSPHRASE		set privacy protocol pass phrase
+  -Z BOOTS,TIME		set destination engine boots/time
+General communication options
+  -r RETRIES		set the number of retries
+  -t TIMEOUT		set the request timeout (in seconds)
+Debugging
+  -d			dump input/output packets in hexadecimal
+  -D[TOKEN[,...]]	turn on debugging output for the specified TOKENs
+			   (ALL gives extremely verbose debugging output)
+General options
+  -m MIB[:...]		load given list of MIBs (ALL loads everything)
+  -M DIR[:...]		look in given list of directories for MIBs
+  -P MIBOPTS		Toggle various defaults controlling MIB parsing:
+			  u:  allow the use of underlines in MIB symbols
+			  c:  disallow the use of "--" to terminate comments
+			  d:  save the DESCRIPTIONs of the MIB objects
+			  e:  disable errors when MIB symbols conflict
+			  w:  enable warnings when MIB symbols conflict
+			  W:  enable detailed warnings when MIB symbols conflict
+			  R:  replace MIB symbols from latest module
+  -O OUTOPTS		Toggle various defaults controlling output display:
+			  0:  print leading 0 for single-digit hex characters
+			  a:  print all strings in ascii format
+			  b:  do not break OID indexes down
+			  e:  print enums numerically
+			  E:  escape quotes in string indices
+			  f:  print full OIDs on output
+			  n:  print OIDs numerically
+			  q:  quick print for easier parsing
+			  Q:  quick print with equal-signs
+			  s:  print only last symbolic element of OID
+			  S:  print MIB module-id plus last element
+			  t:  print timeticks unparsed as numeric integers
+			  T:  print human-readable text along with hex strings
+			  u:  print OIDs using UCD-style prefix suppression
+			  U:  don't print units
+			  v:  print values only (not OID = value)
+			  x:  print all strings in hex format
+			  X:  extended index format
+  -I INOPTS		Toggle various defaults controlling input parsing:
+			  b:  do best/regex matching to find a MIB node
+			  h:  don't apply DISPLAY-HINTs
+			  r:  do not check values for range/type legality
+			  R:  do random access to OID labels
+			  u:  top-level OIDs must have '.' prefix (UCD-style)
+			  s SUFFIX:  Append all textual OIDs with SUFFIX before parsing
+			  S PREFIX:  Prepend all textual OIDs with PREFIX before parsing
+  -L LOGOPTS		Toggle various defaults controlling logging:
+			  e:           log to standard error
+			  o:           log to standard output
+			  n:           don't log at all
+			  f file:      log to the specified file
+			  s facility:  log to syslog (via the specified facility)
+
+			  (variants)
+			  [EON] pri:   log to standard error, output or /dev/null for level 'pri' and above
+			  [EON] p1-p2: log to standard error, output or /dev/null for levels 'p1' to 'p2'
+			  [FS] pri token:    log to file/syslog for level 'pri' and above
+			  [FS] p1-p2 token:  log to file/syslog for levels 'p1' to 'p2'
+  -C APPOPTS		Set various application specific behaviours:
+			  f:  do not fix errors and retry the request
+
+****************************************************************************************
+From: Okong'o, Othieno
+Sent: Thursday, June 11, 2015 3:07 PM
+To: Siegfriedt, Donald
+Subject: alber snmp
+ 
+RFC1213-MIB::udpOutDatagrams.0 = Counter32: 679
+[root@lasysmon tmp]# snmpget -mALL -v1 -cpublic 10.130.24.77 .
+RFC1213-MIB::sysDescr.0 = STRING: "Albercorp BDS/MPM SNMP Agent            "
+RFC1213-MIB::sysObjectID.0 = OID: ALBERCORP-BATTERY-MONITOR-SMI1::battmon
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (87797760) 10 days, 3:52:57.60
+RFC1213-MIB::sysContact.0 = ""
+RFC1213-MIB::sysName.0 = ""
+RFC1213-MIB::sysLocation.0 = ""
+RFC1213-MIB::sysServices.0 = INTEGER: 12
+RFC1213-MIB::ifNumber.0 = INTEGER: 1
+RFC1213-MIB::ifIndex.1 = INTEGER: 1
+RFC1213-MIB::ifDescr.1 = STRING: "Network"
+RFC1213-MIB::ifType.1 = INTEGER: ethernet-csmacd(6)
+RFC1213-MIB::ifMtu.1 = INTEGER: 1500
+RFC1213-MIB::ifSpeed.1 = Gauge32: 10000000
+RFC1213-MIB::ifPhysAddress.1 = Hex-STRING: 00 20 4A F8 52 F1
+RFC1213-MIB::ifAdminStatus.1 = INTEGER: up(1)
+RFC1213-MIB::ifOperStatus.1 = INTEGER: up(1)
+RFC1213-MIB::ifLastChange.1 = Timeticks: (0) 0:00:00.00
+RFC1213-MIB::ifInOctets.1 = Counter32: 834802498
+RFC1213-MIB::ifInUcastPkts.1 = Counter32: 10396790
+RFC1213-MIB::ifInNUcastPkts.1 = Counter32: 0
+RFC1213-MIB::ifInDiscards.1 = Counter32: 359
+RFC1213-MIB::ifInErrors.1 = Counter32: 0
+RFC1213-MIB::ifInUnknownProtos.1 = Counter32: 0
+RFC1213-MIB::ifOutOctets.1 = Counter32: 986168
+RFC1213-MIB::ifOutUcastPkts.1 = Counter32: 13922
+RFC1213-MIB::ifOutNUcastPkts.1 = Counter32: 4874
+RFC1213-MIB::ifOutDiscards.1 = Counter32: 0
+RFC1213-MIB::ifOutErrors.1 = Counter32: 0
+RFC1213-MIB::ifOutQLen.1 = Gauge32: 2
+RFC1213-MIB::ifSpecific.1 = OID: ccitt
+RFC1213-MIB::ipForwarding.0 = INTEGER: not-forwarding(2)
+RFC1213-MIB::ipDefaultTTL.0 = INTEGER: 31
+RFC1213-MIB::ipInReceives.0 = Counter32: 2808669
+RFC1213-MIB::ipInHdrErrors.0 = Counter32: 0
+RFC1213-MIB::ipInAddrErrors.0 = Counter32: 0
+RFC1213-MIB::ipForwDatagrams.0 = Counter32: 0
+RFC1213-MIB::ipInUnknownProtos.0 = Counter32: 0
+RFC1213-MIB::ipInDiscards.0 = Counter32: 0
+RFC1213-MIB::ipInDelivers.0 = Counter32: 2808675
+RFC1213-MIB::ipOutRequests.0 = Counter32: 0
+RFC1213-MIB::ipOutDiscards.0 = Counter32: 0
+RFC1213-MIB::ipOutNoRoutes.0 = Counter32: 0
+RFC1213-MIB::ipReasmTimeout.0 = INTEGER: 0
+RFC1213-MIB::ipReasmReqds.0 = Counter32: 0
+RFC1213-MIB::ipReasmOKs.0 = Counter32: 0
+RFC1213-MIB::ipReasmFails.0 = Counter32: 0
+RFC1213-MIB::ipFragOKs.0 = Counter32: 0
+RFC1213-MIB::ipFragFails.0 = Counter32: 0
+RFC1213-MIB::ipFragCreates.0 = Counter32: 0
+RFC1213-MIB::ipAdEntAddr.10.130.24.77 = IpAddress: 10.130.24.77
+RFC1213-MIB::ipAdEntIfIndex.10.130.24.77 = INTEGER: 1
+RFC1213-MIB::ipAdEntNetMask.10.130.24.77 = IpAddress: 255.255.252.0
+RFC1213-MIB::ipAdEntBcastAddr.10.130.24.77 = INTEGER: 1
+RFC1213-MIB::ipAdEntReasmMaxSize.10.130.24.77 = INTEGER: 0
+RFC1213-MIB::icmpInMsgs.0 = Counter32: 132
+RFC1213-MIB::icmpInErrors.0 = Counter32: 0
+RFC1213-MIB::icmpInDestUnreachs.0 = Counter32: 72
+RFC1213-MIB::icmpInTimeExcds.0 = Counter32: 0
+RFC1213-MIB::icmpInParmProbs.0 = Counter32: 0
+RFC1213-MIB::icmpInSrcQuenchs.0 = Counter32: 0
+RFC1213-MIB::icmpInRedirects.0 = Counter32: 0
+RFC1213-MIB::icmpInEchos.0 = Counter32: 59
+RFC1213-MIB::icmpInEchoReps.0 = Counter32: 0
+RFC1213-MIB::icmpInTimestamps.0 = Counter32: 1
+RFC1213-MIB::icmpInTimestampReps.0 = Counter32: 0
+RFC1213-MIB::icmpInAddrMasks.0 = Counter32: 0
+RFC1213-MIB::icmpInAddrMaskReps.0 = Counter32: 0
+RFC1213-MIB::icmpOutMsgs.0 = Counter32: 59
+RFC1213-MIB::icmpOutErrors.0 = Counter32: 0
+RFC1213-MIB::icmpOutDestUnreachs.0 = Counter32: 60
+RFC1213-MIB::icmpOutTimeExcds.0 = Counter32: 0
+RFC1213-MIB::icmpOutParmProbs.0 = Counter32: 0
+RFC1213-MIB::icmpOutSrcQuenchs.0 = Counter32: 0
+RFC1213-MIB::icmpOutRedirects.0 = Counter32: 0
+RFC1213-MIB::icmpOutEchos.0 = Counter32: 0
+RFC1213-MIB::icmpOutEchoReps.0 = Counter32: 59
+RFC1213-MIB::icmpOutTimestamps.0 = Counter32: 0
+RFC1213-MIB::icmpOutTimestampReps.0 = Counter32: 0
+RFC1213-MIB::icmpOutAddrMasks.0 = Counter32: 0
+RFC1213-MIB::icmpOutAddrMaskReps.0 = Counter32: 0
+RFC1213-MIB::udpInDatagrams.0 = Counter32: 15808
+RFC1213-MIB::udpNoPorts.0 = Counter32: 2739419
+RFC1213-MIB::udpInErrors.0 = Counter32: 4294935552
+RFC1213-MIB::udpOutDatagrams.0 = Counter32: 764
+ALBERCORP-BATTERY-MONITOR-SMI1::monStringIndex.1 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monStringName.1 = STRING: "100KVA UPS BATTERY "
+ALBERCORP-BATTERY-MONITOR-SMI1::monOverallVoltage.1 = INTEGER: 5378
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1 = INTEGER: 3862
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeCurrent.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monFloatCurrent.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monTimeToGo.1 = INTEGER: 64084
+ALBERCORP-BATTERY-MONITOR-SMI1::monAmpHoursRemaining.1 = INTEGER: 65522
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmStatus.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monCriticalAlarmStatus.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monMaintenanceAlarmStatus.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monResetAlarm.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighCellVoltageAlarmThreshold.1 = INTEGER: 1398
+ALBERCORP-BATTERY-MONITOR-SMI1::monLowCellVoltageAlarmThreshold.1 = INTEGER: 1310
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighCellResistanceAlarmThreshold.1 = INTEGER: 4998
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighIntercellResistanceAlarmThreshold.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighOverallVoltageAlarmThreshold.1 = INTEGER: 5530
+ALBERCORP-BATTERY-MONITOR-SMI1::monLowOverallVoltageAlarmThreshold.1 = INTEGER: 5366
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighFloatCurrentAlarmThreshold.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeLevel.1 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monResistanceTestDateTime.1 = Hex-STRING: 07 DF 05 0F 08 00 01 00
+ALBERCORP-BATTERY-MONITOR-SMI1::monWarningPercentage.1 = INTEGER: 99
+ALBERCORP-BATTERY-MONITOR-SMI1::monStringEntry.23.1 = NULL
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.1 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.10 = INTEGER: 10
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.11 = INTEGER: 11
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.12 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.13 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.14 = INTEGER: 14
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.15 = INTEGER: 15
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.16 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.17 = INTEGER: 17
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.18 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.19 = INTEGER: 19
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.20 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.21 = INTEGER: 21
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.22 = INTEGER: 22
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.23 = INTEGER: 23
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.24 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.25 = INTEGER: 25
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.26 = INTEGER: 26
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.27 = INTEGER: 27
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.28 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.29 = INTEGER: 29
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.30 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.31 = INTEGER: 31
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.32 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.33 = INTEGER: 33
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.34 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.35 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.36 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.37 = INTEGER: 37
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.38 = INTEGER: 38
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.39 = INTEGER: 39
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.40 = INTEGER: 40
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.1 = INTEGER: 1336
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.2 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.3 = INTEGER: 1346
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.4 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.5 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.6 = INTEGER: 1347
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.7 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.8 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.9 = INTEGER: 1339
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.10 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.11 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.12 = INTEGER: 1349
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.13 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.14 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.15 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.16 = INTEGER: 1360
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.17 = INTEGER: 1348
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.18 = INTEGER: 1340
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.19 = INTEGER: 1351
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.20 = INTEGER: 1357
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.21 = INTEGER: 1348
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.22 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.23 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.24 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.25 = INTEGER: 1340
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.26 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.27 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.28 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.29 = INTEGER: 1338
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.30 = INTEGER: 1352
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.31 = INTEGER: 1335
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.32 = INTEGER: 1339
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.33 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.34 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.35 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.36 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.37 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.38 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.39 = INTEGER: 1347
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.40 = INTEGER: 1348
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.10 = INTEGER: 10
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.11 = INTEGER: 11
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.12 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.13 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.14 = INTEGER: 14
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.15 = INTEGER: 15
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.16 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.17 = INTEGER: 17
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.18 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.19 = INTEGER: 19
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.20 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.21 = INTEGER: 21
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.22 = INTEGER: 22
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.23 = INTEGER: 23
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.24 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.25 = INTEGER: 25
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.26 = INTEGER: 26
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.27 = INTEGER: 27
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.28 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.29 = INTEGER: 29
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.30 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.31 = INTEGER: 31
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.32 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.33 = INTEGER: 33
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.34 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.35 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.36 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.37 = INTEGER: 37
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.38 = INTEGER: 38
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.39 = INTEGER: 39
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.40 = INTEGER: 40
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.1 = INTEGER: 3628
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.2 = INTEGER: 3541
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.3 = INTEGER: 3754
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.4 = INTEGER: 3603
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.5 = INTEGER: 3725
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.6 = INTEGER: 3666
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.7 = INTEGER: 3637
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.8 = INTEGER: 3526
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.9 = INTEGER: 3813
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.10 = INTEGER: 3608
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.11 = INTEGER: 3675
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.12 = INTEGER: 3541
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.13 = INTEGER: 3751
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.14 = INTEGER: 3751
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.15 = INTEGER: 3692
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.16 = INTEGER: 3597
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.17 = INTEGER: 3725
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.18 = INTEGER: 3820
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.19 = INTEGER: 3687
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.20 = INTEGER: 3631
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.21 = INTEGER: 3541
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.22 = INTEGER: 3745
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.23 = INTEGER: 3521
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.24 = INTEGER: 3710
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.25 = INTEGER: 3760
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.26 = INTEGER: 3704
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.27 = INTEGER: 3760
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.28 = INTEGER: 3579
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.29 = INTEGER: 3657
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.30 = INTEGER: 3742
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.31 = INTEGER: 3725
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.32 = INTEGER: 3657
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.33 = INTEGER: 3730
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.34 = INTEGER: 3617
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.35 = INTEGER: 3853
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.36 = INTEGER: 3634
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.37 = INTEGER: 3807
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.38 = INTEGER: 3949
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.39 = INTEGER: 3929
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.40 = INTEGER: 3614
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.10 = INTEGER: 10
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.11 = INTEGER: 11
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.12 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.13 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.14 = INTEGER: 14
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.15 = INTEGER: 15
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.16 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.17 = INTEGER: 17
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.18 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.19 = INTEGER: 19
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.20 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.21 = INTEGER: 21
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.22 = INTEGER: 22
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.23 = INTEGER: 23
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.24 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.25 = INTEGER: 25
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.26 = INTEGER: 26
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.27 = INTEGER: 27
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.28 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.29 = INTEGER: 29
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.30 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.31 = INTEGER: 31
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.32 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.33 = INTEGER: 33
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.34 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.35 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.36 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.37 = INTEGER: 37
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.38 = INTEGER: 38
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.39 = INTEGER: 39
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.1 = INTEGER: 284
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.2 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.3 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.4 = INTEGER: 55
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.5 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.6 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.7 = INTEGER: 126
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.8 = INTEGER: 407
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.9 = INTEGER: 78
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.10 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.11 = INTEGER: 137
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.12 = INTEGER: 66
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.13 = INTEGER: 342
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.14 = INTEGER: 72
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.15 = INTEGER: 320
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.16 = INTEGER: 157
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.17 = INTEGER: 189
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.18 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.19 = INTEGER: 330
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.20 = INTEGER: 282
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.21 = INTEGER: 166
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.22 = INTEGER: 379
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.23 = INTEGER: 396
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.24 = INTEGER: 59
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.25 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.26 = INTEGER: 126
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.27 = INTEGER: 133
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.28 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.29 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.30 = INTEGER: 172
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.31 = INTEGER: 285
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.32 = INTEGER: 298
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.33 = INTEGER: 332
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.34 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.35 = INTEGER: 213
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.36 = INTEGER: 72
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.37 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.38 = INTEGER: 239
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.39 = INTEGER: 227
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.1 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.2 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.3 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.4 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.5 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.6 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.7 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.8 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.9 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.1 = INTEGER: 459
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.2 = INTEGER: 459
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.3 = INTEGER: 450
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.4 = INTEGER: 208
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.5 = INTEGER: 457
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.6 = INTEGER: 452
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.7 = INTEGER: 453
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.8 = INTEGER: 449
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.9 = INTEGER: 448
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.1 = INTEGER: 680
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.2 = INTEGER: 690
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.3 = INTEGER: 669
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.4 = INTEGER: 314
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.5 = INTEGER: 690
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.6 = INTEGER: 676
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.7 = INTEGER: 674
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.8 = INTEGER: 669
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.9 = INTEGER: 674
+ALBERCORP-BATTERY-MONITOR-SMI1::monTemperature.1.1 = INTEGER: 78
+ALBERCORP-BATTERY-MONITOR-SMI1::monTemperatureHighAlarmThreshold.1.1 = INTEGER: 84
+ALBERCORP-BATTERY-MONITOR-SMI1::monTemperatureLowAlarmThreshold.1.1 = INTEGER: 68
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmType.1.1 = INTEGER: low-overall-voltage(5)
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmItem.1.1 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmDateTime.1.1 = Hex-STRING: 07 DF 06 0B 0C 23 22 00
+ALBERCORP-BATTERY-MONITOR-SMI1::monLocationName.0 = STRING: "SERVER ROOM"
+ALBERCORP-BATTERY-MONITOR-SMI1::monBatteryName.0 = STRING: "UPS BATTERY"
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertString.0 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertAlarm.0 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertType.0 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertItem.0 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertDateTime.0 = Hex-STRING: 07 DF 06 0B 0C 23 22 00
+End of MIB
+ 
+OID’s of interest:
+ 
+snmpget -mALL -v1 -cpublic 10.130.24.77 .1.3.6.1.4.1.21735.1.1.1.1.1.1.4
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1 = INTEGER: 3862 (in seconds)
+ 
+snmpget -mALL -v1 -cpublic 10.130.24.77 ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1 = INTEGER: 3862
+
+snmpget -mALL -v1 -Ov -cpublic 10.130.24.77 ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1
+INTEGER: 3862
+
+snmpget -mALL -v1 -Oqv -cpublic 10.130.24.77 ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1
+3862
+
+[root@lasysmon tmp]# snmpget -mALL -v1 -cpublic 10.130.24.77 .1.3.6.1.4.1.21735.1.1.1.1.1.1.10
+ALBERCORP-BATTERY-MONITOR-SMI1::monCriticalAlarmStatus.1 = INTEGER: 0
+"0 => No critical alarm occurred
+1 => Critical alarm occured
+Alarm status for entire MPM-100, and
+value will be redundant for strings 1-4"
+
+****************************************************************************************
+12Jul15  --siggy
+
+snmpget -mALL -v1 -cpublic 10.130.24.77 ALBERCORP-BATTERY-MONITOR-SMI1::monTemperature.1.1
+ALBERCORP-BATTERY-MONITOR-SMI1::monTemperature.1.1 = INTEGER: 78
+
+ -Ov flag to snmpget. This tells it to only output the value of the object. 
+
+snmpget -mALL -v1 -Ov -cpublic 10.130.24.77 ALBERCORP-BATTERY-MONITOR-SMI1::monTemperature.1.1 
+INTEGER: 78
+
+  -Oqv just gives you the value of the output object
+
+snmpget -mALL -v1 -Oqv -cpublic 10.130.24.77 ALBERCORP-BATTERY-MONITOR-SMI1::monTemperature.1.1 
+78
+
+****************************************************************************************
+16Jun15  --siggy
+
+[nixmgt@lasysmon mibs]$ pwd
+/usr/share/snmp/mibs
+
+****************************************************************************************
+22Jun15  --siggy  List all OIDs
+
+[root@la1002073d mibs]# snmpwalk -mALL -v1 -cpublic 10.130.24.77 .
+
+RFC1213-MIB::sysDescr.0 = STRING: "Albercorp BDS/MPM SNMP Agent            "
+RFC1213-MIB::sysObjectID.0 = OID: ALBERCORP-BATTERY-MONITOR-SMI1::battmon
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (181119972) 20 days, 23:06:39.72
+RFC1213-MIB::sysContact.0 = ""
+RFC1213-MIB::sysName.0 = ""
+RFC1213-MIB::sysLocation.0 = ""
+RFC1213-MIB::sysServices.0 = INTEGER: 12
+RFC1213-MIB::ifNumber.0 = INTEGER: 1
+RFC1213-MIB::ifIndex.1 = INTEGER: 1
+RFC1213-MIB::ifDescr.1 = STRING: "Network"
+RFC1213-MIB::ifType.1 = INTEGER: ethernet-csmacd(6)
+RFC1213-MIB::ifMtu.1 = INTEGER: 1500
+RFC1213-MIB::ifSpeed.1 = Gauge32: 10000000
+RFC1213-MIB::ifPhysAddress.1 = Hex-STRING: 00 20 4A F8 52 F1 
+RFC1213-MIB::ifAdminStatus.1 = INTEGER: up(1)
+RFC1213-MIB::ifOperStatus.1 = INTEGER: up(1)
+RFC1213-MIB::ifLastChange.1 = Timeticks: (0) 0:00:00.00
+RFC1213-MIB::ifInOctets.1 = Counter32: 1838975614
+RFC1213-MIB::ifInUcastPkts.1 = Counter32: 22660214
+RFC1213-MIB::ifInNUcastPkts.1 = Counter32: 0
+RFC1213-MIB::ifInDiscards.1 = Counter32: 711
+RFC1213-MIB::ifInErrors.1 = Counter32: 0
+RFC1213-MIB::ifInUnknownProtos.1 = Counter32: 0
+RFC1213-MIB::ifOutOctets.1 = Counter32: 1404887
+RFC1213-MIB::ifOutUcastPkts.1 = Counter32: 16079
+RFC1213-MIB::ifOutNUcastPkts.1 = Counter32: 10097
+RFC1213-MIB::ifOutDiscards.1 = Counter32: 0
+RFC1213-MIB::ifOutErrors.1 = Counter32: 0
+RFC1213-MIB::ifOutQLen.1 = Gauge32: 2
+RFC1213-MIB::ifSpecific.1 = OID: ccitt
+RFC1213-MIB::ipForwarding.0 = INTEGER: not-forwarding(2)
+RFC1213-MIB::ipDefaultTTL.0 = INTEGER: 31
+RFC1213-MIB::ipInReceives.0 = Counter32: 6200116
+RFC1213-MIB::ipInHdrErrors.0 = Counter32: 0
+RFC1213-MIB::ipInAddrErrors.0 = Counter32: 0
+RFC1213-MIB::ipForwDatagrams.0 = Counter32: 0
+RFC1213-MIB::ipInUnknownProtos.0 = Counter32: 0
+RFC1213-MIB::ipInDiscards.0 = Counter32: 0
+RFC1213-MIB::ipInDelivers.0 = Counter32: 6200122
+RFC1213-MIB::ipOutRequests.0 = Counter32: 0
+RFC1213-MIB::ipOutDiscards.0 = Counter32: 0
+RFC1213-MIB::ipOutNoRoutes.0 = Counter32: 0
+RFC1213-MIB::ipReasmTimeout.0 = INTEGER: 0
+RFC1213-MIB::ipReasmReqds.0 = Counter32: 0
+RFC1213-MIB::ipReasmOKs.0 = Counter32: 0
+RFC1213-MIB::ipReasmFails.0 = Counter32: 0
+RFC1213-MIB::ipFragOKs.0 = Counter32: 0
+RFC1213-MIB::ipFragFails.0 = Counter32: 0
+RFC1213-MIB::ipFragCreates.0 = Counter32: 0
+RFC1213-MIB::ipAdEntAddr.10.130.24.77 = IpAddress: 10.130.24.77
+RFC1213-MIB::ipAdEntIfIndex.10.130.24.77 = INTEGER: 1
+RFC1213-MIB::ipAdEntNetMask.10.130.24.77 = IpAddress: 255.255.252.0
+RFC1213-MIB::ipAdEntBcastAddr.10.130.24.77 = INTEGER: 1
+RFC1213-MIB::ipAdEntReasmMaxSize.10.130.24.77 = INTEGER: 0
+RFC1213-MIB::icmpInMsgs.0 = Counter32: 169
+RFC1213-MIB::icmpInErrors.0 = Counter32: 0
+RFC1213-MIB::icmpInDestUnreachs.0 = Counter32: 72
+RFC1213-MIB::icmpInTimeExcds.0 = Counter32: 0
+RFC1213-MIB::icmpInParmProbs.0 = Counter32: 0
+RFC1213-MIB::icmpInSrcQuenchs.0 = Counter32: 0
+RFC1213-MIB::icmpInRedirects.0 = Counter32: 0
+RFC1213-MIB::icmpInEchos.0 = Counter32: 96
+RFC1213-MIB::icmpInEchoReps.0 = Counter32: 0
+RFC1213-MIB::icmpInTimestamps.0 = Counter32: 1
+RFC1213-MIB::icmpInTimestampReps.0 = Counter32: 0
+RFC1213-MIB::icmpInAddrMasks.0 = Counter32: 0
+RFC1213-MIB::icmpInAddrMaskReps.0 = Counter32: 0
+RFC1213-MIB::icmpOutMsgs.0 = Counter32: 96
+RFC1213-MIB::icmpOutErrors.0 = Counter32: 0
+RFC1213-MIB::icmpOutDestUnreachs.0 = Counter32: 111
+RFC1213-MIB::icmpOutTimeExcds.0 = Counter32: 0
+RFC1213-MIB::icmpOutParmProbs.0 = Counter32: 0
+RFC1213-MIB::icmpOutSrcQuenchs.0 = Counter32: 0
+RFC1213-MIB::icmpOutRedirects.0 = Counter32: 0
+RFC1213-MIB::icmpOutEchos.0 = Counter32: 0
+RFC1213-MIB::icmpOutEchoReps.0 = Counter32: 96
+RFC1213-MIB::icmpOutTimestamps.0 = Counter32: 0
+RFC1213-MIB::icmpOutTimestampReps.0 = Counter32: 0
+RFC1213-MIB::icmpOutAddrMasks.0 = Counter32: 0
+RFC1213-MIB::icmpOutAddrMaskReps.0 = Counter32: 0
+RFC1213-MIB::udpInDatagrams.0 = Counter32: 33802
+RFC1213-MIB::udpNoPorts.0 = Counter32: 6041663
+RFC1213-MIB::udpInErrors.0 = Counter32: 4294935552
+RFC1213-MIB::udpOutDatagrams.0 = Counter32: 2785
+ALBERCORP-BATTERY-MONITOR-SMI1::monStringIndex.1 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monStringName.1 = STRING: "100KVA UPS BATTERY "
+ALBERCORP-BATTERY-MONITOR-SMI1::monOverallVoltage.1 = INTEGER: 5377
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeTime.1 = INTEGER: 3862
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeCurrent.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monFloatCurrent.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monTimeToGo.1 = INTEGER: 64084
+ALBERCORP-BATTERY-MONITOR-SMI1::monAmpHoursRemaining.1 = INTEGER: 65522
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmStatus.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monCriticalAlarmStatus.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monMaintenanceAlarmStatus.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monResetAlarm.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighCellVoltageAlarmThreshold.1 = INTEGER: 1398
+ALBERCORP-BATTERY-MONITOR-SMI1::monLowCellVoltageAlarmThreshold.1 = INTEGER: 1310
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighCellResistanceAlarmThreshold.1 = INTEGER: 4998
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighIntercellResistanceAlarmThreshold.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighOverallVoltageAlarmThreshold.1 = INTEGER: 5530
+ALBERCORP-BATTERY-MONITOR-SMI1::monLowOverallVoltageAlarmThreshold.1 = INTEGER: 5366
+ALBERCORP-BATTERY-MONITOR-SMI1::monHighFloatCurrentAlarmThreshold.1 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monDischargeLevel.1 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monResistanceTestDateTime.1 = Hex-STRING: 07 DF 06 0F 08 00 00 00 
+ALBERCORP-BATTERY-MONITOR-SMI1::monWarningPercentage.1 = INTEGER: 99
+ALBERCORP-BATTERY-MONITOR-SMI1::monStringEntry.23.1 = NULL
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.1 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.10 = INTEGER: 10
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.11 = INTEGER: 11
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.12 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.13 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.14 = INTEGER: 14
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.15 = INTEGER: 15
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.16 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.17 = INTEGER: 17
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.18 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.19 = INTEGER: 19
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.20 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.21 = INTEGER: 21
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.22 = INTEGER: 22
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.23 = INTEGER: 23
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.24 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.25 = INTEGER: 25
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.26 = INTEGER: 26
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.27 = INTEGER: 27
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.28 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.29 = INTEGER: 29
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.30 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.31 = INTEGER: 31
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.32 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.33 = INTEGER: 33
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.34 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.35 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.36 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.37 = INTEGER: 37
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.38 = INTEGER: 38
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.39 = INTEGER: 39
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltageIndex.1.40 = INTEGER: 40
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.1 = INTEGER: 1342
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.2 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.3 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.4 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.5 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.6 = INTEGER: 1347
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.7 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.8 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.9 = INTEGER: 1338
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.10 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.11 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.12 = INTEGER: 1347
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.13 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.14 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.15 = INTEGER: 1342
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.16 = INTEGER: 1363
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.17 = INTEGER: 1350
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.18 = INTEGER: 1340
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.19 = INTEGER: 1351
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.20 = INTEGER: 1361
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.21 = INTEGER: 1348
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.22 = INTEGER: 1347
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.23 = INTEGER: 1347
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.24 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.25 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.26 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.27 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.28 = INTEGER: 1342
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.29 = INTEGER: 1336
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.30 = INTEGER: 1348
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.31 = INTEGER: 1334
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.32 = INTEGER: 1339
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.33 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.34 = INTEGER: 1344
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.35 = INTEGER: 1342
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.36 = INTEGER: 1345
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.37 = INTEGER: 1343
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.38 = INTEGER: 1339
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.39 = INTEGER: 1341
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellVoltage.1.40 = INTEGER: 1338
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.10 = INTEGER: 10
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.11 = INTEGER: 11
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.12 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.13 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.14 = INTEGER: 14
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.15 = INTEGER: 15
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.16 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.17 = INTEGER: 17
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.18 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.19 = INTEGER: 19
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.20 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.21 = INTEGER: 21
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.22 = INTEGER: 22
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.23 = INTEGER: 23
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.24 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.25 = INTEGER: 25
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.26 = INTEGER: 26
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.27 = INTEGER: 27
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.28 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.29 = INTEGER: 29
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.30 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.31 = INTEGER: 31
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.32 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.33 = INTEGER: 33
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.34 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.35 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.36 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.37 = INTEGER: 37
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.38 = INTEGER: 38
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.39 = INTEGER: 39
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistanceIndex.1.40 = INTEGER: 40
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.1 = INTEGER: 3646
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.2 = INTEGER: 3657
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.3 = INTEGER: 3774
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.4 = INTEGER: 3660
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.5 = INTEGER: 3832
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.6 = INTEGER: 3687
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.7 = INTEGER: 3576
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.8 = INTEGER: 3570
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.9 = INTEGER: 3949
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.10 = INTEGER: 3666
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.11 = INTEGER: 3666
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.12 = INTEGER: 3611
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.13 = INTEGER: 3829
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.14 = INTEGER: 3870
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.15 = INTEGER: 3698
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.16 = INTEGER: 3663
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.17 = INTEGER: 3820
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.18 = INTEGER: 3771
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.19 = INTEGER: 3751
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.20 = INTEGER: 3660
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.21 = INTEGER: 3745
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.22 = INTEGER: 3687
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.23 = INTEGER: 3716
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.24 = INTEGER: 3544
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.25 = INTEGER: 3722
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.26 = INTEGER: 3780
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.27 = INTEGER: 3760
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.28 = INTEGER: 3637
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.29 = INTEGER: 3780
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.30 = INTEGER: 3780
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.31 = INTEGER: 3760
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.32 = INTEGER: 3637
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.33 = INTEGER: 3786
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.34 = INTEGER: 3757
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.35 = INTEGER: 4054
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.36 = INTEGER: 3681
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.37 = INTEGER: 3970
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.38 = INTEGER: 4112
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.39 = INTEGER: 4033
+ALBERCORP-BATTERY-MONITOR-SMI1::monCellResistance.1.40 = INTEGER: 3902
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.10 = INTEGER: 10
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.11 = INTEGER: 11
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.12 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.13 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.14 = INTEGER: 14
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.15 = INTEGER: 15
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.16 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.17 = INTEGER: 17
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.18 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.19 = INTEGER: 19
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.20 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.21 = INTEGER: 21
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.22 = INTEGER: 22
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.23 = INTEGER: 23
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.24 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.25 = INTEGER: 25
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.26 = INTEGER: 26
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.27 = INTEGER: 27
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.28 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.29 = INTEGER: 29
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.30 = INTEGER: 30
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.31 = INTEGER: 31
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.32 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.33 = INTEGER: 33
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.34 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.35 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.36 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.37 = INTEGER: 37
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.38 = INTEGER: 38
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistanceIndex.1.39 = INTEGER: 39
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.1 = INTEGER: 284
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.2 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.3 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.4 = INTEGER: 55
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.5 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.6 = INTEGER: 18
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.7 = INTEGER: 126
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.8 = INTEGER: 407
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.9 = INTEGER: 78
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.10 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.11 = INTEGER: 137
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.12 = INTEGER: 66
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.13 = INTEGER: 342
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.14 = INTEGER: 72
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.15 = INTEGER: 320
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.16 = INTEGER: 157
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.17 = INTEGER: 189
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.18 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.19 = INTEGER: 330
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.20 = INTEGER: 282
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.21 = INTEGER: 166
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.22 = INTEGER: 379
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.23 = INTEGER: 396
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.24 = INTEGER: 59
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.25 = INTEGER: 35
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.26 = INTEGER: 126
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.27 = INTEGER: 133
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.28 = INTEGER: 0
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.29 = INTEGER: 13
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.30 = INTEGER: 172
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.31 = INTEGER: 285
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.32 = INTEGER: 298
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.33 = INTEGER: 332
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.34 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.35 = INTEGER: 213
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.36 = INTEGER: 72
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.37 = INTEGER: 34
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.38 = INTEGER: 239
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntercellResistance.1.39 = INTEGER: 227
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.2 = INTEGER: 2
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.3 = INTEGER: 3
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.4 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.5 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.6 = INTEGER: 6
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.7 = INTEGER: 7
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.8 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceIndex.1.9 = INTEGER: 9
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.1 = INTEGER: 4
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.2 = INTEGER: 8
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.3 = INTEGER: 12
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.4 = INTEGER: 16
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.5 = INTEGER: 20
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.6 = INTEGER: 24
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.7 = INTEGER: 28
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.8 = INTEGER: 32
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierCellNumber.1.9 = INTEGER: 36
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.1 = INTEGER: 458
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.2 = INTEGER: 445
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.3 = INTEGER: 459
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.4 = INTEGER: 213
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.5 = INTEGER: 456
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.6 = INTEGER: 460
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.7 = INTEGER: 454
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.8 = INTEGER: 442
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistance.1.9 = INTEGER: 442
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.1 = INTEGER: 680
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.2 = INTEGER: 690
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.3 = INTEGER: 669
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.4 = INTEGER: 314
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.5 = INTEGER: 690
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.6 = INTEGER: 676
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.7 = INTEGER: 674
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.8 = INTEGER: 669
+ALBERCORP-BATTERY-MONITOR-SMI1::monIntertierResistanceHighAlarmThreshold.1.9 = INTEGER: 674
+ALBERCORP-BATTERY-MONITOR-SMI1::monTemperature.1.1 = INTEGER: 78
+ALBERCORP-BATTERY-MONITOR-SMI1::monTemperatureHighAlarmThreshold.1.1 = INTEGER: 84
+ALBERCORP-BATTERY-MONITOR-SMI1::monTemperatureLowAlarmThreshold.1.1 = INTEGER: 68
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmType.1.1 = INTEGER: low-overall-voltage(5)
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmItem.1.1 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlarmDateTime.1.1 = Hex-STRING: 07 DF 06 15 11 09 2E 00 
+ALBERCORP-BATTERY-MONITOR-SMI1::monLocationName.0 = STRING: "SERVER ROOM"
+ALBERCORP-BATTERY-MONITOR-SMI1::monBatteryName.0 = STRING: "UPS BATTERY"
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertString.0 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertAlarm.0 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertType.0 = INTEGER: 5
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertItem.0 = INTEGER: 1
+ALBERCORP-BATTERY-MONITOR-SMI1::monAlertDateTime.0 = Hex-STRING: 07 DF 06 15 11 09 2E 00 
+End of MIB
+
+****************************************************************************************
+22jun15  --siggy/OT   UPS Mibs installed
+UPS-MIB::upsInputFrequency.1 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsInputFrequency.2 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsInputFrequency.3 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsInputVoltage.1 = INTEGER: 206 RMS Volts
+UPS-MIB::upsInputVoltage.2 = INTEGER: 209 RMS Volts
+UPS-MIB::upsInputVoltage.3 = INTEGER: 207 RMS Volts
+UPS-MIB::upsInputCurrent.1 = INTEGER: 793 0.1 RMS Amp
+UPS-MIB::upsInputCurrent.2 = INTEGER: 830 0.1 RMS Amp
+UPS-MIB::upsInputCurrent.3 = INTEGER: 868 0.1 RMS Amp
+
+UPS-MIB::upsOutputSource.0 = INTEGER: normal(3)
+UPS-MIB::upsOutputFrequency.0 = INTEGER: 600 0.1 Hertz
+UPS-MIB::upsOutputNumLines.0 = INTEGER: 3
+UPS-MIB::upsOutputVoltage.1 = INTEGER: 120 RMS Volts
+UPS-MIB::upsOutputVoltage.2 = INTEGER: 120 RMS Volts
+UPS-MIB::upsOutputVoltage.3 = INTEGER: 120 RMS Volts
+UPS-MIB::upsOutputCurrent.1 = INTEGER: 631 0.1 RMS Amp
+UPS-MIB::upsOutputCurrent.2 = INTEGER: 849 0.1 RMS Amp
+UPS-MIB::upsOutputCurrent.3 = INTEGER: 667 0.1 RMS Amp
+
+LIEBERT-GP-POWER-MIB::lgpPwrBatteryCapacity.0 = INTEGER: 100 percent
+
+UPS-MIB::upsBatteryTemperature.0 = INTEGER: 26 degrees Centigrade
+
+UPS-MIB::upsBypassVoltage.1 = INTEGER: 206 RMS Volts
+UPS-MIB::upsBypassVoltage.2 = INTEGER: 209 RMS Volts
+UPS-MIB::upsBypassVoltage.3 = INTEGER: 207 RMS Volts
+
+-------------------------------------
+
+UPS-MIB::upsAlarmsPresent.0 = Gauge32: 0
+
+-------------------------------------
+UPS-MIB::upsBatteryStatus.0 = INTEGER: batteryNormal(2)
+
+upsBatteryStatus OBJECT-TYPE
+       SYNTAX     INTEGER {
+           unknown(1),
+           batteryNormal(2),
+           batteryLow(3),
+           batteryDepleted(4)
+       }
+
+-------------------------------------
+lgpPwrBatteryChargeStatus OBJECT-TYPE
+    SYNTAX      INTEGER 
+    {
+        fullycharged(1), 
+        notfullycharged(2),
+        charging(3), 
+        discharging(4)
+    }
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The present state of the system's battery charge.
+        A value of 'charging' indicates the batteries are currently charging.
+        A value of 'discharging' indicates the batteries are currently
+        discharging.  A value of 'fullycharged' indicates the batteries are
+        charged to their full capacity.  A value of 'notfullycharged' indicates
+        the battery charge is neither fully charged, charging or discharging."
+    ::= { lgpPwrBattery 14 }
+-------------------------------------
+
+UPS-MIB::upsOutputSource.0 = INTEGER: normal(3)
+
+upsOutputSource OBJECT-TYPE
+       SYNTAX     INTEGER {
+           other(1),
+           none(2),
+           normal(3),
+           bypass(4),
+           battery(5),
+           booster(6),
+           reducer(7)
+       }
+
+-------------------------------------
+UPS-MIB::upsSecondsOnBattery.0 = INTEGER: 0 seconds
+
+upsSecondsOnBattery OBJECT-TYPE
+       SYNTAX     NonNegativeInteger
+       UNITS      "seconds"
+       MAX-ACCESS read-only
+       STATUS     current
+       DESCRIPTION
+               "If the unit is on battery power, the elapsed time
+               since the UPS last switched to battery power, or the
+               time since the network management subsystem was last
+               restarted, whichever is less.  Zero shall be returned
+               if the unit is not on battery power."
+       ::= { upsBattery 2 }
+-------------------------------------
+
+
+
+****************************************************************************************
+20Jul15  --siggy  setting up snmp traps
+
+dsiegfri@la1002073d:~ $ snmpwalk -v 1 localhost -c public system
+
+SNMPv2-MIB::sysDescr.0 = STRING: Linux la1002073d.ri-net.com 2.6.32-431.3.1.el6.x86_64 #1 SMP Fri Jan 3 21:39:27 UTC 2014 x86_64
+SNMPv2-MIB::sysObjectID.0 = OID: NET-SNMP-MIB::netSnmpAgentOIDs.10
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (12834) 0:02:08.34
+SNMPv2-MIB::sysContact.0 = STRING: Root <root@localhost> (configure /etc/snmp/snmp.local.conf)
+SNMPv2-MIB::sysName.0 = STRING: la1002073d.ri-net.com
+SNMPv2-MIB::sysLocation.0 = STRING: Unknown (edit /etc/snmp/snmpd.conf)
+SNMPv2-MIB::sysORLastChange.0 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORID.1 = OID: SNMP-MPD-MIB::snmpMPDMIBObjects.3.1.1
+SNMPv2-MIB::sysORID.2 = OID: SNMP-USER-BASED-SM-MIB::usmMIBCompliance
+SNMPv2-MIB::sysORID.3 = OID: SNMP-FRAMEWORK-MIB::snmpFrameworkMIBCompliance
+SNMPv2-MIB::sysORID.4 = OID: SNMPv2-MIB::snmpMIB
+SNMPv2-MIB::sysORID.5 = OID: TCP-MIB::tcpMIB
+SNMPv2-MIB::sysORID.6 = OID: IP-MIB::ip
+SNMPv2-MIB::sysORID.7 = OID: UDP-MIB::udpMIB
+SNMPv2-MIB::sysORID.8 = OID: SNMP-VIEW-BASED-ACM-MIB::vacmBasicGroup
+SNMPv2-MIB::sysORDescr.1 = STRING: The MIB for Message Processing and Dispatching.
+SNMPv2-MIB::sysORDescr.2 = STRING: The MIB for Message Processing and Dispatching.
+SNMPv2-MIB::sysORDescr.3 = STRING: The SNMP Management Architecture MIB.
+SNMPv2-MIB::sysORDescr.4 = STRING: The MIB module for SNMPv2 entities
+SNMPv2-MIB::sysORDescr.5 = STRING: The MIB module for managing TCP implementations
+SNMPv2-MIB::sysORDescr.6 = STRING: The MIB module for managing IP and ICMP implementations
+SNMPv2-MIB::sysORDescr.7 = STRING: The MIB module for managing UDP implementations
+SNMPv2-MIB::sysORDescr.8 = STRING: View-based Access Control Model for SNMP.
+SNMPv2-MIB::sysORUpTime.1 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORUpTime.2 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORUpTime.3 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORUpTime.4 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORUpTime.5 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORUpTime.6 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORUpTime.7 = Timeticks: (1) 0:00:00.01
+SNMPv2-MIB::sysORUpTime.8 = Timeticks: (1) 0:00:00.01
+
+-----
+
+snmptrap -v 1 -c public 127.0.0.1 .1.3.6.1 localhost 6 17 '' .1.3.6.1 s "Just a test"
+
+-----
+snmpwalk -v2c -c public localhost sysDescr
+SNMPv2-MIB::sysDescr.0 = STRING: Linux la1002073d.ri-net.com 2.6.32-431.3.1.el6.x86_64 #1 SMP Fri Jan 3 21:39:27 UTC 2014 x86_64
+
+-----
+
+
+
+****************************************************************************************
+1Sep15  SNMP trap
+[root@la1002073d mibs]# grep -i trap * | grep battery
+RFC1628_UPS_MIB.MIB:               "The UPS is operating on battery power.  This trap is
+
+[root@lasysmon snmp]# snmpget -mALL -v1 -cpublic 10.130.24.55 upsEstimatedMinutesRemaining.0
+UPS-MIB::upsEstimatedMinutesRemaining.0 = INTEGER: 65535 minutes
+
+[root@lasysmon snmp]# snmpget -mALL -v1 -cpublic 10.130.24.55 upsEstimatedChargeRemaining.0
+UPS-MIB::upsEstimatedChargeRemaining.0 = INTEGER: 100 percent
+
+[root@lasysmon snmp]# snmpget -mALL -v1 -cpublic 10.130.24.55 upsOutputSource.0
+UPS-MIB::upsOutputSource.0 = INTEGER: normal(3)
+#battery = 5
+
+[root@la1002073d mibs]# pwd
+/usr/share/snmp/mibs
+[root@la1002073d mibs]# less RFC1628_UPS_MIB.MIB
+
+  upsTrapOnBattery NOTIFICATION-TYPE
+       OBJECTS { upsEstimatedMinutesRemaining, upsSecondsOnBattery,
+                 upsConfigLowBattTime }
+       STATUS  current
+       DESCRIPTION
+               "The UPS is operating on battery power.  This trap is
+               persistent and is resent at one minute intervals until
+               the UPS either turns off or is no longer running on
+               battery."
+     ::= { upsTraps 1 }
+
+
+
+
+****************************************************************************************
+27May16  --siggy add these lines to /etc/snmp/snmpd.conf
+
+####
+# First, map the community name "public" into a "security name"
+
+#       sec.name  source          community
+com2sec notConfigUser  default       public
+com2sec mynetwork 10.130.24.0/24     public
+com2sec mynetwork 10.130.8.0/24      public
+####
+
+****************************************************************************************
+
+****************************************************************************************
+
+****************************************************************************************
+
+****************************************************************************************
+
+****************************************************************************************
+
+****************************************************************************************
+
+****************************************************************************************
+
+****************************************************************************************
+

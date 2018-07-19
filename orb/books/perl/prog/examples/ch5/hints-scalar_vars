@@ -1,0 +1,1 @@
+package ScalarInstance;sub new {    my $type = shift;    my $self;    $self = shift;    return bless \$self, $type;}package main;$a = ScalarInstance->new( 42 );print "a=$$a\n";

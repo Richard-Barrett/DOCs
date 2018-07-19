@@ -1,0 +1,281 @@
+17mar09  --siggy
+
+
+logvol (optional)
+    Create a logical volume for Logical Volume Management (LVM) with the syntax:
+                  logvol <mntpoint> --vgname=<name> --size=<size> --name=<name><options>
+                
+    The options are as follows:
+    --noformat
+        Use an existing logical volume and do not format it.
+    --useexisting
+        Use an existing logical volume and reformat it.
+    --fstype=
+        Sets the file system type for the logical volume. Valid values are ext2, ext3, swap, and vfat.
+    --fsoptions=
+        Sets the file system type for the logical volume. Valid values are ext2, ext3, swap, and vfat.
+    --bytes-per-inode=
+        Specifies the size of inodes on the filesystem to be made on the logical volume. Not all filesystems support this option, so it is silently ignored for those cases.
+    --grow=
+        Tells the logical volume to grow to fill available space (if any), or up to the maximum size setting.
+    --maxsize=
+        The maximum size in megabytes when the logical volume is set to grow. Specify an integer value here, and do not append the number with MB.
+    --recommended=
+        Determine the size of the logical volume automatically.
+    --percent=
+        Specify the size of the logical volume as a percentage of available space in the volume group.
+    Create the partition first, create the logical volume group, and then create the logical volume. For example:
+                  part pv.01 --size 3000 volgroup myvg pv.01 logvol / --vgname=myvg --size=2000 --name=rootvol
+                
+&&&&&
+
+http://www.bioinformatics.org/pipermail/bioclusters/2008-July/003350.html
+
+&&&&&
+
+http://rhcelinuxguide.wordpress.com/2006/06/03/create-logical-volume-manager-lvm-partitions-using-kickstart/
+
+&&&&&
+
+http://www.tldp.org/HOWTO/LVM-HOWTO/initdisks.html
+
+&&&&&
+
+Solution:
+The following entries are required in ks.cfg file, as per the above requirements:
+
+#Disk partitioning information
+part /boot --fstype ext3 --size=150
+part swap --size=1024
+part pv.01 --size=1 --grow
+volgroup vg_root pv.01
+
+I think if you add an additional pv.?? you add it here.  Makeing it look like this
+
+part pv.?? --size=1 --grow
+volgroup vg_root pv.01 pv.?? (or possibly volgroup vg_root pv.01, pv.??)
+
+logvol  /  --vgname=vg_root  --size=8192  --name=lv_root
+logvol  /var  --vgname=vg_root  --size=4096  --name=lv_var
+logvol  /tmp  --vgname=vg_root  --size=2048  --name=lv_tmp
+logvol  /spare  --vgname=vg_root  --size=1  --grow  --name=lv_spare
+
+&&&&&
+
+>>> If I do BELOW IT WORKS
+>>> clearpart --all --initlabel
+>>> partition /boot --size=1000 --ondisk=sda --asprimary --fstype=ext3
+>>> partition pv.01 --size=22000 --ondisk=sda --Asprimary
+>>> partition pv.02 --size=1 --grow --ondisk=sda --asprimary
+>>> volgroup vg_system pv.01
+>>> volgroup vg_data pv.02
+>>> logvol / --vgname=vg_system --size=2000 --name=lv_root --fstype=ext3
+>>> logvol /swap --vgname=vg_system --size=4000 --name=lv_swap --fstype=swap
+>>> logvol /usr --vgname=vg_system --size=4000 --name=lv_usr --fstype=ext3
+>>> logvol /var --vgname=vg_system --size=2000 --name=lv_var --fstype=ext3
+>>> logvol /var_log --vgname=vg_system --size=2000 --name=lv_var_log
+>>> --fstype=ext3 logvol /var_log_audit --vgname=vg_system --size=2000
+>>> --name=lv_var_log_audit -- fstype=ext3
+>>> logvol /var/tmp --vgname=vg_system --size=2000 --name=lv_var_tmp
+>>> --fstype=ext3 logvol /tmp --vgname=vg_system --size=2000 --name=lv_tmp
+>>> --fstype=ext3 logvol /opt --vgname=vg_system --size=1000 --name=lv_opt
+>>> --fstype=ext3 logvol /home
+>>> logvol /opt/store/virtual_machines --vgname=vg_data
+>>> --name=lv_virtual_machines --fstype=ext3 --size=1 --grow--vgname=vg_data
+>>> --size=10000 --name=lv_home --fstype=ext3
+
+&&&&&
+
+I'm thinking that you have to create pv (per partition) to include on a VG.  Something like
+This NEEDS to be tested!!!!!!!!!!!!!!!!!!!!!!
+
+
+# start from scratch
+clearpart --all
+
+# /boot partition NEEDS to be separate as when booting BIOS does not know about LVs 
+partition /boot --fstype=ext3 --size=200 --ondisk=sda --asprimary
+
+#this will create a partition on sda of 2.2GB
+partition pv.01 --ondisk=sda   
+
+# as one partiton (read that should add as partition NOT whole disk)
+partition pv.02 --size=1000 --ondisk=sdb1 --asprimary  --grow 
+
+# need a swap partition
+part swap --size=2048
+
+# set up first volume group with names and sizes below
+volgroup vg01 pv.01
+
+# set up 2nd volume group with names and sizes below
+volgroup vg02 pv.02
+
+# from standard build
+logvol / --vgname=vg01 --name=root --size=3072
+logvol /home --vgname=vg01 --name=home --size=5120
+logvol /var --vgname=vg01 --name=var --size=2048
+logvol /log --vgname=vg01 --name=log --size=3072
+logvol /tmp --vgname=vg01 --name=tmp --size=10240
+# to extend /usr over 2 disks.  the rest of disk1 partition 7 AND disk 2 partition 1 (the whole disk)
+logvol /usr --vgname=vg02  --name=usr --size=3072 --grow
+logvol /usr1 --vgname=vg02 --name=usr1 --size=1000 --grow
+
+&&&&&
+22Jul13   lvextend
+
+system-config-lvm   # use this to delete sacrificial lv
+vgdisplay	    # to show free space
+lvextend -L+45.36g -r             /dev/VolGroup/lv_data	# to add free space from above to "lv_data"
+	 <Size>    <resize fs>    <which lvm>	   
+vgdisplay   # to show that it worked
+df -h	    # to show all disk space
+
+&&&&&
+23Dec13  --siggy   manual resize of fs after extend
+********
+NOTE:  ALWAYS check to see if your system supports "-r"  AS4 does not.
+********
+if lvextend does not support "-r" you will need to resize the fs by hand
+
+man resize2fs
+example: resize2fs /dev/VolGroup00/LogVol01
+
+&&&&&
+6Jan14  --siggy  pvcreate trick
+https://www.centos.org/docs/5/html/Cluster_Logical_Volume_Manager/mirrorrecover.html
+
+pvcreate /dev/sd[abcdefgh][12]
+
+  creates sda-sdh 1 and 2
+&&&&&
+4Sep14  ookongo
+
+http://www.rootusers.com/how-to-increase-the-size-of-a-linux-lvm-by-expanding-the-virtual-machine-disk/
+
+14Apr16  --siggy
+fdisk -l
+fdisk /dev/sda
+      n
+      p
+      <part number>
+      <CR>
+      <CR>
+      t
+      <part number>
+      8e
+      w
+pvcreate /dev/<partition number>
+
+<vol name> can be found with "vgscan"
+
+vgextend <vol name>  /dev/<partition number> (get vol name from "vgdisplay" labeled VG Name)
+
+[root@vmrollel7 ~]# lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/myvg/disk1 (This shows the volume path needed for below)
+
+[root@vmrollel7 ~]# df -h
+Filesystem                                           Size  Used Avail Use% Mounted on
+/dev/mapper/myvg-root                                 20G  8.1G   12G  42% /  (you will need the "/dev/mapper" part of the path from here)
+
+LV PATH comes from "lvdisplay"
+
+lvextend -r <LV PATH> /dev/<partition number>   
+	 #if "-r" is not supported
+	 resize2fs /dev/<part number>
+
+on 31Oct16 added 49G to vmrollel7iwth steps above and below.....
+
+[root@vmrollel7 ~]# lvextend -L+49g -r /dev/myvg/disk1 /dev/vda3
+  Size of logical volume myvg/disk1 changed from 12.11 GiB (3099 extents) to 61.11 GiB (15643 extents).
+  Logical volume disk1 successfully resized.
+
+df -h before
+/dev/mapper/myvg-disk1                                13G  646M   12G   6% /disk1
+
+
+1Nov16  --siggy
+df -h does not show the new space
+http://stackoverflow.com/questions/26305376/resize2fs-bad-magic-number-in-super-block-while-trying-to-open
+shows that RH no longer uses ext2/3/4 (resize2fs wil not work on xfs) but rather xfs.  You need to use "xfs_growfs" 
+
+[root@vmrollel7 ~]# xfs_growfs /dev/myvg/disk1
+
+df -h  AFTER
+/dev/mapper/myvg-disk1                                62G  647M   61G   2% /disk1
+
+
+&&&&&
+14Apr16  --siggy
+Removing physical volumes from a volume group
+vgreduce my_volume_group /dev/hda1
+	 remember to remove it from fdisk also
+
+&&&&&
+5Dec16  --siggy  show new disk space without rebooting
+
+Detect the new disk space
+
+Once the physical disk has been increased at the hardware level, we need to get into the operating system and create a 
+new partition that makes use of this space to proceed.
+
+Before we can do this we need to check that the new unallocated disk space is detected by the server, you can use “fdisk -l” 
+to list the primary disk. You will most likely see that the disk space is still showing as the same original size, at this 
+point you can either reboot the server and it will detect the changes on boot or you can rescan your devices to avoid rebooting 
+by running the below command. Note you may need to change host0 depending on your setup.
+
+echo "- - -" > /sys/class/scsi_host/host0/scan
+NG
+
+/sys/class/scsi_device/2\:0\:0\:0/device/rescan
+Permission denied (as root)
+
+echo 1 > /sys/class/scsi_device/2\:0\:0\:0/device/rescan
+NG
+	Sending a "1" to /sys/class/block/sdc/device/rescan is telling the SCSI block device to refresh it's information about 
+	where it's ending boundary is (among other things) to give the kernel information about it's updated size. - this is the 
+	right thing to do if you change the size of an existing disk while it's powered on.
+
+
+
+&&&&&
+5Dec16  --siggy  URLs
+
+http://stackoverflow.com/questions/26305376/resize2fs-bad-magic-number-in-super-block-while-trying-to-open
+
+https://www.theo-andreou.org/?p=674
+
+https://www.centos.org/docs/5/html/Cluster_Logical_Volume_Manager/mirrorrecover.html
+
+http://www.rootusers.com/how-to-increase-the-size-of-a-linux-lvm-by-expanding-the-virtual-machine-disk
+
+http://www.bioinformatics.org/pipermail/bioclusters/2008-July/003350.html
+
+http://rhcelinuxguide.wordpress.com/2006/06/03/create-logical-volume-manager-lvm-partitions-using-kickstart/
+
+http://www.tldp.org/HOWTO/LVM-HOWTO/initdisks.html
+
+&&&&&
+8Dec17  shortcuts
+
+pvs		physical
+lvs		logical volumes
+vgs		volume groups
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&

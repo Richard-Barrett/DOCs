@@ -1,0 +1,19 @@
+ssh newcvs2
+
+ /ifs/kickstart/RHEL/5.8:
+  used 327 available 55568560128
+  drwxrwxr-x 4 olokongo support  403 Feb  1 14:28 .
+  drwxrwxr-x 4 lslile   support   42 Nov 29 13:40 ..
+  -r--r--r-- 1 olokongo support  494 Nov 30 13:29 include.common
+  -rw-r--r-- 1 root     support  495 Feb  1 14:20 include.common-interactive
+  -r--r--r-- 1 root     support 1942 Jan 25 16:45 include.packages
+  -r--r--r-- 1 olokongo support 1946 Dec  5 09:32 include.packages-ws
+  -rw-r--r-- 1 root     support  572 Jan 25 17:44 include.part
+  -r--r--r-- 1 olokongo support  141 Nov 29 14:08 include.rootpw
+  -r--r--r-- 1 olokongo support 1626 Dec 18 10:21 ks-nis-i386.cfg
+  -rw-r--r-- 1 root     support 2559 Feb  1 13:30 ks-nis-x86_64.cfg
+  -rw-r--r-- 1 root     support 2572 Feb  1 14:20 ks-nis-x86_64-interactive.cfg
+  -rw-r--r-- 1 root     support 3139 Feb  1 14:15 ks-svn-x86_64.cfg
+  drwxr-xr-x 2 olokongo support  293 Feb  1 14:20 RCS
+  drwxr-xr-x 2 olokongo support   76 Jan 29 14:28 tools
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# this is a place holder for script at home
+
+#should look something like this if the input selected 5
+
+#                        #
+#                       ##
+#                      ###
+#                     ####
+#                    #####
+
+echo "how big of a stairway do you want (enter a number between 1 -99)"
+read big
+

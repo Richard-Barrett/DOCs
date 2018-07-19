@@ -1,0 +1,7 @@
+#! /bin/ksh
+
+#DIR='/usr/home'
+#export DIR	# use export to setenv varable   for csh setenv DIR
+
+echo Showing content of ${DIR:?'DIR must be defined'}
+ls -la $DIR | more

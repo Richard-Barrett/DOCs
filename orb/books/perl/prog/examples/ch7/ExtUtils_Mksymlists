@@ -1,0 +1,1 @@
+use ExtUtils::Mksymlists;Mksymlists({ NAME     => $name ,             DL_FUNCS => { $pkg1 => [$func1, $func2],             DL_VARS  => [$var1, $var2, $var3], $pkg2 => [$func3] });*****DL_FUNCS => {     Homer::Iliad   => [ qw(trojans greeks) ],     Homer::Odyssey => [ qw(travelers family suitors) ],},

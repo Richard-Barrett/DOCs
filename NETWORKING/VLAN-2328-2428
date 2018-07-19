@@ -1,0 +1,107 @@
+#[root@pl1rxv910 network-scripts]# cat ~dsiegfriedt/Production-DOM0-Media-Core-5.5.txt 
+#!/bin/sh
+
+/sbin/modprobe bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=3
+sleep 5
+
+#Set GATEWAY
+GATEW=`netstat -rn | tail -1 | awk '{print $2}'`
+cat >> /etc/sysconfig/network<<EOF
+GATEWAY=$GATEW
+EOF
+
+#clean up files
+sed /DHCP_HOSTNAME=/d /etc/sysconfig/network
+sed /\:\:1/d /etc/hosts
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+
+#Back up the files
+mv $WORKINGDIR/ifcfg-eth0 $WORKINGDIR/ORIG-eth0
+mv $WORKINGDIR/ifcfg-eth1 $WORKINGDIR/ORIG-eth1
+
+SN=`hostname -s`
+DN=`dnsdomainname`
+FQDN="${SN}.nfs.${DN}"
+
+#Collect info for new files
+IPADDR0=`hostname -i`
+IPADDR1=`host $FQDN | awk '{print $NF}'`
+
+NETMASK0=`ifconfig eth0 | grep Mask | awk -F: '{print $4}'`
+NETMASK1=255.255.252.0
+
+HWADD0=HWADDR=`ifconfig eth0 | grep HWaddr | awk '{print $5}'`
+HWADD1=HWADDR=`ifconfig eth1 | grep HWaddr | awk '{print $5}'`
+
+# Slave eth0 to bond0
+cat > $WORKINGDIR/ifcfg-eth0 <<EOF
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD0
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth0FAILED; exit 0; fi
+
+# Slave eth1 to bond0
+cat > $WORKINGDIR/ifcfg-eth1 <<EOF
+DEVICE=eth1
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD1
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth1FAILED; exit 0; fi
+
+# Set bond0 (admin) and point it to bridge 2328
+cat > $WORKINGDIR/ifcfg-bond0<<EOF
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+#IPADDR=$IPADDR0
+#NETMASK=$NETMASK0
+BRIDGE=br2328
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0FAILED; exit 0; fi
+
+#set bridge 2328 (admin)
+cat > $WORKINGDIR/ifcfg-br2328 <<EOF
+DEVICE=br2328
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+IPADDR=$IPADDR0
+NETMASK=$NETMASK0
+DELAY=0
+STP=off
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br2328FAILED; exit 0; fi
+
+#set up bond.2428 (NFS)
+cat > $WORKINGDIR/ifcfg-bond0.2428<<EOF
+DEVICE=bond0.2428
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=$IPADDR1
+NETMASK=$NETMASK1
+TYPE=Ethernet
+#BONDING_OPTS="mode=4 xmit_hash_policy=layer3+4"
+VLAN=yes
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0.2428FAILED; exit 0; fi
+
+#add to the end of /etc/modeprobe.conf
+MODPROBEDIR=/etc
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+echo "alias     bond0   bonding" >> $MODPROBEDIR/modprobe.conf
+echo "options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=3" >> $MODPROBEDIR/modprobe.conf
+
+cp /etc/resolv.conf /etc/resolv.conf.predhclient
+
+/sbin/service network restart
+
+#blank line

@@ -1,0 +1,124 @@
+7Aug17
+
+mkdir /disney/config/theater
+
+[root@dts3329 theater]# pwd
+/disney/config/theater
+
+[root@dts3329 theater]# ll
+total 5416
+-rw-r--r--. 1 root root     373 Aug  8 12:24 hdmi-pilot-tone.service
+-rw-r--r--. 1 root root    1366 Aug  8 12:23 hdmi-pilot-tone.sh
+-rw-r--r--. 1 root root 4359804 Aug  8 12:18 soundofsilence.wav
+-rw-r--r--. 1 root root     391 Aug  8 12:19 wdas-hdmi-pilot-tone.service-ORIG
+-rw-r--r--. 1 root root    1368 Aug  8 12:19 wdas-hdmi-pilot-tone.sh-ORIG
+
+
+[root@dts3329 theater]# cat hdmi-pilot-tone.service 
+[Unit]
+Description=wdas-hdmi-pilot-tone
+After=display-manager.service pulseaudio.service
+
+[Service]
+Type=forking
+ExecStart=/disney/config/theater/hdmi-pilot-tone.sh start
+ExecStop=/disney/config/theater/hdmi-pilot-tone.sh stop
+ExecReload=/disney/config/theater/hdmi-pilot-tone.sh restart
+Restart=always
+RestartSec=3
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+
+[root@dts3329 theater]# cat hdmi-pilot-tone.service 
+[Unit]
+Description=wdas-hdmi-pilot-tone
+After=display-manager.service pulseaudio.service
+
+[Service]
+Type=forking
+ExecStart=/disney/config/theater/hdmi-pilot-tone.sh start
+ExecStop=/disney/config/theater/hdmi-pilot-tone.sh stop
+ExecReload=/disney/config/theater/hdmi-pilot-tone.sh restart
+Restart=always
+RestartSec=3
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+[root@dts3329 theater]# cat hdmi-pilot-tone.sh
+#!/bin/bash
+
+args=$1
+
+if [[ $args == "" ]]; then
+    exit 0
+fi
+
+if [[ $args == "start" ]]; then
+    logger -s -t $0 "starting the soundofsilence.wav"
+    /usr/bin/mplayer -nogui -nolirc -loop 0 /disney/config/theater/soundofsilence.wav </dev/null >/dev/null 2>&1 &
+    sleep 1
+    pid=`ps -ef | grep soundofsilence.wav | grep -v grep | awk '{print$2}'`
+    echo $pid > /var/run/mplayer.pid
+    exit 0
+fi
+
+if [[ $args == "status" ]]; then
+    if [[ -f /var/run/mplayer.pid ]]; then
+        pid=`cat /var/run/mplayer.pid`
+        echo "mplayer is playing the soundofsilence.wav. PID $pid"
+        ps -ef | grep soundofsilence.wav | grep -v grep
+        exit 0
+    else
+        echo "mplayer: soundofsilence.wav is not running."
+    fi
+    exit 0
+fi
+
+if [[ $args == "stop" ]]; then
+    logger -s -t $0 "stopping the soundofsolience.wav"
+    kill -9 `cat /var/run/mplayer.pid`
+    sleep 1
+    rm -f /var/run/mplayer.pid
+    exit 0
+fi
+
+if [[ $args == "restart" ]]; then
+    logger -s -t $0 "restarting the soundofsolience.wav"
+    kill -9 `cat /var/run/mplayer.pid`
+    sleep 1
+    rm -f /var/run/mplayer.pid
+    /usr/bin/mplayer -nogui -nolirc -loop 0 /disney/config/theater/soundofsilence.wav </dev/null >/dev/null 2>&1 &
+    sleep 1
+    pid=`ps -ef | grep soundofsilence.wav | grep -v grep | awk '{print$2}'`
+    echo $pid > /var/run/mplayer.pid
+    exit 0
+fi
+
+exit 0
+[root@dts3329 theater]# 
+
+
+@@@ need to move the service to superfortress and fightingfalcon
+/etc/systemd/system/hdmi-pilot-tone.service
+
+@@@ also a link needs to be added to:   ###so it starts at reboot
+/etc/systemd/system/multi-user.target.wants
+
+###xinetd.service -> /usr/lib/systemd/system/xinetd.service
+
+
+=====================================
+
+@@@ on the local machine (until I get it into puppet)
+
+cp /disney/config/theater/hdmi-pilot-tone.service /usr/lib/systemd/system
+
+cd /etc/systemd/system/multi-user.target.wants
+
+ln -s /usr/lib/systemd/system/hdmi-pilot-tone.service hdmi-pilot-tone.service
+
+=====================================
+

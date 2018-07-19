@@ -1,0 +1,448 @@
+28Jun17
+@@@ cut and pasted from NOTES-DTS so there may be stuff still there
+
+...
+
+Administration can be done from the command line though the 'ipa' command. 
+ipa help commands
+...
+******************************************************************************************************
+
+12Jan17   Grace "we want to disable idm authentication on servers running in the DMZ ie: aspera. just use local logins instead"
+if you want to ssh to it, su to root then ssh to shipper. The ssh key is in place
+
+btw - here’s how to disable idm authentication on a system
+
+[9:55]
+[root@shipper ~]# ipa-client-install --uninstall
+
+Unenrolling client from IPA server
+Removing Kerberos service principals from /etc/krb5.keytab
+Disabling client Kerberos and LDAP configurations
+Redundant SSSD configuration file /etc/sssd/sssd.conf was moved to /etc/sssd/sssd.conf.deleted
+Restoring client configuration files
+Unconfiguring the NIS domain.
+nscd daemon is not installed, skip configuration
+nslcd daemon is not installed, skip configuration
+Systemwide CA database updated.
+Client uninstall complete.
+The original nsswitch.conf configuration has been restored.
+You may need to restart services or reboot the machine.
+Do you want to reboot the machine? [no]:
+
+28Jun17 trying to get deadline9 (VM) running
+
+@@@ boots int RHEL 7.2 but nothing else :^(
+
+
+******************************************************************************************************
+25Jan17  Grace getting errors while building a RHEL7 machine
+
+gracet [10:59 AM]
+Look at logs /disney/dist/logs/.../.../hostname
+[10:59]
+Install.post.log
+don.siegfriedt [11:20 AM]
+OK... went there and found:
+Running in chroot, ignoring request.
+kinit: Key table file '/root/keytab.idmadmin' not found while getting initial credentials
+ipa: ERROR: did not receive Kerberos credentials
+
+gracet [11:36 AM]
+Does /root/keytab exist?
+[11:37]
+Look at ~gracet/docs/idm/idm_regist
+[11:37]
+On how to force keytab initiation
+[11:37]
+Then reboot
+[11:37]
+Let puppet run
+[11:38]
+It will install all kinds of stuff
+[11:38]
+Other option is to delete the host entry in satellite then build the workstation as if its a brand new machine
+****************************************************************************************
+8MAr17  --siggy  idm01 errors
+
+@@@ LOGS
+/var/log/dirsrv/slapd-DISNEYTOONSTUDIOS-COM
+
+******************************************************************************************************
+((((()))))
+8Mar17  LDAP search
+
+ldapsearch -x 'uid=dsiegfriedt'
+# extended LDIF
+#
+# LDAPv3
+# base <dc=disneytoonstudios,dc=com> (default) with scope subtree
+# filter: uid=dsiegfriedt
+# requesting: ALL
+#
+
+# dsiegfriedt, users, compat, disneytoonstudios.com
+dn: uid=dsiegfriedt,cn=users,cn=compat,dc=disneytoonstudios,dc=com
+ipaAnchorUUID:: OklQQTpkaXNuZXl0b29uc3R1ZGlvcy5jb206M2ViMTliNzAtNzkyMC0xMWU2LW
+ IyODktMzg2M2JiNDQ0MDM0
+cn: Don Siegfriedt
+objectClass: posixAccount
+objectClass: ipaOverrideTarget
+objectClass: top
+gidNumber: 1825200333
+gecos: Don Siegfriedt
+uidNumber: 1825200333
+loginShell: /bin/bash
+homeDirectory: /disney/home/dsiegfriedt
+uid: dsiegfriedt
+
+# dsiegfriedt, users, accounts, disneytoonstudios.com
+dn: uid=dsiegfriedt,cn=users,cn=accounts,dc=disneytoonstudios,dc=com
+memberOf: cn=admins,cn=groups,cn=accounts,dc=disneytoonstudios,dc=com
+memberOf: cn=Replication Administrators,cn=privileges,cn=pbac,dc=disneytoonstu
+ dios,dc=com
+memberOf: cn=Add Replication Agreements,cn=permissions,cn=pbac,dc=disneytoonst
+ udios,dc=com
+memberOf: cn=Modify Replication Agreements,cn=permissions,cn=pbac,dc=disneytoo
+ nstudios,dc=com
+memberOf: cn=Remove Replication Agreements,cn=permissions,cn=pbac,dc=disneytoo
+ nstudios,dc=com
+memberOf: cn=Modify DNA Range,cn=permissions,cn=pbac,dc=disneytoonstudios,dc=c
+ om
+memberOf: cn=Read PassSync Managers Configuration,cn=permissions,cn=pbac,dc=di
+ sneytoonstudios,dc=com
+memberOf: cn=Add Configuration Sub-Entries,cn=permissions,cn=pbac,dc=disneytoo
+ nstudios,dc=com
+memberOf: cn=Modify PassSync Managers Configuration,cn=permissions,cn=pbac,dc=
+ disneytoonstudios,dc=com
+memberOf: cn=Read DNA Range,cn=permissions,cn=pbac,dc=disneytoonstudios,dc=com
+memberOf: cn=Read LDBM Database Configuration,cn=permissions,cn=pbac,dc=disney
+ toonstudios,dc=com
+memberOf: cn=Read Replication Agreements,cn=permissions,cn=pbac,dc=disneytoons
+ tudios,dc=com
+memberOf: cn=Host Enrollment,cn=privileges,cn=pbac,dc=disneytoonstudios,dc=com
+memberOf: cn=System: Add krbPrincipalName to a Host,cn=permissions,cn=pbac,dc=
+ disneytoonstudios,dc=com
+memberOf: cn=System: Enroll a Host,cn=permissions,cn=pbac,dc=disneytoonstudios
+ ,dc=com
+memberOf: cn=System: Manage Host Certificates,cn=permissions,cn=pbac,dc=disney
+ toonstudios,dc=com
+memberOf: cn=System: Manage Host Enrollment Password,cn=permissions,cn=pbac,dc
+ =disneytoonstudios,dc=com
+memberOf: cn=System: Manage Host Keytab,cn=permissions,cn=pbac,dc=disneytoonst
+ udios,dc=com
+memberOf: cn=System: Manage Host Principals,cn=permissions,cn=pbac,dc=disneyto
+ onstudios,dc=com
+memberOf: ipaUniqueID=c9a99760-d894-11e4-9983-3863bb444034,cn=sudorules,cn=sud
+ o,dc=disneytoonstudios,dc=com
+memberOf: cn=prodctn,cn=groups,cn=accounts,dc=disneytoonstudios,dc=com
+memberOf: cn=systems,cn=groups,cn=accounts,dc=disneytoonstudios,dc=com
+memberOf: cn=engineers,cn=groups,cn=accounts,dc=disneytoonstudios,dc=com
+memberOf: cn=vpnusers,cn=groups,cn=accounts,dc=disneytoonstudios,dc=com
+ipaNTSecurityIdentifier: S-1-5-21-997014245-2012509068-2063431498-1333
+cn: Don Siegfriedt
+apple-generateduid: 6466B39A-5F77-4D35-AF1F-0A65E5D8C371
+manager: uid=gbrentin,cn=users,cn=accounts,dc=disneytoonstudios,dc=com
+homeDirectory: /disney/home/dsiegfriedt
+displayName: Don Siegfriedt
+uid: dsiegfriedt
+title: Systems Engineer
+loginShell: /bin/bash
+mailAlternateAddress: dsiegfriedt@disneytoonstudios.com
+mailAlternateAddress: donald.siegfriedt@disney.com
+mail: don.siegfriedt@disneytoonstudios.com
+sn: Siegfriedt
+employeeType: Disney
+givenName: Don
+nickName: Don
+objectClass: ipasshgroupofpubkeys
+objectClass: krbticketpolicyaux
+objectClass: disneyuser
+objectClass: ipaobject
+objectClass: apple-user
+objectClass: person
+objectClass: top
+objectClass: ipasshuser
+objectClass: inetorgperson
+objectClass: organizationalperson
+objectClass: mailrecipient
+objectClass: krbprincipalaux
+objectClass: inetuser
+objectClass: posixaccount
+objectClass: ipantuserattrs
+gecos: Don Siegfriedt
+initials: DS
+uidNumber: 1825200333
+gidNumber: 1825200333
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 3
+# numEntries: 2
+You have new mail in /var/spool/mail/root
+[root@idm01 ~]# 
+
+FROM chris steinke
+[root@idm01 slapd-DISNEYTOONSTUDIOS-COM]# ipactl stop
+Stopping ipa-dnskeysyncd Service
+Stopping ipa-otpd Service
+Stopping winbind Service
+Stopping smb Service
+Stopping pki-tomcatd Service
+Stopping httpd Service
+Stopping ipa_memcached Service
+Stopping named Service
+Stopping kadmin Service
+Stopping krb5kdc Service
+Stopping Directory Service
+
+ipa: INFO: The ipactl command was successful
+^^^^^
+chris.steinke
+Do you know if Grace removed the replication agreement for idm03?
+
+gracet [9:57 AM]
+Nope
+[9:57]
+i just did a ipactl stopon idm03
+
+[root@idm01 log]# ipa-replica-manage disconnect idm03
+'idm01.disneytoonstudios.com' has no replication agreement for 'idm03'
+[root@idm01 log]# ipa-replica-manage list
+idm01.disneytoonstudios.com: master
+neverbeast.win.disneytoonstudios.com: winsync
+idm03.disneytoonstudios.com: master
+idm02.disneytoonstudios.com: master
+
+^^^^^
+Okay, it should have been the FQDN, but that still failed.
+
+[10:01]  
+Starting up IPA services on IDM03
+
+[10:02]  
+Okay, it's chewing on it now.
+
+[10:03]  
+[root@idm01 /var/log ] # ipa-replica-manage del idm03.disneytoonstudios.com  
+Deleting a master is irreversible.
+To reconnect to the remote master you will need to prepare a new replica file
+and re-install.
+Continue to delete? [no]: yes
+unable to decode: {replica 6} 584771ff000000060000 584771ff000000060000
+Deleting replication agreements between idm03.disneytoonstudios.com and
+The ipactl command was successful
+Background task created to clean replication data. 
+This may take a while.
+
+This may be safely interrupted with Ctrl+C
+
+^^^^^
+Since I'm in there, any complaints about removing the old sync agreement with neverbeast, ya know the one-that-does-not-work anyways
+
+[root@idm01 /var/log ] # ipa-replica-manage disconnect neverbeast.win.disneytoonstudios.com
+Deleted replication agreement from 'idm01.disneytoonstudios.com' to 'neverbeast.win.disneytoonstudios.com'
+[root@idm01 /var/log ] # ipa-replica-manage list
+idm01.disneytoonstudios.com: master
+idm02.disneytoonstudios.com: master
+ 
+******************************************************************************************************
+3Apr17  Grace/Chris  upgrade of idm0[1-2]
+
+ldapsearch -xLLL -D 'cn=directory manager' -W -b 'cn=Users,cn=Accounts,dc=disneytoonstudios,dc=com' > /var/tmp/idm01-users.ldif
+
+
+idm01:
+ipactl status
+systemctl ipa.service stop
+yum update
+ipa-server-upgrade 
+yum update
+reboot
+
+idm02:
+tail -f ipaupgrade.log 
+yum clean all
+ipa-backup --online --data
+yum update
+ipa-server-upgrade 
+yum update
+reboot
+
+6Apr17  Grace  if autofs doesn't start
+
+/usr/sbin/ipa-client-automount --unattended
+
+  less /var/log/ipaclient-install.log  ### for any autofs/user/domain/krb issues after rebuild
+
++++++ 8Apr17   renderfarm rebuild naughty list. +++++
+
+@@@ in addition to above
+
+@@@if it comes to a "Foreman Discover" page
+https://satellite.disneytoonstudios.com/users/login
+	Hosts -> Discovered Hosts -> check -> click "Provision" (OR click mac address -> Select Action -> Provision)
+
+@@@ Hosts -> All Hosts -> (select a host) -> Edit -> Interfaces -> Edit -> make SURE the Subnet represents where the machine/VM is going to live
+
+@@@@ boot it to whatever OS and check MAC and IP against what Satellite thinks
+
+8Jun17
+
+dsiegfriedt@dts3329:~ $ ll ~gracet/docs/idm
+total 335K
+drwxr-xr-x.  2 gracet prodctn  237 Apr 10 12:01 .
+drwxr-xr-x. 20 gracet prodctn 1.8K May  5 10:54 ..
+-rw-r--r--.  1 gracet prodctn   34 Jul 25  2016 idm-cross-realm-trust
+-rw-r--r--.  1 gracet prodctn 3.8K Sep 16  2016 idm-reinit-replication
+-rw-r--r--.  1 gracet prodctn 1.1K Sep 16  2016 idm-troubleshooting
+-rw-rw-r--.  1 gracet prodctn  741 Apr  3 18:25 idm-upgrade
+-rw-r--r--.  1 gracet prodctn  296 Dec 12 14:33 idm_regist
+-rw-r--r--.  1 gracet prodctn 2.9K Apr  6 11:40 manual-host-add
+-rw-r--r--.  1 gracet prodctn  152 Apr 10 12:01 undelete-user
+
+
+# adds public ssh key to idm host record
+cat ~gracet/docs/idm/idm_regist
+systemctl start sshd
+/usr/bin/kinit -k -t /root/keytab.idmadmin idmadmin
+/usr/bin/ipa host-mod --sshpubkey="`cat /etc/ssh/ssh_host_rsa_key.pub`" --updatedns "meteor.disneytoonstudios.com"
+
+# configure automount
+/usr/sbin/ipa-client-automount --unattended
+
+@@@ manual add of machine /disney/home/gracet/docs/idm
+
+log: /var/log/ipaclient-install.log
+
+Sometimes, you will see this error on kickstart logs:
+
+`Skipping synchronizing time with NTP server.
+OTP case, CA cert preexisted, use it
+Joining realm failed: Incorrect password.
+
+Installation failed. Rolling back changes.
+IPA client is not configured on this system.`
+
+
+******************************************************************************************************
+@@@ if rebuild fails (with empty /disney)
+
+FROM: ~gracet/docs/idm/manual-host-add
+ 
+Server: 
+kinit admin
+sweep
+
+[root@idm01 ~]# ipa host-del d20627.disneytoonstudios.com
+-------------------------------------------
+Deleted host "d20627.disneytoonstudios.com"
+-------------------------------------------
+
+[root@idm01 ~]# ipa host-add d20627.disneytoonstudios.com --password=secret
+-----------------------------------------
+Added host "d20627.disneytoonstudios.com"
+-----------------------------------------
+  Host name: d20627.disneytoonstudios.com
+  Password: True
+  Keytab: False
+  Managed by: d20627.disneytoonstudios.com
+
+Client: 
+[root@d20627 ipa]# /usr/sbin/ipa-client-install -w 'secret' --realm=DISNEYTOONSTUDIOS.COM -U $idm_mkhomedir $idm_opts $idm_server $idm_ssh
+WARNING: ntpd time&date synchronization service will not be configured as
+conflicting service (chronyd) is enabled
+Use --force-ntpd option to disable it and force configuration of ntpd
+
+Using existing certificate '/etc/ipa/ca.crt'.
+Skip idm03.disneytoonstudios.com: LDAP server is not responding, unable to verify if this is an IPA server
+Skip vmidmrep.disneytoonstudios.com: LDAP server is not responding, unable to verify if this is an IPA server
+Discovery was successful!
+Client hostname: d20627.disneytoonstudios.com
+Realm: DISNEYTOONSTUDIOS.COM
+DNS Domain: disneytoonstudios.com
+IPA Server: idm01.disneytoonstudios.com
+BaseDN: dc=disneytoonstudios,dc=com
+
+Skipping synchronizing time with NTP server.
+OTP case, CA cert preexisted, use it
+Enrolled in IPA realm DISNEYTOONSTUDIOS.COM
+Created /etc/ipa/default.conf
+New SSSD config will be created
+Configured sudoers in /etc/nsswitch.conf
+Configured /etc/sssd/sssd.conf
+Configured /etc/krb5.conf for IPA realm DISNEYTOONSTUDIOS.COM
+trying https://idm01.disneytoonstudios.com/ipa/json
+Forwarding 'ping' to json server 'https://idm01.disneytoonstudios.com/ipa/json'
+Forwarding 'ca_is_enabled' to json server 'https://idm01.disneytoonstudios.com/ipa/json'
+Systemwide CA database updated.
+Added CA certificates to the default NSS database.
+Adding SSH public key from /etc/ssh/ssh_host_rsa_key.pub
+Adding SSH public key from /etc/ssh/ssh_host_ecdsa_key.pub
+Adding SSH public key from /etc/ssh/ssh_host_ed25519_key.pub
+Forwarding 'host_mod' to json server 'https://idm01.disneytoonstudios.com/ipa/json'
+Could not update DNS SSHFP records.
+SSSD enabled
+Configured /etc/openldap/ldap.conf
+Configured /etc/ssh/ssh_config
+Configured /etc/ssh/sshd_config
+Configuring disneytoonstudios.co
+
+[root@d20627 ipa]# /usr/bin/kinit -k -t /root/keytab.idmadmin idmadmin
+
+[root@d20627 ipa]# /usr/bin/ipa host-mod --sshpubkey="`cat /etc/ssh/ssh_host_rsa_key.pub`" --updatedns "d20627.disneytoonstudios.com"
+
+
+******************************************************************************************************
+19Jun17   ipa-backup
+
+https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Linux_Domain_Identity_Authentication_and_Policy_Guide/backup-restore.html
+
+
+@@@ as root on one of the IDM machines
+
+ipa-backup --online --data 
+
+@@@ From man
+Backups are stored in a subdirectory in /var/lib/ipa/backup.
+The naming convention for full backups is ipa-full-YEAR-MM-DD-HH-MM-SS in the GMT time zone.
+
+@@@ going to cron a full (with logs on a W/E and xfer B/U file to /disney/depts/tech/systems/backops/idm/
+@@@ need to have it monitor to not keep anything more than 30 days
+
+[root@idm01 backup]# cd /var/lib/ipa/backup/
+
+[root@idm01 backup]# ll
+total 0
+drwx------. 2 root root 38 Jan  6  2016 ipa-data-2016-01-06-17-16-57
+drwx------. 2 root root 38 Jul 25  2016 ipa-data-2016-07-25-18-42-47
+drwx------. 2 root root 38 Apr  3 17:29 ipa-data-2017-04-03-17-29-22
+
+[root@idm01 backup]# du -sh ipa-data-2017-04-03-17-29-22/
+111M	ipa-data-2017-04-03-17-29-22/
+
+25Jun17 23:02
+
+@@@ as root (I want it all)
+
+time ipa-backup --logs
+
+[root@idm01 ~]# time ipa-backup --logs
+Preparing backup on idm01.disneytoonstudios.com
+Stopping IPA services
+Backing up ipaca in DISNEYTOONSTUDIOS-COM to LDIF
+Backing up userRoot in DISNEYTOONSTUDIOS-COM to LDIF
+Backing up DISNEYTOONSTUDIOS-COM
+Backing up files
+Backed up to /var/lib/ipa/backup/ipa-full-2017-06-25-23-07-18
+Starting IPA service
+The ipa-backup command was successful
+
+real	3m32.619s
+user	2m35.402s
+sys	0m18.700s
+
+******************************************************************************************************
+

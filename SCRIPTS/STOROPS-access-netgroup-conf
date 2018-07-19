@@ -1,0 +1,11 @@
+#!/bin/bash 
+
+cp /etc/security/access.netgroup.conf /etc/security/access.netgroup.conf.bk
+
+ISTHERE=`grep StorOps /etc/security/access.netgroup.conf | awk '{print $3}'`
+
+if [ $ISTHERE != @StorOps ]; then
+   sed '/SecOps/s/$/\n\+ : \@StorOps : ALL/' /etc/security/access.netgroup.conf > /etc/security/access.netgroup.conf.new
+fi
+
+mv -f /etc/security/access.netgroup.conf.new /etc/security/access.netgroup.conf

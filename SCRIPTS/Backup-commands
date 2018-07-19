@@ -1,0 +1,47 @@
+19Oct11  --siggy
+
+
+# To back up your .mozilla dir
+tar -cjvplPf /mnt/mozilla-siggy-19Oct11-BU.bz2 siggy/.mozilla
+
+# To backup your home dir 
+From /home
+tar -cjvplPf /mnt/manfred2-siggy-19Oct11-BU.bz2 siggy -X siggy/exclude-list 
+
+#Content of exclude-list
+
+siggy@manfred2-F16beta:~$ cat exclude-list.txt
+.*
+BMC
+CAMERA
+*database*
+*db*
+Desktop
+DEVTUDIO
+Documents
+DOCX
+Downloads
+ENDPOINT
+GENTOO
+*.gz
+HADOOP
+*.iso
+jython2.5rc2
+Library
+*.mf
+*.ovf
+*.pdf
+Perforce
+PHD
+PPT
+Public
+PYTHON
+*.rpm
+Sites
+*.sql
+TEMP
+*.tgz
+*.vmdk
+*.wmv
+XML
+*.zip

@@ -1,0 +1,26 @@
+
+Set up the /etc/raidtab file like this:
+
+raiddev /dev/md0
+        raid-level      1
+        nr-raid-disks   2
+        nr-spare-disks  0
+        chunk-size     4
+        persistent-superblock 1
+        device          /dev/sdb6
+        raid-disk       0
+        device          /dev/sdc5
+        raid-disk       1
+If you have spare disks, you can add them to the end of the device specification like
+
+        device          /dev/sdd5
+        spare-disk      0
+
+Issue the
+
+  mkraid /dev/md0
+
+command to begin the mirror initialization.
+
+Check out the /proc/mdstat file. It should tell you that the /dev/md0 device has been started, that the mirror is being reconstructed, and an ETA of the completion of the reconstruction. 
+

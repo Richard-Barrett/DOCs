@@ -1,0 +1,1 @@
+use Env;                     # import all possible variablesuse Env qw(PATH HOME TERM);  # import only specified variables*****@path = split(/:/, $PATH);*****$PATH .= ":.";*****undef $PATH;*****delete $ENV{PATH};

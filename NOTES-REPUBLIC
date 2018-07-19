@@ -1,0 +1,232 @@
+9Sep13    DanM.
+
+error in process server
+Moriarty, Dan <danmo@ri-net.com>
+Mon 9/9/2013 7:22 AM
+
+
+Hi Don,
+
+We had complaints this morning that the policy inbasket was not working so I looked at content 
+manager(lacmpol1) and process server(lawps1). The logs in content manager looked alright but 
+the logs in SystemOut.log on lawps1 was showing the following error messages. When you see these 
+messages, it typically means that the database has a stale lock and needs to be restarted. To do 
+that, 
+
+su - db2inst1 > db2stop force > db2start.
+
+
+[9/9/13 7:13:30:958 PDT] 00000083 SibMessage    I   [SCA.SYSTEM.lawps1Cell01.Bus:WPSCluster.000-SCA.SYSTEM.
+lawps1Cell01.Bus] CWSIS1538I: The messaging engine, ME_UUID=0908A5797B2464AA, INC_UUID=61E861E8FBAE0678, 
+is attempting to obtain an exclusive lock on the data store.
+
+[9/9/13 7:13:35:935 PDT] 0000002f SibMessage    I   [SCA.APPLICATION.lawps1Cell01.Bus:WPSCluster.000-SCA.
+APPLICATION.lawps1Cell01.Bus] CWSIS1546I: The messaging engine, ME_UUID=D5C1AA4CEB96FF55, 
+INC_UUID=77607760FBA4D94A, has lost an existing lock or failed to gain an initial lock on the data store.
+
+[9/9/13 7:13:35:935 PDT] 0000002f SibMessage    I   [SCA.APPLICATION.lawps1Cell01.Bus:WPSCluster.000-SCA.
+APPLICATION.lawps1Cell01.Bus] CWSIS1538I: The messaging engine, ME_UUID=D5C1AA4CEB96FF55, 
+INC_UUID=77607760FBA4D94A, is attempting to obtain an exclusive lock on the data store.
+
+&&&&&
+
+9Sep13 (danmo) RHEL6 template additions
+
+yum -y install openssh-clients ntp ntpdate krb5 pam_krb5 krb5_libs krb5-workstation perl gcc kernel-devel libsmbclient gvfs-smb cifs-utils libXp libXp-devel libXpm libXpm-devel compat-libstdc++-33.x86_64 compat-libstdc++-33.i686 libstdc++.i686 libstdc++-devel.x86_64 libaio.i686 libaio.x86_64 libaio-devel.i686 libaio-devel.x86_64
+
+&&&&&
+From: Moriarty, Dan
+Sent: Monday, September 16, 2013 8:16 AM
+
+Below are the typical filesystem sizing that we use here. When we build a new template, we will use the sizing unless you have a better idea.
+
+The disk size is 30 GB
+
+/dev/mapper/vg_redhat6-lv_root                      4.0G  2.1G  1.7G  55% /
+tmpfs                 1.9G     0  1.9G   0% /dev/shm
+/dev/sda1             485M   72M  388M  16% /boot
+/dev/mapper/vg_redhat6-LogVol03                      2.0G   68M  1.9G   4% /home
+/dev/mapper/vg_redhat6-LogVol02                      2.0G   68M  1.9G   4% /opt
+/dev/mapper/vg_redhat6-LogVol05                      485M   11M  449M   3% /tmp
+/dev/mapper/vg_redhat6-LogVol04                      485M  256M  204M  56% /var
+
+&&&&&
+29Oct13  vmserver list
+
+lavcms2.ri-net.com   (PROD/DEV/QA, 10.130.27.222)
+drvcms1.ri-net.com   (DR, 10,54.8.55)
+lavcmssb1.ri-net.com (Sandbox, 10.130.25.81)
+
+
+&&&&&
+20Nov13  --siggy  MySQL commands
+
+show databases;
+connect <results>;
+show tables;
+show grants;
+use mysql;
+
+21Nov13  --siggy CC Wiki dump 
+
+$mysqladmin -u root -p ping
+	      	      shutdown  (to stop mysql)
+		      status
+		      extended-status
+		      variables
+		      processlist
+		      full-processlist
+		      password 'newpasswd'  (NOTE:   this will include the ticks in the passwd)
+
+STOP mysql
+$cd /d d:\bin64\MySQL\MySQL Server 5.1\bin
+
+c:\\mysql-init.txt =
+	 UPDATE mysql.user SET Password=PASSWORD('12345') WHERE User='root';
+	 FLUSH PRIVILEGES;
+
+$mysqld --init-file=c:\\mysql-init.txt
+
+test login
+$mysql -u root -p
+
+>update user set password=PASSWORD("12345") where User='root'
+
+in a different shell
+$mysqldump --single-transaction -u root -p DBname > c:\\DBname-dump.mysql
+	   DBname=information_schema, mysql, test
+
+&&&&&
+22Nov13  --siggy   innodb FPoS!
+
+data lives in => d:\appconfig\mediawiki\mysql\innodb\ibdata1
+
+&&&&&
+12Feb14  --siggy  Zabbix changes
+zabbix_server -c /usr/local/etc/zabbix_server.conf -R config_cache_reload
+
+&&&&&
+4Mar14  --siggy  update server list
+Go to:
+http://sharepoint.ri-net.com/sites/ITCentralLibrary/ITGov/Lists/RICA%20Server%20List/VM%20by%20Application%20Family.aspx?SortField=LinkTitleNoMenu&SortDir=Asc&View=%7b0D68A1E6-37A8-4951-8396-111EA254B60E%7d
+
+&&&&&
+7Mar14  --siggy creating a server list from using nslookup
+
+ 1379  07Mar14-11:09:36  for i in $(seq 2 254); do nslookup 10.130.25.$i; done > nslookup-server-list
+ 1380  07Mar14-11:16:12  sed s/Server.*.// nslookup-server-list 
+ 1381  07Mar14-11:16:33  sed -i s/Server.*.// nslookup-server-list 
+ 1382  07Mar14-11:16:47  sed s/Address.*.// nslookup-server-list 
+ 1383  07Mar14-11:16:53  sed -i s/Address.*.// nslookup-server-list 
+ 1384  07Mar14-11:17:18  sed -i /^$/d nslookup-server-list 
+ 1385  07Mar14-11:17:30  cat nslookup-server-list 
+ 1386  07Mar14-11:18:08  sed -i s/name\ =// nslookup-server-list 
+ 1387  07Mar14-11:18:15  sed s/name\ =// nslookup-server-list 
+ 1388  07Mar14-11:18:58  sed s/**\ server\ can\'t\ find // nslookup-server-list 
+ 1389  07Mar14-11:19:04  sed s/**\ server\ can\'t\ find\ // nslookup-server-list 
+ 1390  07Mar14-11:19:15  sed s/**\ server\ can\'t\ find// nslookup-server-list 
+ 1391  07Mar14-11:19:24  sed -i s/**\ server\ can\'t\ find// nslookup-server-list 
+ 1392  07Mar14-11:19:49  sed s/.in-addr.arpa.:// nslookup-server-list 
+ 1393  07Mar14-11:20:00  sed -i s/.in-addr.arpa.:// nslookup-server-list 
+ 1394  07Mar14-11:20:23  sed s/NXDOMAIN// nslookup-server-list 
+ 1395  07Mar14-11:20:29  sed -i s/NXDOMAIN// nslookup-server-list 
+ 1396  07Mar14-11:20:53  sed s/^\ // nslookup-server-list 
+ 1397  07Mar14-11:20:58  sed -i s/^\ // nslookup-server-list 
+ 1398  07Mar14-11:21:37  sed s/.in-addr.arpa// nslookup-server-list 
+ 1399  07Mar14-11:22:02  sed -i s/.in-addr.arpa// nslookup-server-list 
+
+Scripted ==> fix-it.bash
+
+&&&&&
+7Mar14  --siggy installing splunk
+
+get RPM from \\lasan4\softwarelibrary\splunk
+
+yum -y localinstall /tmp/splunkforwarder-4.2.3-105575.i386.rpm
+
+[root@lapc8apdv2 splunkforwarder]# pwd
+/opt/splunkforwarder
+[root@lapc8apdv2 splunkforwarder]# bin/splunk enable boot-start
+Init script installed at /etc/init.d/splunk.
+Init script is configured to run at boot.
+[root@lapc8apdv2 splunkforwarder]# chkconfig --list | grep splunk
+splunk         	0:off	1:off	2:on	3:on	4:on	5:on	6:off
+[root@lapc8apdv2 splunkforwarder]# service splunk status
+Splunk status:
+splunkd is running (PID: 19233).
+splunk helpers are running (PIDs: 19234).
+
+service splunk stop
+
+http://itvomit.com/2012/09/26/splunk-howto-configure-a-rhel6-host-to-send-data-to-spunk-and-to-use-the-splunk-ta-for-unix-and-linux/
+
+/opt/splunkforwarder/etc/system/local
+[root@lapc8apdv2 local]# cat inputs.conf
+[default]
+host = lapc8apdv2.ri-net.com
+
+service splunk start
+
+SEE NOTES-SPLUNK!!!!!!!!!!!!!!!!!!!!!   Not as easy as it looks
+
+&&&&&
+13Apr15  OT email with git commands
+
+From: Okong'o, Othieno
+Sent: Monday, April 13, 2015 8:56 AM
+To: Siegfriedt, Donald
+Subject: cfengine git
+
+ssh to lacfe (10.130.25.41)
+sudo su -
+su - cfapache
+# cd into the git local repo
+cd masterfiles
+# update the local repo
+git pull
+edit file or create new file
+git add <filename.cf>
+git commit -m ‘comments….’
+git push
+
+&&&&&
+4May15  --siggy
+
+Errors during snaps to DR:
+
+Change:
+https://[fe80:0:0:0:0:100:7f:fffe%10]:8043/smvi/logViewer?id=backup_lasan3_nfs_pcprd1_20150504110153.
+to:
+https://10.130.25.84:8043/smvi/logViewer?id=backup_lasan3_nfs_pcprd1_20150504110153.
+
+&&&&&
+22Jan16  --siggy   rica_vpn.pcf
+
+GroupName=TunnelGroup_RI
+enc_GroupPwd=12ECACE336F4E490E053C00729938FDB03E8FA9E904B8F0D0315324429CC396315EAF438B4F6D52F8757F34A992DD6BEDED52796FF4F5AFF
+The cracked passwd is "RIVPN123"
+
+GroupName=TunnelGroup_RICA_Claims
+enc_GroupPwd=67198604A5A4FD9E6A07F9074B407A21B88F819919A088ECF570EDBD19C59B224C867A2D2A9B2EB25C83CB26D4CC72E1771EEB467024B314
+The cracked passwd is "!nD3mn!ty"
+
+Used this site to crack it (under a second)
+http://www.base64online.com/Cisco-vpn-client-password-cracker.php
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+
+
+
+
+

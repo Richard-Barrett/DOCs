@@ -1,0 +1,1 @@
+# here's a piece by piece build up$rec = {};$rec->{series} = "flintstones";$rec->{nights} = [ find_days() ];@members = ();# assume this file is in field=value syntaxwhile (<>) {     %fields = split /[\s=]+/;     push @members, { %fields };}$rec->{members} = [ @members ];# now remember the whole thing$TV{ $rec->{series} } = $rec;

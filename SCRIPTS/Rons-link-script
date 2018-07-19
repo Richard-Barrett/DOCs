@@ -1,0 +1,93 @@
+# 17jun08
+# *Ron Midiri*
+# Northrop Grumman MS
+# Systems Administrator L5
+# 818-947-3246
+
+#! /bin/bash
+#*************************************************************************
+# Name: FixLinks
+#
+# Purpose: To find all the broken symbolic links (u & v) and restore them.
+#          
+#
+# Calls To: None
+#
+# Usage: FixLinks
+#
+#
+# Author	  Date		  Version	  Comments
+# ---------------+----------------+---------------+-------------
+# R. Midiri &     06/10/08         1.0
+# P. Rivera   
+#     
+#*************************************************************************
+# Notes:  
+#
+#*************************************************************************
+clear
+echo "Running $0..."
+echo ""
+#
+# See if Broken-Links & Good-Links exist and delete
+#
+if [ -e /root/Broken-Links ]; then
+  rm -f /root/Broken-Links
+fi
+#
+if [ -e /root/Good-Links ]; then
+  rm -f /root/Good-Links
+fi
+#
+# Finds all the broken links in the U directory
+#
+cd /ms/u 
+find . -type l | (while read FN; do test -e "$FN" || ls -ld "$FN"; done) > 
+/root/Broken-Links
+#
+# Finds all the broken links in the V directory
+#
+cd /ms/v 
+find . -type l | (while read FN; do test -e "$FN" || ls -ld "$FN"; done) >> 
+/root/Broken-Links
+#
+# Cat the file, get the 11th field, sed again (separator is /), 
+# then grab 2nd field, sort & delete duplicates
+#
+cat /root/Broken-Links | awk '{print $11}' | awk -F/ '{print "/"$2}' | sort | 
+uniq > /root/BROKEN
+#
+mv -f /root/BROKEN /root/Broken-Links
+#
+# Collect data about the /etc/fstab file, delete the first 14 lines,
+# see if some of the broken links are expected in /etc/fstab (commented-out 
+lines)
+# Also remove arwen & panfs from the Good-Links file..
+#
+cat /etc/fstab | sed '1,14d' |  sed '/^arwen/d' | sed '/^panfs/d' | sed '/^#/d' 
+| awk '{print $2}' > /root/Good-Links
+#
+# Loop for # of Broken-Links and compare to Good-Links file
+#
+for i in `cat /root/Broken-Links`
+do
+    #
+    # Loop for the number of Good-Links
+    #
+    for j in `cat /root/Good-Links`
+    do
+      if [ "$j" = "$i" ]
+      then
+        echo "Mounting $i"
+        mount $i
+        break
+      fi  
+    done #(End of Good-Links Loop)
+done #(End of Broken-Links Loop)
+#
+# Clean up of files no longer needed
+#
+rm -f /root/Broken-Links
+rm -f /root/Good-Links
+#
+exit

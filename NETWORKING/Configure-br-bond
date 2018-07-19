@@ -1,0 +1,109 @@
+#!/bin/sh
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+MODPROBEDIR=/etc
+GATEW=`netstat -rn | tail -1 | awk '{print $2}'`
+SN=`hostname -s`
+DN=`dnsdomainname`
+NFSNAME="${SN}.nfs.${DN}"
+IPADDR0=IPADDR=`hostname -i`
+IPADDR1=IPADDR=`host $NFSNAME | awk '{print $NF}'`
+NETMASK0=NETMASK=`ifconfig eth0 | grep Mask | awk -F: '{print $4}'`
+NETMASK1=NETMASK=255.255.0.0
+HWADD0=HWADDR=`ifconfig eth0 | grep HWaddr | awk '{print $5}'`
+HWADD1=HWADDR=`ifconfig eth1 | grep HWaddr | awk '{print $5}'`
+
+#Back up the files
+mv $WORKINGDIR/ifcfg-eth0 $WORKINGDIR/ORIG-eth0
+mv $WORKINGDIR/ifcfg-eth1 $WORKINGDIR/ORIG-eth1
+
+# start bonding without resetting the network
+/sbin/modprobe bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=1
+sleep 5
+
+#Set GATEWAY
+cat >> /etc/sysconfig/network<<EOF
+GATEWAY=$GATEW
+EOF
+
+# Set eth0
+cat > $WORKINGDIR/ifcfg-eth0 <<EOF
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD0
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth0FAILED; exit 0; fi
+
+# Set eth1
+cat > $WORKINGDIR/ifcfg-eth1 <<EOF
+DEVICE=eth1
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD1
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth1FAILED; exit 0; fi
+
+# Set bond0
+cat > $WORKINGDIR/ifcfg-bond0<<EOF
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+BRIDGE=br2248
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0FAILED; exit 0; fi
+
+#Set bond0.1111
+cat > $WORKINGDIR/ifcfg-bond0.1111 <<EOF
+DEVICE=bond0.1111
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br1111
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0-1111FAILED; exit 0; fi
+
+#set bridge 1111
+cat $WORKINGDIR/ifcfg-br1111 <<EOF
+DEVICE=br1111
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+IPADDR=$IPADDR0
+NETMASK=$NETMASK1
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br1111FAILED; exit 0; fi
+
+#set bridge 2248
+cat $WORKINGDIR/ifcfg-br2248 <<EOF
+DEVICE=br2248
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+IPADDR=$IPADDR1
+NETMASK=$NETMASK0
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br2248FAILED; exit 0; fi
+
+#add to the end of /etc/modeprobe.conf
+
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+echo "alias     bond0   bonding" >> $MODPROBEDIR/modprobe.conf
+echo "options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=1" >> $MODPROBEDIR/modprobe.conf
+
+cp /etc/resolv.conf /etc/resolv.conf.predhclient
+sleep 5
+
+# restart network to make it all work AND restart automount
+bin/service network restart
+/sbin/service autofs restart
+#blank line

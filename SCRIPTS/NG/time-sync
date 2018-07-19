@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#  --siggy Jul06
+# Stop, sync, and start ntpd
+# croned for 12:10am every night
+
+
+/sbin/service ntpd stop
+/usr/sbin/ntpdate gandalf1
+/sbin/service ntpd start
+

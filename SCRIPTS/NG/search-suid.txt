@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# this searches all the nodes to see what files have suid privledges
+#  It ran as a cron "0 1 * * * /root/search-suid" from aragorn
+#                --siggy 18Oct06
+
+
+for i in `cat /etc/beowulf/bcs/allnodes`
+do
+	echo $i
+	rsh $i find / -xdev -perm -4000 -uid 0
+done
+echo "**********************************************************"
+echo "**********************************************************"
+echo "******************* DONE *********************************"
+echo "**********************************************************"
+echo "**********************************************************"

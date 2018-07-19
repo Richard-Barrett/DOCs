@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+#8jun07  --siggy
+
+#First I created blorfff with "# script blorff"  then "for i in `cat /etc/beowulf/bcs/allnodes`; do echo $i;rsh $i df -h | grep -v auto;done"
+
+# tried to use this to narrow down the troublesome mounts.  This will give you a sorted 
+# list of all the mounts.  I'll keep playing and add to this. 
+
+#cat blorfff | awk '{print $1"  "$2"  " $3"  "$4}'| grep gandalf| grep -v f[1-2][0-9]| sort | more
+
+
+# columbs 3 and 6 tell me the size (bad mounts are sometimes "1" and other times they are "-")
+# and the mount point.  We next get rid of the size designations (TERA, GIGA, MEGA).
+
+df -h | awk '{print $3"\t"$6}'| grep -v T | grep -v G | grep -v M | sed -e s/0.*// -e /^\\t/d -e /^$/d | awk '{print $2}' > /tmp/blah
+
+for i in `cat /tmp/blah`; do umount $i; mount $i; done
+
+# This may not work....
+# df -h | grep gandalf | grep -v auto | awk '{print $6}'| sed /^$/d | sort -u> /root/filtered-mount
+
+
+# this is more authorative as it tells you what it thinks is mounted.  BUT it does not 
+# tell you if it dropped the mount so you can't use this.  You'll have to use something 
+# that ls's into the directory.
+# mount | grep -v auto | grep gandalf | awk '{print $3}' | grep ms | sort
+
+
+# This will make a nice list of what is SUPPOSED to be mounted.
+# cat /etc/fstab | grep gandalf | awk '{print $2}' | sed /^#/d > filtered-fstab 
+
+#This is a start useing teh "ls" way
+ls -la `cat /root/filtered-fstab` 
+
+
+#Easy way to look manually at the files/
+# xdiff filtered-fstab /root/filtered-mount

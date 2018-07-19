@@ -1,0 +1,1 @@
+use Net::Ping;$hostname = 'jimmy';  # host to check$timeout = 10;        # how long to wait for a responseprint "'jimmy' is alive\n" if pingecho($hostname, $timeout);

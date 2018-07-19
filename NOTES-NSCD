@@ -1,0 +1,130 @@
+
+http://n3v.net/resources/ldp/HOWTO/archived/LDAP-Implementation-HOWTO/pamnss.html
+
+
+2.1.4. The Name Service Caching Daemon
+
+The Name Service Caching Daemon (NSCD) is used to cache name service lookups and can improve performance with the services provided by the NSS.
+
+It must be tuned with a large cache for passwd entries in order to have acceptable performance on the client side.
+
+It has some disadvantages however, like the introduction of cache inconsistencies, so you would want to be sure you need this before you use it. We have succesfully running some systems without it, and personally i think that it isn't really neccesary on relatively small systems.
+
+
+*****
+forget which site...
+
+
+nscd creates large number of file handels.  Need to update max_file_handles (or something like that)
+*****
+
+http://www.cyberciti.biz/faq/rhel-debian-ubuntu-flush-clear-dns-cache/
+
+I my experience service nscd restart does not clear NSCD’s cache. service nscd reload does, however.
+
+*****
+
+www.redbooks.ibm.com/redpieces/pdfs/sg246380.pdf
+
+Important: The service nscd (name service caching daemon) interferes with 
+proper functioning of winbind. Never run nscd on systems where winbindd 
+runs.
+
+*****
+
+http://www.irs.gov/irm/part10/ch01s09.html
+
+Tune nscd to an appropriate minimal level. In particular, the configuration shall be modified so that passwd, group, and Solaris 8 (or later) Role-based access (RBAC) information is not cached. Disable caching of the RBAC attribute databases in Solaris 8 by adding the following lines to the /etc/nscd.conf file:
+enable-cache exec_attr no
+enable-cache prof_attr no
+enable-cache user_attr no 
+
+
+*****
+
+http://tldp.org/HOWTO/archived/LDAP-Implementation-HOWTO/pamnss.html
+
+2.1.4. The Name Service Caching Daemon
+
+The Name Service Caching Daemon (NSCD) is used to cache name service lookups and can improve performance with the services provided by the NSS.
+
+It must be tuned with a large cache for passwd entries in order to have acceptable performance on the client side.
+
+It has some disadvantages however, like the introduction of cache inconsistencies, so you would want to be sure you need this before you use it. We have succesfully running some systems without it, and personally i think that it isn't really neccesary on relatively small systems.
+
+*****
+
+pg504,897 in the "pink" book (Linux Administration Handbook (Second Edition))
+
+*****
+
+http://lists.opensuse.org/opensuse/2000-04/msg02989.html
+
+novara:/root # nscd --help
+Usage: nscd [OPTION...]
+Name Service Cache Daemon.
+
+-d, --debug Do not fork and display messages on the current
+tty
+-f, --config-file=NAME Read configuration data from NAME
+-g, --statistic Print current configuration statistic
+-K, --shutdown Shut the server down
+-S, --secure=TABLE,yes Use separate cache for each user
+-t, --nthreads=NUMBER Start NUMBER threads
+-?, --help Give this help list
+--usage Give a short usage message
+-V, --version Print program version
+
+Mandatory or optional arguments to long options are also mandatory or optional
+for any corresponding short options.
+
+*****
+
+http://www.irbs.net/internet/postfix/0111/0500.html
+
+nscd is a piece of junk. The idea is good, but for a decent implementation,
+go for djbdns's dnscache. 
+
+*****
+
+http://www.irbs.net/internet/postfix/0111/0566.html
+
+has a small discussion on teh vertues (NOT) of nscd
+
+*****
+
+http://www.irbs.net/internet/postfix/0111/0569.html
+
+Hey, for normal stuff djbdns might suck, but for caching it's absolutely
+great. Except for IPv6 adresses of course.
+
+> You might not want to install it directly on your mail server though, at
+> least not if you demand high throughput and you don't have multiple CPUs
+> in the machine. You'll avoid some context switching overhead, and CPU &
+> cache contention (and maybe even some main memory contention too) if you
+> put it on a separate dedicated system with a high-speed LAN between the
+> two (perhaps even a private 100baseT ethernet just for DNS queries if
+> you're really trying to go all out for performance).
+
+a) Postfix is not CPU intensive
+b) djbdns is restricted to a finite, fixed amount of memory. Ditch nscd and
+   you have that x MB's of main memory left
+
+> It isn't really that difficult to install and configure for plain
+> caching
+
+This is true. Unfortunately, securing and updating the system because of the
+bugs is tedious. 
+
+*****
+
+http://www.irbs.net/internet/postfix/0111/0611.html
+
+On Solaris, a lot of things break when nscd is not running, but it has very
+little added value. I have installed caching nameservers on DNS intensive
+Solaris servers a number of times, just to get the extra bit performance. On
+linux, I guess you'd be safe to rm nscd, without any noticable performace
+hit... 
+
+*****
+

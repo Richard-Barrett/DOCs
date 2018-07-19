@@ -1,0 +1,279 @@
+28jan10  --siggy
+
+ALL on pl1rad710.admin.edmunds.com
+
+1)    cd /usr/src/redhat/DUMPING-GROUND
+2)    vi DOM0-prep.sh
+3)    tar czf DOM0-prep.tgz DOM0-prep.sh set_irq_affinity.sh xendomains
+4)    mv DOM0-prep.tgz /usr/src/redhat/SOURCES
+
+AND/OR
+
+5)    cd /usr/src/redhat/SPECS
+optional)    vi DOM0-prep.spec
+6)    rpmbuild -ba DOM0-prep.spec
+
+#mv ../RPMS/i386/Edmunds-DOM0-prep-1.0-0.i386.rpm /nfs/common/bl_7_4_5/pxestore/ks-rhel-5.4-x86_64-el/Server/
+7)    mv ../RPMS/i386/Edmunds-DOM0-prep-1.0-0.i386.rpm /nfs/common/bl_7_4_5/yum/edmunds/appops/5Server/base/x86_64/
+
+#cd /nfs/common/bl_7_4_5/pxestore/ks-rhel-5.4-x86_64-el/Server/
+8)    cd /nfs/common/bl_7_4_5/yum/edmunds/appops/5Server/base/x86_64/
+
+optional)     touch repodata/comps.xml
+9)    createrepo -g repodata/comps.xml .
+
+optional      provision machine
+
+&&&&&
+
+
+3Feb09  --siggy
+
+# example of how to build an RPM.  In this example I am building RPMs for sys_basher (32 adn 64bit versions)
+# I installed sys_basher.  I then did a make.  I then copied relevent files to /opt/sysbasher.  I then added
+# the burnin-test-script to that directory.
+
+# to make a RPM create a tarball (from where you want it)
+
+cd /usr/src/redhat/SOURCES
+tar czvf sysbash-32b.tgz /opt/sysbasher/sys_basher /opt/sysbasher/burnin-test-script
+
+#this gives you a tarball in /usr/src/redhat/SOURCES named sysbash-32b.tgz
+
+# Now create a ".spec" file
+
+cd ../SPECS
+vi sysbash-32bit.spec
+
+Summary: sys_basher for 32 bit version
+Name: Edmunds-sys_basher-32b
+
+%define _tmppath /tmp
+
+Version: 1.1.3
+Release: 0
+Copyright: Edmunds.com
+Group: Testing
+Source: sysbash-32b.tgz
+BuildRoot: %{_tmppath}/%{name}-root 
+
+%description
+sys_basher to test new machine hardware at first boot
+
+%prep
+%setup -T -c
+%build
+%install
+mkdir -p $RPM_BUILD_ROOT
+
+# Stuff we added
+cd $RPM_BUILD_ROOT
+tar xzf $RPM_SOURCE_DIR/sysbash-32b.tgz
+
+# Generate file list
+rm -f /tmp/sysbasher-filelist
+tar tzf $RPM_SOURCE_DIR/sysbash-32b.tgz | grep -v '/$' | sed -e 's/^/\//' > /tmp/sysbasher-filelist
+
+%files -f /tmp/sysbasher-filelist
+
+%clean
+rm -f /tmp/sysbasher-filelist
+rm -rf $RPM_BUILD_ROOT
+rm -f /tmp/rpm-tmp*
+
+%post
+
+echo "/opt/sysbasher/burnin-test-script" >> /etc/rc.local
+
+%changelog
+* Fri Jan 30 2009 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- Inital version
+
+# build the RPM with
+rpmbuild -ba sysbash-32bit.spec
+
+# This will put an RPM in /usr/src/redhat/RPMS/i386 named Edmunds-sys_basher-32b-1.1.3-0.i386.rpm.
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+
+All interconnected!
+
+
+1) /usr/src/redhat/DUMPING-GROUND/DOM0-prep.sh
+2) /usr/src/redhat/SPECS/DOM0-prep.spec
+3) System Packages=>LAX1=>XEN=>RHEL-EL-5.4-X86_64-initial
+   	  ****make sure that "sed -i /xen-gz-2.6.18-164..." is not echoed to /root/provscript or the 
+	  kernel will not boot with the correct flags****   
+
+DOM0-prep.spec
+
+Summary: IRQ syincing between processors
+Name: Edmunds-DOM0-prep
+
+%define _tmppath /tmp
+
+Version: 1.0
+Release: 0
+Copyright: Edmunds.com
+Group: sysops
+Source: $RPM_SOURCE_DIR/DOM0-prep.tgz
+BuildRoot: %{_tmppath}/%{name}-root
+Requires: xen
+
+%description
+Affinity is for the 2 interupt queues it sends interrupts from one queue to one processor adn from another queue to another processor
+Network configuartion files are changed..
+
+%prep
+%setup -T -c
+%build
+%install
+mkdir -p $RPM_BUILD_ROOT
+
+# Stuff we added
+cd $RPM_BUILD_ROOT
+tar xzf $RPM_SOURCE_DIR/DOM0-prep.tgz
+
+# Generate file list
+rm -f /tmp/DOM0-prep-filelist
+tar tzf $RPM_SOURCE_DIR/DOM0-prep.tgz | grep -v '/$' | sed -e 's/^/\//' > /tmp/DOM0-prep-filelist
+
+%files -f /tmp/DOM0-prep-filelist
+
+%clean
+
+rm -f /tmp/*-filelist
+rm -rf $RPM_BUILD_ROOT
+rm -f /tmp/rpm-tmp*
+
+%post
+
+mv /set_irq_affinity.sh /etc/init.d
+mv /xendomains /etc/init.d
+chmod 755 /etc/init.d/xendomains
+chmod +x /etc/init.d/set_irq_affinity.sh
+chmod +x /DOM0-prep.sh
+/DOM0-prep.sh
+/usr/bin/nohup /bin/ksh `/bin/sleep 20 ; /sbin/shutdown -r now` &
+
+%postun
+
+mv -f /usr/src/Orig-XEN-Config/xen-network-common.sh /etc/xen/scripts/xen-network-common.sh
+mv -f /usr/src/Orig-XEN-Config/xend-config.sxp /etc/xen/xend-config.sxp
+mv -f /usr/src/Orig-XEN-Config/grub.conf /boot/grub/grub.conf
+mv -f /usr/src/Orig-XEN-Config/modprobe.conf /etc/modprobe.conf
+mv -f /usr/src/Orig-XEN-Config/sysctl.conf /etc/sysctl.conf
+mv -f /usr/src/Orig-XEN-Config/rc.local /etc/rc.local
+mv -f /usr/src/Orig-XEN-Config/xendomains /etc/init.d
+sed /affinity/d /etc/rc.local
+rm -f /etc/init.d/set_irq_affinity.sh
+rm -rf /usr/src/Orig-XEN-Config
+
+%changelog
+* Thu Feb 26 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- Add xendomains to /etc/init.d
+* Thu Jan 27 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- moved things around.  The DOM0-prep.sh will run from rc.local
+- the affinity settings will also run from rc.local
+- DOM0-prep.sh will live in /root
+* Thu Jan 26 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- adding affinity loop to %post.
+* Thu Jan 15 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- fixing typos
+* Thu Jan 14 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- adding %postun
+* Mon Jan 11 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- made file and tarred it up of prep files (would not build without file present) 
+* Fri Jan 8 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- adding to prep to back up files, restore them post uninstall, andadd the requirement of xen
+- moved a bunch-O-stuff from kickstart %post to this RPM
+* Thu Jan 7 2010 Don Siegfriedt <dsiegfriedt@edmunds.com>
+- Inital version
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+3Jan17  --siggy   deadline8 rpm build (second pass....this dir was not in the original tar
+
+1) tar -czvf var-lib.tgz /var/lib/Thinkbox/
+2) cp /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE8/*tgz /root/rpmbuild/SOURCES/
+3) cp /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE8/deadline8.spec /root/rpmbuild/SPECS/
+4) cd /root/rpmbuild
+5) rpmbuild -ba SPECS/deadline8.spec
+
+
+
+
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+8Mar17  --siggy
+DTS uses git to make RPMS there should be a dir in ~dsiegfriedt/JOBS/DISNEYTS/GIT
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/GIT/deadline8 $ ll
+total 241K
+drwxr-xr-x. 6 dsiegfriedt prodctn  177 Feb 27 10:28 .
+drwxr-xr-x. 3 dsiegfriedt prodctn   27 Feb 21 16:12 ..
+-rw-r--r--. 1 dsiegfriedt prodctn  16K Feb 25 17:12 .Makefile.swp
+drwxr-xr-x. 8 dsiegfriedt prodctn  325 Feb 25 17:06 .git
+-rw-r--r--. 1 dsiegfriedt prodctn 4.2K Feb 27 10:28 Makefile
+-rw-r--r--. 1 dsiegfriedt prodctn 3.2K Feb 23 17:13 deadline8.spec.in
+drwxr-xr-x. 3 dsiegfriedt prodctn   24 Feb 23 13:22 etc
+drwxr-xr-x. 3 dsiegfriedt prodctn   26 Feb 23 13:22 opt
+drwxr-xr-x. 3 dsiegfriedt prodctn   21 Feb 23 13:21 var
+
+
+@@@From history it looks like these are the most used commands
+10025  23Feb17-15:44:41  git checkout Makefile
+10033  23Feb17-15:58:41  git commit -u "added root check to top of Makefile" Makefile
+10034  23Feb17-15:58:56  git commit -u "added root check to top of Makefile" Makefile 
+10035  23Feb17-15:59:07  git checkout Makefile
+10036  23Feb17-15:59:21  git clean -f
+10037  23Feb17-16:00:21  git commit -u "added root check to top of Makefile" Makefile 
+10038  23Feb17-16:00:36  git commit -m "added root check to top of Makefile" Makefile 
+10039  23Feb17-16:01:02  git push -u origin master
+
+git status
+git clean -f
+git checkout filename
+git commit -u "<comment>" filename
+git push origin master
+git make-rpm
+
+&&&
+
+@@@ error from git "make-rpm" 8Mar17
+
+make[1]: src/pymodule1: Command not found
+make[1]: *** [site-packages] Error 127
+make[1]: Leaving directory `/disk1/scratch/rpmbuild-dsiegfriedt/BUILD/deadline8-3868716'
+make: *** [install] Error 2
+error: Bad exit status from /var/tmp/rpm-tmp.gywASc (%install)
+
+
+RPM build errors:
+    Bad exit status from /var/tmp/rpm-tmp.gywASc (%install)
+Error running rpmbuild --define _topdir /disk1/scratch/rpmbuild-dsiegfriedt --define vendor Walt Disney Animation Studios -ta deadline8-3868716.tar.gz at /usr/bin/git-make-rpm line 290.
+
+@@@ side note... clean out /disk1/scratch/rpmbuild-$(USER)/BUILD*
+
+@@@ what is going on????
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/GIT/deadline8 $ grep -R "_topdir" *
+deadline8.spec.in:BuildRoot:      %{_topdir}/BUILDROOT/%{name}-%{version}
+opt/Thinkbox/Deadline8/bin/python/lib/python2.7/distutils/command/bdist_rpm.py:                             '_topdir %s' % os.path.abspath(self.rpm_base)])
+
+@@@ do capitalization not matter any more (for vars)
+
+7Sep17
+kjaffe had problems too and her GID for /disk1/scratch was her GID rather than prouction (1100/prodctn)          nope
+                                        /var/tmp/kdecache-kjaffe   	       		 			 nope
+
+
+&&&
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+
+

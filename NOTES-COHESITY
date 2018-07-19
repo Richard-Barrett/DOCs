@@ -1,0 +1,238 @@
+14Dec17 and so it begins
+
+~/JOBS/DISNEYTS/COHESITY
+
+@@@ testing physical backup  my machine dts3329
+
+@@@ agent needs to be installed on physical boxes
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/COHESITY $ sudo ./cohesity_agent_4.1.2_linux_x64_installer 
+[sudo] password for dsiegfriedt: 
+Verifying archive integrity... All good.
+Uncompressing Cohesity Linux Agent  100%  
+------------------------------------------------------------------------------
+==> UserId = uid=0(root) gid=0(root) groups=0(root) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+==> Umask  = 0077
+==> Setting umask to 022
+==> Umask  = 0022
+------------------------------------------------------------------------------
+==> SUDO_COMMAND_PREFIX=
+Usage:
+  cohesity_agent_4.1.2_linux_x64_installer -- [-i|--install] [options]
+  cohesity_agent_4.1.2_linux_x64_installer -- [-u|--update-uninstall] [options]
+  cohesity_agent_4.1.2_linux_x64_installer -- [-U|--full-uninstall] [options]
+  cohesity_agent_4.1.2_linux_x64_installer -- [-v|--version]
+  cohesity_agent_4.1.2_linux_x64_installer -- [-s|--single-mode] [options]
+ 
+Options:
+  -i, --install                 Install/Uninstall Cohesity Linux Agent.
+  -U, --full-uninstall          Uninstall Cohesity Linux Agent
+                                including service-user account and
+                                it's home directory contents.
+                                Destructive operation. Please use with care.
+  -u, --update-uninstall        Uninstall Cohesity Linux Agent
+                                This options preserves user, group and agent config.
+                                Useful when upgrading software.
+  -S  --service-user [user]     Username to use for service. [Default: cohesityagent]
+  -G  --service-group [group]   Groupname to use for service. [Default: cohesityagent]
+  -c  --create-user [0|1]       Whether to create --service-user or not.  [Default: 1]
+                                This option is used with --install option only.
+  -I  --install-dir [dir]       Cohesity Agent installation dir.  [Default: /home/<username>/cohesityagent or /root/cohesityagent]
+  -L  --install-log-file [file] Filename where installer logs should be saved. [Default: /tmp/cohesity_agent_installer_<time_in_seconds>_<pid>.log
+  -s  --single-mode             Install Cohesity Linux Agent for single mode operation.
+      --skip-mountpoint-check   Skip checks performed on installation directory's filesystem mountpoint.
+  -d  --debug                   Enables shell script debugging with set -x [Default: off]
+  -y  --yes-all                 Accept 'yes' answer to all questions in installer. [Default: off]
+                                This is useful for performing silent install/uninstall.
+  -a  --agent-options [options] Options to pass to cohesity agent. Used with single mode operation only.
+  -h, --help                    Prints this help
+ 
+Example Usage:
+ 
+  Install: 
+   cohesity_agent_4.1.2_linux_x64_installer -- --install
+ 
+  Silent Install: 
+   cohesity_agent_4.1.2_linux_x64_installer -- --install -y
+ 
+  Upgrade: 
+   cohesity_agent_4.1.2_linux_x64_installer -- --install
+ 
+  Uninstall: 
+   cohesity_agent_4.1.2_linux_x64_installer -- --full-uninstall
+ 
+  Single mode Install: 
+   cohesity_agent_4.1.2_linux_x64_installer -- --single-mode --install-dir /tmp/linux_agent --agent-options "--self_monitoring_enabled=false --cluster_id=123456 --cluster_incarnation_id=1234"
+ 
+^^^^^
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/COHESITY $ sudo ./cohesity_agent_4.1.2_linux_x64_installer -- --install
+Verifying archive integrity... All good.
+Uncompressing Cohesity Linux Agent  100%  
+------------------------------------------------------------------------------
+==> UserId = uid=0(root) gid=0(root) groups=0(root) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+==> Umask  = 0077
+==> Setting umask to 022
+==> Umask  = 0022
+------------------------------------------------------------------------------
+==> SUDO_COMMAND_PREFIX=
+/sbin/init: unrecognized option '--version'
+==> INIT system detected: systemd
+==> Checking if user has provided overrides from command line...
+==> Service user : cohesityagent
+==> Finding service user group based user input ...
+==> Service user group : cohesityagent
+==> Finding installation directory ...
+==> Installation directory for agent: /home/cohesityagent/cohesityagent
+==> Generating set_env.sh ...
+==> Sourcing /tmp/selfgz1255122964/set_env.sh
+==> Cohesity Linux Agent Software Version: 4.1.2
+==> Installed Cohesity Linux Agent will be run with user=cohesityagent.
+------------------------------------------------------------------------------
+==> Installing Cohesity Linux Agent version 4.1.2
+------------------------------------------------------------------------------
+COHESITY_USER=cohesityagent
+COHESITY_GROUP=cohesityagent
+COHESITY_USER_CREATED=1
+COHESITY_HOME_DIR=/home/cohesityagent
+COHESITY_INSTALL_DIR=/home/cohesityagent/cohesityagent
+------------------------------------------------------------------------------
+Do you want to continue installing? (y/n) y
+Continuing installation...
+------------------------------------------------------------------------------
+==> This is x86_64 system
+==> LVM: Using lvs from path: /usr/sbin/lvs
+==> LVM: 2.02.130(2)-RHEL7(2016-06-09)
+==> Rsync: Using rsync from path: /usr/bin/rsync
+==> Rsync: rsync  version 3.0.9  protocol version 30
+==> Installing on Linux Distribution: "Red Hat Enterprise Linux Workstation 7.2 (Maipo)"
+==> No previous Cohesity Agent is detected on this system.
+==> Agent process linux_agent_exec is not running.
+==> Checking mountpoint for install directory: /home/cohesityagent/cohesityagent
+==> Parent of installation directory (existing): /home
+==> Mountpoint of parent installation directory: /
+==> Checking if mountpoint / has required option "rw" set.
+(rw,relatime,seclabel,attr2,inode64,noquota)
+==> Checking if mountpoint / has unsupported option "nosuid" set.
+==> Checking if mountpoint / has unsupported option "noexec" set.
+==> User=cohesityagent does not exist in /etc/passwd
+==> Checking if User=cohesityagent exists using getent command.
+==> User=cohesityagent not found with getend command.
+==> Group=cohesityagent does not exist in /etc/group
+==> Group=cohesityagent not found with getent command.
+id: cohesityagent: no such user
+==> Group=cohesityagent is not found with id command
+==> Adding cohesityagent to sudoers list
+==> Directory structure created under /home/cohesityagent/cohesityagent
+==> Copied software contents to /home/cohesityagent/cohesityagent
+==> Old installation directory is empty. Skipping copying data from older installation.
+/home/cohesityagent/cohesityagent/software/crux/bin/linux_agent_exec = cap_dac_override+ep
+Created symlink from /etc/systemd/system/multi-user.target.wants/cohesity-agent.service to /usr/lib/systemd/system/cohesity-agent.service.
+==> Service cohesity-agent added to systemd
+==> Starting cohesity-agent...
+● cohesity-agent.service - Cohesity Linux Agent
+   Loaded: loaded (/usr/lib/systemd/system/cohesity-agent.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2017-12-14 09:39:12 PST; 153ms ago
+  Process: 13112 ExecStart=/etc/init.d/cohesity-agent start (code=exited, status=0/SUCCESS)
+  Process: 13107 ExecStartPre=/bin/chown -R cohesityagent:cohesityagent /var/run/cohesity-agent (code=exited, status=0/SUCCESS)
+  Process: 13094 ExecStartPre=/bin/mkdir -p /var/run/cohesity-agent (code=exited, status=0/SUCCESS)
+ Main PID: 13299 (linux_agent_exe)
+   Memory: 4.0K
+   CGroup: /system.slice/cohesity-agent.service
+           ‣ 13299 /home/cohesityagent/cohesityagent/software/crux/bin/linux_agent_exec --log_dir=/home/cohesityagent/cohesityagent/data/logs --max_log_size=30 --stop_logging_if_full_disk=true --logbuflevel=-1 --linux_agent_nfs_mountpoint_base_dir=/home/cohesityagent/cohesityagent/data/agent//tmp/nfs_mounts --linux_agent_volume_mountpoint_base_dir=/home/cohesityagent/cohesityagent/data/agent//tmp/vol_mounts --linux_agent_config_file_path=/home/cohesityagent/cohesityagent/data/config/cohesity_agent.cfg --util_misc_mount_command=/usr/bin/mount --util_misc_umount_command=/usr/bin/umount --util_misc_findmnt_command=/usr/bin/findmnt --util_misc_sudo_command=/usr/bin/sudo --yoda_util_vmware_mount_command=/home/cohesityagent/cohesityagent/software/crux/bin/vm_mounter.sh --yoda_mount_command=/usr/bin/mount --yoda_umount_command=/usr/bin/umount --yoda_findmnt_command=/usr/bin/findmnt --yoda_sudo_command=/usr/bin/sudo --timeout_command=/usr/bin/timeout --yoda_blkid_command=/usr/sbin/blkid --yoda_lsof_command=/usr/sbin/lsof --yoda_ls_command=/usr/bin/ls --linux_sudo_command=/usr/bin/sudo --linux_chmod_command=/usr/bin/chmod --linux_timeout_command=/usr/bin/timeout --linux_lvs_command=/usr/sbin/lvs --linux_vgs_command=/usr/sbin/vgs --linux_lvcreate_command=/usr/sbin/lvcreate --linux_lvremove_command=/usr/sbin/lvremove --linux_agent_rsync_cmd=/usr/bin/rsync --linux_agent_wget_command=/usr/bin/wget --yoda_losetup_command=/usr/sbin/losetup --yoda_dmsetup_command=/usr/sbin/dmsetup --linux_dump_memory_usage=false --yoda_bindfs_mount=false --libssl_non_fips_path= --libssl_path= -v=0
+
+Dec 14 09:39:09 dts3329.disneytoonstudios.com cohesity-agent[13112]: Starting linux_agent_exec...
+Dec 14 09:39:10 dts3329.disneytoonstudios.com cohesity-agent[13112]: GNU coreutils version = 8.22
+Dec 14 09:39:10 dts3329.disneytoonstudios.com cohesity-agent[13112]: Init system is systemd, will run linux_agent_exec in background
+Dec 14 09:39:10 dts3329.disneytoonstudios.com su[13256]: (to cohesityagent) root on none
+Dec 14 09:39:10 dts3329.disneytoonstudios.com su[13256]: pam_limits(su-l:session): unknown limit item 'rtpio'
+Dec 14 09:39:10 dts3329.disneytoonstudios.com su[13256]: pam_limits(su-l:session): unknown limit item 'rtpio'
+Dec 14 09:39:12 dts3329.disneytoonstudios.com cohesity-agent[13112]: Parent process pid=13299
+Dec 14 09:39:12 dts3329.disneytoonstudios.com cohesity-agent[13112]: 13299
+Dec 14 09:39:12 dts3329.disneytoonstudios.com systemd[1]: Started Cohesity Linux Agent.
+Dec 14 09:39:12 dts3329.disneytoonstudios.com systemd[1]: Started Cohesity Linux Agent.
+------------------------------------------------------------------------------
+==> Cohesity Linux Agent is installed successfully.
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+Agent Help (init system: systemd)
+------------------------------------------------------------------------------
+Agent start:
+# sudo systemctl start cohesity-agent
+
+Agent stop:
+# sudo systemctl stop cohesity-agent
+
+Agent status:
+# sudo systemctl status cohesity-agent
+------------------------------------------------------------------------------
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/COHESITY $ 
+
+^^^^^
+
+created a protection job for my workstation
+
+FAILED
+
+Dec 14, 2017 10:15am	Take snapshot failed - [kAgentError]: [kFsError]: Volume group "myvg" has insufficient free space (11 extents): 12 required.
+
+Click:
+Cohesity => View Alert Details
+
+BackupJobFailed
+
+Code CE00610002
+Description Backup run of job 1st-physical-dts3329 failed
+
+Cause Backup run of job 1st-physical-dts3329 failed with error [kAgentError]: [kFsError]: Volume group "myvg" has insufficient free space (11 extents): 12 required. . ID of the failed run is 186. Run start time is 2017.12.14 09:45:00 Pacific Time.
+
+@@@ Code lookup
+http://techdocs.cohesity.com:3001/4_1/Web/UserGuide/index.htm#Dashboard/Monitoring/AlertsReference.htm%3FTocPath%3D_____7
+
+
+^^^^^
+18Dec17
+
+@@@ trouble logging ionto ESXi servers :^(
+
+@@@ start a VM backup
+
+Register a source
+Protection => Sources => Register Source => VMWare => Stand Alone ESXi Server => "vsphere-prod-04" root/N0... =>
+
+@@@ Protection Job (single VM)
+
+Protection => Protection Jobs => Add a Protection Job => Virtual Server => Select Protection Policy (Pull down Bronze) => Next => Job Name (vmnameBU) => Select Objects => drill down to find VMs to be backed up => Add Selected to Cart => Create Job
+
+click on date to change date/time
+
+^^^^^
+
+@@@ physical BU (dts3329)
+
+email from support :
+From: Cohesity Support [support@cohesity.com]
+Sent: 12/14/2017 3:40 PM
+
+Once you export it and access the export as a nfs share, we should be able to back it up using generic nas backup procedure.
+
+[root@dts3329 ~]# cat /etc/exports
+/storage        *(fsid=0,rw,sync,no_root_squash,no_subtree_check,crossmnt)
+
+Error
+mount dts3329:/storage to /home_cohesity_data/magneto/tmp/nas_mnt/query_12352439131998464087 
+failed: mount.nfs: requested NFS version or transport protocol is not supported
+
+^^^^^
+20Dec17
+
+***BITCHING***
+SFP wrong (short 4) for Arista
+
+Showed up without warning
+
+script took forever to change GW (because you didn't ask for the correct number of ports)
+
+can't ping IP address(s)
+
+rushed made mistakes
+

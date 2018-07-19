@@ -1,0 +1,1150 @@
+This is an edited transcript of my notebook  --siggy 25Jul08
+I am keep ing admin information...I am not doing a dyaybyday log.
+more of a how-to rather than what
+******************************************************************************************
+What machines do what  1Aug08
+
+pl1rad710.admin.edmunds.com for DHCP changes
+pl1rad710.admin.edmunds.com for BladeLogic
+pl1rns702.admin.edmunds.com for DNS changes
+pl1rns703.admin.edmunds.com for DNS changes
+pl1rad702.admin.edmunds.com for LDAP changes
+pl1rad719.admin.edmunds.com for looking at the gpg file
+pl1rad718.admin.edmunds.com for cacti
+pl1rns700.admin.edmunds.com for external DNS
+pl1wad721.admin.edmunds.com for VMWare console 
+
+******************************************************************************************
+7Apr08  1st day
+
+pl1rad719.admin.edmunds.com
+	gpg --decrypt /nfs/local/admin/conf/admin/gpg/stuff.txt.gpg
+	    You can look in history for this (rather than typing)
+
+LDAP changes can be done here
+
+******************************************************************************************
+POC = Proof of Concept
+cre = currently running environment
+epe = extended project environment
+rwe = running? web environment
+
+******************************************************************************************
+14apr08
+
+/sys/block/sda/device/timeout
+	default =30  write script to make it 190
+******************************************************************************************
+15apr08  Amanda LDAP
+
+LDAP lives on pl1rad702.admin.edmunds.com
+
+login to pl1rad702.admin.edmunds.com
+sudo su -
+cd /nfs/local/LDAPcontrol
+	* getnewpeople.sh  updates People.ldif
+	* backupuser.sh
+	* createuser.sh
+	* usersearch.sh cn = blahdyblah
+
+add to group and netgroup seperately
+    keep "dn" line
+    changetyp: modify
+    replace: <this depends on what you are changing>
+
+usermodify <input ldif file
+
+ALSO see ~/LDAP-howto file
+21apr08
+EXAMPLE:
+pl1rad702 as root adn in /root/LDAPControl
+
+1) ./usersearch.sh cn=pchiu (make sure account does not already exist)
+2) ./backupusers.sh (backs up ldif)
+3) ./createuser.sh
+   asks questions to create account
+   	login: pchiu
+	fullname: Peary Chiu
+	create [y/n]: y
+	create home directory? [y/n]: y
+4) redo step 1 (make sure account is correct)
+5) over to ldapbrowser
+   	/Application/ldapbrowser/lbe.jre
+6) click NetGroup
+   click Teams
+   click desired group
+   select nisNetgroupTriple (red)
+   click Edit
+   click Addvalue
+   	 add <newuser>login
+   click Apply
+******Repeat for GROUPS*****
+7) update ticket in SNC
+******************************************************************************************
+22apr08
+Parallels
+license key can be reached by going to Help => Activate Product
+lic-key.rtf
+  2A4XF-E1A60-XECBX-T1IWG-M9AE4
+******************************************************************************************
+
+DNS lives on pl1rns702.admin.edmunds.com
+DNS lives on pl1rns703.admin.edmunds.com
+
+******************************************************************************************
+5May08
+<apple>k connect to server smb://3050ca/NT04/EDINC
+
+******************************************************************************************
+8may08
+
+LDAP 
+
+ou=Groups ou=Teams
+AppOpsE
+AppOpsM
+DBA
+DBAQA
+Dev
+Infaread
+Informatica
+NetOps
+ProdEng
+SecOps
+SysOps
+StorOps
+TSM
+WebLogicDev
+WebLogicProd
+
+ou=NetGroups ou=ServerGroups
+cn=
+AdToolsDev-Hosts
+AppOps-Hosts
+AppServices-Hosts
+DBAs-Hosts
+DataG-Hosts
+DataQA-Hosts
+Dev-Hosts
+
+dc=edmunds dc=com
+ou=
+Groups
+NetGroups
+PamGroups
+People
+Roles
+Service
+******************************************************************************************
+9May08
+
+BL config manager
+
+select a job to be run
+RT click  open
+LT click  target
+   	  select machine/smart groups to be distributed to
+LT click OK
+LT click OK
+LT click select job
+RT click Execute
+   monitor in "Jobs" window
+LT click (double)
+	Simulate	Stage	Commit
+RED = BAD
+GREEN = GOOD
+******************************************************************************************
+13may08
+
+ip route show
+
+most routes go through
+     10.96.98.1
+default     10.96.98.10
+******************************************************************************************
+16may08
+
+DNS
+pl1rns702.admin.edmunds.com
+prodnamed
+cd /nfs/common/named/chroot-production/var/named/zones-[forward-reverse]
+cd /nfs/common/named/chroot-preproduction/var/named/zones-[forward-reverse]
+
+23jul08
+
+You have to update "production" first AND tehn pre-production
+   *** testing: ***
+       host <FQHN>
+       host <IP from above>
+       host <IP from above> 10.69.37.129
+       host <IP from above> 10.69.37.119
+See INC191574, CHG191689
+DNS is in some FU state ewhere preproduction (pl1rns702) update (pl1rns703) production map
+pl1rns703 preproduction is standalone...if you llook in:
+	  /nfs/common/named/chroot-(pre)production/etc/corezones.conf on pl1rns703...all entries 
+	  indicate they are slaves it is a slave with 10.69.37.7 (pl1rns702) as the master
+
+pl1rns703 > /sbin/ifconfig
+
+eth0 10.69.37.7
+:0 through :13 10.69.37.[120-133]
+eth1 10.69.48.27
+
+pl1rns702 > /sbin/ifconfig
+
+eth0 10.69.37.4
+:1 through :9 10.69.37.[111-119]
+eth1 10.69.48.24
+******************************************************************************************
+21may08
+
+try to ssh from pl1rad719 if not 
+    vi /etc/pam.d/system-auth
+comment out this line:
+  accout [default=bad success=ok user_unknown=ignore] /lib/security/$ISA/pam_ldap.so
+
+****** REMEMBER to undo thiis comment when you are done *****
+******************************************************************************************
+5jun08
+
+rdb (Dell 6950) networking setup
+
+		DRAC
+
+production primary			NFS primary	NFS secondary
+production secondary			IPC primary	IPC secondayr
+******************************************************************************************
+20jun08
+
+BladeLogic repository
+
+/nfs/common/nsh/(pxestore)
+******************************************************************************************
+15jul08  "ebiz"
+
+I have a new STATIC IP adderss 10.32.35.44
+Ed's static IP 10.32.35.8
+
+Remote Desk Top
+       gfontejon.edmunds.hq
+       login
+       passwd
+cygwin bash shell
+su - (works)
+
+pl1rap800.ebiz.edmunds.com
+pl1rdb800.ebiz.edmunds.com
+tl1rap800.ebiz.edmunds.com
+tl1rdb800.ebiz.edmunds.com
+
+
+******************************************************************************************
+4Aug08  --siggy
+
+Cacti login screen
+http://10.69.37.48/cacti/index.php
+
+******************************************************************************************
+4Aug08  --siggy IPV6
+
+Edit /etc/sysconfig/network and change
+
+NETWORKING_IPV6=yes to
+NETWORKING_IPV6=no
+******************************************************************************************
+6Aug08  --siggy /etc/hosts
+
+#!/bin/bash
+
+#--siggy 6Aug08
+# hosts-fix
+
+# back up existing file
+cp /etc/hosts /etc/hosts.ORIG
+
+# To identify how file was updated
+echo "## This file has been deplyed via Bladelogic (LAX1 Media Core)  ## " >> /etc/hosts-NEW
+
+# this will delete the short name form the loopback line 
+cat /etc/hosts | grep 127 | awk '{print $1"\t\t"$3"\t"$4}' >> /etc/hosts-NEW
+
+# this will give you the local host entry for /etc/hosts
+host `cat /etc/hosts | grep 127 | awk '{print$2}'` | awk '{print $4"\t\t"$1"\t"$1}' | cut -d. -f1-7 >> /etc/hosts-NEW
+
+# move NEW file to correct location
+mv -f/etc/hosts-NEW /etc/hosts
+******************************************************************************************
+LDAP monitoring  --siggy 8dec08 (Ron's script)
+
+[root@pl1rad702 log]# more /usr/local/bin/file_report.sh
+#!/bin/sh
+
+# The number of files that if we exceed, we will start tracking more data
+# The max open files for the ldap user is 1024
+THRESHOLD=900
+
+# END CONFIG
+
+# Get a count of files opened by the ldap user
+OPENFILES=`/usr/sbin/lsof -u ldap | wc -l`
+
+# Write the number to our log file
+echo "[`date`] $OPENFILES"
+
+if [ "$OPENFILES" -gt $THRESHOLD ]
+then
+    echo "The number of open files ( $OPENFILES ) exceeds the threshold of $THRESHOLD on `hostname -s`" 
+    /usr/sbin/lsof -u ldap | mail -s "LDAP Server `hostname -s` Warning - Open File Number is ${OPENFILES}, Threshold is ${THRESHOLD}" sysops@edmunds.com
+fi
+
+******************************************************************************************
+16May08
+
+# Need to know:
+#	- Manager LDAP password
+
+# Backup current LDAP users
+Before any changes, backup LDAP on suplier
+ssh pl1rad702.admin.edmunds.com
+sudo su -
+cd /root/LDAPControl
+
+------
+
+#
+# adding user
+#
+
+1. create user and home directory
+
+./getnewPeople.sh
+
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -b "ou=People,dc=edmunds,dc=com" > People.ldif
+
+./backupusers.sh
+
+#!/bin/sh
+TIME=`date "+%Y%m%d-%H%M%S"`
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x -L -L -L > ./backupusers/ldap_users_backup_${TIME}.ldif
+
+./createuser.sh
+
+(See bottom of file)
+
+2. add nodes for users
+
+./user_search.sh uid=<user_id> > <user_id>-mod.ldif 
+       (example: $ ./user_search.sh uid=jdoe > jdoe-mod.ldif)
+	- edit file
+		- keep this line -> dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		- remove the rest of the lines
+		- add changetype: modify
+		- place new credentials
+	- example:
+		<-- SNIP -->
+		dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		changetype: modify
+		replace: host
+		host: *
+		<-- SNIP -->
+./user_modify.sh <user_id>-mod.ldif
+
+
+#
+# removing and disabling users
+#
+./backupusers.sh #backs up the whole LDAP user list
+./user_search.sh uid=<user_id> > <user_id>-mod.ldif 
+     (example: $ ./user_search.sh uid=jdoe > jdoe-mod.ldif)
+	- edit file
+		- keep this line -> dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		- remove the rest of the lines
+		- add changetype: modify
+		- place new credentials
+	- example:
+		<-- SNIP -->
+		dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+		changetype: modify
+		replace: loginShell
+		loginShell: /bin/false
+		- 
+		replace: host
+		host: null
+		<-- SNIP -->
+./user_modify.sh <user_id>-mod.ldif
+
+# home_directories
+No change
+
+#
+# Reseting passwords to changemenow
+# Below is an example of jdoe-mod.ldif
+#
+<-- SNIP -->
+dn: uid=jdoe,ou=People,dc=edmunds,dc=com
+changetype: modify
+replace: userPassword
+userPassword: {SSHA}/z5NCrPnCiKQtYpX9WPcUyJ+4x5UVW98
+<-- SNIP -->
+
+
+# Note: how changemenow was hashed LDAP passwd line
+ldap_server$ slappasswd -h {SSHA} -s changemenow
+
+
+
+-----------------------------------------------------------
+# Additional documents and script locations
+
+pl1rad504:/admin/docs/access/users_and_groups.txt
+
+Note: bastion jump servers
+pl1rad507.media.edmunds.com
+pl1rad513.media.edmunds.com
+
+Server -> http://www.openldap.org/
+Client Browser -> http://www-unix.mcs.anl.gov/~gawor/ldap/
+Note: LDAP servers for media
+pl1rad502.media.edmunds.com - supplier
+pl1rad508.media.edmunds.com - consumer
+
+-----------------------------------------------------------
+
+#
+# EIS
+#
+pl1rad005:/admin/conf/admin/ldif/users 
+     (your password, if your password doesn't work your login has to be added on ldap conf)
+
+15Apr08  --siggy
+
+Added stuff from all the scripts plus NOTES I took from Amanda's teaching session
+
+New host pl1rad702.admin.edmunds.com
+
+
+cat getnewPeople.sh 
+#!/bin/sh
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -b "ou=People,dc=edmunds,dc=com" > People.ldif
+
+cat backupusers.sh 
+#!/bin/sh
+TIME=`date "+%Y%m%d-%H%M%S"`
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x -L -L -L > ./backupusers/ldap_users_backup_${TIME}.ldif
+
+cat createuser.sh
+#!/bin/sh
+
+# Edmunds.com
+# 2006.01.05
+# mmarschall@edmunds.com
+# Create DC3 Media Interactive Acconts Stored in LDAP
+
+# Needed:
+# A way to add access to hosts via this script (should be 
+# fairly easy to do). 
+# Checking against the directory for the available uid/gid
+# and not just according to local files. This is pretty 
+# easy as well and will be done with time.
+# The use of arrays instead of a temp file.
+
+#LDIFDIR=/admin/conf/admin/ldif/users
+LDIFDIR=/root/LDAPControl
+
+cd $LDIFDIR
+ 
+# Find the last used UID/GID combination and store it 
+# for later. This should probably be searching the ldap directory 
+# and I will set it to do so when I get more time. For now 
+# we search the locally created People.ldif file.
+# Run getnewPeople.sh to get the latest list from the directory.
+
+#LASTUID=`cat * | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+LASTUID=`cat People.ldif | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+
+NEXTUID=`expr $LASTUID + 1`
+
+# Let's Give Some Info
+echo ""
+echo "Creating new DC3 Media LDAP User Account"
+echo ""
+echo "The last used UID/GID pair was: $LASTUID"
+echo ""
+echo "The UID/GID pair for this user will be: $NEXTUID"
+echo ""
+echo -n "Enter the username for the new user: "
+read USERNAME
+echo ""
+echo -n "Enter the Full Name of the new user: "
+read FULLNAME
+echo ""
+echo -n "Shall we create the account? [y/n]: "
+read ANSWER
+if [ $ANSWER = y ]; then 
+	echo ""
+	echo "Creating ldif file: $USERNAME.ldif"
+	echo "This can be used later for manual editing"
+	echo ""
+	echo "dn: uid=$USERNAME,ou=People,dc=edmunds,dc=com" > $USERNAME.ldif
+	echo "userPassword: {SSHA}/z5NCrPnCiKQtYpX9WPcUyJ+4x5UVW98" >> $USERNAME.ldif
+	echo "loginShell: /bin/bash" >> $USERNAME.ldif
+	echo "uidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "shadowMax: 99999" >> $USERNAME.ldif
+	echo "objectClass: account" >> $USERNAME.ldif
+	echo "objectClass: posixAccount" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "objectClass: shadowAccount" >> $USERNAME.ldif
+	echo "uid: $USERNAME" >> $USERNAME.ldif
+	echo "gecos: $FULLNAME" >> $USERNAME.ldif
+	echo "shadowLastChange: 13069" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "homeDirectory: /misc/$USERNAME" >> $USERNAME.ldif
+	echo "shadowWarning: 7" >> $USERNAME.ldif
+	echo "host: *" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "dn: cn=$USERNAME, ou=UPG, ou=Groups, dc=edmunds,dc=com" >> $USERNAME.ldif
+	echo "objectClass: posixGroup" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "userPassword: {crypt}x" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	
+	echo "Adding user to LDAP Directory"
+	ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f $USERNAME.ldif
+	
+	echo ""
+	echo "NOTE: Home Directory Creation depends greatly on"
+	echo "the automounted home directory volume being mounted"
+	echo "locally at /misc."
+	echo ""
+	echo -n "Shall we create a home directory for this user? [y/n]: " 
+	read HOMEANSWER
+	if [ $HOMEANSWER = y ]; then
+		sudo mkdir /misc/$USERNAME
+		sudo cp /etc/skel/.bash* /misc/$USERNAME
+		sudo chown -R $NEXTUID:$NEXTUID /misc/$USERNAME
+		sudo chmod 700 /misc/$USERNAME
+	elif [ $HOMEANSWER = n ]; then
+		echo "Exiting"
+		exit 5 
+	else
+		:
+	fi	
+elif [ $ANSWER = n ]; then 
+	echo "Exiting"
+	exit 3
+else
+	:	
+fi
+
+%%%%%
+
+cat user_modify.sh 
+#!/bin/sh
+
+ldapmodify -x -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -f $1
+
+%%%%%
+
+cat user_search.sh 
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x $1 
+
+EXAMPLE: /root/LDAPControl/user_search.sh uid=dsiegfriedt
+
+%%%%%
+
+Changes to groups and netgroups are done seperately (one for each section).
+
+cat DataQA-mod.ldif
+dn: cn=DataQA,ou=Teams,ou=Groups,dc=edmunds,dc=com
+changetype: modify
+replace: memberUid
+memberUid: cnaber
+memberUid: dangel
+memberUid: jghazizadeh
+memberUid: sbeitel
+memberUid: nalexander
+memberUid: gsimkin
+memberUid: knguyenvu
+memberUid: hrodarte
+
+cat Netgrou-DataQA-mod.ldif
+dn: cn=DataQA,ou=Teams,ou=NetGroups,dc=edmunds,dc=com
+changetype: modify
+replace: nisNetgroupTriple
+nisNetgroupTriple: (-,cnaber,-)
+nisNetgroupTriple: (-,dangel,-)
+nisNetgroupTriple: (-,jghazizadeh,-)
+nisNetgroupTriple: (-,sbeitel,-)
+nisNetgroupTriple: (-,nalexander,-)
+nisNetgroupTriple: (-,gsimkin,-)
+nisNetgroupTriple: (-,knguyenvu,-)
+nisNetgroupTriple: (-,hrodarte,-)
+
+
+*****
+
+***** The other way is to use the LDAP browser ****
+ 
+  --siggy21Apr08
+
+NOTE: pl1rad702.admin.edmunds.com is the LDAP server
+
+%%%%%
+
+more getnewPeople.sh
+#!/bin/sh
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -b "ou=People,dc=edmunds,dc=com" > People.ldif
+
+%%%%%
+
+more backupusers.sh
+#!/bin/sh
+TIME=`date "+%Y%m%d-%H%M%S"`
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x -L -L -L > ./backupusers/ldap_users_backup_${TIME}.ldif
+
+%%%%%
+
+more createuser.sh
+#!/bin/sh
+
+# Edmunds.com
+# 2006.01.05
+# mmarschall@edmunds.com
+# Create DC3 Media Interactive Acconts Stored in LDAP
+
+# Needed:
+# A way to add access to hosts via this script (should be 
+# fairly easy to do). 
+# Checking against the directory for the available uid/gid
+# and not just according to local files. This is pretty 
+# easy as well and will be done with time.
+# The use of arrays instead of a temp file.
+
+#LDIFDIR=/admin/conf/admin/ldif/users
+LDIFDIR=/root/LDAPControl
+
+cd $LDIFDIR
+ 
+# Find the last used UID/GID combination and store it 
+# for later. This should probably be searching the ldap directory 
+# and I will set it to do so when I get more time. For now 
+# we search the locally created People.ldif file.
+# Run getnewPeople.sh to get the latest list from the directory.
+
+#LASTUID=`cat * | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+LASTUID=`cat People.ldif | grep uidNumber | awk '{print $2}' | sort -n | tail -1`
+
+NEXTUID=`expr $LASTUID + 1`
+
+# Let's Give Some Info
+echo ""
+echo "Creating new DC3 Media LDAP User Account"
+echo ""
+echo "The last used UID/GID pair was: $LASTUID"
+echo ""
+echo "The UID/GID pair for this user will be: $NEXTUID"
+echo ""
+echo -n "Enter the username for the new user: "
+read USERNAME
+echo ""
+echo -n "Enter the Full Name of the new user: "
+read FULLNAME
+echo ""
+echo -n "Shall we create the account? [y/n]: "
+read ANSWER
+if [ $ANSWER = y ]; then 
+	echo ""
+	echo "Creating ldif file: $USERNAME.ldif"
+	echo "This can be used later for manual editing"
+	echo ""
+	echo "dn: uid=$USERNAME,ou=People,dc=edmunds,dc=com" > $USERNAME.ldif
+	echo "userPassword: {SSHA}/z5NCrPnCiKQtYpX9WPcUyJ+4x5UVW98" >> $USERNAME.ldif
+	echo "loginShell: /bin/bash" >> $USERNAME.ldif
+	echo "uidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	echo "shadowMax: 99999" >> $USERNAME.ldif
+	echo "objectClass: account" >> $USERNAME.ldif
+	echo "objectClass: posixAccount" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "objectClass: shadowAccount" >> $USERNAME.ldif
+	echo "uid: $USERNAME" >> $USERNAME.ldif
+	echo "gecos: $FULLNAME" >> $USERNAME.ldif
+	echo "shadowLastChange: 13069" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "homeDirectory: /misc/$USERNAME" >> $USERNAME.ldif
+	echo "shadowWarning: 7" >> $USERNAME.ldif
+	echo "host: *" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "" >> $USERNAME.ldif
+	echo "dn: cn=$USERNAME, ou=UPG, ou=Groups, dc=edmunds,dc=com" >> $USERNAME.ldif
+	echo "objectClass: posixGroup" >> $USERNAME.ldif
+	echo "objectClass: top" >> $USERNAME.ldif
+	echo "cn: $USERNAME" >> $USERNAME.ldif
+	echo "userPassword: {crypt}x" >> $USERNAME.ldif
+	echo "gidNumber: $NEXTUID" >> $USERNAME.ldif
+	
+	echo "Adding user to LDAP Directory"
+	ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f $USERNAME.ldif
+	
+	echo ""
+	echo "NOTE: Home Directory Creation depends greatly on"
+	echo "the automounted home directory volume being mounted"
+	echo "locally at /misc."
+	echo ""
+	echo -n "Shall we create a home directory for this user? [y/n]: " 
+	read HOMEANSWER
+	if [ $HOMEANSWER = y ]; then
+		sudo mkdir /misc/$USERNAME
+		sudo cp /etc/skel/.bash* /misc/$USERNAME
+		sudo chown -R $NEXTUID:$NEXTUID /misc/$USERNAME
+		sudo chmod 700 /misc/$USERNAME
+	elif [ $HOMEANSWER = n ]; then
+		echo "Exiting"
+		exit 5 
+	else
+		:
+	fi	
+elif [ $ANSWER = n ]; then 
+	echo "Exiting"
+	exit 3
+else
+	:	
+fi
+
+%%%%%
+
+more user_search.sh 
+ldapsearch -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -b 'dc=edmunds,dc=com' -x $1 
+
+%%%%%
+
+more user_modify.sh 
+#!/bin/sh
+
+ldapmodify -x -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -f $1
+
+%%%%%
+
+1) ./backupusers.sh
+2) ./user_serach.sh cn=<GroupName>
+3) ./user_serach.sh cn=<GroupName> > GroupName-MOD.ldif
+4) vi GroupName-MOD.ldif
+      make you changes
+5) ./user_modify.sh GroupName-MOD.ldif
+6) FIX ANY ERRORS!!!! It will give you line numbers but they are not reliable.
+
+******************************************************************************************
+17feb09  --siggy
+
+the "Y" drive is located 3050ca.sm.edmunds-corp.com
+******************************************************************************************
+25feb09  --siggy
+
+DB machines do all these steps for ****BOTH**** partner machines
+
+&&&&&
+su - oracle
+ssh-keygen -t dsa -b 1024
+cat .ssh/id_dsa.pub >> authorized_keys
+
+Make sure the .pub is appended to the other machines ~oracle/.ssh/authorized_keys
+
+On each machine ssh to every machine in /etc/hosts (short names adn FQHN) This adds machines to .ssh/know_hosts
+This includes the "ipc/nfs" names also.
+&&&&&
+
+&&&&&
+Disable teh banner by editing /etc/ssh/sshd_config And comment out the "Banner" line
+*****NOTE***** the sshd_config  NOT the ssh_config
+                      ^
+                  IMPORTANT
+
+/sbin/service sshd restart
+&&&&&
+
+&&&&&
+StorageOps will mount all the storage
+make /ora* mount points and chown oracle.dba /ora*
+&&&&&
+
+&&&&&
+adding a "vip" for db machines
+
+add 100 (when available) to the IP address adn add an entry, in the original sub-domain.
+
+db.internal.edmunds.com
+tl1rdb390-poc		A	10.128.104.102
+tl1rdb390-poc-vip	A	10.128.104.152
+tl1rdb391-poc		A	10.128.104.103
+tl1rdb391-poc-vip	A	10.128.104.153
+
+&&&&&
+2. Configuring Kernel Parameters
+
+fs.file-max = 655360
+kernel.shmall = 4294967296
+kernel.shmmax = 8589934592
+kernel.shmmni = 4096
+kernel.sem = 250 32000 100 128
+net.ipv4.ip_local_port_range = 1024 65000
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 262144
+fs.aio-max-nr = 1048576
+
+
+3. Setting Shell Limits for the oracle User
+
+a) Add the following lines to the /etc/security/limits.conf file:
+
+oracle 	   soft      nproc    2047
+oracle 	   hard      nproc    16384
+oracle 	   soft      nofile   1024
+oracle 	   hard      nofile   65536
+
+
+b) Add or edit the following line in the /etc/pam.d/login file, if it does not already exist:
+
+session required pam_limits.so
+
+Depending on the oracle user's default shell, make the following changes to the default shell start-up file:
+
+For the Bourne, Bash, or Korn shell, add the following lines to the /etc/profile file (or the file on SUSE Linux Enterprise Server systems /etc/profile.local):
+
+if [ $USER = "oracle" ]; then
+if [ $SHELL = "/bin/ksh" ]; then
+ulimit -p 16384
+ulimit -n 65536
+else
+ulimit -u 16384 -n 65536
+fi
+fi
+
+For the C shell (csh or tcsh), add the following lines to the /etc/csh.login file (or the file on SUSE Linux Enterprise Server systems /etc/csh.login.local):
+
+if ( $USER == "oracle" ) then
+limit maxproc 16384
+limit descriptors 65536
+endif
+
+&&&&&
+
+Set up bonds
+
+DEVICE=eth0
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond1
+
+DEVICE=eth1
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond2
+
+DEVICE=eth2
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond1
+
+DEVICE=eth3
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond2
+
+DEVICE=eth4
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+
+DEVICE=eth5
+BOOTPROTO=none
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+
+[root@ql1rdb700-nre network-scripts]# cat ifcfg-bond*
+DEVICE=bond0
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=10.96.203.1
+NETMASK=255.255.254.0
+TYPE=Ethernet
+
+DEVICE=bond1
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=10.96.233.101
+NETMASK=255.255.254.0
+TYPE=Ethernet
+
+DEVICE=bond2
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=192.168.200.1
+NETMASK=255.255.255.0
+TYPE=Ethernet
+&&&&&
+
+&&&&&
+append to end of /etc/modprobe.conf
+
+alias	bond0	bonding
+alias	bond1	bonding
+alias	bond2	bonding
+options	bonding	miimon=100	mode=1	max_bonds=3
+&&&&&
+
+
+******************************************************************************************
+26feb09  --siggy
+
+to change yum.repos.d
+
+cd /etc/yum.repos.d/
+vi edmunds-admin.repo 
+
+comment out "baseurl=http://pl1rad710.admin.edmunds.com/rhel4"
+add         "baseurl=http://pl1rad710.admin.edmunds.com/rhel5-x86_64-el-5-u2"
+
+yum clean all
+yum list
+******************************************************************************************
+4mar09  --siggy
+
+Missing rpm for ebiz can be found:
+pl1rad710.admin.edmunds.com://nfs/common/nsh/storage/installables
+
+find . -name "*libcwait*"
+******************************************************************************************
+23mar09  from Ron's email
+
+I think we’ve finalized the design we’re using for the new data warehouse.  Please take a moment to 
+look over the configuration (pl1rdb305-307), since you’ll be supporting it when it goes live.  The 
+boxes are configured slightly differently than our other database clusters.  They were configured 
+with 802.3ad link aggregation meaning that the interfaces are all active at the same time (vs. Today’s 
+active/standby configuration).  On top of that, there is 802.11q VLAN tagging which allows for four 
+unique vlans to be assigned to the same physical interface. Lastly, the MTU size has been increased 
+to 9000 (jumbo frames).
+
+These files were the ones changed to create the configuration described above:
+
+# This is the main bonding configuration for NFS:
+/etc/sysconfig/network-scripts/ifcfg-bond1
+
+# Each of these files represents a separate VLAN.  214X are the names of the VLANs on the switch.
+/etc/sysconfig/network-scripts/ifcfg-bond1.2141
+/etc/sysconfig/network-scripts/ifcfg-bond1.2142
+/etc/sysconfig/network-scripts/ ifcfg-bond1.2143
+/etc/sysconfig/network-scripts/ ifcfg-bond1.2144
+
+# Since there are different options for each of the bonds on the box, potions of “options bonding” 
+have been moved to /etc/sysconfig/network-scripts/ifcfg-bondX, so modeprobe.conf looks a bit different 
+as well.
+/etc/modprobe.conf
+
+In this configuration, we able to push 350Mb/s which equates to 3GB of throughput.  That’s three times 
+what our existing warehouse is capable of.  Considering that we can target the cluster as a whole instead 
+of individual nodes as we do today, under optimal conditions, that should equate to about 9X the 
+performance we’re seeing in today’s configuration!
+
+Thanks,
+
+Ron
+
+******************************************************************************************
+13oct09  --siggy
+
+LDAP 
+
+AppOps-Hosts = AppOpsM(edia)
+AppOpsServices =AppOpsE(AS)
+******************************************************************************************
+28oct09  --siggy
+
+adding a printer to ebiz
+
+as dsiegfriedt.....
+[dsiegfriedt@tl1rdb800 ~]$ unset DISPLAY
+[dsiegfriedt@tl1rdb800 ~]$ sudo /usr/sbin/redhat-config-printer
+Password:
+Initializing alchemist edit environment ...
+Initializing linux printing database ...
+
+and the "tui" window comes up
+******************************************************************************************
+6nov09  --siggy
+
+Configuration Manager
+Jobs->Production Jobs->Admin Jobs->Add RPM to AppOps Yum Repo
+
+On 11/05/2009 04:56 PM, Siegfriedt, Don wrote:
+> But I forget... Where was the "add to yum repository" blade job?  I can poke
+> around for hours or just ask.....  Guess which I picked
+******************************************************************************************
+13nov09  --siggy
+
+DDoS attack chanes that were made (so far).
+
+ssh pl1rns700.admin.edmunds.com (I jump from pl1rns702.admin.edmunds.com)
+
+cd /var/named/chroot/var/named/zones-forward
+vi db.edmunds.com
+uncomment this line
+;edmunds.com.    300        IN    A        204.16.221.2
+
+ps -ef | grep name to get the PID
+kill -HUP 8015; ps -ef | grep name; tail -f /var/log/messages
+
+To verify on the secondary server
+ssh pl1rns701.admin.edmunds.com (I jump from pl1rns702.admin.edmunds.com)
+cd /var/named/chroot/var/named/zones-forward
+vi bak.edmunds.com
+
+-kenny
+note the following changes made to the db.edmunds.com zone file in the DMZ at 11:08PM:
+
+;edw                            IN      CNAME           gtm-redirect.edmunds.com.
+edw                             IN      NS              lax1-gdns.edmunds.com.
+                                   IN      NS              lax1-gdns2.edmunds.com.
+
+******************************************************************************************
+18nov09  --siggy   
+
+BladeLogic adding a user (for Priovisioning) added Jeff to sysops
+
+Log into "Configuration Manager" as RBACAdmin (passwd in gpg file)
+If you can't see RBAC Manager in LT column (under Jobs/Depot etc.)
+   click Blue arrow
+   check RBAC Manger
+   select RBAC Manager
+   select Users
+   select user name
+   RT click/open
+   select role (on LT) ie. sysops
+   migrate it to teh RT column (green arrow head)
+   click OK
+
+and your spent
+******************************************************************************************
+1dec09  --siggy
+
+to make sendmail work
+
+cp ~dsiegfriedt/sendmail.cf /etc/mail/
+chkconfig sendmail on
+service sendmail start
+******************************************************************************************
+20jan10  --siggy
+
+Back up Entourage:
+File-> Export Contacts.
+
+******************************************************************************************
+EBIZ
+
+Adding user
+visudo
+/etc/security/access.netgroups.conf
+/etc/ssh/sshd_config
+  (AllowUsers byoshimura fcalimage grush akarapet skuang ksexton dsiegfriedt ttruong amahmood jthompson dleeds knguyen skollipara)
+
+    ** service sshd restart **
+
+******************************************************************************************
+smpapp01.sm.edmunds-corp.com 172.16.1.12
+******************************************************************************************
+21apr10  Jeff Thompson
+
+http://confluence/display/ec/Flashing+Procedure+for+Dell+Fibre+Cards
+
+
+   1.  DRAC into server
+   2. go into the system menu (F2)
+   3. Set boot sequence
+         1. disable ALL embedded NICs
+         2. change NIC under integrated to enabled (not enabled + PXE)
+	    a) while ther set the correct boot order
+	    b) turn on "Virtualization"
+	    c) turn on "Hyperthreading" (Logical Processor)
+	    d) Memory settings:  "Memory Operating Mode => Optimizer Mode"
+         3. save and exit
+   4. in DRAC go to Consol/Media -> Configuration
+         1.  Under Virtual Media set the status to attach
+   5. Launch the console viewer
+         1. Go to Virtual Media at the top and Launch Virtual Media
+         2. Add Image
+         3. Check the box next to the Image
+	    \\3050ca\NT04\EDINC\SystemsAdministration\ubcd.iso
+   6. in DRAC go to Setup and set the First Boot Device to Virtual DC/DVD/ISO
+   7. reboot server from console
+   8. From boot image
+         1. DOS/Linux/Boot Disks
+         2. DOS boot disk
+         3. FreeDOS
+         4. Let DOS load defaults (you do not need to choose any options)
+   9. cd t:\dosapps\intel14.7
+         1. ibautil.exe -FE -NIC=1
+         2. ibautil.exe -INSTALL -NIC=1
+         3. choose yes at all options
+         4. at this point you should see a list of the NICs with the current version listed 
+	    for the card you just flashed
+  11. return all changes to original values.
+  10. Reboot server
+
+******************************************************************************************
+11may10 --siggy
+
+a list of local UID/GID
+
+[root@pl1rad719 reference]# hostname 
+pl1rad719.admin.edmunds.com
+[root@pl1rad719 reference]# pwd
+/nfs/local/admin/reference
+[root@pl1rad719 reference]# cat b2c_users_groups.txt 
+
+******************************************************************************************
+22jun10  
+
+email from Ankur  14Apr10  Steps to register a machine for RHN
+
+yum -y install rhn-setup
+
+rhn_register --nox
+
+yum update yum
+
+yum -y install yum-utils
+
+yum check-update
+
+yum check-update |awk '{print $1}' > /tmp/ankur
+
+vi /tmp/ankur
+
+cd /tmp
+
+mkdir patch
+ 
+cd patch/
+ 
+for file in `cat /tmp/ankur `; do yumdownloader $file; done
+
+******************************************************************************************
+22jun10  --siggy found on RedHat site
+
+mucking with history!
+
+The shell's entire history can be cleared by running the command history -c. 
+
+Its possible to remove a single line from the shell's history by running the command history -d <line>.
+******************************************************************************************
+

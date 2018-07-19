@@ -1,0 +1,6 @@
+You've heard of the golden rule, haven't you? 
+Whoever has the gold makes the rules! 
+
+This regex against the above text.
+
+/(?:gold(?=[\w]|y(ou(?!')+w))/is

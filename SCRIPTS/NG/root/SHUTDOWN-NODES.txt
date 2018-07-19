@@ -1,0 +1,19 @@
+#!/bin/bash
+#******************************************************************
+# Name: SHUTDOWN-NODES
+#
+# Purpose: This is the Nodes shutdown script.  It shuts down all the 
+#          frodo nodes listed in /etc/beowulf/bcs/NODE-SHUT-LIST.
+#
+# Calls To: None
+#
+#  Author	Date		Version
+# -------------+----------------+-----------
+# Siggy         17Sep07		 1.0
+#
+#*******************************************************************
+for i in `cat /etc/beowulf/bcs/NODE-SHUT-LIST`
+do
+echo $i
+rsh $i /sbin/init 0
+done

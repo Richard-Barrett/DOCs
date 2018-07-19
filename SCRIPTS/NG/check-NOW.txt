@@ -1,0 +1,9 @@
+#!/bin/bash
+
+/root/uptimes >> today$$
+/root/nascheck >> today$$
+/root/node-fail-chk >> today$$
+/root/node-err-chk >> today$$
+/root/GM-gather >> today$$
+/root/search-suid >> today$$
+/root/servcheck >> taday$$

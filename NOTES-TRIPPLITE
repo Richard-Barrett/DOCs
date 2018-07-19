@@ -1,0 +1,286 @@
+6Aug15  --siggy
+
+FINALLY got the PDUMH30HVNET online.had to reseat (repeatedly) the networking card AND a live network cable MUST be plugged in, in order to make configuration changes from the console.
+
+remove retaining plate from around the network connection, plug in the console cable (P/N 73-1025), plug in a live network cable, open a putty session (9600,8,none,1), reseat the network card.  After it boots it gives you 5 seconds to hit a key.  This starts the config process.  Pretty simple asks all the right question, and then reboots.
+
+default passwd = Tripplite
+new passwd = apc1
+
+[root@lasysmon siggy]# ssh admin@10.130.24.26
+admin@10.130.24.26's password: 
+
+User admin logged in
+
+PowerAlert TelNet Console: 12.04.0055
+Serial Number:	2514BV016737700177
+MAC Address: 00:06:67:26:a3:2d
+
+
+Tripp Lite                                                                  (c) Copyright 2005-2010
+PowerAlert 12.04.0055                                        All Rights Reserved
+--------------------------------------------------------------------------------
+Output Off
+
+
+-------- Main Menu -------------------------------------------------------------
+
+	1- Devices
+	2- Contacts
+	3- Network
+	4- System
+	X- Logout
+
+	<ENTER>- Refresh
+> 1
+
+-------- Device List -----------------------------------------------------------
+
+	1- Device 1 (TRIPP LITE PDUMH30HV19NET)
+
+	X- Main Menu
+
+	<ENTER>- Refresh
+> 1
+
+-------- Device 1 -------------------------------------------------------------
+
+    Location              :               Region                :               
+    Device Name           : Device 1      Device ID             :               
+    Date Installed        : 20090807      Serial Number         : 2518FY0PD7752 
+    Power On Delay        : 0 Seconds     Display Orientation   : Normal        
+    Communication Protoco : 5005          Communication Port    : /com/1        
+    Operating System      : NetOS         
+
+	1- Status
+	2- Actions
+	3- Settings
+	4- Logs
+	X- Main Menu
+
+	<ENTER>- Refresh
+
+> x
+
+-------- Device 1 -------------------------------------------------------------
+
+    Location              :               Region                :               
+    Device Name           : Device 1      Device ID             :               
+    Date Installed        : 20090807      Serial Number         : 2518FY0PD7752 
+    Power On Delay        : 0 Seconds     Display Orientation   : Normal        
+    Communication Protoco : 5005          Communication Port    : /com/1        
+    Operating System      : NetOS         
+
+	1- Status
+	2- Actions
+	3- Settings
+	4- Logs
+	X- Main Menu
+
+	<ENTER>- Refresh
+> 2
+
+-------- Device 1 -------------------------------------------------------------
+
+Actions
+
+	1- Control
+	2- Loads
+	X- Main Menu
+
+	<ENTER>- Refresh
+> 1
+
+-------- Device 1 -------------------------------------------------------------
+
+Control List
+
+	A- Set Power On Delay
+	B- Start Shed Sequence
+	C- Turn All Loads On
+	D- Reboot SNMP Card
+	E- Enable AutoShed on Transition
+	F- Flip Display
+	G- Reboot UPS
+	H- Turn All Loads Off
+	I- Immediate Device Reboot
+	J- Cycle All Loads
+	K- Reset Min./Max. Input Voltage
+	L- Start Ramp Sequence
+	X- Actions Menu
+
+	<ENTER>- Refresh
+55555
+-------- Main Menu -------------------------------------------------------------
+
+	1- Devices
+	2- Contacts
+	3- Network
+	4- System
+	X- Logout
+
+	<ENTER>- Refresh
+> 3
+
+-------- Network Settings Menu -------------------------------------------------
+
+	1- TCP/IP
+	2- Telnet/SSH
+	3- Web
+	4- SNMP
+	5- SMTP
+	6- Syslog
+	X- Main Menu
+
+	<ENTER>- Refresh
+> 1
+
+-------- TCP/IP Settings Menu --------------------------------------------------
+
+    IP Address      : 10.130.24.26      MAC Address : 00-06-67-26-A3-2D
+    Subnet Mask     : 255.255.252.0     Boot Mode   : Static IP
+    Default Gateway : 10.130.24.1       Port Speed  : Auto-negotiate
+    Primary DNS     : 0.0.0.0           Secondary DNS : 0.0.0.0
+    Host Name       : rack7-ucs-up
+    Domain Name     : ri-net.com
+
+	1- IP Address      : 10.130.24.26
+	2- Subnet Mask     : 255.255.252.0
+	3- Default Gateway : 10.130.24.1
+	4- Boot Mode       : Static IP
+	5- Port Speed      : Auto-negotiate
+	6- Primary DNS     : 0.0.0.0
+	7- Secondary DNS   : 0.0.0.0
+	8- Host Name       : rack7-ucs-up
+	9- Domain Name     : ri-net.com
+	A- Apply Changes
+	X- Network Settings Menu
+
+
+	<ENTER>- Refresh
+> 
+55555
+
+
+-------- Main Menu -------------------------------------------------------------
+
+	1- Devices
+	2- Contacts
+	3- Network
+	4- System
+	X- Logout
+
+	<ENTER>- Refresh
+> 1
+
+-------- Device List -----------------------------------------------------------
+
+	1- Device 1 (TRIPP LITE PDUMH30HV19NET)
+
+	X- Main Menu
+
+	<ENTER>- Refresh
+> 1
+
+-------- Device 1 -------------------------------------------------------------
+
+    Location              :               Region                :               
+    Device Name           : Device 1      Device ID             :               
+    Date Installed        : 20090807      Serial Number         : 2518FY0PD7752 
+    Power On Delay        : 0 Seconds     Display Orientation   : Normal        
+    Communication Protoco : 5005          Communication Port    : /com/1        
+    Operating System      : NetOS         
+
+	1- Status
+	2- Actions
+	3- Settings
+	4- Logs
+	X- Main Menu
+
+	<ENTER>- Refresh
+> 1
+
+-------- Device 1 -------------------------------------------------------------
+
+    AC Sources            : 1             Device Mode           : Present       
+    Nominal Input Voltage : 230 V         Input Voltage         : 205.1 V       
+    Minimum Input Voltage : 0.0 V         Maximum Input Voltage : 206.6 V       
+    Input Frequency       : 59.9 Hz       Low Transfer Voltage  : 134 V         
+
+	1- Input
+	2- Output
+	3- Battery
+	4- Miscellaneous
+	X- Device Menu
+
+	<ENTER>- Refresh
+> 2
+
+-------- Device 1 -------------------------------------------------------------
+
+    Load Banks Controllab : 14            Load Banks Total      : 14            
+    Auto Shed             : Disabled      Auto Shed on Transiti : Disabled      
+    Output Voltage        : 205.0 V       Output Frequency      : 59.9 Hz       
+    Output Current 2      : 0.0 A         Output Current 1      : 0.0 A         
+    Output Current        : 0.0 A - Total Output Source         : Normal        
+    Load Level Threshold  : 15.0          Minimum Output Curren : 0.0 A         
+    Maximum Output Curren : 0.0 A         Load Bank 1 Status    : On            
+    Load Bank 2 Status    : On            Load Bank 3 Status    : On            
+    Load Bank 4 Status    : On            Load Bank 5 Status    : On            
+    Load Bank 6 Status    : On            Load Bank 7 Status    : On            
+    Load Bank 8 Status    : On            Load Bank 9 Status    : On            
+    Load Bank 10 Status   : On            Load Bank 11 Status   : On            
+    Load Bank 12 Status   : On            Load Bank 13 Status   : On            
+    Load Bank 14 Status   : On            
+
+	1- Input
+	2- Output
+	3- Battery
+	4- Miscellaneous
+	X- Device Menu
+
+	<ENTER>- Refresh
+> 
+55555
+
+11Aug15  OT/siggy
+
+Turned telnet back on and this worked:
+
+spawn /usr/bin/telnet 10.130.24.26
+expect "login: "
+send "admin\r"
+expect "Password: "
+sleep 3
+send "apc1\r"
+expect "        <ENTER>- Refresh"
+expect "> "
+sleep 3
+send "1\r"
+expect "        <ENTER>- Refresh"
+expect "> "
+sleep 3
+send "1\r"
+expect "        <ENTER>- Refresh"
+expect "> "
+sleep 3
+send "2\r"
+expect "        <ENTER>- Refresh"
+expect "> "
+sleep 3
+send "1\r"
+expect "        <ENTER>- Refresh"
+expect "> "
+sleep 3
+send "h\r"
+expect "        <ENTER>- Refresh"
+expect "> "
+
+55555
+
+27Aug15  --siggy changing name of PDU
+
+1,1,3,1,1,c
+
+55555
+

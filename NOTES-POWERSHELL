@@ -1,0 +1,369 @@
+-------
+SITES |
+-------
+http://www.fiveminutes.eu/powershell-tips-for-bash-users/
+http://www.fiveminutes.eu/powershell-tips-for-bash-users-part-2-day-to-day-scripting/
+
+http://blogs.technet.com/b/heyscriptingguy/
+http://blogs.technet.com/b/heyscriptingguy/archive/tags/windows+powershell/getting+started/
+http://blogs.technet.com/b/heyscriptingguy/archive/tags/windows+powershell/scripting+wife
+
+http://dereknewton.com/2010/12/powershell-grep-equivalent/
+
+http://xahlee.info/powershell/PowerShell_for_unixer.html
+
+http://www.codeproject.com/Articles/180331/Introduction-to-PowerShell-Move-over-Bash
+...............................................
+
+Power shell wmv #1  27Nov13
+
+array/range 1..15
+tab compltion works
+cls = clear
+up arrow works
+pipe works
+more works
+md = mkdir
+rd = rm -rf
+ls, dir
+read file = gc, cat, type
+delete file = del, erase
+redirect >, >>
+gps = get-process
+sl = set-location
+sc example.txt $null = touch example.txt (set content)
+gc = get-content
+hibernate= c:\Windows\System32\rundll32.exe powrprof.dll,SetSuspendState Hibernate
+gci = Get-ChildItem
+
+...............................................
+GREP-ISH
+select-string .\*.* -pattern "evildoer"					(acts like grep)
+cat somefile.txt | where { $_ -match "expression"}
+dir -recurse | select-string -pattern "Mary"				(acts like grep -R)
+...............................................
+SED-ISH
+cat somefile.txt | %{$_ -replace "expression","replace"}		( sed s/expression/replace/ )
+
+...............................................
+AWK-ISH
+Get-Content .\test.csv | %{ $_.Split(',')[1]; } == cat test.csv | awk -F, '{print $2}'
+
+...............................................
+wc -l-ISH
+Get-Content C:\fso\a.txt | Measure-Object –Line
+Get-Content C:\fso\a.txt | Measure-Object -line -word -character
+...............................................
+tail
+Get-Content <filename> | Select-Object -Last 10
+
+...............................................
+
+get-process | stop-process -whatif   (dry run)
+
+get-eventlog -logname Application -newest 1 (or any number)
+
+get-eventlog -list
+
+get-verb
+
+get-command -verb get  (listing of all verbs with "get" in them)
+
+get-help get-process
+
+get-help get-process -example | more     (like man)
+
+get-process -cn (cat c:\fso\cn.txt)
+-cn = computer name
+--- queries all machine names in "cn.txt" adn runs a get process command on them ---
+	for i in 'cat cn.txt' do; top; done
+
+notepad (to open an application)
+get-process notepad
+get-process notepad | stop-process
+get-process notepad
+
+get-history (h as an alias)
+
+to run from history
+r 23
+
+get-process > c://blah.txt
+type c://blah.txt
+get-service >> c:/blah.txt
+
+del c:/blah.txt -whatif      (test)
+del c:/blah.txt -confirm     (ask or -i)
+
+SCRIPT CENTER
+technet.microsoft.com/en-us/scriptcenter
+
+GETTING STARTED
+blogs.technet.com/b/heyscriptingguy/archive/tags/windows+powershell/getting+started
+
+3Dec13
+get-process notepad,calc | stop process
+
+"notepad","calc" | foreach { start-process $_ }
+
+gps = get-process
+
+gps | where { $_.pm -gt 20MB }
+gps | where { $_.cpu -gt 10 }
+
+gps | where { $_.cpu -gt 10 } | sort cpu -descending | select -first 3
+      	      	     	      	     	 	       	      -unique
+
+get-eventlog -logname application -entrytype error | more
+get-eventlog -logname application -entrytype error | sort source 
+get-eventlog -logname application -entrytype error | sort group source
+get-eventlog -logname application -entrytype error | sort count -decsending
+get-eventlog -logname application -after 2/28/12
+
+measure-command{} times the command
+
+gps name,id | format-table   (left and right justified)
+gps name,id | format-table   -autosize (1 space bigger than the longest field)
+
+gps name,id | format-list (Info about every process)
+
+gps name,id | format-wide -column 3 (-autosize will use max number of columns)
+
+gps | select -first 1   (head -1)
+
+| sort status
+
+get-service | sort status | format-table name,status -autosize   (format at the end!)
+
+get-service | sort status | format-table name,status | out-file -filepath <FQPN>
+
+get-service | sort status | format-table name,status | export-csv -path <FQPN> -notypeinformation  (for csv ONLY)
+
+get-service | sort status | format-table name,status | export-clixml -path <FQPN>
+
+$a = import-clixml -path <FQPN>  (sets $a as a variable)
+
+...........................................................................
+
+get-psprovider
+
+get-psdrive
+
+sl = set-location
+
+set-location alias:   (from above)
+dir
+
+cd c:\
+new-item -name blah -path <FQPN> -itemtype directory   (mkdir)
+set-location c:\blah
+new-item -name blah -path <FQPN> -itemtype file   (touch a file in that directory)
+
+sl alias:
+new-item -name mred -value gps       (creates alias for gps ==> mred)
+
+sl variable:
+new-item -name mred -value "admin"       (creates variable mred with a value of "admin")
+
+sl env:
+new-item -name mred -value "cowflop"       (creates environmental variable mred with a value of "cowflop")
+  
+
+NOTE:
+Same syntax to create 3 different data types (based on set-location from get-psproivider)
+
+...........................................................................
+
+gci | where { $_.definition -match 'get-childitem' }  = ls | grep childitem
+
+dir = gci = ls
+
+gci variable	ls variable	dir variable
+gci env		ls env		dir env
+gci function	ls function	dir function
+
+gci c:\fso | where { $_.lastwritetime -gt [datetime] "3/3/12" } = ls -lart
+
+dir | where { $_.mode -match '^d' } = search for directories (ls | grep blah)
+
+dir -force | where { $_.mode -match '^d' }
+
+dir | where { $_.psiscontainer }
+
+gci -noun variable  = list of variables
+
+new-variable -name mred
+	     -value admin
+	     -Description "mred variable'
+	     -option readonly
+
+get-variable mred | format-list
+
+-force to delete ro variable
+
+gci -noun alias
+
+sl alias:
+
+get-alias mred | remove-item     + delete and alias
+
+new-alias    -name mred
+	     -value get-process
+	     -Description "mred alias"
+
+get-alias | where { $_.description -eq 'mred alias' }
+...........................................................................
+16Dec13
+
+test-path $profile (to see if you have a profile)
+
+...........................................................................
+4 of 5  17Dec13
+
+ETW = "Event Tracing for Windows"
+      get-winevent
+
+~dsiegfri/DOCs/powershell-eventlogs.jpg
+~dsiegfri/DOCs/powershell-eventlogs1.jpg
+~dsiegfri/DOCs/powershell-eventlogs2.jpg
+
+get-winevent (ETW logs (newer style))
+get-eventlog (classic)
+
+get-command -noun *event*  (list of event commands)
+
+get-eventlog (classic)
+
+-------------------
+on remote machine |
+-------------------
+invoke-command -cn dc3 -cred iamred\administrator {get-eventlog -computername dc3 -newest 1 -logname}
+invoke-command -cn dc1 -cred $cred {get-eventlog -computername dc3 -newest 1 -logname}
+invoke-command -cn dc1,dc3 -cred $cred {get-eventlog -computername dc3 -newest 1 -logname}
+invoke-command -cn dc1,dc3 -cred $cred {get-eventlog -computername dc3 -newest 1 -logname} | select entrytype,message (column names from output of above command)
+invoke-command -cn dc1,dc3 -cred $cred {get-eventlog -computername dc3 -newest 1 -logname} | select -expand message (column names from output of above command)
+$a = invoke-command -cn dc1,dc3 -cred $cred {get-eventlog -computername dc3 -newest 1 -logname} | select -expand message (column names from output of above command)
+$a | ft timewritten,timegenerated -autosize
+     ^
+     |
+   format table
+$a | select message
+$a | select -expand message
+
+------------------
+on local machine |
+------------------
+get-eventlog -newest 1 -logname}
+get-eventlog -logname application -source winmgmt -newest 5 -entrytype error | select message
+get-eventlog -logname application -source winmgmt -newest 5 -entrytype error | select -expand message
+
+--------------------------
+put cred into a variable |
+--------------------------
+$cred = get-credential iamred\administrator
+      enter passwd (in the box)
+
+-cn can take an array
+
+get-date | get-member -membertype property
+(get-date).date         = date
+
+-------------------
+on local machine |
+-------------------
+get-winevent -filterhashtable @{logname 'application'; id=1003; starttime=(get-date).date}
+
+-------------------
+on remote machine |
+-------------------
+get-winevent -filterhashtable @{logname 'application'; id=1003; starttime=(get-date).date} -cn dc3 -cred $cred
+
+help get-winevent
+
+get-winevent -logname blahblah -oldest | where { $_.id -eq 2 } | fl *      = tail var/log/messages
+
+...........................................................................
+5 of 5 24Dec13
+list of commands you can run remotely
+get-command -commandtype cmdlet | where { $_.definition -match 'computername' } | format-wide -property name -autosize
+
+26dec13
+
+when a process starts
+> register-wmievent -class win32-processstarttrace -source myevent
+
+as admin
+
+> notepad (to create an event)
+>get event  (for teh last one)
+>get-event -sourceidetifier myevent
+
+hw inventory
+get-wmiobject -list [*prcess*]
+get-wmiobject win32_bios
+get-wmiobject win32vol
+
+...........................................................................
+26dec13  --siggy  grep equiv
+
+http://dereknewton.com/2010/12/powershell-grep-equivalent/
+
+select-string .\*.* -pattern "evildoer"
+if you need a case sensitive search, add in the -CaseSensitive parameter
+
+sed -i /^$/d <filename>
+(get-content C:\File.txt) | where {$_ -ne ""} | out-file c:\file.txt
+
+find . -name <whatyouarelookingfor>
+dir <drive: [drive:]> /s | findstr /i <pattern>
+ex.
+dir c: /s | findstr /i example.txt
+
+...........................................................................
+27Dec13  --siggy comments
+
+In PowerShell V1 there's only # to make the text after it a comment.
+In PowerShell V2 <# #> can be used for block comments and more specifically for help comments.
+
+...........................................................................
+9Feb16  --siggy   Data collection for all VMs
+
+1075  09Feb16-13:17:47  
+ssh root@laesxi15 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi16 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi17 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi18 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi19 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi20 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi21 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi22 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi23 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi24 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi25 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi26 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi27 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi28 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi29 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi30 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi31 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi32 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi33 /bin/vim-cmd vmsvc/getallvms
+ssh root@laesxi34 /bin/vim-cmd vmsvc/getallvms
+
+...........................................................................
+
+...........................................................................
+
+...........................................................................
+
+...........................................................................
+
+...........................................................................
+
+...........................................................................
+
+
+
+
+
+

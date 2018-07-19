@@ -1,0 +1,36 @@
+8oct08  --siggy
+
+When you run the cartog.bash script you see what appears to be an error in "INTERNAL" (see below)
+
+NTERNAL
+Warning: The global MX record(s) specified with the -m option(s) will
+         not be generated due to the -M option also being specified.
+Initializing new database files...
+Reading host file `/misc/dsiegfriedt/H2N/NEW-LOCAL/INTERNAL/etc-hosts-internal'...
+Writing database files...
+Generating boot and conf files...
+Checking NS, MX, and other RRs for various improprieties...
+
+Warning: found NS RR(s) pointing to the following problematic domain name(s):
+ pl1rns702.admin.edmunds.com.	[no such name]  -h,-s options
+ pl1rns703.admin.edmunds.com.	[no such name]  -s option
+
+Done.
+
+As far as I can tell this is due to teh strange combination of zones-reverse map sharing.  In h2n-options
+the 2 "-s" (server) entries are complaining because the h2n script is told to ignore the admin.edmunds.com 
+subdirectory with the "-p" entry.
+
+...
+-s pl1rns702.admin.edmunds.com 
+-s pl1rns703.admin.edmunds.com 
+-p admin.edmunds.com
+...
+
+2Dec08 Cleaning up the maps in emacs
+
+"select region containing all the machines"
+M-x sort-lines
+
+TAAADAAAA
+

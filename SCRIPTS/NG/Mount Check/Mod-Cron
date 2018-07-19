@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# Name: Mod-Cron
+#
+# Purpose: To modify crontab file on all nodes.
+#          Then restart the crond process.
+#
+# Calls To: None
+#
+#  Author	Date		Version
+# -------------+----------------+-----------
+# Ron M.	11/6/07		 1.0
+#
+#*********************************************************
+for i in `cat /etc/beowulf/bcs/allnodes`
+#for i in `cat /etc/beowulf/bcs/gand-list`
+do
+echo $i
+#rsh $i "echo \"0,15,30,45 * * * * /root/mount_check.py > /dev/null\" >> /var/spool/cron/root"
+#rsh $i "echo \"10 0 * * * /root/time-sync > /dev/null\" >> /var/spool/cron/root"
+#
+#rsh $i "echo \"0,5,10,15,20,25,30,35,40,45,50,55 * * * * /root/mount_check.py > /dev/null\" >> /var/spool/cron/root"
+#rsh $i '(sed /mount_check/s/^#// /var/spool/cron/root > /var/spool/cron/root.TMP; mv /var/spool/cron/root.TMP /var/spool/cron/root)'
+#ssh $i "echo \"10 0 * * * /root/time-sync > /dev/null\" >> /var/spool/cron/root"
+#
+#finds lines with mount_check and substitues " " with # at the beginning of the line
+rsh $i '(sed /mount_check/s/^/#/ /var/spool/cron/root > /var/spool/cron/root.TMP; mv /var/spool/cron/root.TMP /var/spool/cron/root)' 
+#
+# Find the crond process and restart it
+#
+#rsh $i kill -1 `ps -ef | grep crond | grep -v grep | awk '{print $2}'`
+rsh $i killall -HUP crond
+#ssh $i killall -HUP crond
+done

@@ -1,0 +1,899 @@
+ZABBIX  7Feb14
+
+Zabbix server 10.130.27.80
+red = NOT monitored
+
+*****PHDbackup
+SF office backup on lavcms3.ri-net.com
+
+PD office backup on lavcms1.ri-net.com
+PX office backup on lavcms1.ri-net.com
+SD office backup on lavcms1.ri-net.com
+LV office backup on lavcms1.ri-net.com
+
+NEED
+USC login
+NetApp login
+
+*******************************************************************
+****************** PRIORITY 1 *************************************
+*******************************************************************
+laccod1 
+  crontab -l
+     check_report checks for XXXX
+     tmppdfmove to move
+
+both scripts emails any errors
+
+[root@laccod1 ~]# crontab -l
+10 5 * * * /opt/ondemand/load/runload.sh
+10 7 * * * /opt/ondemand/load/runloadcc.sh
+01 7 * * * /usr/local/bin/check_report
+59 22 * * * /usr/local/bin/ntprestart
+55 21 * * * /usr/local/bin/db2_stop
+45 22 * * * /usr/local/bin/db2_start
+20 07 * * * /usr/local/bin/tmppdfmove
+
+*******************************************************************
+*******************************************************************
+*******************************************************************
+13Feb14
+List of all servers/logins/resposibilities
+http://sharepoint.ri-net.com/sites/ITCentralLibrary/ITGov/Lists/RICA%20Server%20List/VM%20by%20Application%20Family.aspx
+
+^^^^^
+
+Monthly audits (audits are for the previous month)  [requewst comes from Aric]
+lasysmon:/usr/local/scripts/audit/audit   dumps info to /tmp
+winscp to windows
+make PDF from txt
+     ensure page breaks and headers are the same as examples
+
+14Feb14
+Migrate a server to SRM (new doc started)    ****CURRENTLY do not have perms to have screen captures
+
+Create a machine (for this test we created a minimal RHEL6 machine)
+Volumes replicated to SRM
+	lasan3_nfs_prd3
+	lasan3_nfs_cc6
+Migrate
+	power off then change host & datastore
+
+********** if not configured the entire protection group fails when bringing up SRM **********
+
+Protection groups
+	   not configured
+	   !(error indicator) Configure protection
+	   	   NIC (SRM private network)
+
+Recovery Plan
+	 Private VLAN
+	 	 configure
+			Custom IP
+			       configure protection (Encino)
+			       configure recovery (DR)
+
+Priority groups
+	 5
+	 VM dependencies (system)
+	    *** add which server the new one is dependent on ((((whinin the Priority Group))))
+	    Startup Actions
+	      VMWare Tools set to 15 min
+	    Pre actions
+	    	Prompts
+	    Post actions
+	    	linux scripts
+^^^^^
+for NetApp snapshot on windows machine
+  \\lasan4.ri-net.com\shared\~snapshot   #gives you ro access. 
+
+^^^^^
+SNMP Community ALWAYS use "kootenai"    NEVER leave it public!!!
+     for linux, VMWare, and NetApp
+
+
+18Feb14
+Zabbix
+
+ssh lasysmon2
+service zabbix_server status
+
+service zabbix_server status
+service zabbix_server stop
+service zabbix_server status
+
+service zabbix_agentd status
+service zabbix_agentd stop
+service zabbix_agentd status
+
+service mysqld status
+service mysqld stop
+service mysqld status
+
+ps  -ef | grep -i zabbix
+
+service mysqld start
+service mysqld status
+
+service zabbix_server start
+service zabbix_server status
+
+service zabbix_agentd start
+service zabbix_agentd status
+
+^^^^^
+Zabbix
+config
+  hosts
+   (IT)
+    lasysmon Items
+        find mounts|  discovered
+	physical   |
+
+create screeen
+
+       [root@lasysmon nixmgt]# ll /etc/zabbix/
+       total 16
+       drwxr-xr-x 2 zabbix root   4096 Mar  1  2010 externalscripts
+       -rw-r--r-- 1 zabbix zabbix 4341 Feb 14 13:37 zabbix_agentd.conf
+       -rw-r--r-- 1 zabbix zabbix 3913 Mar  1  2010 zabbix_server.conf
+
+edit hostname in /etc/zabbix/zabbix_agentd.conf to be localhost.
+
+[root@lasysmon nixmgt]# cat /etc/zabbix/zabbix_agentd.conf 
+# This is config file for zabbix_agentd
+# To get more information about ZABBIX, go http://www.zabbix.com
+
+############ GENERAL PARAMETERS #################
+
+# List of comma delimited IP addresses (or hostnames) of ZABBIX servers. 
+# No spaces allowed. First entry is used for sending active checks.
+# Note that hostnames must resolve hostname->IP address and
+# IP address->hostname.
+
+Server=10.130.27.80
+
+# Server port for sending active checks
+
+# Unique hostname. Required for active checks.
+
+Hostname=lasysmon
+
+# Listen port. Default is 10050
+
+ListenPort=10050
+
+# IP address to bind agent
+# If missing, bind to all available IPs
+
+#ListenIP=127.0.0.1
+
+# Number of pre-forked instances of zabbix_agentd.
+# Default value is 5
+# This parameter must be between 1 and 16
+
+StartAgents=5
+
+# How often refresh list of active checks. 2 minutes by default.
+
+RefreshActiveChecks=120
+
+# Disable active checks. The agent will work in passive mode listening server.
+
+#DisableActive=1
+
+# Enable remote commands for ZABBIX agent. By default remote commands disabled.
+
+#EnableRemoteCommands=1
+
+# Specifies debug level
+# 0 - debug is not created
+# 1 - critical information
+# 2 - error information
+# 3 - warnings (default)
+# 4 - for debugging (produces lots of information)
+
+DebugLevel=3
+
+# Name of PID file
+
+PidFile=/var/tmp/zabbix_agentd.pid
+
+# Name of log file.
+# If not set, syslog will be used
+
+LogFile=/tmp/zabbix_agentd.log
+
+# Maximum size of log file in MB. Set to 0 to disable automatic log rotation.
+#LogFileSize=1
+
+# Spend no more than Timeout seconds on processing
+# Must be between 1 and 30
+
+Timeout=3
+
+####### USER-DEFINED MONITORED PARAMETERS #######
+# Format: UserParameter=<key>,<shell command>
+# Note that shell command must not return empty string or EOL only
+#UserParameter=system.test,who|wc -l
+### Set of parameter for monitoring MySQL server (v3.23.42 and later)
+### Change -u<username> and add -p<password> if required
+UserParameter=ACS_files,cat /tmp/ACS |wc -l
+UserParameter=ACS_files2,cat /tmp/ACS |wc -l
+UserParameter=ACS_provider,cat /tmp/ACS_provider |wc -l
+UserParameter=Stratacare_Payment,cat /tmp/stratacare_payment |wc -l
+UserParameter=Stratacare_Claim,cat /tmp/stratacare_claim |wc -l
+UserParameter=Stratacare_Provider,cat /tmp/stratacare_provider |wc -l
+UserParameter=Stratacare_Recon,cat /tmp/stratacare_recon |wc -l
+UserParameter=Stratacare_ereview,cat /tmp/stratacare_ereview |wc -l
+UserParameter=Stratacare_ereview_out,cat /tmp/stratacare_ereview_out |wc -l
+UserParameter=ISO_processed,cat /tmp/ISO |wc -l
+UserParameter=ISO_ftp,cat /tmp/ISO_ftp |wc -l
+UserParameter=ISO_duplicate,cat /tmp/ISO_duplicate |wc -l
+UserParameter=ISO_acknowledged,cat /tmp/ISO_acknowledged |wc -l
+UserParameter=ISO_errlist,cat /tmp/ISO_errlist |wc -l
+UserParameter=litadvisor,cat /tmp/litadvisor |wc -l
+UserParameter=actec,cat /tmp/actec |wc -l
+UserParameter=wellsfargo_in,cat /tmp/wellsfargo_in |wc -l
+UserParameter=wellsfargo_out,cat /tmp/wellsfargo_out |wc -l
+UserParameter=wellsfargo_ftp,cat /tmp/wellsfargo_ftp |wc -l
+UserParameter=lasan4_softwarelibrary,df -h |grep lasan4_softwarelibrary |wc -l
+UserParameter=lasan4_dt_images,df -h |grep lasan4_dt_images |wc -l
+UserParameter=lasan4_knowledge_capture,df -h |grep lasan4_knowledge_capture |wc -l
+UserParameter=lasan4_sqlbackup,df -h |grep lasan4_sqlbackup |wc -l
+UserParameter=lasan4_cc_deploy,df -h |grep lasan4_cc_deploy |wc -l
+UserParameter=lasan4_sqlbackup_qa,df -h |grep lasan4_sqlbackup_qa |wc -l
+UserParameter=lasan4_sqlbackup_conv,df -h |grep lasan4_sqlbackup_conv |wc -l
+UserParameter=lasan4_shared,df -h |grep lasan4_shared |wc -l
+UserParameter=lasan1_shared,df -h |grep lasan1_shared |wc -l
+UserParameter=lasan4_users,df -h |grep lasan4_users |wc -l
+UserParameter=lasan1_users,df -h |grep lasan1_users |wc -l
+UserParameter=lasan4_lacm_im,df -h |grep lasan4_lacm_im |wc -l
+#UserParameter=mysql.ping,mysqladmin -uroot ping|grep alive|wc -l
+#UserParameter=mysql.uptime,mysqladmin -uroot status|cut -f2 -d":"|cut -f1 -d"T"
+#UserParameter=mysql.threads,mysqladmin -uroot status|cut -f3 -d":"|cut -f1 -d"Q"
+#UserParameter=mysql.questions,mysqladmin -uroot status|cut -f4 -d":"|cut -f1 -d"S"
+#UserParameter=mysql.slowqueries,mysqladmin -uroot status|cut -f5 -d":"|cut -f1 -d"O"
+#UserParameter=mysql.qps,mysqladmin -uroot status|cut -f9 -d":"
+#UserParameter=mysql.version,mysql -V
+^^^^^
+scripts are located in /usr/local/bin on local machines.
+	we will need to test /scripts directory on all machines.
+
+^^^^^
+DR
+
+snaps are controlled from destination
+
+NOTE:  "scripts" are not availabel on the NetApp(s) you will have to C&P them into a shell on the specific NetApp
+scripts are lasysmon:/usr/local/scripts/netapp
+
+NOTE:  NOT allsnapmirrors are to be broken for DR.   cc6 adn prd1 need to remain unbroken.   this is all handled by the scripts.
+
+  quie/break/rsync/resume
+
+Review (via oncommand)
+
+NetApp xfer "couple of gigs/hr"
+
+^^^^^
+edit "/usr/local/bin/disaster" script (added GATEWAY)
+
+[root@laccapprd3 bin]# cat disaster
+#!/bin/bash
+
+/bin/cat /usr/local/scripts/dr/resolv.conf > /etc/resolv.conf
+/bin/cat /usr/local/scripts/dr/LDAP > /usr/tomcat/apache-tomcat-6.0.29/webapps/cc/modules/configuration/plugins/authenticationservice/files/LDAPAuthenticationService.properties
+
+sed -i /GATEWAY/s/10.*./10.54.8.1/ /etc/sysconfig/network
+
+sleep 60
+
+/etc/init.d/tomcat stop
+
+sleep 10
+
+/etc/init.d/tomcat start
+
+
+
+^^^^^
+Zabbix
+
+stop zappix_agent
+     mysqld
+     zabbix_server
+VERIFY all 3 are stopped
+
+start mysqld
+      zabbix_server
+      zabbix_agent
+
+^^^^^
+19Feb14
+***********************************************************************************************************
+DR
+
+drdc03 MUST be off before bringing up the bubble
+
+AND
+
+switch dc03 to SRM network
+***********************************************************************************************************
+
+when checking for ARS
+   arssockd = ondemand
+   arsdoc   = ondemand_archive_work
+
+usually ondemand starts.... you have to start ondemand_archive_work
+
+^^^^^
+drvcms1 = 10.130.8.55
+^^^^^
+LT = 10.130.12.14
+DNS = 10.54.8.38
+^^^^^
+
+Vulnarability respons/plan
+
+ssh -X lasecap1 (Kali Server)
+$ gsd
+  select machine from list to be audited
+  (green arrow) runs report
+select http and SAVE
+
+sftp to local machine
+
+/////////////////////////////////////////////////////////////////////////////
+from email 26Feb14 (1st day post Dan)
+for future information
+
+IPMI 2.0 Cipher Type Zero Authentication Bypass Vulnerability (14)	These devices are UCS virtual ports -- no action required
+/////////////////////////////////////////////////////////////////////////////
+
+21Feb14
+Zabbix config backup
+ Zabbix => Configuration => Hosts => Group (all) [top] => select all (4 pages) => Export selected/Go [bottom]
+
+^^^^^
+Cofio  (backup for users + shared data)
+Backend (Linux)
+	labkup01    (/opt)
+		cofiohub
+		MySQL
+		  /vol/vmware_nfs_backups.... 4T
+
+Frontend  (Windows)
+	  labkup2
+  MUST be domain admin....
+       console
+       AMstor
+       Node Mgr
+           lasan4   (backs up users & shared)
+
+if getting data NO need to re-sync
+   	   resync takes days
+
+Monitor
+  drill => check needed files => "Restore Checked Items"
+^^^^^
+PHD
+   Select machine with error
+   Right Click
+   Edit settings
+   highlight disk (one at a time)
+   if "Disk File" look for 0000 (this is a snapshot and can NOT be backed up)
+
+22Feb14
+
+lawps1		tail -f SystemOut.log
+
+DR
+drdc03 = production (power off before the bubble)
+drdc03_test = inside of bubble the main DC during DR 
+	    edit settings to mv net to "VMNetwork"
+
+both drdc03 are always powered on.
+
+
+24Feb14
+laucs1.ri-net.com		(need to set up jave on linux box)
+laucstest.ri-net.com		Test instance (IP=10.130.27.132)
+
+^^^^^
+SRM
+   Placeholder missing
+     Production Groups (bottom Left)
+        Virt machine
+	  Right click => Recreate Placeholder
+
+
+25Feb14
+Adding cifsuser
+had to add cifsuser to all linux boxes  (this was needed for "Balance" (formally running as dnamo))
+
+[root@lasysmon nixmgt]# for i in `cat ALL-linux-server-list`; do echo $i; ssh nixmgt@$i '(sudo mount -a; sudo /scripts/add-cifs-user)'; done
+laccapprd1
+useradd: user cifsuser exists
+laccapprd2
+useradd: user cifsuser exists
+laccapprd3
+useradd: user cifsuser exists
+lacccmprd1
+useradd: user 'cifsuser' already exists
+lacchttpprd1
+useradd: user cifsuser exists
+laccod1
+useradd: user cifsuser exists
+laccpsap1
+useradd: user cifsuser exists
+laccrptprd1
+useradd: user cifsuser exists
+laccapdv1
+useradd: user 'cifsuser' already exists
+laccapdv2
+sudo: /scripts/add-cifs-user: command not found
+laccapdv3
+sudo: /scripts/add-cifs-user: command not found
+laccapdv4
+useradd: user cifsuser exists
+laccapdv8
+useradd: user 'cifsuser' already exists
+laccapqac1
+useradd: user cifsuser exists
+laccapqac2
+useradd: user cifsuser exists
+laccapqac3
+useradd: user cifsuser exists
+lacccmdv1
+useradd: user 'cifsuser' already exists
+lacccmqa1
+useradd: user 'cifsuser' already exists
+lacchttpdv1
+useradd: user cifsuser exists
+lacchttpqac1
+useradd: user cifsuser exists
+laccoddv1
+useradd: user cifsuser exists
+laccodqa1
+useradd: user cifsuser exists
+laccpsdv1
+useradd: user cifsuser exists
+laccpsqa1
+useradd: user cifsuser exists
+laccrptdv1
+useradd: user cifsuser exists
+laccrptqac1
+sudo: /scripts/add-cifs-user: command not found
+lacmpoldv1
+useradd: user cifsuser exists
+lacmpolqa1
+useradd: user cifsuser exists
+lacnapdv1
+useradd: user 'cifsuser' already exists
+lahttpdv1
+useradd: user cifsuser exists
+lahttpqa1
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@       WARNING: POSSIBLE DNS SPOOFING DETECTED!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+The RSA host key for lahttpqa1 has changed,
+and the key for the according IP address 10.130.24.130
+has a different value. This could either mean that
+DNS SPOOFING is happening or the IP address for the host
+and its host key have changed at the same time.
+Offending key for IP in /root/.ssh/known_hosts:3
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that the RSA host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+11:a9:b0:98:9f:de:e0:37:aa:38:db:69:98:8b:69:ff.
+Please contact your system administrator.
+Add correct host key in /root/.ssh/known_hosts to get rid of this message.
+Offending key in /root/.ssh/known_hosts:25
+RSA host key for lahttpqa1 has changed and you have requested strict checking.
+Host key verification failed.
+laldapdv1
+useradd: user cifsuser exists
+laldapqa1
+useradd: user cifsuser exists
+lamo
+Warning: the RSA host key for 'lamo' differs from the key for the IP address '10.130.27.246'
+Offending key for IP in /root/.ssh/known_hosts:28
+Matching host key in /root/.ssh/known_hosts:111
+Are you sure you want to continue connecting (yes/no)? yes
+useradd: user cifsuser exists
+lapc8apdv1
+useradd: user 'cifsuser' already exists
+lapc8apdv2
+useradd: user 'cifsuser' already exists
+lapc8apdv3
+useradd: user 'cifsuser' already exists
+lapc8apconv1
+sudo: /scripts/add-cifs-user: command not found
+lapcapdv1
+useradd: user 'cifsuser' already exists
+lapcapdv2
+useradd: user 'cifsuser' already exists
+lapcapdv3
+useradd: user 'cifsuser' already exists
+lapcapqac1
+useradd: user 'cifsuser' already exists
+lapchttpdv1
+useradd: user 'cifsuser' already exists
+lapcpsdv1
+Warning: the RSA host key for 'lapcpsdv1' differs from the key for the IP address '10.130.25.56'
+Offending key for IP in /root/.ssh/known_hosts:82
+Matching host key in /root/.ssh/known_hosts:121
+Are you sure you want to continue connecting (yes/no)? yes
+useradd: user cifsuser exists
+lawasdv2
+sudo: /scripts/add-cifs-user: command not found
+lawasqa1
+useradd: user 'cifsuser' already exists
+lawpsdv1
+useradd: user cifsuser exists
+lawpsqa1
+useradd: user cifsuser exists
+lacmpol1
+sudo: /scripts/add-cifs-user: command not found
+lahrcmap1
+sudo: /scripts/add-cifs-user: command not found
+lahttp3
+sudo: /scripts/add-cifs-user: command not found
+lajvm1
+The authenticity of host 'lajvm1 (10.130.24.81)' can't be established.
+RSA key fingerprint is 1e:2d:38:18:d7:e3:44:3a:16:16:7d:53:2f:48:d4:a0.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'lajvm1' (RSA) to the list of known hosts.
+Warning: the RSA host key for 'lajvm1' differs from the key for the IP address '10.130.24.81'
+Offending key for IP in /root/.ssh/known_hosts:45
+Are you sure you want to continue connecting (yes/no)? yes
+sudo: /scripts/add-cifs-user: command not found
+laldapap1
+sudo: /scripts/add-cifs-user: command not found
+lawas1
+sudo: /scripts/add-cifs-user: command not found
+lawas2
+sudo: /scripts/add-cifs-user: command not found
+lawasdb1
+sudo: /scripts/add-cifs-user: command not found
+lawasdmg1
+sudo: /scripts/add-cifs-user: command not found
+lawps1
+laxfer01
+You have new mail in /var/spool/mail/root
+[root@lasysmon nixmgt]# 
+
+&&&&&
+
+[root@lasysmon nixmgt]# for i in `cat ALL-linux-server-list`; do echo $i; ssh nixmgt@$i sudo /usr/sbin/useradd cifsuser; donelaccapprd1
+useradd: user cifsuser exists
+laccapprd2
+useradd: user cifsuser exists
+laccapprd3
+useradd: user cifsuser exists
+lacccmprd1
+useradd: user 'cifsuser' already exists
+lacchttpprd1
+useradd: user cifsuser exists
+laccod1
+useradd: user cifsuser exists
+laccpsap1
+useradd: user cifsuser exists
+laccrptprd1
+useradd: user cifsuser exists
+laccapdv1
+useradd: user 'cifsuser' already exists
+laccapdv2
+laccapdv3
+laccapdv4
+useradd: user cifsuser exists
+laccapdv8
+useradd: user 'cifsuser' already exists
+laccapqac1
+useradd: user cifsuser exists
+laccapqac2
+useradd: user cifsuser exists
+laccapqac3
+useradd: user cifsuser exists
+lacccmdv1
+useradd: user 'cifsuser' already exists
+lacccmqa1
+useradd: user 'cifsuser' already exists
+lacchttpdv1
+useradd: user cifsuser exists
+lacchttpqac1
+useradd: user cifsuser exists
+laccoddv1
+useradd: user cifsuser exists
+laccodqa1
+useradd: user cifsuser exists
+laccpsdv1
+useradd: user cifsuser exists
+laccpsqa1
+useradd: user cifsuser exists
+laccrptdv1
+useradd: user cifsuser exists
+laccrptqac1
+lacmpoldv1
+useradd: user cifsuser exists
+lacmpolqa1
+useradd: user cifsuser exists
+lacnapdv1
+useradd: user 'cifsuser' already exists
+lahttpdv1
+useradd: user cifsuser exists
+lahttpqa1
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@       WARNING: POSSIBLE DNS SPOOFING DETECTED!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+The RSA host key for lahttpqa1 has changed,
+and the key for the according IP address 10.130.24.130
+has a different value. This could either mean that
+DNS SPOOFING is happening or the IP address for the host
+and its host key have changed at the same time.
+Offending key for IP in /root/.ssh/known_hosts:3
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that the RSA host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+11:a9:b0:98:9f:de:e0:37:aa:38:db:69:98:8b:69:ff.
+Please contact your system administrator.
+Add correct host key in /root/.ssh/known_hosts to get rid of this message.
+Offending key in /root/.ssh/known_hosts:25
+RSA host key for lahttpqa1 has changed and you have requested strict checking.
+Host key verification failed.
+laldapdv1
+useradd: user cifsuser exists
+laldapqa1
+useradd: user cifsuser exists
+lamo
+Warning: the RSA host key for 'lamo' differs from the key for the IP address '10.130.27.246'
+Offending key for IP in /root/.ssh/known_hosts:28
+Matching host key in /root/.ssh/known_hosts:111
+Are you sure you want to continue connecting (yes/no)? yes
+useradd: user cifsuser exists
+lapc8apdv1
+useradd: user 'cifsuser' already exists
+lapc8apdv2
+useradd: user 'cifsuser' already exists
+lapc8apdv3
+useradd: user 'cifsuser' already exists
+lapc8apconv1
+lapcapdv1
+useradd: user 'cifsuser' already exists
+lapcapdv2
+useradd: user 'cifsuser' already exists
+lapcapdv3
+useradd: user 'cifsuser' already exists
+lapcapqac1
+useradd: user 'cifsuser' already exists
+lapchttpdv1
+useradd: user 'cifsuser' already exists
+lapcpsdv1
+Warning: the RSA host key for 'lapcpsdv1' differs from the key for the IP address '10.130.25.56'
+Offending key for IP in /root/.ssh/known_hosts:82
+Matching host key in /root/.ssh/known_hosts:121
+Are you sure you want to continue connecting (yes/no)? yes
+useradd: user cifsuser exists
+lawasdv2
+useradd: user 'cifsuser' already exists
+lawasqa1
+useradd: user 'cifsuser' already exists
+lawpsdv1
+useradd: user cifsuser exists
+lawpsqa1
+useradd: user cifsuser exists
+lacmpol1
+lahrcmap1
+lahttp3
+lajvm1
+Warning: the RSA host key for 'lajvm1' differs from the key for the IP address '10.130.24.81'
+Offending key for IP in /root/.ssh/known_hosts:45
+Matching host key in /root/.ssh/known_hosts:122
+Are you sure you want to continue connecting (yes/no)? yes
+laldapap1
+lawas1
+lawas2
+lawasdb1
+lawasdmg1
+lawps1
+useradd: user cifsuser exists
+laxfer01
+useradd: user cifsuser exists
+You have new mail in /var/spool/mail/root
+
+&&&&&
+
+26Feb14
+Dan's last day
+
+email request from Raja for lapcapconv2.ri-net.com
+
+creating the host is different are additional steps.   these are the specific steps to get "Policy Center" running on a machine.
+
+service tomcat stop
+VERIFY!!!
+rm -rf /usr/tomcat/apache<TAB>
+rm -rf /usr/java/jdk<TAB>
+
+NOTE: you may have to enable root login on teh new machine in order to scp these directories.
+
+ssh to new machine
+scp -r lapc8apconv1:/usr/tomcat/apache<TAB> FQPN
+scp -r lapc8apconv1:/usr/java/jdk<TAB> FQPN
+
+EDIT
+/etc/init.d/tomcat (correct path to new version of tomcat/java)
+/etc/profile  (correct path to new version of tomcat/java)
+/etc/hosts  (correct host name)
+/etc/sysconfig/network  (correct host name)
+/usr/tomcat/apache-tomcat-7.0.47/bin/catalina.sh (Raja will tell you which environment this needs to be in)
+						 (correct path to new version of tomcat/java)
+crontab -e (comment out #*/5 * * * * /usr/local/bin/build)
+/usr/local/bin/build  (correct path to new version of tomcat/java)
+
+NOTE:  Remember to disable roo login
+^^^^^
+
+27Feb14
+lahttpd3 var fills up with acces and ssl requests
+
+[root@lahttp3 httpd]# crontab -l
+59 22 * * * /usr/local/bin/ntprestart
+59 04 * * * /usr/local/bin/http_cleanup
+[root@lahttp3 httpd]# cat /usr/local/bin/http_cleanup
+#!/bin/bash
+
+rm -f /var/log/httpd/ssl_request_log.*
+rm -f /var/log/httpd/access_log.*
+
+if that doesn't work... you have to zero out these files
+[root@lahttp3 httpd]# pwd
+/var/log/httpd
+
+cat /dev/null > ssl_request_log
+cat /dev/null > access_log
+
+went from 100% to 55%
+
+^^^^^
+11Mar14  --siggy   Dan getting email from SPLUNK
+
+dsiegfri@la1002073d:~ $ ssh root@lalogmgr
+root@lalogmgr's password: 
+Permission denied, please try again.
+root@lalogmgr's password: 
+Last login: Mon Feb 10 08:43:20 2014 from danmo-d.ri-net.com
+[root@lalogmgr ~]# cd /etc/user
+-bash: cd: /etc/user: No such file or directory
+[root@lalogmgr ~]# ll /etc | grep user
+-rw-r--r--  1 root   root     2506 Apr 20  2011 libuser.conf
+-rw-r--r--  1 root   root     1112 Jan  7  2007 minicom.users
+[root@lalogmgr ~]# ll /home
+total 72
+drwx------ 3 danmo    danmo    4096 Apr 18  2012 danmo
+drwx------ 3 deniseba deniseba 4096 Jan 25  2012 deniseba
+drwx------ 3 fredpa   fredpa   4096 Oct  3  2011 fredpa
+drwx------ 3 limd     limd     4096 Oct  3  2011 limd
+drwx------ 4 nixmgt   nixmgt   4096 Oct  3  2011 nixmgt
+drwx------ 3 robertma robertma 4096 Oct  3  2011 robertma
+drwx------ 3 skips    skips    4096 Oct  3  2011 skips
+drwx------ 3 thaot    thaot    4096 Oct  3  2011 thaot
+drwx------ 3 zabbix   zabbix   4096 Oct  3  2011 zabbix
+[root@lalogmgr ~]# cat /etc/issue
+CentOS release 5.7 (Final)
+Kernel \r on an \m
+
+[root@lalogmgr ~]# cat /etc/passwd
+[SNIP]
+danmo:x:500:500:Dan Moriarty:/home/danmo:/bin/bash
+[SNIP]
+
+[root@lalogmgr ~]# cat /etc/sudoers
+# sudoers file.
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# See the sudoers man page for the details on how to write a sudoers file.
+#
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# Defaults specification
+
+# User privilege specification
+root	ALL=(ALL) ALL
+
+# Uncomment to allow people in group wheel to run all commands
+# %wheel	ALL=(ALL)	ALL
+
+# Same thing without a password
+# %wheel	ALL=(ALL)	NOPASSWD: ALL
+
+# Samples
+# %users  ALL=/sbin/mount /cdrom,/sbin/umount /cdrom
+# %users  localhost=/sbin/shutdown -h now
+
+User_Alias     OPERATORS = robertma, skips, fredpa
+User_Alias     ADMINS = danmo, deniseba, limd, thaot, nixmgt
+# User_Alias     PRGMRS = davids,vimalp,jamesz,judahl
+# User_Alias     CONSULT =ssharma,davids,rajap,judahl
+
+OPERATORS ALL=(ALL) NOPASSWD: ALL, !/bin/su - root, !/bin/su - , !/bin/su , !/bin/su [a-z]*, !/bin/vi /etc/passwd, !/bin/vi /etc/sudoers
+
+ADMINS  ALL=(ALL) NOPASSWD: ALL
+[root@lalogmgr ~]# userdel -rf danmo
+[root@lalogmgr ~]# visudo
+[root@lalogmgr ~]# cat /etc/sudoers
+# sudoers file.
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# See the sudoers man page for the details on how to write a sudoers file.
+#
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# Defaults specification
+
+# User privilege specification
+root	ALL=(ALL) ALL
+
+# Uncomment to allow people in group wheel to run all commands
+# %wheel	ALL=(ALL)	ALL
+
+# Same thing without a password
+# %wheel	ALL=(ALL)	NOPASSWD: ALL
+
+# Samples
+# %users  ALL=/sbin/mount /cdrom,/sbin/umount /cdrom
+# %users  localhost=/sbin/shutdown -h now
+
+User_Alias     OPERATORS = robertma, skips, fredpa
+User_Alias     ADMINS = deniseba, limd, thaot, nixmgt, dsiegfri, cifsuser
+# User_Alias     PRGMRS = davids,vimalp,jamesz,judahl
+# User_Alias     CONSULT =ssharma,davids,rajap,judahl
+
+OPERATORS ALL=(ALL) NOPASSWD: ALL, !/bin/su - root, !/bin/su - , !/bin/su , !/bin/su [a-z]*, !/bin/vi /etc/passwd, !/bin/vi /etc/sudoers
+
+ADMINS  ALL=(ALL) NOPASSWD: ALL
+
+^^^^^
+SPLUNK (lalogmgr)
+
+An authentication error occurred: Client is not authenticated
+[root@lalogmgr ~]# /opt/splunk/bin/splunk remove user danmo
+Splunk username: root
+Password: 
+Login failed
+Splunk username: admin
+Password: [k...]
+User removed.
+[root@lalogmgr ~]# 
+
+^^^^^
+root-pw-change
+secure-dan
+cifs-to-sudo
+add-user-linux (dsiegfri, cifsuser)
+
+^^^^^
+12Mar14  --siggy  login/passwd list
+http://sharepoint.ri-net.com/sites/ITCentralLibrary/Infrastructure/TechnicalServices/acl/default.aspx
+

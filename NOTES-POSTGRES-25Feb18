@@ -1,0 +1,296 @@
+24/25Feb18
+
+systemctl start postgresql
+@@@NOPE
+
+cd /DB/pgsql/9.4/bin/
+@@@ turns out this was only a partial start.  There are multiple dbs that have to be started individually.
+./pg_ctl start -D /DB/pgsql/9.4/p5432/data/ &
+
+/DB/pgsql/9.4/bin/pg_ctl restart -D /DB/pgsql/9.4/p5438/data/
+
+@@@ journalctl -xe didn't really give me any hints as to WTF was going on (knowing why came later)
+
+[root@vmpostgres1 ~]# /DB/pgsql/9.4/bin/postgresql94-check-db-dir /DB/pgsql/9.4/p5442/data
+
+gracet [1:35 PM]
+https://techweb.disneyanimation.com/docs/DOC-32811
+
+gracet [1:40 PM]
+Reach out to zach and stuart and das if you get stuck withe these dbs
+
+don.siegfriedt [1:41 PM]
+zac and stuart... what are their last names
+
+gracet [1:41 PM]
+Zach stokes
+stuart.mcdougal@disneyanimation.com
+They setup those dbs
+
+@@@ with what Grace gave me.....I got it going
+@@@ https://techweb.disneyanimation.com/docs/DOC-32811
+@@@ you have to start them all individually as the user postgres
+@@ it states:
+Startup PlaybookStartup DB instances on Remington:
+
+systemctl start postgresql-9.6-p5*** each individually
+Startup DB instances on Mysa:
+
+systemctl start postgresql-9.6-p5*** each individually
+Startup Rama (NFS storage for Shotgun)
+
+Startup Nick, Hopps - the Prodman init scripts should do the right thing here
+
+Startup Anna, Simba - the Prodman init scripts should do the right thing here
+
+Startup Phao
+
+Slack the prodman-dev channel for the team to check services
+
+@@@ after I started them all I was able to start up dpix
+
+-bash-4.2$ ll /DB/pgsql/9.4/
+total 0
+lrwxrwxrwx. 1 postgres postgres 18 Feb 24 18:24 bin -> /usr/pgsql-9.4/bin
+drwxr-xr-x. 3 postgres postgres 17 Jun 15  2015 p5432
+drwxr-xr-x. 3 postgres postgres 17 Jun 15  2015 p5434
+drwxr-xr-x. 3 postgres postgres 17 Jun 23  2015 p5436
+drwxr-xr-x. 3 postgres postgres 17 Jun 16  2015 p5438
+drwxr-xr-x. 3 postgres postgres 17 Aug 10  2015 p5440
+drwxr-xr-x. 3 postgres postgres 17 Aug 25  2015 p5442
+drwxr-xr-x. 3 postgres postgres 17 Oct 15  2015 p5444
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5432/data
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:16.491 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:16.516 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:16.516 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5434/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:27.690 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:27.717 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:27.717 PST >HINT:  Future log output will appear in directory "pg_log". 
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5436/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:37.296 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:37.320 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:37.320 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5438/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:47.424 PST >FATAL:  lock file "postmaster.pid" already exists
+< 2018-02-25 13:52:47.424 PST >HINT:  Is another postmaster (PID 4497) running in data directory "/DB/pgsql/9.4/p5438/data"?
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5440/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:52:58.237 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:52:58.263 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:52:58.263 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5442/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:53:06.902 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:53:06.927 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:53:06.927 PST >HINT:  Future log output will appear in directory "pg_log".
+
+-bash-4.2$ /DB/pgsql/9.4/bin/pg_ctl start -D /DB/pgsql/9.4/p5444/data/
+pg_ctl: another server might be running; trying to start server anyway
+server starting
+-bash-4.2$ < 2018-02-25 13:53:14.529 PST >LOG:  could not create IPv6 socket: Address family not supported by protocol
+< 2018-02-25 13:53:14.553 PST >LOG:  redirecting log output to logging collector process
+< 2018-02-25 13:53:14.553 PST >HINT:  Future log output will appear in directory "pg_log".
+
+<<<<<>>>>>
+26Feb18 vmpostgres2
+
+@@@ looking for what db should be running
+
+[root@vmpostgres2 ~]# ll /DB
+total 0
+drwxr-xr-x. 2 postgres postgres 6 Mar 30  2016 pgsql
+drwxr-xr-x. 2 postgres postgres 6 Mar 30  2016 pgsql_backup
+[root@vmpostgres2 ~]# ll /DB/pgsql/
+total 0
+
+@@@ seems like autofs in not mounting "9.4"
+@@@ didn't find any evidence that postgres has run on this VM.   Sent amil to Zach (Stokes) and Stuart (McDougal)
+@@@ asking about 1) starting at boot 2) WTF does vmpostgres2 do
+
+=======================
+26Feb18 startup/shutdown/restart
+
+[root@vmpostgres1 ~]# /DB/pgsql/9.4/bin/pg_ctl --help
+pg_ctl is a utility to initialize, start, stop, or control a PostgreSQL server.
+
+Usage:
+  pg_ctl init[db]               [-D DATADIR] [-s] [-o "OPTIONS"]
+  pg_ctl start   [-w] [-t SECS] [-D DATADIR] [-s] [-l FILENAME] [-o "OPTIONS"]
+  pg_ctl stop    [-W] [-t SECS] [-D DATADIR] [-s] [-m SHUTDOWN-MODE]
+  pg_ctl restart [-w] [-t SECS] [-D DATADIR] [-s] [-m SHUTDOWN-MODE]
+                 [-o "OPTIONS"]
+  pg_ctl reload  [-D DATADIR] [-s]
+  pg_ctl status  [-D DATADIR]
+  pg_ctl promote [-D DATADIR] [-s]
+  pg_ctl kill    SIGNALNAME PID
+
+Common options:
+  -D, --pgdata=DATADIR   location of the database storage area
+  -s, --silent           only print errors, no informational messages
+  -t, --timeout=SECS     seconds to wait when using -w option
+  -V, --version          output version information, then exit
+  -w                     wait until operation completes
+  -W                     do not wait until operation completes
+  -?, --help             show this help, then exit
+(The default is to wait for shutdown, but not for start or restart.)
+
+If the -D option is omitted, the environment variable PGDATA is used.
+
+Options for start or restart:
+  -c, --core-files       allow postgres to produce core files
+  -l, --log=FILENAME     write (or append) server log to FILENAME
+  -o OPTIONS             command line options to pass to postgres
+                         (PostgreSQL server executable) or initdb
+  -p PATH-TO-POSTGRES    normally not necessary
+
+Options for stop or restart:
+  -m, --mode=MODE        MODE can be "smart", "fast", or "immediate"
+
+Shutdown modes are:
+  smart       quit after all clients have disconnected
+  fast        quit directly, with proper shutdown
+  immediate   quit without complete shutdown; will lead to recovery on restart
+
+Allowed signal names for kill:
+  ABRT HUP INT QUIT TERM USR1 USR2
+
+Report bugs to <pgsql-bugs@postgresql.org>.
+=======================
+26Feb19 postgresql.service (see flag meanings above)
+
+[root@vmpostgres1 ~]# cat /usr/lib/systemd/system/postgresql.service
+[Unit]
+Description=PostgreSQL database server
+After=network.target
+
+[Service]
+Type=forking
+
+User=postgres
+Group=postgres
+
+# Where to send early-startup messages from the server (before the logging
+# options of postgresql.conf take effect)
+# This is normally controlled by the global default set by systemd
+# StandardOutput=syslog
+
+# Disable OOM kill on the postmaster
+OOMScoreAdjust=-1000
+# ... but allow it still to be effective for child processes
+# (note that these settings are ignored by Postgres releases before 9.5)
+Environment=PG_OOM_ADJUST_FILE=/proc/self/oom_score_adj
+Environment=PG_OOM_ADJUST_VALUE=0
+
+# Maximum number of seconds pg_ctl will wait for postgres to start.  Note that
+# PGSTARTTIMEOUT should be less than TimeoutSec value.
+Environment=PGSTARTTIMEOUT=270
+
+#Environment=PGDATA=/usr/local/pgsql/data
+Environment=PGDATA=/DB/pgsql/9.4/
+
+#ExecStart=/usr/local/pgsql/bin/pg_ctl start -D ${PGDATA} -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5432/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5434/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5436/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5438/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5440/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5442/data -s -w -t ${PGSTARTTIMEOUT}
+ExecStart=/DB/pqsql/9.4/bin/pg_ctl start -D ${PGDATA}p5444/data -s -w -t ${PGSTARTTIMEOUT}
+ 
+#ExecStop=/usr/local/pgsql/bin/pg_ctl stop -D ${PGDATA} -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5432/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5434/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5436/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5438/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5440/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5442/data -s -m fast
+ExecStop=/DB/pgsql/9.4/bin/pg_ctl stop -D ${PGDATA}p5444/data -s -m fast
+
+#ExecReload=/usr/local/pgsql/bin/pg_ctl reload -D ${PGDATA} -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5432/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5434/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5436/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5438/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5440/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5442/data -s -w -t ${PGSTARTTIMEOUT}
+ExecReload=/DB/pgsql/9.4/bin/pg_ctl reload -D ${PGDATA}p5444/data -s -w -t ${PGSTARTTIMEOUT}
+
+# Give a reasonable amount of time for the server to start up/shut down.
+# Ideally, the timeout for starting PostgreSQL server should be handled more
+# nicely by pg_ctl in ExecStart, so keep its timeout smaller than this value.
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+
+[root@vmpostgres1 ~]# systemctl enable postgresql.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/postgresql.service to /usr/lib/systemd/system/postgresql.service.
+
+=======================
+1Mar18  PoM script check postgres    status
+
+dsiegfriedt@vmpostgres1:~ $ /DB/pgsql/9.4/bin/pg_isready
+/var/run/postgresql:5432 - accepting connections
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+=======================
+
+
+
+

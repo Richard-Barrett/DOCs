@@ -1,0 +1,1368 @@
+			SVN-NOTES
+
+http://www.adp-gmbh.ch/misc/tools/svn/step_3.html
+
+http://www.abbeyworkshop.com/howto/misc/svn01/
+
+#This is a free book (PDF)
+http://svnbook.red-bean.com/
+
+# NO notes on installing....subversion was already installed.
+# The way the works is kinda confusing!
+
+# create the directory you want to use as the DB repository
+svnadmin create DNS-TEST
+
+# import the data you want to start keeping versioning for (we had a bunch-o DNS maps)
+svn import /nfs/local/admin/svn/repos/SIGGY-STUFF/zones-forward file:///nfs/local/admin/svn/repos/DNS-TEST/ -m "Initial import --siggy 18aug08" 
+
+#to list which files you have covered under subversion
+svn list file:///nfs/local/admin/svn/repos/DNS-TEST/
+
+#as root from the root homedir
+#I am using this at the directory level.  I "checkout" a directory and "commit" a file.  Checkingout a directory gives you a copy of the directory in your home account.  any additional editing can be done from there.
+
+svn checkout file:///nfs/local/admin/svn/repos/DNS-TEST
+cd DNS-TEST
+vi db.media.edmunds.com
+
+#will show you what file(s) have been changed
+svn status
+
+#will show you what changes (per file) you have done
+svn diff
+
+#saves changes to the "db"
+svn commit -m "date change as a test  --siggy 18aug08"
+
+&&&&&&&&&&&&&&&&&&&&&&&
+
+#to undo changes BEFORE you commit
+svn revert
+
+#to see logs to figure out how far back you want to go back.  This will let you see the changes you made.
+svn log
+
+#to undo a commited change
+svn update -r4 #revision number comes from log (above)
+svn commit -m "you have to commit to the roll back"
+
+&&&&&&&&&&&&&&&&&&&&&&&
+
+  --siggy 26aug08
+
+# How we will use it for DNS
+# this will "checkout the whole directory"
+svn checkout file:///nfs/local/admin/svn/repos/DNS-TEST/
+
+# edit whatever file you would like inside this directory
+vi DNS-TEST/db.admin.edmunds.com 
+
+# commit your changes DON'T forget you comment to make it easy to figure out WTF happened
+svn commit DNS-TEST -m "db.admin.edmunds.com s/N changed --siggy 26aug08"
+
+&&&&&&&&&&&&&&&&&&&&&&&
+
+If I call it "edit"  To use you type "edit db.media.edmunds.com"
+
+1) svn checkout file:///nfs/common/named/chroot-production/var/named/
+
+2) vi /nfs/common/named/chroot-production/var/named/<map to change>
+
+3) echo "Is this what you changed?"
+   a) svn status
+      i) yes or no [no]
+   b) echo "please enter comment (what you changed)
+      i) svn commit URL -m "comment from above"
+            A) if no comment entered.... -m " <output from svn status> "
+
+4) h2n -f < FQPN of edited file >
+
+5) move reverse maps to correct place
+
+6) test with host <hostname>; host <IP>
+
+&&&&&&&&&&&&&&&&&&&&&&&
+19feb13  --siggy
+http://www.linuxfromscratch.org/blfs/edguide/chapter03.html
+
+When you are creating a new file or directory, you need to tell the SVN server about it. 
+ Note that the file won't appear in the repository until you do an svn commit
+svn add
+
+&&&&&&&&&&&&&&&&&&&&&&&
+DirecTV
+
+7Feb13  NEW SVNserver
+install RHEL5.8
+
+newcvs2://ifs/kickstart/RHEL/5.8/ks-svn-x86_64.cfg
+
+is a standard ks except for the partitioning (listed below)
+
+*****
+# Disk partitioning information
+ignoredisk --drives=sdb,sdc,sdc,sde,sdf
+
+# Create LVM volumes for / and /data
+part /boot --fstype="ext3" --ondisk=sda --size=500
+part swap --fstype="swap" --ondisk=sda --size=4095
+part pv.01 --size=1 --grow --ondisk=sda
+volgroup vg0 pv.01
+logvol  /  --vgname=vg0  --size=1  --fstype="ext3" --grow  --name=lv_root
+logvol  /var  --vgname=vg0  --size=32768  --fstype="ext3" --name=lv_var
+
+#
+
+# Add a pause to get the lvmpart file generated
+#sleep 10
+#%include /tmp/lvmpart
+
+*****
+
+
+Now we set up the disks
+  188  pvcreate /dev/sdb /dev/sdc
+  189  pvs
+  190  vgs
+  191  vgcreate vg1 /dev/sdb /dev/sdc
+  192  vgs
+  218  lvcreate -L1t -i2 -I64 -nlvol01 vg1
+  220  lvcreate -L1t -i2 -I64 -nlvol02 vg1
+  221  lvcreate -L1t -i2 -I64 -nlvol03 vg1
+  222  lvs
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+[root@localhost 5.8]# mkfs.ext4 -E stride=64 /dev/mapper/vg1-lvol01
+mke4fs 1.41.12 (17-May-2010)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=64 blocks, Stripe width=0 blocks
+67108864 inodes, 268435456 blocks
+13421772 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=4294967296
+8192 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968, 
+	102400000, 214990848
+
+Writing inode tables: done                            
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 27 mounts or
+180 days, whichever comes first.  Use tune4fs -c or -i to override.
+
+[root@localhost 5.8]# mkfs.ext4 -E stride=64 /dev/mapper/vg1-lvol02
+mke4fs 1.41.12 (17-May-2010)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=64 blocks, Stripe width=0 blocks
+67108864 inodes, 268435456 blocks
+13421772 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=4294967296
+8192 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968, 
+	102400000, 214990848
+
+Writing inode tables: done                            
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 28 mounts or
+180 days, whichever comes first.  Use tune4fs -c or -i to override.
+[root@localhost 5.8]# mkfs.ext4 -E stride=64 /dev/mapper/vg1-lvol03
+mke4fs 1.41.12 (17-May-2010)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=64 blocks, Stripe width=0 blocks
+67108864 inodes, 268435456 blocks
+13421772 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=4294967296
+8192 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 
+	4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968, 
+	102400000, 214990848
+
+Writing inode tables: done                            
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 31 mounts or
+180 days, whichever comes first.  Use tune4fs -c or -i to override.
+[root@localhost 5.8]# 
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+8Feb13  --siggy
+
+Taken from /root on current svnserver
+[root@svnserver ~]# cat README.newsvn
+
+# Installation of newsvnserver (aka svnserv2)
+#  NOW svnserver
+
+Note: I installed CollabNet client/server/extras, but we've been having problems checking code into the cms repo. The cms repo pre-commit hook runs java loading a bunch of jars in the hooks directory. We're still looking into that, but I've developed a distaste for the CollabNet stuff (although it might be just fine after we work through all the gotchas).
+ 
+I'm starting over from clean slate and will try to limit what I compile, but I do want to compile swig (as was done on svnserver by Caleb/Kali to provide viewvc support for SVN - just in case)
+
+1) Install JDK into /usr/java/* and run alternatives command to replace the GCJ JAVA stub that's bundled
+
+  mkdir /usr/java; cd /usr/java
+  bash <pathto>/jdk-6u17-linux-x64.bin       #latest version is 6u35 so I went with that
+  ln -s jdk1.6.0_17 jdk			     #latest version is 6u35 so I went with that
+
+  alternatives --install /usr/bin/java java /usr/java/jdk/bin/java 20000
+
+# To test:
+# java -version
+java version "1.6.0_17"
+Java(TM) SE Runtime Environment (build 1.6.0_17-b04)
+Java HotSpot(TM) 64-Bit Server VM (build 14.3-b01, mixed mode)
+
+#----------------------------------------------------------------------
+
+2) Build/install Python 2.5x into /usr/local
+
+
+8feb13  --siggy #to see what version you have "python -V"
+
+  tar -xzf Python-2.5.2.tgz 
+  cd Python-2.5.2
+  ./configure --prefix=/usr/local
+  make
+  make install
+
+#----------------------------------------------------------------------
+
+#8feb13  --siggy #cd /projects/ISOimages/x86_64/rhel-server/5.8
+#8feb13  --siggy #mount rhel-server-5.8-x86_64-dvd.iso TEMP -t iso9660 -o ro,loop=/dev/loop0
+
+3) Install rpm's required for subversion build (insert RHEL DVD in drive)
+ mount -t iso9660 -o ro /dev/cdrom /mnt/iso
+
+#8feb13  --siggy #cd /projects/ISOimages/x86_64/rhel-server/5.8/TEMP/Server
+*****************************************************************NOTE from Larry.... use yum localinstall to keep yum db uptodate*****************
+# rpm -ivh httpd-devel-2.2.3-22.el5.* apr-devel-1.2.7-11.* apr-util-devel-1.2.7-7.el5.*
+warning: httpd-devel-2.2.3-22.el5.i386.rpm: Header V3 DSA signature: NOKEY, key ID 37017186
+Preparing...                ########################################### [100%]
+   1:apr-devel              ########################################### [ 17%]
+   2:apr-util-devel         ########################################### [ 33%]
+   3:httpd-devel            ########################################### [ 50%]
+   4:httpd-devel            ########################################### [ 67%]
+   5:apr-devel              ########################################### [ 83%]
+   6:apr-util-devel         ########################################### [100%]
+
+
+ rpm -ivh neon-devel-0.25.5-10.el5.*
+*****************************************************************NOTE from Larry.... use yum localinstall to keep yum db uptodate*****************
+warning: neon-devel-0.25.5-10.el5.i386.rpm: Header V3 DSA signature: NOKEY, key ID 37017186
+Preparing...                ########################################### [100%]
+   1:neon-devel             ########################################### [ 50%]
+   2:neon-devel             ########################################### [100%]
+
+#----------------------------------------------------------------------
+
+#8feb13  --siggy # Dave told me not to set this up.....not needed
+
+4) Build swig
+ tar -xzf swig-1.3.36.tar.gz 
+ cd swig-1.3.36
+ ./configure --prefix=/usr/local --with-python=/usr/local/bin/python --with-java=/usr/java/jdk
+ make
+ make install
+
+#----------------------------------------------------------------------
+#8feb13  --siggy # SKIPPED
+
+5) Prepare subversion source dir, we want the sqlite-almag from -deps tar
+ tar -xzf subversion-1.6.9.tar.gz 
+ tar -xzf subversion-deps-1.6.9.tar.gz 
+ cd subversion-1.6.9
+ rm -r apr apr-util neon zlib serf
+ ./configure --prefix=/usr/local --with-apxs=/usr/sbin/apxs --with-apr=/usr/bin/apr-1-config --with-apr-util=/usr/bin/apu-1-config --with-jdk=/usr/java/jdk
+ make
+ make check
+# Note: "XFAIL"'s are expected failures (known bugs not yet fixed)
+ make install
+
+#----------------------------------------------------------------------
+
+#8feb13  --siggy # compared httpd.conf with that on current svnserver (10.23.165.
+
+6) Customize httpd.conf and add index.html......
+	What modules do we need to load other than svn-dav and authz-svn?
+	Timeout and KeepAlive settings
+	Custom log SVN transactions
+	location of log files
+	Separate and include repo definitions?
+	location of SVN access and auth files?
+
+#----------------------------------------------------------------------
+
+#8feb13  --siggy # Dave told me not to set this up.....not needed
+
+7) ViewVC config
+# ViewVC config is for replacing bldrec2 as the ViewVC conduit to CVS.
+
+#----------------------------------------------------------------------
+# rsync over repos on first newsvnserv (newdocrec box was tmp newsvnserv)
+rsync -av --delete --exclude=lost+found --exclude=SRC newsvnserv:/repos/ /repos
+
+#----------------------------------------------------------------------
+
+8) Adding custom log entry to httpd.conf to create a readable SVN log
+
+While the SVN Book talks about custom logging for SVN with Apache, the example format doesn’t include one of the most important pieces of information, the SVN repository being accessed! It took me quite a while to find this, so here it is. On SUSE Linux, add the following lines to mod_log_config.conf:
+
+LogFormat "%{%Y-%m-%d %T}t %u@%h %>s repo:%{SVN-REPOS-NAME}e %{SVN-ACTION}e (%B Bytes in %T Sec)" svn
+
+And the following line to default-server.conf:
+
+CustomLog "/var/log/apache2/subversion_log" svn env=SVN-ACTION
+
+Instead of the normal unreadable rubbish, this should emit lines similar to the following to /var/log/apache2/subversion_log:
+
+2010-04-09 14:41:50 peternixon@192.168.0.219 200 repo:myproject checkout-or-export 
+/ r5317 depth=infinity (875377105 Bytes in 217 Sec)
+
+#----------------------------------------------------------------------
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+13Feb13  --siggy
+
+******************************************************NOTE from Larry.... use yum localinstall to keep yum db uptodate*****************
+rpm -ihv /root/mod_dav_svn-1.6.11-7.el5_6.4.x86_64.rpm
+
+chkconfig off
+for i in avahi-daemon avahi-dnsconfd bluetooth cups firstboot gpm hplip ip6tables iscsi iscsid kudzu mdmonitor restorecond rhnsd rpcgssd rpcidmapd setroubleshoot dsm_om_connsvc dsm_om_shrsvc haldaemon hidd mcstrans readahead_early readahead_later rhsmcertd sfcb wdaemon anacron; do chkconfig $i off; done
+
+service stop
+for i in avahi-daemon avahi-dnsconfd bluetooth cups firstboot gpm hplip ip6tables iscsi iscsid kudzu mdmonitor restorecond rhnsd rpcgssd rpcidmapd setroubleshoot dsm_om_connsvc dsm_om_shrsvc haldaemon hidd mcstrans readahead_early readahead_later rhsmcertd sfcb wdaemon anacron; do service $i stop; done
+
+/etc/sysconfig/network
+NETWORKING_IPV6=no
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+Dave's README from svnserver
+
+[root@svnserver ~]# cat README.svnsync 
+# /root/README.svnsync
+# Setting up the SVN sync mirror for Maryland
+#
+
+# Chris agreed to host an SVN mirror for Sean Lee in Maryland
+# This will initially sync off svnserver as we use a firewall rule from svnserver to ....
+  # Maryland URI:	svn://10.152.2.243/dtvmd
+  # svnserver URI:	http://172.31.59.84/dtvmd
+  # local URI:		file:///repo/dtvmd
+
+# Create user account
+   useradd -c "DTVmd svnsync user" -d /svn_src/dtvmd -ru 249 -s /bin/bash svnsync
+# Add to group apache
+   vi /etc/group
+apache:x:48:svnsync
+
+# Create a directory for the repo
+   mkdir /repo/dtvmd
+   chown svnsync:apache /repo/dtvmd
+
+# Create the SVN Repository
+   su - svnsync
+   svnadmin create /repo/dtvmd
+
+# The repository UUID has to match to be a real mirror
+   svn info svn://10.152.2.243/dtvmd
+Authentication realm: <svn://10.152.2.243:3690> 0e8a708c-c651-4842-a1c3-215c5101e5e2
+Username: svnsync
+Password for 'svnsync': <backup1>
+Path: dtvmd
+URL: svn://10.152.2.243/dtvmd
+Repository Root: svn://10.152.2.243/dtvmd
+Repository UUID: 0e8a708c-c651-4842-a1c3-215c5101e5e2
+Revision: 4636
+Node Kind: directory
+Last Changed Author: bdjupin
+Last Changed Rev: 4636
+Last Changed Date: 2008-11-20 13:47:53 -0800 (Thu, 20 Nov 2008)
+
+   cat - <<EOF | svnadmin load --force-uuid /svn_src/dtvmd
+> SVN-fs-dump-format-version: 2
+>
+> UUID: 0e8a708c-c651-4842-a1c3-215c5101e5e2
+> EOF
+
+# Now create the necessary hook file
+   vi /repo/dtvmd/hooks/pre-revprop-change
+#!/bin/bash
+USER="$3"
+
+if [ "$USER" = "svnsync" ]; then
+	exit 0
+fi
+
+echo "Only user svnsync can change revprops" >&2
+exit 1
+#-----------------------------------------------
+
+   chmod +x /repo/dtvmd/hooks/pre-revprop-change
+
+# Now do an svnsync init
+   svnsync init --username svnsync --password backup1 file:///svn_src/dtvmd svn://10.152.2.243/dtvmd
+
+# And the first sync to bring it to current revision
+   svnsync sync --username svnsync --password backup1 file://repo/dtvmd svn://10.152.2.243/dtvmd
+
+# And setup in apache conf file, htpasswd and access policy NOTE: NOONE should have write perms
+#  Only the local cron job that periodically syncs to the primary get's to write, and it uses the file URI
+
+Accesspolicy:
+## dtvmd is a mirror repository for Sean S. Lee, and Cynthia M. Pfarr
+## Sync'd by svnsync, ReadOnly access ONLY - or you might break svnsync
+[dtvmd:/]
+sslee = r	# for Sean Lee, owner of primary
+svnsync = r	# sync to newsvnserv
+dmichaels = r	# test access
+
+htpasswd:
+sslee:pbI1be3cqWWoc
+
+# And finally add a cron job entry to do a nightly sync
+   vi /scripts/Sync_dtvmd
+#! /bin/bash -
+PATH=/usr/bin:/bin:/sbin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin
+ADMIN=drmichaels@directv.com
+
+SRC_IP="10.152.2.243"
+SRC_REPO="svn://${SRC_IP}/dtvmd"
+DST_REPO="file:///repo/dtvmd"
+SYNCUSER="svnsync"
+SYNCPASSWD="backup1"
+
+SVNSYNC="/usr/local/bin/svnsync"
+
+ping -c 1 $SRC_IP > /dev/null 2>&1
+STATUS=$?
+if [ "$STATUS" -eq 0 ]; then
+	$SVNSYNC sync --username $SYNCUSER --password $SYNCPASSWD $DST_REPO $SRC_REPO
+	STATUS=$?
+	if [ "$STATUS" -ne 0 ]; then
+		echo "Trouble syncing dtvmd" | Mail -s "Error syncing dtvmd, exit $STATUS" $ADMIN
+	fi
+else
+	echo "Can't ping repo server $SRC_IP" | Mail -s "Error syncing dtvmd, exit 1" $ADMIN
+fi
+exit
+#-------------------------------------------------------
+[root@svnserver ~]# 
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+7May13  --siggy  svn sync
+
+
+FROM local svnserver to MD svnserver
+[root@svnserver ~]# svn info svn://10.152.2.243/dtvmd
+Authentication realm: <svn://10.152.2.243:3690> 0e8a708c-c651-4842-a1c3-215c5101e5e2
+Password for 'root': 
+Authentication realm: <svn://10.152.2.243:3690> 0e8a708c-c651-4842-a1c3-215c5101e5e2
+Username: svnsync
+Password for 'svnsync': 
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <svn://10.152.2.243:3690> 0e8a708c-c651-4842-a1c3-215c5101e5e2
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? no
+Path: dtvmd
+URL: svn://10.152.2.243/dtvmd
+Repository Root: svn://10.152.2.243/dtvmd
+Repository UUID: 0e8a708c-c651-4842-a1c3-215c5101e5e2
+Revision: 33095
+Node Kind: directory
+Last Changed Author: sslee
+Last Changed Rev: 33095
+Last Changed Date: 2013-05-03 21:15:52 -0700 (Fri, 03 May 2013)
+<<<<<>>>>>
+[root@sweng-svn security]# cat  access.* | grep -i "\[" | sort -u
+[/]
+[ActionScript:/]
+[Android:/]
+[Android_Common_Library:/]
+#[AS3EngServiceCoreLib:/]
+#[AS3EngServiceRestLib:/]
+# [ASWS:/] - retired renamed repo ASWS to MAS SPT-30808
+#[cb:/]
+#[cbqa:/]
+[CDNService:/]
+#[CMP:/]
+[CoPilot_Android:/]
+[CoPilot_iOS:/]
+#[CoPilot_Mac:/]
+#[CoPilot_Windows:/]
+[dtvmd:/]
+[DVR_Scheduler:/]
+[Entitlement:/]
+#[ESV:/]
+[GeoLocation:/]
+[groups]
+[GuideServices:/]
+[GuideServices:/ListBuilder/branches/20110801_ListBuilder/war]
+[GuideServicesQA:/]
+[GuideServicesReleases:/]
+[hddvr:/]
+[hddvr:/trunk/*/inc]
+[HTML5:/]
+[images:/]
+[infra:/]
+[InnovationKatana:/]
+[iOS:/]
+[iOS_Common_Library:/]
+[MacOSX:/]
+[MAS:/]
+[MAS_PA:/]
+[MobileAppQA:/]
+[Morega:/]
+#[MPF:/]
+[MSSHeadEnd:/]
+[NDS-CA:/]
+[NDS-CA-Utils:/]
+[NDS-DRM:/]
+#[NFLClientWeb:/]
+[NFLHeadend:/]
+[NFLTestHarness:/]
+[nms:/]
+[nms:/branches]
+[nms:/tags]
+[nms:/trunk]
+[Notification:/]
+[Palm:/]
+[PGWSLib:/]
+[ProxyService:/]
+[RIM:/]
+[SessionManager:/]
+[SocialHeadend:/]
+[socialnetwork:/]
+[TesT:/]
+[tvappheadend:/]
+[vobApg:/]
+[vobBsl:/]
+[vobCds:/]
+[vobCue:/]
+[vobDruid:/]
+[vobHeGuiQa:/]
+[vobHeqa:/]
+[vobMsm:/]
+[vobNdsHeadEnd:/]
+[vobReceiverTools:/]
+[vobSmaLite:/]
+[vobSmaTest:/]
+[vobSoftworks:/]
+[vobStbSoftware:/]
+[vobTp:/]
+[WebAdminServer:/]
+[WebAppsRelease:/]
+[Windows:/]
+[Windows8:/]
+[WindowsPhone7:/]
+[root@sweng-svn security]# cat  access.* | grep -i "\[" | sort -u | wc -l
+80
+[root@sweng-svn security]# 
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+30May13  --siggy
+
+dsiegfriedt@els-f12268:~/DTV/SVN $ svn info http://172.31.59.84/cfengine
+Authentication realm: <http://172.31.59.84:80> Subversion Repository for Infrastructure config
+Password for 'dsiegfriedt': 
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://172.31.59.84:80> Subversion Repository for Infrastructure config
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/users/dsiegfriedt/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? no
+Path: cfengine
+URL: http://172.31.59.84/cfengine
+Repository Root: http://172.31.59.84/cfengine
+Repository UUID: 206178f8-01a9-40ea-bbe8-3ff2833950ff
+Revision: 80
+Node Kind: directory
+Last Changed Author: lslile
+Last Changed Rev: 80
+Last Changed Date: 2013-05-29 16:04:43 -0700 (Wed, 29 May 2013)
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+30May13  --siggy  
+
+*********************************************************************
+*********************************************************************
+NOTE:
+THIS IS for the replicant server ONLY
+*********************************************************************
+*********************************************************************
+
+To find which UUIDs are there
+
+for i in bitstream_bin bitstream_src legacy_bit svn_src repos; do echo $i; find $i -name uuid; done >> /root/uuid-list.txt
+
+copy of pre-revprop-change
+
+1111111111112222222222222222233333333333333333
+0) ssh sweng-rep-svn
+1) cd /mnt/SVNrepos/<TL rpo name>/<reponame>
+2) mkdir <reponame>
+3)chown apache.apache Morega
+4) su -s /bin/bash apache
+5) svnadmin create FQPN<reponame>
+6) exit (Ctrl-d)
+7) update db/uuid
+8) cat >> hooks/pre-revprop-change
+#!/bin/sh
+
+
+REPOS="$1"
+REV="$2"
+USER="$3"
+PROPNAME="$4"
+ACTION="$5"
+
+#if [ "$ACTION" = "M" -a "$PROPNAME" = "svn:log" ]; then exit 0; fi
+if [ "$USER" = "svnsync" ]; then exit 0; fi
+
+#echo "Changing revision properties other than svn:log is prohibited" >&2
+echo "Only user svnsync can change revprops" > &2
+exit 1
+
+9) chmod +x hooks/pre-revprop-change
+9a) chown -R svnsync db/
+10) svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/cfengine/ http://10.23.165.110/cfengine
+11) svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/cfengine/
+12) add to ~svnsync/REAL-repo-list
+13) update access.interactive
+
+
+On sweng-svn
+14) rsync -a 172.31.59.84:/etc/httpd/conf/httpd.conf /etc/httpd/conf/
+15) rsync -a 172.31.59.84:/var/www/html/interactive.html /var/www/html/
+
+
+[root@sweng-rep-svn SVNrepos]# for i in `cat master-repo-test-list.txt`
+> do
+> cp /root/pre-revprop-change $i/hooks
+> chmod +x $i/hooks/pre-revprop-change
+> chown svnsync $i/hooks/pre-revprop-change
+> done
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+4Jun13  --siggy
+
+for i in `ls| grep -v Head | grep -v Web`
+do
+echo $i
+svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/$i/ http://10.23.165.110/$i
+done
+
+cd HeadEnd
+for i in `ls| grep -v Head | grep -v Web`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/HeadEnd/$i/ http://10.23.165.110/$i; done
+
+
+[root@sweng-rep-svn svn_src]# for i in `ls| grep -v Head | grep -v Web`
+> do
+> echo $i
+> svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/$i/ http://10.23.165.110/$i
+> done
+ABS
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://10.23.165.110:80> Subversion Repository for ABS binaries
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? n
+Copied properties for revision 0.
+acmtools
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://10.23.165.110:80> Subversion Repository for jira plugins and scripts
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? n
+Copied properties for revision 0.
+bts_tools
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://10.23.165.110:80> SVN Repository for Bitstream Tools
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? n
+Copied properties for revision 0.
+cfengine
+svnsync: E000022: Destination repository already contains revision history; consider using --allow-non-empty if the repository's revisions are known to mirror their respective revisions in the source repository
+cmBuildServerDeps
+Copied properties for revision 0.
+DTV_Bitstream_Tools
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://10.23.165.110:80> Subversion Repository for DIRECTV bitstream tools
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? n
+Copied properties for revision 0.
+DTVMD
+svnsync: E175002: Unable to connect to a repository at URL 'http://10.23.165.110/DTVMD'
+svnsync: E175002: The OPTIONS request returned invalid XML in the response: XML parse error at line 1: no element found (http://10.23.165.110/DTVMD)
+jira
+Copied properties for revision 0.
+nms
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://10.23.165.110:80> Subversion Repository for Test nms repo
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? n
+Copied properties for revision 0.
+robot
+Copied properties for revision 0.
+signTool
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://10.23.165.110:80> Subversion Repository for signTool
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? n
+Copied properties for revision 0.
+stb
+Copied properties for revision 0.
+support
+svnsync: E000002: Unable to connect to a repository at URL 'http://10.23.165.110/support'
+svnsync: E000002: Could not open the requested SVN filesystem
+tools
+
+-----------------------------------------------------------------------
+ATTENTION!  Your password for authentication realm:
+
+   <http://10.23.165.110:80> Subversion Repository for Open Source Tools
+
+can only be stored to disk unencrypted!  You are advised to configure
+your system so that Subversion can store passwords encrypted, if
+possible.  See the documentation for details.
+
+You can avoid future appearances of this warning by setting the value
+of the 'store-plaintext-passwords' option to either 'yes' or 'no' in
+'/root/.subversion/servers'.
+-----------------------------------------------------------------------
+Store password unencrypted (yes/no)? n
+Copied properties for revision 0.
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+6jun13   Dave Micheals   SVN hotcopy
+
+Multiple hotcopies are OK.
+
+[root@svnserver repos]# svadmin hotcopy bsl_bitstream HC_bsl_bitstream_20130606
+
+Ask if requestor wants the repo loked against others using it whilecahnges are being made
+
+cp access.??? access.???-SAFE
+edit access.???
+  everybody is "ro" except the requestor (until he is done)
+
+
+to restore:
+un-publish repo
+  mv bsl_bitstream bsl_bitstream.BROKEN
+  mv HC_bsl_bitstream_20130606 bsl_bitstream
+re-publish repo
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+10jun13   --siggy   svnsync
+
+[svnsync@sweng-rep-svn WebApps]$ svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/WebApps/Windows8
+
+[svnsync@sweng-rep-svn hooks]$ svnlook info /mnt/SVNrepos/svn_src/WebApps/Windows8
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Morega
+Authentication realm: <http://10.23.165.110:80> Morega Software
+Username: ^Csvnsync: E170001: Unable to connect to a repository at URL 'http://10.23.165.110/Morega'
+svnsync: E170001: OPTIONS of 'http://10.23.165.110/Morega': authorization failed: Could not authenticate to server: rejected Basic challenge (http://10.23.165.110)
+
+svnsync not auth in access.ndsdrm
+
+[/]
+svnsync		= r
+
+and in all the htpasswd files
+svnsync:$1$Cd7KvluI$848TmWyn9QjSweClmC82g1
+
+svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/bitstream_bin/vob_bitstreams/
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+14jun13 stuff    13:46
+
+/svn_src
+
+sigWebTool		9
+
+/svn_src/WebApps
+Android			4591
+Android_Common_Library 	142
+CoPilot_Android	       	3123
+CoPilot_iOS	       	11912
+iOS			2486
+iOS_Common_Library	1893
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+17jun13  edit httpd.conf to use a single htpasswd file
+
+[root@sweng-svn conf]# sed -i /AuthUserFile/s/.interactive// httpd.conf
+[root@sweng-svn conf]# sed -i /AuthUserFile/s/.ndsdrm// httpd.conf
+[root@sweng-svn conf]# sed -i /AuthUserFile/s/.guide// httpd.conf
+[root@sweng-svn conf]# sed -i /AuthUserFile/s/.webapps// httpd.conf
+
+cd /svn_src/security
+made BACKUP
+cat all htpasswd files together and sort -u
+got rid of cruft
+seperated alphbetically
+
+5Aug13  --siggy  Singular htpasswd file
+
+ 1000  cd /svn_src/
+ 1001  cd security/
+ 1002  ll
+ 1003  cd PASSWD-backup/
+ 1004  ll
+ 1005  rsync -a 172.31.59.84:/svn_src/security/htpasswd* .
+ 1006  ll -rt
+ 1007  rm THEhtpasswd*
+ 1008  ll
+ 1009  cat htpasswd >> THEhtpasswd
+ 1010  cat htpasswd.guide >> THEhtpasswd
+ 1011  cat htpasswd.interactive >> THEhtpasswd
+ 1012  cat htpasswd.ndsdrm >> THEhtpasswd
+ 1013  cat htpasswd.webapps >> THEhtpasswd
+ 1014  cat THEhtpasswd 
+ 1015  sed s/^#// THEhtpasswd 
+ 1016  sed -i s/^#// THEhtpasswd 
+ 1017  cat THEhtpasswd | sort -u > THEhtpasswd.sorted
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+17jun13   Dave    create repository
+
+# Interactive repos migrated from LA1 for Mark Shurgot
+#
+
+The Interactive repos in /repos/interactive are published with the SVNParentPath setting. Just put a repo there to make it available.
+
+A create script is in /repos/interactive/bin that will create a repo with their approved hooks (run as user apache). (Also re-create the interactive.html page to add the new repo to the list, echo'd 
+from create script).
+
+##  /repos/interactive/bin/create-project <project> <primaryEMail> [<additionalEMail> ... ]
+
+Create the repo as user apache to assure apache has ownership
+
+# sudo -s /bin/bash apache
+bash-3.2$ /repos/interactive/bin/create-project  golfspring fdmiller jchen2 aemara
+maillist = fdmiller@directv.com,jchen2@directv.com,aemara@directv.com
+bash-3.2$ exit
+#
+
+The script will create "trunk" and "tags" subdirs in the repository and send notification to the maillist
+
+If additional access control is desired, create an entry in the access.interactive file
+
+#[cb:/]
+#dmichaels      = r
+
+#[cbqa:/]
+#dmichaels      = r
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+18jun13   steps for today
+
+On sweng-svn
+
+for iOS, iOS_Common_Library, Android, Android_Common_Library, CoPilot_Android, CoPilot_iOS
+
+All of these repos failed "svnadmin verify".   deleted everything in the directory "rm -rf conf db format hooks locks README.txt" then used rsync and "svnadmin verify"
+
+
+ 2262  rsync -a 172.31.59.84:/svn_src/WebApps/iOS .
+ 2263  svnadmin verify iOS
+ 2279  cd ../iOS_Common_Library/
+ 2281  rsync -a 172.31.59.84:/svn_src/WebApps/iOS_Common_Library/ .
+ 2283  svnadmin verify ../iOS_Common_Library/
+ 2284  cd ../Android
+ 2286  rsync -a 172.31.59.84:/svn_src/WebApps/Android/ .
+ 2287  svnadmin verify ../Android
+ 2288  cd ../Android_Common_Library/
+ 2289  rsync -a 172.31.59.84:/svn_src/WebApps/Android_Common_Library/ .
+ 2290  svnadmin verify ../Android_Common_Library/
+ 2291  cd ../CoPilot_Android/
+ 2293  rsync -a 172.31.59.84:/svn_src/WebApps/CoPilot_Android/ .
+ 2294  svnadmin verify ../CoPilot_Android/
+ 2295  cd ../CoPilot_iOS/
+ 2297  rsync -a 172.31.59.84:/svn_src/WebApps/CoPilot_iOS/ .
+ 2298  svnadmin verify ../CoPilot_iOS/
+
+
+*******************************************************************************************************
+on sweng-rep-svn
+
+for iOS, iOS_Common_Library, Android, Android_Common_Library, CoPilot_Android, CoPilot_iOS
+
+Delete everything in the directory.... re-create...edit 2 files...re-init.... and sync.
+
+NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!when you init.... use the published URL   
+				      (go to website and hover over the repo you want... this will 
+				      be the published name)
+
+cd <to repoository directory>
+rm -rf conf db format hooks locks README.txt
+svnadmin create /mnt/SVNrepos/svn_src/WebApps/blahblahblah
+cd <repo>
+vim db/uuid
+cat > hooks/pre-revprop-change
+chmod +x hooks/pre-revprop-change
+ll hooks
+svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/WebApps/ActionScript http://10.23.165.110/ActionScript
+svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/WebApps/ActionScript/
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+24jun13   make a proper repolist with FQPN
+
+cd /bitstream_bin
+for i in vob_bitstreams trexbin_qa trexbin NFLTestHarness MAS_UA GuideServicesReleases GuideServicesQA GuideServices cms_qa_20101109 cmsbin_qa_20101108; do echo $i; rsync --progress -a 172.31.59.84:/bitstream_bin/$i/ $i; done
+
+cd /bitstream_src
+for i in cms_20071008 trex-dev_filtered_20070522; do echo $i;rsync --progress -a 172.31.59.84:/bitstream_src/$i/ $i ;done
+
+cd /legacy_bit
+for i in vobApg vobCds vobDruid vobHeqa vobNdsHeadEnd vobSmaLite vobSoftworks vobTp softWorks vobBsl vobCue vobHeGuiQa vobMsm vobReceiverTools vobSmaTest vobStbSoftware bitstream_tools; do echo $i; rsync --progress -a 172.31.59.84:/legacy_bit/$i/ $i; done
+
+
+cp 24jun-FQPN-repolist to /root
+cp 24jun-FQPN-repolist to temp-repolist
+edit what I had done by hand...
+for i in `cat /root/temp-repolist`; do echo /$i; rsync --progress -a 172.31.59.84:/$i $i; done
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+25jun13  adding a repo (to interactive) script
+#svnadmin create
+#httpd.conf
+#access.<repo name>
+
+[root@svnserver bin]# pwd
+/repos/interactive/bin
+[root@svnserver bin]# cat create-project 
+#!/bin/sh
+if [ "`whoami`" != "apache" ]; then
+	echo -e "\n\tRun this script as user apache, exiting..."
+	exit
+fi
+if [ $# -lt 2 ]; then
+	echo "Usage: create-project project-name project-lead [project-user project-user ...]"
+	echo "       project-name: name of repository"
+	echo "       project-lead: email alias of project lead"
+	echo "       project-user: email aliases of one or more users; optional"
+	exit 1
+fi
+project=$1
+shift
+
+if [ -z "`echo $1 | grep @`" ]; then
+	responsible=${1}@directv.com
+else
+	responsible=$1
+fi
+maillist="$responsible"
+shift
+
+while [ $# -gt 0 ]; do
+	if [ -z "`echo $1 | grep @`" ]; then
+		maillist="$maillist,$1@directv.com"
+	else
+		maillist="$maillist,$1"
+	fi
+	shift
+done
+
+if [ -d "/repos/interactive/$project" ]; then
+	echo -e "\n\tError: directory $project already exists. Exiting..."
+	exit
+fi
+
+echo "maillist = $maillist"
+svnadmin create /repos/interactive/$project
+cp /repos/interactive/bin/pre-commit-tmpl /repos/interactive/$project/hooks/pre-commit
+chmod +x /repos/interactive/$project/hooks/pre-commit
+sed "s/#MAILLIST#/$maillist/" /repos/interactive/bin/post-commit-tmpl |\
+sed "s/#RESPONSIBLE#/$responsible/" |\
+sed "s/#PROJECT#/$project/" > /repos/interactive/$project/hooks/post-commit
+chmod +x /repos/interactive/$project/hooks/post-commit
+svn mkdir file:///repos/interactive/${project}/trunk file:///repos/interactive/${project}/branches file:///repos/interactive/${project}/tags -m \\\"New_project\\\"
+
+echo -e "\nRemember to rebuild interactive listing web page, /scripts/Interactive/doHtml"
+
+
+
+From: Michaels, David R
+Sent: Tuesday, June 25, 2013 2:19 PM
+To: Siegfriedt, Donald
+Subject: SVN repo
+
+Sig,
+for a ‘non-interactive’ repo:
+Create repo as user apache
+                su -s /bin/bash apache
+                svnadmin create <path to/reponame>
+At this point you can create and save the trunk, tags, branch, subdirs (as user apache)
+
+As user root
+                Edit httpd.conf to add the location entry, “publishing” the repo
+                Edit the appropriate access file (a good time to add notes on who is authorized to authorize)
+                populate the access config with      <user>            = r[w]
+                Add an entry in the appropriate html list file
+                                index.html
+                                WebApps.html
+                                vobs.html
+Add clone repo on sweng-rep-svn
+Dave
+
+(((((((((((ALSO)))))))))))
+
+[root@svnserver html]# apachectl -t
+Syntax OK
+[root@svnserver html]# service httpd reload
+Reloading httpd:                                           [  OK  ]
+[root@svnserver html]# 
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+26jun13  SVN repository - commit notification email list
+
+example for interactive repos
+
+Each post-commit script should have “REPLYTO” and TO variables set. Is this what you’re looking for, or would you prefer a tar ball of all the post-commit scripts (and other files at your request)?
+
+Dave
+
+# grep TO= interactive/*/hooks/post-commit
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+5Jul13  history of loops
+
+root@sweng-rep-svn ~]# history | grep for
+   32  for i in `cat master-repo-test-list.txt`; do cp /root/pre-revprop-change $i/hooks; chmod +x $i/hooks/pre-revprop-change; done
+   34  for i in `cat master-repo-list.txt`; do cp /root/pre-revprop-change $i/hooks; chown apache $i/hooks/pre-revprop-change; done
+   35  for i in `cat master-repo-test-list.txt`; do chown apache $i/hooks/pre-revprop-change; done
+   37  for i in `cat master-repo-test-list.txt`; do chown svnsync $i/hooks/pre-revprop-change; done
+   41  for i in `cat master-repo-test-list.txt`; do cp /root/pre-revprop-change $i/hooks; chmod +x $i/hooks/pre-revprop-change; chown svnsync $i/hooks/pre-revprop-change; done
+   42  for i in `cat master-repo-test-list.txt`; do ls -la $i/hooks/pre-revprop-change; done
+   43  for i in `cat master-repo-list.txt`; do ls -la $i/hooks/pre-revprop-change; done
+   49  for i in `cat master-repo-test-list.txt`; do cp /root/pre-revprop-change $i/hooks; chmod +x $i/hooks/pre-revprop-change; chown svnsync $i/hooks/pre-revprop-change;echo "done with "$i; done
+   50  for i in `cat master-repo-list.txt`; do cp /root/pre-revprop-change $i/hooks; chmod +x $i/hooks/pre-revprop-change; chown svnsync $i/hooks/pre-revprop-change;echo "done with "$i; done
+   54  for a in `seq 10`; do echo $a; done
+   55  for a in {1..10}; do echo $a; done
+   56  for i in a b; do for j in a b; do echo $j; done; done
+  301  for i in `find . -name uuid -exec cat '{}' ';'`; do echo $i; done
+  302  for i in `find . -name db`; do echo $i; done
+  303  for i in `find . -name db`; do echo $i| sed 's/^\.\///; done
+  326  for i in `find . -name db`; do echo $i| sed 's/^\.\///'; done
+  327  for i in `find .. -name db`; do echo $i| sed 's/^\.\///'; done
+  329  for i in `find . -name db`; do echo $i| sed 's/^\.\///'; done
+  330  for i in `find . -name uuid`; do echo $i| sed 's/^\.\///'; done 
+  331  for i in `find . -name uuid`; do echo $i| sed 's/^\.\///'; done >> WORKING-AREA/file-list
+  333  for i in `cat WORKING-AREA/file-list`; do cat $i; done
+  334  for i in `cat WORKING-AREA/file-list`; do cat $i; done >> WORKING-AREA/uuid-list
+  366  for i in `find . -name uuid`; do echo $i| sed 's/^\.\///'; done 
+  367  for i in bitstream_bin bitstream_src legacy_bit svn_src repos do; find . -name uuid; echo $i| sed 's/^\.\///'; done 
+  368  for i in bitstream_bin bitstream_src legacy_bit svn_src repos ;do find . -name uuid; echo $i| sed 's/^\.\///'; done 
+  369  for i in bitstream_bin bitstream_src legacy_bit svn_src repos ;do find . -name uuid | sed 's/^\.\///'; done 
+  370  for i in bitstream_bin bitstream_src legacy_bit svn_src repos ;do find . -name uuid | sed 's/^\.\///'; done >> WORKING-AREA/AFTER-file-list
+  372  for i in bitstream_bin bitstream_src legacy_bit svn_src repos ;do find . -name uuid -exec cat '{}' ';'; done
+  378  for i in bitstream_bin bitstream_src legacy_bit svn_src repos ;do find . -name uuid | sed 's/^\.\///'; done >> WORKING-AREA/AFTER-file-list
+  380  for i in bitstream_bin bitstream_src legacy_bit svn_src repos ;do find . -name uuid | sed 's/^\.\///'; done > WORKING-AREA/AFTER-file-list
+  381  for i in bitstream_bin bitstream_src legacy_bit svn_src repos ;do find $i -name uuid | sed 's/^\.\///'; done > WORKING-AREA/AFTER-file-list
+  383  for i in `cat WORKING-AREA/AFTER-file-list`; do cat $i; done
+  384  for i in `cat WORKING-AREA/AFTER-file-list`; do cat $i; done > WORKING-AREA/AFTER-uuid-list
+  401  for i in `cat WORKING-AREA/changed-file-list`; do echo $i; cat $i; done
+  402  for i in `cat WORKING-AREA/changed-file-list`; do echo $i; cat $i; done > WORKING-AREA/AFTER-file-uuid-list
+  428  for i in `find . -name uuid`; do echo $i| sed 's/^\.\///'; done 
+  429  for i in `find . -name uuid`; do echo $i| sed 's/^\.\///'; done > 3jun13-uuidlist
+  430  for i in `cat 3jun13-uuidlist`; do echo $i; done
+  431  for i in `cat 3jun13-uuidlist`; do cat $i; done
+  432  for i in `cat 3jun13-uuidlist`; do cat $i; done > 3jun13-catlist 
+  438  for i in `cat 3jun13-pathlist-repsvn`; do cat $i; done > 3jun13-uuidlist-repsvn 
+  512  for i in `ls`; do echo $i; done
+  514  for i in `ls`; do echo $i; done
+  515  for i in `ls| grep -v Head | grep -v Web`; do echo $i; done
+  516  for i in `ls| grep -v Head | grep -v Web`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/$i/ http://10.23.165.110/$i; done
+  518  for i in `ls| grep -v Head | grep -v Web`; do echo $i; done
+  519  for i in `ls| grep -v Head | grep -v Web`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/$i/ http://10.23.165.110/$i; done
+  521  for i in `ls| grep -v Head | grep -v Web`; do echo $i; done
+  522  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/$i/ http://10.23.165.110/$i; done
+  528  for i in `ls| grep -v Head | grep -v Web`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/HeadEnd/$i/ http://10.23.165.110/$i; done
+  536  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/HeadEnd/$i/ http://10.23.165.110/$i; done
+  537  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/WebApps/$i/ http://10.23.165.110/$i; done
+  550  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/bitstream_bin/$i/ http://10.23.165.110/$i; done
+  689  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/bitstream_bin/$i http://10.23.165.110:/$i; done
+  696  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/legacy_bit/$i http://10.23.165.110:/$i; done
+  698  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/repos/$i http://10.23.165.110:/$i; done
+  701  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/$i http://10.23.165.110:/$i; done
+  704  for i in `ls`; do echo $i; svnsync init --username svnsync --password backup1 file:///mnt/SVNrepos/svn_src/WebApps/$i http://10.23.165.110:/$i; done
+  713  for i in bitstream_bin bitstream_src legacy_bit repos svn_src; do find . -name uuid -exec cat '{}' ';' | grep 5fa157d824ac; done
+  881  for i in `ls`; do svnlook uuid $i; done
+  884  for i in `ls`; do chown svnsync $i; done
+  889  for i in `ls`; do chown svnsync $i; done
+  893  for i in `ls`; do chown svnsync $i; done
+  913  for i in `cat WORKING-AREA/published-repos-6jun13`; do echo $i; cat $i/db/uuid; done
+  920  for i in `cat WORKING-AREA/published-repos-6jun13`; do echo $i; cat $i/db/uuid; done
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+31jul13  --siggy
+rsync sweng-svn so that it is uptodate
+
+cd /root
+
+1) make a list of the repos to update
+find /<for each repo> -name hooks > temp-repo-list
+sed -i 's/\/hooks//' temp-repo-list 
+cat temp-repo-list | sort -u >> REAL-repo-list
+sed -i 's/$/\//' /root/REAL-repo-list
+
+
+2) rsync that list over
+for i in `cat /root/REAL-repo-list`; do echo /$i; rsync --progress -a 172.31.59.84:/$i $i; done
+
+[root@sweng-svn /]# cat /root/REAL-repo-list | wc -l
+222
+
+3) svnadmin verify all repos
+for i in `cat /root/REAL-repo-list`; do echo /$i; svnadmin verify $i; done
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+5Aug13  --siggy
+#to get the associated UUIDs
+#for i in `cat WORKING-AREA/changed-file-list`; do echo $i; cat $i; done
+
+
+When sweng-svn moved to LABC the IP changed.   sweng-rep-svn repos were created using teh 10.23 IP.   I hadf to go in and change the "sync from" IP address for snvsync to work correctly.  Tested with cfengine the looped through the rest...
+
+to create "tobeedited-list"
+
+find . -name 0 > /root/tobeedited-list
+
+then edit that so it only has:
+/<top level directory>/<repo name>/db/revprops/0/0
+ie:
+/repos/interactive/gsn/db/revprops/0/0
+
+to make the change:
+for i in `cat tobeedited-list`; do sed -i s/10.23.165.110/172.31.59.135/ /mnt/SVNrepos/$i; done
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+13Aug13   repo locked
+
+http://stackoverflow.com/questions/4077601/svnsync-couldnt-get-lock-on-destination-repos
+
+[svnsync@sweng-rep-svn ~]$ svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/repos/interactive/cic
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+Failed to get lock on destination repos, currently held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+svnsync: E000022: Couldn't get lock on destination repos after 10 attempts
+[svnsync@sweng-rep-svn ~]$ svnsync sync --username svnsync --password backup1 --steal-lock file:///mnt/SVNrepos/repos/interactive/cic
+Stole lock previously held by 'sweng-rep-svn:8e724084-3ce7-4e6d-add3-7562ca5068f2'
+[svnsync@sweng-rep-svn ~]$ svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/repos/interactive/cic
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+14Aug13   non-published repos
+
+[svnsync@sweng-rep-svn Morega]$ svnsync init --username svnsync --password backup1 --allow-non-empty file:///mnt/SVNrepos/repos/NDSDRM/Morega http://172.31.59.135/repos/NDSDRM/Morega
+svnsync: E175002: Unable to connect to a repository at URL 'http://172.31.59.135/repos/NDSDRM/Morega'
+svnsync: E175002: The OPTIONS request returned invalid XML in the response: XML parse error at line 1: no element found (http://172.31.59.135/repos/NDSDRM/Morega)
+
+[svnsync@sweng-rep-svn Morega]$ 
+
+[svnsync@sweng-rep-svn Morega]$ svnsync init --username svnsync --password backup1 --allow-non-empty file:///mnt/SVNrepos/repos/NDSDRM/Morega http://172.31.59.135/MoregaCopied properties for revision 1.
+
+[svnsync@sweng-rep-svn Morega]$ svnsync sync --username svnsync --password backup1 --allow-non-empty file:///mnt/SVNrepos/repos/NDSDRM/Morega 
+svnsync: E205000: Subcommand 'synchronize' doesn't accept option '--allow-non-empty'
+Type 'svnsync help synchronize' for usage.
+
+[svnsync@sweng-rep-svn Morega]$ svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/repos/NDSDRM/Morega 
+Transmitting file data .
+
+>>>>><<<<<
+Found this by going to a browser adn typing in:
+http://172.31.59.135/Morega
+
+and it asked for login info.
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+16Aug13  --siggy
+
+http://mail-archives.apache.org/mod_mbox/subversion-users/201202.mbox/%3CD8E17987-5AB9-4586-B96F-81CAB6761F49@elego.de%3E
+
+[svnsync@sweng-rep-svn ~]$ svnsync sync --username svnsync --password backup1 file:///mnt/SVNrepos/repos/interactive/tds
+svnsync: E000022: Valid UTF-8 data
+(hex: 4e 4d 20 2d 20 6e 65 77 20 67 61 6d 65 20 3a 20)
+followed by invalid UTF-8 sequence
+(hex: 93 34 20 54)
+
+
+svnsync sync --username svnsync --password backup1 --source-prop-encoding cp1252 file:///mnt/SVNrepos/repos/interactive/tds
+Transmitting file data .
+Committed revision 435.
+Copied properties for revision 435.
+Transmitting file data .
+Committed revision 436.
+Copied properties for revision 436.
+Transmitting file data .
+Committed revision 437.
+Copied properties for revision 437.
+Transmitting file data .
+...
+
+
+svnsync sync --username svnsync --password backup1  file:///mnt/SVNrepos/repos/interactive/tds
+
+!!!!!OK!!!!!
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+
+
+
+
+

@@ -1,0 +1,1 @@
+%HoH = (    flintstones => {        lead      => "fred",        pal       => "barney",    },    jetsons => {        lead      => "george",        wife      => "jane",        "his boy" => "elroy",  # key quotes needed    },    simpsons => {        lead      => "homer",        wife      => "marge",        kid       => "bart",);

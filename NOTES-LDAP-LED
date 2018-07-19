@@ -1,0 +1,744 @@
+[root@pl1rad740 ldap]# cat /tmp/siggy.ldif | grep -i sudo
+# Sudoers, Services, edmunds.com
+dn: ou=Sudoers,ou=Services,dc=edmunds,dc=com
+ou: Sudoers
+
+# defaults, Sudoers, Services, edmunds.com
+dn: cn=defaults,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+description: Default sudoOption's go here
+objectClass: sudoRole
+
+# root, Sudoers, Services, edmunds.com
+dn: cn=root,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+sudoUser: root
+sudoCommand: (ALL) ALL
+sudoHost: ALL
+objectClass: sudoRole
+
+# sample, Sudoers, Services, edmunds.com
+dn: cn=sample,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+sudoUser: mmarschall
+sudoCommand: (ALL) ALL
+sudoHost: ALL
+objectClass: sudoRole
+sudoOption: !authenticate
+
+*****
+
+# Amanda added a new "group" 
+[root@pl1rad702 LDAPControl]# more HadoopDev.ldif 
+dn: cn=HadoopDev,ou=Teams,ou=Groups,dc=edmunds,dc=com
+gidNumber: 50038
+objectClass: posixGroup
+objectClass: top
+cn: HadoopDev
+memberUid: grokita
+memberUid: ttruong
+memberUid: mlykmanov
+memberUid: cneighbor
+
+netgroups
+
+ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f HadoopDev.ldif
+
+AND group
+
+[root@pl1rad702 LDAPControl]# cat netgroups-confluence.ldif
+dn: cn=Confluence,ou=Teams,ou=NetGroups,dc=edmunds,dc=com
+objectClass: nisNetgroup
+objectClass: top
+cn: Confluence
+nisNetgroupTriple: (-,breselman,-)
+[root@pl1rad702 LDAPControl]# 
+[root@pl1rad702 LDAPControl]# 
+[root@pl1rad702 LDAPControl]# ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f netgroups-confluence.ldif 
+
+&&&&&
+
+4dec09  --siggy OK here is the full story!
+
+(1)
+[root@pl1rad702 LDAPControl]# cat confluence-group-add.ldif 
+dn: cn=Confluence,ou=Teams,ou=Groups,dc=edmunds,dc=com
+gidNumber: 50041
+objectClass: posixGroup
+objectClass: top
+cn: Confluence
+memberUid: breselman
+
+ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f confluence-group-add.ldif 
+
+
+(2)
+[root@pl1rad702 LDAPControl]# cat netgroups-confluence-Hosts.ldif
+dn: cn=Confluence-Hosts,ou=ServerGroups,ou=NetGroups,dc=edmunds,dc=com
+objectClass: nisNetgroup
+objectClass: top
+cn: Confluence-Hosts
+description: Confluence
+nisNetgroupTriple: (dl1rde714.admin.edmunds.com,,-)
+nisNetgroupTriple: (tl1rde714.admin.edmunds.com,,-)
+nisNetgroupTriple: (pl1rde714.admin.edmunds.com,,-)
+nisNetgroupTriple: (pl1rde715.admin.edmunds.com,,-)
+
+ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f netgroups-confluence.ldif 
+
+(3)
+[root@pl1rad702 LDAPControl]# cat netgroups-confluence.ldif
+dn: cn=Confluence,ou=Teams,ou=NetGroups,dc=edmunds,dc=com
+objectClass: nisNetgroup
+objectClass: top
+cn: Confluence
+nisNetgroupTriple: (-,breselman,-)
+
+ldapadd -H ldaps://pl1rad702.admin.edmunds.com -x -D "cn=Manager,dc=edmunds,dc=com" -W -f netgroups-confluence.ldif 
+
+*****
+
+[dsiegfriedt@pl1rad740 ~]$ cat add-siggy.ldif 
+changetype: modify
+dn: ou=Sudoers,ou=Services,dc=edmunds,dc=com
+ou: Sudoers
+objectClass: top
+objectClass: organizationalUnit
+
+# defaults, Sudoers, Services, edmunds.com
+dn: cn=defaults,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+description: Default sudoOption's go here
+objectClass: top
+objectClass: sudoRole
+cn: defaults
+
+# root, Sudoers, Services, edmunds.com
+dn: cn=root,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+sudoUser: root
+sudoCommand: (ALL) ALL
+sudoHost: ALL
+objectClass: top
+objectClass: sudoRole
+cn: root
+
+# sample, Sudoers, Services, edmunds.com
+dn: cn=sample,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+sudoHost: ALL
+sudoCommand: (ALL) ALL
+objectClass: top
+objectClass: sudoRole
+sudoOption: authenticate
+cn: sample
+sudoUser: dsiegfriedt
+
+
+
+[dsiegfriedt@pl1rad740 ~]$ ldapmodify -x -D "cn=Manager,dc=edmunds,dc=com" -W -f add-siggy.ldif 
+Enter LDAP Password: 
+modifying entry "ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+
+modifying entry "cn=defaults,ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+
+modifying entry "cn=root,ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+
+modifying entry "cn=sample,ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+
+*****
+
+was working on the WRONG LDAP   NEED to have "-h localhost" or it will make your changes to the LIVE LDAP (not good)
+
+*****
+[dsiegfriedt@pl1rad740 ~]$ cat add-SYSOPS 
+dn: cn=SYSOPS,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+objectClass: top
+objectClass: sudoRole
+cn: SYSOPS
+sudoUser: %SysOps
+sudoHost: ALL
+sudoCommand: (ALL)                      ALL
+sudoOption: !authenticate
+
+[dsiegfriedt@pl1rad740 ~]$ ldapadd -h localhost -x -D "cn=Manager,dc=edmunds,dc=com" -W -f add-SYSOPS 
+Enter LDAP Password: 
+adding new entry "cn=SYSOPS,ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+
+[dsiegfriedt@pl1rad740 ~]$ ldapsearch -h localhost -D "cn=Manager,dc=edmunds,dc=com" -x -W -b 'ou=Services,dc=edmunds,dc=com' cn=SYSOPS
+Enter LDAP Password: 
+# extended LDIF
+#
+# LDAPv3
+# base <ou=Services,dc=edmunds,dc=com> with scope subtree
+# filter: cn=SYSOPS
+# requesting: ALL
+#
+
+# SYSOPS, Sudoers, Services, edmunds.com
+dn: cn=SYSOPS,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+objectClass: top
+objectClass: sudoRole
+cn: SYSOPS
+sudoUser: %SysOps
+sudoHost: ALL
+sudoCommand: (ALL)                      ALL
+sudoOption: !authenticate
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+
+*****
+24jun09  --siggy
+From http://docs.sun.com/source/816-6699-10/attribut.html#14359
+
+ref
+
+Description
+Used in LDAPv3 to support smart referrals. Contains an LDAP URL in the format:
+ldap://<servername>:<portnumber>/<dn>
+The port number is optional.
+For example:
+ref: ldap://server.example.com:389/ou=People, o=example.com
+Note that DN special characters must be escaped. For example:
+ref: ldap://server.example.com:389/ou=People, o=example%Inc 
+
+*****
+29jun09  --siggy
+
+to add to "ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+
+vi add-DEV.ldif
+  1 changetype: add
+  2 dn: cn=DEV,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+  3 objectClass: sudoRole
+  4 cn: DEV
+  5 sudoUser: %DEV
+  6 sudoHost: %Dev-Hosts
+  7 sudoCommand: 
+
+
+*****
+
+29jun09  --siggy
+
+to delete a sub-attribute.....(ie oem)
+
+ldapdelete -v -h localhost -x -D "cn=Manager,dc=edmunds,dc=com" -W "cn=oem,cn=DBA,ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+ldap_initialize( ldap://localhost )
+Enter LDAP Password: 
+deleting entry "cn=oem,cn=DBA,ou=Sudoers,ou=Services,dc=edmunds,dc=com"
+[dsiegfriedt@pl1rad740 LDAP]$ 
+
+*****
+
+7jul09  --siggy
+
+start to finish adding a "pallet"
+
+(1) edit add-palletName.ldif
+
+changetype: add
+dn: cn=palletName,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+objectClass: top
+objectClass: sudoRole
+cn: palletName
+sudoUser: 	%palletUsers
+sudoHost:	%palletHosts
+sudoCommand:	/usr/bin/tail /var/log/messages
+sudoCommand:	/usr/bin/less /var/log/messages
+
+ldapadd -h localhost -x -D "cn=Manager,dc=edmunds,dc=com" -W -f add-palletName.ldif
+
+(2) edit add-palletHosts.ldif
+
+changetype: add
+dn: cn=palletHosts,cn=palletName,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+objectClass: sudoRole
+cn: palletHosts
+sudoUser: 	%palletUsers
+sudoCommand:	%palletName
+sudoHost:	xenrap[0-9][0-9][0-9]
+
+ldapadd -h localhost -x -D "cn=Manager,dc=edmunds,dc=com" -W -f add-palletHosts.ldif
+
+(3) edit add-palletUsers.ldif
+
+changetype: add
+dn: cn=palletUsers,cn=palletName,ou=Sudoers,ou=Services,dc=edmunds,dc=com
+cn: palletUsers
+objectClass: top
+objectClass: posixGroup
+gidNumber: 666
+memberUid: dsiegfriedt
+
+ldapadd -h localhost -x -D "cn=Manager,dc=edmunds,dc=com" -W -f add-palletUsers.ldif
+
+(4) add DEV, APP, DB, WEB  add-user-groups.ldif
+
+*****************************************
+21sep09  --siggy LDAP db backup
+
+
+# backup LDAP
+/usr/sbin/slapcat -l $DESTDIR/slapcat_$STAMP.ldif -f /etc/openldap/slapd.conf
+gzip -9v $DESTDIR/slapcat_$STAMP.ldif
+
+#location of teh LDAP backup
+[root@pl1rad702 ldap]# pwd
+/var/lib/ldap
+
+***********************************************
+23sep09
+
+http://www.openldap.org/doc/admin24/maintenance.html#Directory%20Backups
+
+19.1. Directory Backups
+
+Backup strategies largely depend on the amount of change in the database and how much of that change an administrator might be willing to lose in a catastrophic failure. There are two basic methods that can be used:
+
+1. Backup the Berkeley database itself and periodically back up the transaction log files:
+
+Berkeley DB produces transaction logs that can be used to reconstruct changes from a given point in time. For example, if an administrator were willing to only lose one hour's worth of changes, they could take down the server in the middle of the night, copy the Berkeley database files offsite, and bring the server back online. Then, on an hourly basis, they could force a database checkpoint, capture the log files that have been generated in the past hour, and copy them offsite. The accumulated log files, in combination with the previous database backup, could be used with db_recover to reconstruct the database up to the time the last collection of log files was copied offsite. This method affords good protection, with minimal space overhead.
+
+2. Periodically run slapcat and back up the LDIF file:
+
+Slapcat can be run while slapd is active. However, one runs the risk of an inconsistent database- not from the point of slapd, but from the point of the applications using LDAP. For example, if a provisioning application performed tasks that consisted of several LDAP operations, and the slapcat took place concurrently with those operations, then there might be inconsistencies in the LDAP database from the point of view of that provisioning application and applications that depended on it. One must, therefore, be convinced something like that won't happen. One way to do that would be to put the database in read-only mode while performing the slapcat. The other disadvantage of this approach is that the generated LDIF files can be rather large and the accumulation of the day's backups could add up to a substantial amount of space.
+
+You can use slapcat(8) to generate an LDIF file for each of your slapd(8) back-bdb or back-hdb databases.
+
+    slapcat -f slapd.conf -b "dc=example,dc=com"
+
+For back-bdb and back-hdb, this command may be ran while slapd(8) is running.
+
+MORE on actual Berkeley DB backups later covering db_recover etc.
+
+&&&&&
+
+***********************************************
+20oct09  --siggy
+
+Deleting machines from LDAP
+
+[root@pl1rad005 archives]# more nulluser-lling-hosts.ldif
+dn: uid=lling,ou=dba,ou=People,dc=edmunds,dc=com
+changetype: modify
+replace: host
+host: null
+
+***********************************************
+8dec09  --siggy
+
+Changing LDAP passwd
+
+ssh to LDAP server
+cd /etc/openLDAP
+
+vi slapd.conf
+
+...
+
+# Cleartext passwords, especially for the rootdn, should
+# be avoided.  See slappasswd(8) and slapd.conf(5) for details.
+# Use of strong authentication encouraged.
+# rootpw		secret
+# rootpw		{crypt}ijFYNcSNctBYg
+#rootpw          {SSHA}t0LXqGHbjheHrn3o0cW613PEyRKanMXo
+rootpw           {SSHA}wF9wY8sWko0vJvttNMY/vaD/o51kpO3M
+
+...
+
+comment out current passwd and add teh results of:
+
+/usr/sbin/slappasswd
+
+[root@pl1rad740 openldap]# slappasswd
+New password: 
+Re-enter new password: 
+{SSHA}MPi+mSDFJGuGNZGqtvyrMI2XM0k4fvol
+
+service ldap restart
+
+***********************************************
+8dec09
+
+adding to NetGroups
+
+OpenLDAP has a problem adding single entry to netGroups
+
+[root@pl1rad702 LDAPControl]# cat netops-siggy-mod.ldif 
+dn: cn=NetOps,ou=Teams,ou=NetGroups,dc=edmunds,dc=com
+changetype: modify
+nisNetgroupTriple: (-,ekok,-)
+nisNetgroupTriple: (-,endreu,-)
+nisNetgroupTriple: (-,jhart,-)
+nisNetgroupTriple: (-,jtani,-)
+nisNetgroupTriple: (-,ppotloff,-)
+nisNetgroupTriple: (-,netacs,-)
+nisNetgroupTriple: (-,mnguyen,-)
+nisNetgroupTriple: (-,svcacct-media-ltm,-)
+nisNetgroupTriple: (-,netopsutility,-)
+nisNetgroupTriple: (-,siggy,-)
+
+((((( instead of adding just one line.. you have to add the entire content )))))
+
+ldapmodify -x -H ldaps://pl1rad702.admin.edmunds.com -D "cn=Manager,dc=edmunds,dc=com" -W -f netops-siggy-mod.ldif 
+
+
+***********************************************
+25nov09  --siggy
+
+B2B LDAP
+
+[root@pl1rad005 ldap]# hostname
+pl1rad005.admin.prod.edmunds.com
+[root@pl1rad005 var]# cd ~ldap
+[root@pl1rad005 ldap]# ll
+total 32
+drwxr-xr-x    2 root     root         4096 Nov 25 12:38 archives
+drwxr-xr-x    2 root     root         4096 Nov 25 12:38 backupusers
+-rwxr-xr-x    1 root     root          511 Nov 25 12:55 backupusers.sh
+-rwxr-xr-x    1 root     root         2710 Nov 25 12:37 createuser.sh
+-rwxr-xr-x    1 root     root          148 Nov 25 12:52 getnewPeople.sh
+-rwxr--r--    1 root     root         1086 Nov 25 12:37 passwd_reset.sh
+-rwxr-xr-x    1 root     root          138 Nov 25 12:50 user_modify.sh
+-rwxr-xr-x    1 root     root          165 Nov 25 12:47 user_search.sh
+[root@pl1rad005 ldap]# pwd
+/home/ldap
+
+***********************************************
+9sep10  --siggy
+
+[root@pl1rad702 ~]# cat /etc/ldap.conf | sed /^#/d | sed /^$/d
+host pl1rad702.admin.edmunds.com pl1rad703.admin.edmunds.com
+base dc=edmunds,dc=com
+timelimit 120
+bind_timelimit 120
+idle_timelimit 600
+pam_check_host_attr yes
+nss_base_passwd		ou=People,dc=edmunds,dc=com?one
+nss_base_shadow		ou=People,dc=edmunds,dc=com?one
+nss_base_group		ou=Groups,dc=edmunds,dc=com?sub
+ssl on
+pam_password md5
+sudoers_base            ou=Sudoers,ou=Services,dc=edmunds,dc=com
+sudoers_debug 1
+
+[root@pl1rad702 openldap]# pwd
+/etc/openldap
+[root@pl1rad702 openldap]# cat ldap.conf 
+#
+# LDAP Defaults
+#
+
+# See ldap.conf(5) for details
+# This file should be world readable but not world writable.
+
+#BASE   dc=example, dc=com
+#URI    ldap://ldap.example.com ldap://ldap-master.example.com:666
+
+#SIZELIMIT      12
+#TIMELIMIT      15
+#DEREF          never
+HOST pl1rad702.admin.edmunds.com pl1rad703.admin.edmunds.com
+BASE dc=edmunds,dc=com
+#TLS_CACERTDIR /etc/openldap/cacerts
+TLS_REQCERT never
+
+[root@pl1rad702 openldap]# pwd
+/etc/openldap
+[root@pl1rad702 openldap]# ll
+total 32
+drwxr-xr-x  2 root root 4096 Sep 21  2009 archives
+drwxr-xr-x  2 root root 4096 Jul  2  2008 cacerts
+-rw-r--r--  1 root root  408 Oct 30  2007 ldap.conf
+drwxr-xr-x  4 root root 4096 Mar 19 17:03 schema
+-rw-r-----  1 root ldap 4424 May 20 17:00 slapd.conf
+-rw-r-----  1 root ldap 3338 Jul  2  2008 slapd.conf.rpmnew
+
+[root@pl1rad702 openldap]# cat slapd.conf | sed /^#/d | sed /^$/d
+include		/etc/openldap/schema/core.schema
+include		/etc/openldap/schema/cosine.schema
+include		/etc/openldap/schema/inetorgperson.schema
+include		/etc/openldap/schema/nis.schema
+include		/etc/openldap/schema/openldap.schema
+include		/etc/openldap/schema/redhat/autofs.schema
+include		/etc/openldap/schema/edmunds/sudoers.schema
+include		/etc/openldap/schema/RADIUS-LDAPv3.schema
+allow bind_v2
+pidfile		/var/run/slapd.pid
+argsfile	/var/run/slapd.args
+TLSCACertificateFile /usr/share/ssl/certs/ca-bundle.crt
+TLSCertificateFile /usr/share/ssl/certs/slapd.pem
+TLSCertificateKeyFile /usr/share/ssl/certs/slapd.pem
+access to attr=userPassword
+       by dn="cn=Replicator,ou=Roles,dc=edmunds,dc=com" write
+       by dn="cn=Radius,ou=Roles,dc=edmunds,dc=com" auth
+       by self write
+       by anonymous auth
+       by * auth
+access to dn.one="dc=edmunds,dc=com"
+       by dn="cn=Replicator,ou=Roles,dc=edmunds,dc=com" write
+       by dn="cn=Radius,ou=Roles,dc=edmunds,dc=com" auth
+       by self write
+       by * read
+access to dn.children="dc=edmunds,dc=com"
+       by dn="cn=Replicator,ou=Roles,dc=edmunds,dc=com" write
+       by dn="cn=Radius,ou=Roles,dc=edmunds,dc=com" auth
+       by self write
+       by * read
+database	bdb
+suffix		"dc=edmunds,dc=com"
+rootdn		"cn=Manager,dc=edmunds,dc=com"
+rootpw		{SSHA}qaDEfNH7gzUYGh9yAnSEq2bio7lT3Wpu
+directory	/var/lib/ldap
+index objectClass                       eq,pres
+index ou,cn,mail,surname,givenname      eq,pres,sub
+index uidNumber,gidNumber,loginShell    eq,pres
+index uid,memberUid                     eq,pres,sub
+index nisMapName,nisMapEntry            eq,pres,sub
+replogfile /var/lib/ldap/openldap-master-replog
+replica uri=ldaps://pl1rad703.admin.edmunds.com:636
+        binddn="cn=Replicator,ou=Roles,dc=edmunds,dc=com"
+        bindmethod=simple credentials=replicatethis
+
+
+***********************************************
+DTV
+***********************************************
+26apr13  LED (led)  Larry
+To get the “Service Tag” as the bios reports it, you can use dmidecode.  The kickstart file can be used as a cheat sheet.
+
+[root@localhost kickstart]# grep -i dmidecode ks.cfg
+export SVCTAG=`dmidecode -s system-serial-number | sed 's/ /-/g' | sed 's/\(.*\)/\L\1/'`
+export SVCTAG=`dmidecode -s system-serial-number | sed 's/ /-/g' | sed 's/\(.*\)/\L\1/'`
+[root@localhost kickstart]# dmidecode -s system-serial-number | sed 's/ /-/g' | sed 's/\(.*\)/\L\1/'
+usv4100cwd
+
+Here is the example of enrolling a box with “asset.pl”
+
+[lslile@h28166 ~]$ /users/support/bin/asset.pl -a --assettag d-e35076 --make %7 --model "D530C" --role %1 --svctag usv4100cwd --type %2 --site %4
+
+[lslile@h28166 ~]$ /users/support/bin/asset.pl -q d-e35076
+Asset Tag  Service Tag  Manufacturer     Model  Owner  Hostname    IP Address  Location Site
+D-E35076   USV4100CWD   Hewlett-Packard  D530C         els-e35076                       El Segundo - LA4
+
+[lslile@h28166 ~]$ /users/support/bin/asset.pl -u --location LA4/1335I --user msalazar D-E35076
+
+dsiegfriedt@F12268:~ $ /users/support/bin/asset.pl -u --location LA4/1336J --user dsiegfriedt d-f12268
+
+[lslile@h28166 ~]$ /users/support/bin/asset.pl -q d-e35076
+Asset Tag  Service Tag  Manufacturer     Model  Owner        Hostname    IP Address  Location  Site
+D-E35076   USV4100CWD   Hewlett-Packard  D530C  Max Salazar  els-e35076              LA4/1335I El Segundo - LA4
+
+[lslile@h28166 ~]$ led -C prod-dm cn=els-E35076
+Modifying objectclass in dn: cn=els-e35076,ou=Hosts,dc=swengdtv,dc=net
+- objectclass: device $ inetOrgPerson $ organizationalPerson $ person $ top
++ objectclass: device $ inetOrgPerson $ ipHost $ organizationalPerson $ person $ top
+Modifying iphostnumber in dn: cn=els-e35076,ou=Hosts,dc=swengdtv,dc=net
+- iphostnumber:
++ iphostnumber: 10.23.173.144
+
+The %\d numbers come from here:
+
+[lslile@h28166 ~]$ /users/support/bin/asset.pl --print
+
+<<<<<>>>>>
+
+dsiegfriedt@F12268:~ $ led -C prod-dm cn=d-t14733
+Nothing found in map cn=d-t14733, use -E to edit anyway.
+
+dsiegfriedt@F12268:~ $ /users/support/bin/asset.pl -q d-f14733
+Asset Tag  Service Tag  Manufacturer  Model            Owner      Hostname    IP Address  Location  Site              
+D-F14733   6WXLRW1      Dell Inc.     Precision T3600  tholdener  els-f14733              LA4/1344D El Segundo - LA4  
+
+(07:49:57 AM) Larry Lile: cn=els-<...>
+(07:50:15 AM) Larry Lile: description=assettag:d-t14733
+(07:50:25 AM) Larry Lile: or description=\*-t14733
+(07:51:54 AM) Larry Lile: better?
+(07:53:07 AM) dsiegfriedt@nms-la-cvs2/be16d3aa: nope
+dsiegfriedt@F12268:~ $ led -C prod-dm description=assettag:d-t14733
+Nothing found in map description=assettag:d-t14733, use -E to edit anyway.
+
+(07:53:30 AM) dsiegfriedt@nms-la-cvs2/be16d3aa: so it is in assets but no LDAP entry
+(07:54:10 AM) Larry Lile: f14733
+(07:54:28 AM) Larry Lile: I copied it wrong
+(07:55:32 AM) dsiegfriedt@nms-la-cvs2/be16d3aa: yes.... better.   THANK YOU
+(07:55:46 AM) Larry Lile: =D sorry
+(07:57:59 AM) dsiegfriedt@nms-la-cvs2/be16d3aa: dsiegfriedt@F12268:~ $ led -C prod-dm description=assettag:d-f14733
+<<<<<>>>>>
+dn: cn=els-f14733,ou=Hosts,dc=swengdtv,dc=net
+ipHostNumber: 10.23.173.181
+objectClass: top
+objectClass: device
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: ipHost
+owner: uid=tholdener,ou=DirecTV,ou=People,dc=swengdtv,dc=net
+sn: D-F14733
+physicalDeliveryOfficeName: LA4/1344D
+l: El Segundo - LA4
+cn: els-f14733
+description: ASSETTAG:D-F14733
+description: MAKE:Dell Inc.
+description: MODEL:Precision T3600
+description: ROLE:Desktop
+description: SVCTAG:6WXLRW1
+description: TYPE:Infrastructure
+
+<<<<<>>>>>
+Modifying iphostnumber in dn: cn=els-f14733,ou=Hosts,dc=swengdtv,dc=net
+- iphostnumber: 
++ iphostnumber: 10.23.163.181
+failed to modify entry: attribute "ipHostNumber" not allowed
+
+Warning, the ldap server rejected 1 of 1 changes.
+
+(07:58:25 AM) Larry Lile: You have to add "objectClass: ipHost" as well
+
+***********************************************
+30Apr13  Larry
+
+nscd adn nslcd need to be on for LDAP
+***********************************************
+7May13  --siggy
+
+led -C prod cn=els-f12268 (my machine)
+
+dn: cn=els-F12268,ou=Hosts,dc=swengdtv,dc=net
+ipHostNumber: 10.23.174.156
+l: El Segundo - LA4
+description: ASSETTAG:D-F12268
+description: MAKE:Dell Inc.
+description: MODEL:Precision T3500
+description: ROLE:Desktop
+description: SVCTAG:9XYWXV1
+description: TYPE:Infrastructure
+owner: uid=dsiegfriedt,ou=DirecTV,ou=People,dc=swengdtv,dc=net
+sn: D-F12268
+physicalDeliveryOfficeName: LA4/1336J
+objectClass: top
+objectClass: device
+objectClass: ipHost
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+cn: els-F12268
+
+***********************************************
+6Jun13  lslile trouble shooting alu sync scripts
+
+ssh alu
+sudo su -
+crontab -l | grep pass
+
+/opt/scripts/ldap/nis-sync.pl -x -D "uid=sync_user,ou=Special Users,dc=swengdtv,dc=net" -w 'DTV!$ppt' -b ou=People,dc=swengdtv,dc=net -M passwd -F lslile@directv.com -T lslile@directv.com -m dsiegfriedt@directv.com
+
+Got no errors from the command line, but did get email failure.
+
+If you still recieve mail, go to 
+cd /var/log/dirsrv/slapd-alu/
+cat errors
+[SNIP]
+[06/Jun/2013:10:36:33 -0700] - Entry "uid=staub,ou=People,dc=swengdtv,dc=net" missing attribute "sn" required by object class "inetOrgPerson"
+
+this will tell you what is missing
+
+script no creating sn (Sir Name)...... Larry is looking at the script as I type this
+
+***********************************************
+26jun13    getent
+
+dsiegfriedt@els-f12268:~ $ getent --help
+Usage: getent [OPTION...] database [key ...]
+Get entries from administrative database.
+
+  -s, --service=CONFIG       Service configuration to be used
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
+  -V, --version              Print program version
+
+Mandatory or optional arguments to long options are also mandatory or optional
+for any corresponding short options.
+
+Supported databases:
+ahosts ahostsv4 ahostsv6 aliases ethers group gshadow hosts netgroup
+networks passwd protocols rpc services shadow
+
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/libc/bugs.html>.
+
+<<<<<>>>>>
+(10:26:54 AM) Larry Lile: [lslile@h28166 admin]$ ldapmatch login_benson netgroup
+login_benson_1 login_benson_2 login_benson_3
+[lslile@h28166 admin]$ ldapmatch login_benson_1 netgroup
+(,acangeles,) (,acastro,) (,alikhopii,) (,anhnt,) (,anhtqt,) (,anhttt,) (,anth,) (,arenne,) (,atkach,) (,bdo,) (,brunoberenger,) (,btruong,) (,canhdq,) (,chaub,) (,chaudh,) (,chitcn,) (,cuctkd,) (,cuonglkn,) (,cuongtv,) (,dainq,) (,danielclaudino,) (,dattp,) (,dsukhomlin,) (,dungdoant,) (,dungdt,) (,dunghh,) (,dungtnguyen,) (,dungttm,) (,dungttn,) (,duykn,) (,ebdasilva,) (,fabiosimoes,) (,fbarcelos,) (,fmanhaes,) (,gsouza,) (,haicn,) (,hath,) (,hatmn,) (,hengineer,) (,hienttn,) (,hieptd,) (,hieudmn,) (,hoahtk,) (,hoangmn,) (,hong,) (,hongnql,) (,huemach,) (,huetmv,) (,hungpl,) (,huongtth,) (,ibgomes,) (,imatsko,) (,jchien,) (,khangdt,) (,kpetrenko,) (,ladsantos,) (,lfdeoliveira,) (,lieutbn,) (,linhtmnguyen,)
+[lslile@h28166 admin]$ ldapmatch login_benson_2 netgroup
+(,marcelelilargem,) (,marianefiorio,) (,mfdasilva,) (,mgodinho,) (,mhotha,) (,minhtn,) (,mshevchenko,) (,nhityn,) (,nhungttn,) (,nminaskan,) (,npatel,) (,nsah,) (,oanhttt,) (,obiletska,) (,odonich,) (,ofediunina,) (,pbadola,) (,pdang,) (,phathl,) (,phatnt,) (,phuongttn,) (,pmanhaes,) (,psilva,) (,psvieira,) (,rlicassali,) (,rrangel,) (,rribeiro,) (,rtli,) (,smavrov,) (,sontb,) (,strokhymets,) (,thuynbn,) (,tinhdtk,) (,tramtnn,) (,trangtl,) (,tridu,) (,tsanxs,) (,tuna,) (,tungmd,) (,tungtp,) (,vanttb,) (,viettt,) (,vinhtq,) (,yennn,) (,yentbs,)
+[lslile@h28166 admin]$ ldapmatch login_benson_3 netgroup
+(,hongttt,) (,huetmv,) (,hungdh,) (,huongthitn,) (,huongttn,) (,huynhtlp,) (,lammn,) (,lamnt,) (,lantn,) (,lantt,) (,lieutbn,) (,longbn,) (,longnt,) (,minhhn,) (,minhtn,) (,nampl,) (,nguyenntb,) (,nguyentv,) (,nhattt,) (,nhonntn,) (,phott,) (,phuongcnn,) (,phuongtl,) (,quangnt,) (,quynhvl,) (,simtp,) (,tamtkn,) (,thachqt,) (,thamkhn,) (,thanhdtc,) (,thanhmp,) (,thannh,) (,thaohn,) (,thaomb,) (,thoatkd,) (,thoatu,) (,thongmv,) (,thonth,) (,thulta,) (,tkuroiedova,) (,trungtranle,) (,tuna,) (,tutcn,) (,vannt,) (,vkytsun,) (,vmehta,) (,vtarverdi,) (,vtuluman,) (,vvasconcelos,) (,vvaskovskyi,) (,vviazovykov,) (,vyadrov,) (,ystadnik,)
+
+(10:27:11 AM) Larry Lile: [lslile@h28166 admin]$ ldapsearch -LLL -x '(&(objectclass=nisnetgroup)(cn=login_benson))'
+dn: cn=login_benson,ou=Netgroup,dc=swengdtv,dc=net
+memberNisNetgroup: login_benson_1
+memberNisNetgroup: login_benson_2
+memberNisNetgroup: login_benson_3
+cn: login_benson
+objectClass: top
+objectClass: nisNetgroup
+
+(10:28:37 AM) Larry Lile: The conversion to nested left the original members and added the nested groups as well, don't know wtf happened there.  I deleted them from LDAP an then had the sync re-create them.
+
+
+to get a list of ALL the available netgroups
+ldapsearch -LLL -x '(&(objectclass=nisnetgroup))'
+
+***********************************************
+From: Michaels, David R
+Sent: Thursday, June 27, 2013 3:00 PM
+To: Siegfriedt, Donald
+Cc: Romero, Lawrence
+Subject: Re: Out of schedule LDAP sync to Benson
+
+Sig,
+
+Note: Take care in the LDAP console, it doesn’t take careless clicky clickies well.
+Cut and paste from alu’s root crontab:
+NIS-LDAP sync of:   passwd   group   auto.home   netgroup
+Open openconnect tunnel
+
+From a desktop user shell (to set the X display stuff correctly)
+                ssh -x alu
+                redhat-idm-console &
+Login to console:   User ID: cn=Directory Manager     Password:  our SS
+
+                <select tab> Servers/Apps:  <expand> alu  -> Server Group  -> <select> Directory Server <select (upper right corner)> Open
+                <select tab> Configuration  <expand> Replication <expand> dcswengdtv
+                <right click> vpl-benson <select> Send-update-now
+                <wait a few seconds, then exit>
+remember to close tunnel
+
+***********************************************
+19jul13  --siggy
+
+to see if "LDAP" is running....
+
+ps -ef | grep slap
+
+you should see:
+/usr/sbin/ns-slapd -D /etc/dirsrv/slapd-vpl-benson -i /var/run/dirsrv/slapd-vpl-benson.pid -w /var/run/dirsrv/slapd-vpl-benson.startpid
+***********************************************
+26jul13  LSL tests if LDAP is serviceing requests
+
+ldapsearch -x -h localhost -s base -b "" objectclass=\*
+***********************************************
+12Aug13  LSL  invalidates nscd cache
+nscd -i passwd
+***********************************************
+
+***********************************************
+
+***********************************************
+
+***********************************************
+
+***********************************************

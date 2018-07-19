@@ -1,0 +1,34 @@
+#!/bin/sh
+
+
+ypcat hosts | awk '{print $3}' | sort -fuo ~siggy/hostlist
+
+foreach i (`ls ~siggy/hostlist`)
+echo $i
+ping -w2 $i
+grep 100%
+
+
+
+
+
+
+
+
+
+
+*******************************
+[grodd] (/home/siggy) 156 > ping -w2 raiders
+PING raiders.hollywood.cinesite.com (10.1.10.177) from 10.1.14.165 : 56(84) bytes of data.
+64 bytes from raiders.hollywood.cinesite.com (10.1.10.177): icmp_seq=1 ttl=254 time=0.747 ms
+64 bytes from raiders.hollywood.cinesite.com (10.1.10.177): icmp_seq=2 ttl=254 time=0.173 ms
+
+--- raiders.hollywood.cinesite.com ping statistics ---
+2 packets transmitted, 2 received, 0% loss, time 1002ms
+rtt min/avg/max/mdev = 0.173/0.460/0.747/0.287 ms
+[grodd] (/home/siggy) 157 > ping -w2 batman
+PING batman.hollywood.cinesite.com (10.1.10.141) from 10.1.14.165 : 56(84) bytes of data.
+
+--- batman.hollywood.cinesite.com ping statistics ---
+2 packets transmitted, 0 received, 100% loss, time 1011ms
+

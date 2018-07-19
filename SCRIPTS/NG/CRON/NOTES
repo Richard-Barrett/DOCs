@@ -1,0 +1,20 @@
+25jun07  --siggy
+
+removed 0,15,30,45 * * * * /usr/local/etc/pbsstat from /var/spool/cron/root because it runs under /var/spool/cron/xkkwcm
+
+removed 30 * * * * * /usr/local/etc/fact form /var/spool/cron/ebb139 because Dave's not here, man. Aragorn was at a load of 260 trying to find ebb139.  NOT a good thing
+#***************************************************************************
+# The loop below will modify the crontab file on all nodes and
+# restart the crond process.
+#***************************************************************************
+for i in `cat /etc/beowulf/bcs/allnodes`
+do
+echo $i
+rsh $i "echo \"0,15,30,45 * * * * /root/mount_check.py > /dev/null\" >> /var/spool/cron/root"
+#
+# Find the crond process and restart it
+#
+#rsh $i kill -1 `ps -ef | grep crond | grep -v grep | awk '{print $2}'`
+rsh $i killall -HUP crond
+done
+

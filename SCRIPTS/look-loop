@@ -1,0 +1,35 @@
+#!/bin/bash
+# nested-loop.sh: Nested "for" loops.
+
+fst=10
+# fst=192
+# fst=204
+
+# snd=second octet
+# trd=third octet
+# fth=forth octet
+
+# Beginning of snd loop.
+for snd in {1..255}  
+#for snd in $(seq 1 255)
+do  # start 2nd octet
+  # ===============================================
+  # Beginning of 3rd octet loop.
+  for trd in {1..255} 
+  #for trd in $(seq 1 255)
+  do # start 3rd octet
+      # ===============================================
+      # Beginning of 4th octet loop.
+      for fth in {1..255} 
+      #for trd in $(seq 1 255)
+      do # start 4th octet
+          ADDRESS=$fst"."$snd"."$trd"."$fth
+	  grep $ADDRESS zones-forward/* >> $fst-forward-addresses
+#	  grep $ADDRESS zones-reverse/* >> $fst-reverse-addresses
+  # ===============================================
+      done # end 4th octet
+  done # end 3rd octet
+done # end snd              
+
+
+

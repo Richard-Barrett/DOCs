@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Burn in test for new machines.  To be added to initial build
+#  --siggy 8jan09
+# This will check if "/var/tmp/BURN-IN-run" is present.  If it is not it 
+# will run sysbasher for ? hours.  Apon exiting it will create "BURN-IN-run" file.
+
+#check for "/root/BURN-IN-ran"
+if [ -f /root/BURN-IN-ran ]; then
+   exit 0
+else
+   /opt/sysbasher/sys_basher -th 32 > /tmp/sys_basher.log.$$ 2>&1
+fi
+
+touch /root/BURN-IN-ran
+
+# Send mail to sysops to tell them your done
+echo "sysbasher has completed on $HOSTNAME" | mail -s "$HOSTNAME has completed the sysbasher test" sysops@edmunds.com
+

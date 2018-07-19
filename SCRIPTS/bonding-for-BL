@@ -1,0 +1,240 @@
+#!/bin/sh
+
+/sbin/modprobe bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=3
+sleep 5
+
+#Set GATEWAY
+GATEW=`netstat -rn | tail -1 | awk '{print $2}'`
+cat >> /etc/sysconfig/network<<EOF
+GATEWAY=$GATEW
+EOF
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+
+#Back up the files
+for i in `ls | grep ifcfg-eth`; do mv $WORKINGDIR/$i $WORKINGDIR/ORIG-$i; done
+
+#Clean up files
+sed /DHCP_HOSTNAME=/d /etc/sysconfig/network
+sed /\:\:1/d /etc/hosts
+
+#Collect pieces of the machine name
+SN=`hostname -s`
+DN=`dnsdomainname`
+FQnfsN="${SN}.nfs.${DN}"
+
+#Collect info for new files
+IPADDR0=`hostname -i`
+IPADDR1=`host $FQDnfsN | awk '{print $NF}'`
+
+NETMASK0=`ifconfig eth0 | grep Mask | awk -F: '{print $4}'`
+NETMASK1=255.255.252.0
+
+HWADD0=HWADDR=`ifconfig eth0 | grep HWaddr | awk '{print $5}'`
+HWADD1=HWADDR=`ifconfig eth1 | grep HWaddr | awk '{print $5}'`
+
+cat > $WORKINGDIR/ifcfg-eth0 <<EOF
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD0
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth0FAILED; exit 0; fi
+
+cat > $WORKINGDIR/ifcfg-eth1 <<EOF
+DEVICE=eth1
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD1
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/eth1FAILED; exit 0; fi
+
+function PreProd {
+#********************************************************************************
+#   This is for PreProd machines pl1rxv7xx 
+#********************************************************************************
+cat > $WORKINGDIR/ifcfg-bond0<<EOF
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+BRIDGE=br2248
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0FAILED; exit 0; fi
+
+cat > $WORKINGDIR/ifcfg-br2248 <<EOF
+DEVICE=br2248
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+IPADDR=$IPADDR0
+NETMASK=$NETMASK0
+DELAY=0
+STP=off
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br2248FAILED; exit 0; fi
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.1111 <<EOF
+DEVICE=bond0.1111
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br1111
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0-1111FAILED; exit 0; fi
+
+cat > $WORKINGDIR/ifcfg-br1111 <<EOF
+DEVICE=br1111
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+IPADDR=$IPADDR1
+NETMASK=$NETMASK1
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br1111FAILED; exit 0; fi
+
+#***********************************
+# loop through the VLANs and create bond/bridge files.
+for i in `2007 2008 2013 2014 2020 2021 2240`
+do
+cat > $WORKINGDIR/ifcfg-bond0.$i <<EOF
+DEVICE=bond0.$i
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br$i
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0.$iFAILED; exit 0; fi
+
+cat > $WORKINGDIR/ifcfg-br$i <<EOF
+DEVICE=br$i
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br$iFAILED; exit 0; fi
+done
+
+} # Closes function PreProd
+
+#********************************************************************************
+
+function Prod {
+#********************************************************************************
+#   This is for Prod machines pl1rxv9xx 
+#********************************************************************************
+cat > $WORKINGDIR/ifcfg-bond0<<EOF
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+BRIDGE=br2328
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0FAILED; exit 0; fi
+
+cat > $WORKINGDIR/ifcfg-br2328 <<EOF
+DEVICE=br2328
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+IPADDR=$IPADDR0
+NETMASK=$NETMASK0
+DELAY=0
+STP=off
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br2328FAILED; exit 0; fi
+
+#***********************************
+cat > $WORKINGDIR/ifcfg-bond0.2428<<EOF
+DEVICE=bond0.2428
+BOOTPROTO=none
+ONBOOT=yes
+TYPE=Ethernet
+VLAN=yes
+BRIDGE=br2428
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0.2428FAILED; exit 0; fi
+
+cat >$WORKINGDIR/ifcfg-br2428<<EOF
+DEVICE=br2428
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+IPADDR=$IPADDR1
+NETMASK=$NETMASK1
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br2428FAILED; exit 0; fi
+
+#***********************************
+# loop through the VLANs and create bond/bridge files
+for i in `1324 1332`
+do
+cat >$WORKINGDIR/ifcfg-bond0.$i<<EOF
+DEVICE=bond0.$i
+BOOTPROTO=none
+ONBOOT=yes
+VLAN=yes
+BRIDGE=br$i
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/bond0.$iFAILED; exit 0; fi
+
+cat >$WORKINGDIR/ifcfg-br$i<<EOF
+DEVICE=br$i
+TYPE=Bridge
+BOOTPROTO=static
+ONBOOT=yes
+DELAY=0
+STP=off
+
+EOF
+if  [ ! $? -eq 0 ]; then /usr/bin/touch /tmp/br$iFAILED; exit 0; fi
+
+done
+
+}  #Closes function Prod
+
+#********************************************************************************
+
+# Test environment to see which network setup is needed. 7=PreProd 9=Prod
+ENV=`hostname -s | cut -c 7`
+
+if [ $ENV -eq 7 ]; then
+   function PreProd
+else
+if [ $ENV -eq 9 ]; then
+   function Prod
+fi fi
+
+#Add to the end of /etc/modeprobe.conf
+MODPROBEDIR=/etc
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+echo "alias     bond0   bonding" >> $MODPROBEDIR/modprobe.conf
+echo "options bonding miimon=100 updelay=200 downdelay=200 mode=4 max_bonds=1" >> $MODPROBEDIR/modprobe.conf
+
+/sbin/service network restart
+
+#blank line

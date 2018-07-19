@@ -1,0 +1,77 @@
+27Jul17  superfortress and fightingfalcon
+
+@@@ email from James
+James Parks
+Jul 25 (2 days ago)
+
+to me￼
+To the best of my understanding, the driver stuff for the AJA cards resides in this folder:
+
+/disney/depts/tech/soft/rv/aja_lic/ntv2linux-driver-12.4.1.1/bin
+
+The standard process so far has been to cd into it and run sudo ./loadOEM2K
+
+When I open up the loadOEM2K file I see some commands:
+
+/sbin/insmod XENA2.ko    ##loads a kernal object
+
+major=`cat /proc/devices | awk "\\$2==\"oem2k\" {print \\$1}"`     ##gets something called a 'major number'
+rm -f /dev/oem2k[0-3]      ##removes any existing oem2k nodes
+mknod /dev/oem2k0 c $major 0     ##recreates the oem2k nodes in /dev/
+mknod /dev/oem2k1 c $major 1
+mknod /dev/oem2k2 c $major 2
+mknod /dev/oem2k3 c $major 3
+
+
+My research tells me there should be a place to copy .ko kernel objects to be loaded on startup (supposedly something like /etc/modules) and there should be a place to specify to make certain nodes on startup (supposedly /lib/udev/devices). I can't find those places in our filesystems (or they exist but are empty of any other files) As I'm not familiar enough with the way our Linux installs handles these, I felt it best to consult you before I start mucking around with how the theater machines boot up. 
+
+Any advice would be appreciated.
+Thanks
+
+@@@going to try adding this to rc.local on dts3478
+
+@@@ first tried by hand
+/disney/depts/tech/soft/rv/aja_lic/ntv2linux-driver-12.4.1.1/bin/loadOEM2K
+[root@dts3478 bin]# ll /dev | grep oem
+crw-rw-rw-.  1 root root    244,   0 Jul 27 10:28 oem2k0
+crw-rw-rw-.  1 root root    244,   1 Jul 27 10:28 oem2k1
+crw-rw-rw-.  1 root root    244,   2 Jul 27 10:28 oem2k2
+crw-rw-rw-.  1 root root    244,   3 Jul 27 10:28 oem2k3
+[root@dts3478 bin]# cat /proc/devices | grep oem2k
+244 oem2k
+
+@@@ reboot to clear.... 
+
+[root@dts3478 ~]# cat /etc/rc.local 
+
+{SNIP}
+#added as a test for theatre machines 27Jul17  --siggy
+/disney/depts/tech/soft/rv/aja_lic/ntv2linux-driver-12.4.1.1/bin/loadOEM2K
+
+@@@ that didn't work... suspect automount was not up yet
+
+28Jul17
+
+@@@ rc.local was a PITA to get working (never did...)
+@@@ found a URL that suggested use @reboot in crontab
+https://www.linuxbabe.com/linux-server/how-to-enable-etcrc-local-with-systemd
+
+@@@failed had some permissions problems
+@@@ the insmod failed until I put a FQPN in
+
+[root@dts3478 ~]# crontab -l
+@reboot /disney/depts/tech/soft/rv/aja_lic/ntv2linux-driver-12.4.1.1/bin/loadOEM2K
+
+@@@ that works when tested by James
+
+((()))
+
+2Nov17 new path from James and wants "birddog" to be added and super/fighting changed
+
+/disney/depts/tech/soft/rv/aja_lic/ntv2linux-driver-12.4.1.1/bin/loadOEM2K
+
+((()))
+23May18  machines with AJA
+
+fightingfalcon
+superfortress

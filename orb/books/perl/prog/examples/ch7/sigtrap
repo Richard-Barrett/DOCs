@@ -1,0 +1,1 @@
+use sigtrap;       # initialize default signal handlersuse sigtrap LIST;  # LIST example:  qw(BUS SEGV PIPE SYS ABRT TRAP)

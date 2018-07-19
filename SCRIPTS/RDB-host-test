@@ -1,0 +1,38 @@
+# for  1 name rpms ...
+#!/bin/bash
+
+for i in binutils gcc glibc libgcc libstdc++ make sysstat libaio libXtst
+do
+echo $i"*****"
+done
+INSTALLEDRPM=`grep $i /var/log/rpmpkgs | awk -F- '{print $1}'`
+
+if [ "$i" = "$INTSALLEDRPM" ]; then
+   echo "*****RPM OK*****"
+elseif
+   echo " *****$i is MISSING****** "
+fi
+
+done
+
+
+
+# for 2 name rpms....
+
+#!/bin/bash 
+
+for i in compat-libstdc++ elfutils-libelf gcc-c++ glibc-common glibc-devel libXtst-devel libaio-devel libstdc++-devel 
+
+do
+echo $i"*****"
+INSTALLEDRPM=`grep $i /var/log/rpmpkgs | awk -F- '{print $1"-"$2}' | head -n 1`
+
+if [ "$i" = "$INSTALLEDRPM" ]; then
+  echo "RPM is OK"
+	echo ""
+else
+  echo "$i is MISSING"
+	echo ""
+fi
+done
+

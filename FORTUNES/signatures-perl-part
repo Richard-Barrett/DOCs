@@ -1,0 +1,17 @@
+#!/usr/bin/perl -0177s
+
+#makesig:
+#Pick one of the sig lines below at random and write it to .signature.
+#useage: makesig[num].  If num is unspecified, a sig is chosen at random.
+
+srand(time);
+
+@sigs = split /--sig--\n/, <DATA>;
+$i = @ARGV ? shift : int rand($#sigs+1);
+
+open (SIG, ">.signature") or die "Crap! Can't write to .signature: $!\n";
+print "$0: Picking signature number $i,\n";
+print SIG $sigs[$i];
+close SIG;
+
+__END__

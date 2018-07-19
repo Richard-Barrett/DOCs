@@ -1,0 +1,1033 @@
+20Nov13  --siggy  MySQL commands
+
+show databases;
+connect or use <results>;
+show tables;
+show grants;
+use mysql;
+
+21Nov13  --siggy CC Wiki dump 
+
+$mysqladmin -u root -p ping
+	      	      shutdown  (to stop mysql)
+		      status
+		      extended-status
+		      variables
+		      processlist
+		      full-processlist
+		      password 'newpasswd'  (NOTE:   this will include the ticks in the passwd)
+
+STOP mysql
+$cd /d d:\bin64\MySQL\MySQL Server 5.1\bin
+
+c:\\mysql-init.txt =
+	 UPDATE mysql.user SET Password=PASSWORD('12345') WHERE User='root';
+	 FLUSH PRIVILEGES;
+
+$mysqld --init-file=c:\\mysql-init.txt
+
+test login
+$mysql -u root -p
+
+>update user set password=PASSWORD("12345") where User='root'
+
+in a different shell
+$mysqldump --single-transaction -u root -p DBname > c:\\DBname-dump.mysql
+
+	   DBname=information_schema, mysql, test, wikidb
+
+.....
+22Nov13  --siggy   innodb FPoS!
+
+data lives in => d:\appconfig\mediawiki\mysql\innodb\ibdata1
+.....
+9Dec2013  --siggy find and replace
+
+UPDATE table_name SET field_name = replace( field_name, 'string_to_find', 'string_to_replace' ) ;
+
+.....
+10dec13  --siggy  login to mysql
+
+from the console.. open a shell
+
+mysql -u root
+show databases;     #works
+.....
+11dec13  --siggy
+
+http://www.thegeekstuff.com/2008/09/backup-and-restore-mysql-database-using-mysqldump/
+
+mysqldump -u root --all-databases > d:\tmp\11dec13-alldb-dump.sql
+.....
+11dec13 mysql-history
+
+cd /d d;\bin64\MySQL\MySQL<TAB>\bin
+
+mysql -u root -p
+
+connect OR use wikidb;
+
+show tables;
+
+show columns from <table from tablenames>
+
+select * from information_schema.columns where table_schema = 'wikidb' order by table_name,ordinal_position;
+
+select * from `cc_pagelinks` where `pl_namespace` = 'lasan1';
+
+update cc_pagelinks set pl_namespace = replace(pl_namespace,'lasan1','lasan4');
+
+.....
+12dec13  from the live isportal
+$mysqldump -u root --all-databases > c:\\12dec13-database-dump
+
+.....
+12dec13 
+MySQL
+
+@@@ Connect to the database:
+mysql [-u username] [-h hostname] database-name
+
+@@@ To list all databases, in the MySQL prompt type:
+show databases
+
+@@@ Then choose the right database:
+use <database-name>
+
+@@@ List all tables in the database:
+show tables
+
+@@@ Describe a table:
+desc <table-name>
+.....
+12dec13   mysql restore
+DOH   previous command is wrong!!!!
+mysql -uroot -pgrepsedawk < 12dec13-database-dump.sql
+
+.....
+12dec13  resetting root passwd for mysql
+as root (administrator)
+mysqladmin -u root password 'grepsedawk'
+
+.....
+12dec13 testing on my linux box
+
+# yum -y install mysql-server
+# service mysqld start
+# ll /var/lib
+# mysqladmin -u root password 'grepsedawk'
+  $ mysql -uroot -p < 12dec13-database-dump.ORIG 
+  $mysql -uroot -p
+    mysql> use wikidb;
+    mysql> select * from `cc_pagelinks` where `pl_namespace` = 'lasan1';
+  $ mysql -uroot -p < 12dec13-database-dump.sql 
+  $ mysql -uroot -p
+    mysql> use wikidb;
+    mysql> select * from `cc_pagelinks` where `pl_namespace` = 'lasan1';
+.....
+12dec13   create user
+CREATE USER 'siggy'@'localhost' IDENTIFIED BY 'grepsedawk';
+
+.....
+13dec13  --siggy
+create usr 'siggy'@'localhost' identified by 'grepsedawk';
+grant all privileges on *.* to 'siggy'@'localhost';
+show grants for 'siggy'@'localhost';
+
+.....
+13dec13  --siggy doc
+~/REPUBLIC/mysql-lasan1-to-4.docx
+
+.....
+17Feb12   copied from hero:/home/jsandoval/notes/mysql
+
+mysql -A
+
+mysql -h localhost -u root -p 
+
+create user 'eklusman'@'localhost' identified by '0v3rsee';
+
+GRANT SELECT ON ``.* TO 'eklusman'@'host';
+
+show grants for 'rsorensen'@'%';
+
+show grants for 'eklusman'@'host';
+
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'eklusman'@'host';
+
+GRANT SELECT ON `lowfares`.* TO 'eklusman'@'host';
+
+DROP USER 'eklusman'@'host';
+
+select User, Host from mysql.user;
+
+flush privileges;
+
+use $DB;
+
+select $DB;
+
+show tables;
+
+show create table $TABLE\G
+
+show table status like '%';
+
+#Shows the size of the DB
+select SUM(data_length) + SUM(index_length) as size from information_schema.tables where table_schema = 'domainauction';
+
+desc information_schema.tables;
+
+##Mysql dump
+mkdir -p /var/tmp/domainauction
+chown mysql:mysql /var/tmp/domainauction
+mysqldump --tab=/var/tmp/domainauction --opt domainauction
+
+#####
+
+.....
+17Aug17  mysql install for zabbix (on zabbixtwo)
+
+@@@ if there is a conflict remove any existing zabbix installations (from standard build)
+yum install ~dsiegfriedt/Downloads/mysql57-community-release-el7-11.noarch.rpm
+yum install mysql-community-server
+
+
+????????????????????????????
+[root@zabbixtwo ZABBIX]# which mysql
+/bin/mysql
+[root@zabbixtwo ZABBIX]#  mysql -uroot -pN...
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+[root@zabbixtwo ZABBIX]# 
+[root@zabbixtwo ZABBIX]# 
+[root@zabbixtwo ZABBIX]# 
+[root@zabbixtwo ZABBIX]#  mysql
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+[root@zabbixtwo ZABBIX]# 
+????????????????????????????
+
+@@@ DUH
+[root@zabbixtwo ZABBIX]# systemctl status mysqld
+[root@zabbixtwo ZABBIX]# systemctl start mysqld
+
+[root@zabbixtwo ZABBIX]# cat /var/log/mysqld.log | grep temporary
+2017-08-17T23:04:48.447788Z 1 [Note] A temporary password is generated for root@localhost: yk)Qtcry7Mai
+
+@@@ after MANY tries Changing the root passwd has a timer on a retry count (I guess)
+
+
+[root@zabbixtwo ZABBIX]#   mysql --connect-expired-password -uroot -p"yk)Qtcry7Mai"
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 5.7.19
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+mysql> update user set password=PASSWORD('N...') where User='root';
+ERROR 1046 (3D000): No database selected
+mysql> SET PASSWORD = PASSWORD('N...');
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> SET PASSWORD = PASSWORD('my-passwd');
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> 
+
+.....
+21Aug17
+
+@@@ installing the zabbix-server-mysql RPM will give you all the stuff you need.
+
+mkdir SIGGY
+cp /usr/share/doc/zabbix-server-mysql-3.2.7/create.sql.gz .
+
+mv create.sql.gz SIGGY/
+cd SIGGY/
+ll
+total 1136
+-rw-r--r--. 1 root root 1161488 Aug 21 17:18 create.sql.gz
+
+gunzip create.sql.gz 
+
+ll
+total 3064
+-rw-r--r--. 1 root root 3137133 Aug 21 17:18 create.sql
+
+[root@zabbixtwo SIGGY]# mysql -u root -p < create.sql 
+Enter password: N...!
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+
+OR
+
+/////
+
+[root@zabbixtwo SIGGY]# mysql -uroot -p < create.sql 
+Enter password: 
+ERROR 1046 (3D000) at line 1: No database selected
+
+/////
+
+[root@zabbixtwo SIGGY]# mysql -u root -p 
+Enter password: N...! 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 5.7.19 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.01 sec)
+
+mysql> create database zabbix;
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| zabbix             |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> 
+mysql> exit
+
+@@@@@
+https://stackoverflow.com/questions/17666249/how-to-import-an-sql-file-using-the-command-line-in-mysql
+@@@@@
+
+@@@WOOHOO  .sql file works better with FQPN
+[root@zabbixtwo SIGGY]# mysql -u root -p zabbix < /root/siggy/SIGGY/create.sql 
+Enter password: 
+[root@zabbixtwo SIGGY]# 
+
+@@@ if I am going to import existing DB you will have to delete DB
+mysql> drop database zabbix;
+
+@@@ import existing DB
+[root@zabbixtwo ~]# mysql -uroot -p < /disney/home/dsiegfriedt/JOBS/DISNEYTS/ZABBIX/dumpfilename.sql 
+Enter password: 
+
+@@@ continue with zabbix install
+https://www.zabbix.com/documentation/3.2/manual/installation/install_from_packages/server_installation_with_mysql
+@@@ and den
+https://www.zabbix.com/documentation/3.2/manual/installation/install#installing_frontend
+@@@ and den
+https://www.zabbix.com/documentation/3.2/manual/quickstart/login
+@@@  BEW!!  may have to start over
+
+https://www.zabbix.com/forum/showthread.php?t=55660
+
+OK, I currently have:
+
+Zabbix 2.4.8 on CentOS 6, zabbix 3.2 apparently is not compatible with CentOS 6. 
+
+I have built a CentOS 7 server and want to install Zabbix 3.2 and migrate my data and configuration to it.
+
+Can I:
+1. Export the database (MySQL) from 2.4.8.
+2. Install 3.2 on new server (do not create database).
+3. Modify config files in accordance with old server.
+4. Import the 2.4.8 database into MySQL.
+5. Start zabbix server 3.2 and have it upgrade the database as if it was an in place upgrade
+
+Is this the best approach for this?
+
+22AAug17
+@@@ going to delete zabbixtwo and re-spin/install/and import DB from mayday
+@@@ using mysqldump from 11Dec13 and mysql
+
+@@@ export
+@@@ did not work.... mysqldump -u root -p mysql > dumpfilename.sql
+
+[root@mayday ~]# mysqldump --databases zabbix > /tmp/dumpfilename.sql
+
+@@@ import
+mysql -u root -p mysql < dumpfilename.sql
+
+.....
+22Aug17  on mayday looking for the size of the zabbix db (MariaDB)
+
+https://stackoverflow.com/questions/14714750/how-to-get-true-size-of-mysql-database
+
+[root@mayday ~]# mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3965694
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SELECT table_schema "zabbix",
+    -> sum( data_length + index_length ) / 1024 / 1024 "Data Base Size in MB",
+    -> sum( data_free )/ 1024 / 1024 "Free Space in MB"
+    -> FROM information_schema.TABLES
+    -> GROUP BY table_schema ;
++--------------------+----------------------+------------------+
+| zabbix             | Data Base Size in MB | Free Space in MB |
++--------------------+----------------------+------------------+
+| information_schema |           0.15625000 |       0.00000000 |
+| mysql              |           0.88393974 |       0.00000000 |
+| performance_schema |           0.00000000 |       0.00000000 |
+| zabbix             |       28942.57812500 |     343.00000000 |
++--------------------+----------------------+------------------+
+4 rows in set (1.06 sec)
+
+MariaDB [(none)]> 
+
+.....
+27Aug17
+
+[root@zabbixtwo ~]# cat /var/log/mysqld.log | grep temporary
+2017-08-27T17:49:04.855321Z 1 [Note] A temporary password is generated for root@localhost: F8%I-.AqAz:Q
+2017-08-27T17:49:09.156963Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+[root@zabbixtwo ~]# 
+
+.....
+28AUg17   import zabbix DB
+
+mysql -u root -p mysql < dumpfilename.sql
+
+@@@ will wait till tonight for changeover
+.....
+17Jan18 @@@ as part of the migration... I checked what DBs live on what machines
+
+root@vmmariadb1
+
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+[root@vmmariadb2 ~]# mysql -u root -p mysql
+Enter password: K...
+
+*****************************************************************************************
+*****************************************************************************************
+*****************************************************************************************
+
+
+MariaDB [mysql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| depot_dev          |
+| depot_production   |
+| dtsweb             |
+| faceroll           |
+| faceroll_django    |
+| information_schema |
+| joomla             |
+| mediawiki          |
+| mysql              |
+| notification       |
+| performance_schema |
+| rt4                |
+| test               |
+| tracker            |
++--------------------+
+
+dsiegfriedt@dts3329:~ $ ssh root@vmmariadb2
+
+MariaDB [mysql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| depot_dev          |
+| depot_production   |
+| dtsweb             |
+| faceroll           |
+| faceroll_django    |
+| information_schema |
+| joomla             |
+| mediawiki          |
+| mysql              |
+| notification       |
+| performance_schema |
+| rt4                |
+| stu                |
+| test               |
+| tracker            |
++--------------------+
+
+.....
+15Feb18  vmcodadb1 looking for "show databases;"
+
+@@@ history shows (pruned dupes)
+[root@vmcodadb1 ~]# history | grep -i sql
+
+   14  mysql -usupersa -p -h vmcodadb1
+   15  mysql -uroot -p 
+   19  cd mysql/
+   33  mysql -u root
+
+   35  mysql -uroot @@@ worked
+
+   44  mysqldump -uroot coda_5 > coda_5.sql
+   46  vi coda_5.sql 
+   48  mysqldump -uroot coda_5 > coda_5.sql
+   49  scp coda_5.sql vmcodadb2:/DB
+   69  ps -elf | grep mysql
+   71  ps -elf | grep mysql
+   73  ps -elf | grep mysql
+   75  ps -elf | grep mysql
+   79  chown mysql:mysql relay_logs/
+   95   mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  115  chown mysql:mysql data
+  118  mysql_install_db --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf
+  120  chown -R mysql:mysql data/
+  122  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  127  mysql -u root
+  130  cd mysql/
+  133  su mysql
+  134  ln -s /DB/mariadb/10.0/p3306/sysfiles/mysql.sock mysql.sock
+  135  su mysql
+  136  mysql -u root
+  137  mysql -usupersa -p -hvmcodadb2
+  138  mysql -ucodadbadmin -p -hvmcodadb2
+  139  mysql -ucodadbadmin -p -hvmcodadb1
+  140  mysql -usupersa -p -hvmcodadb2
+  141  mysql -usupersa -p -hvmcodadb1
+  142  mysql -usupersa -p 
+  144  mysql -ucodadbadmin -p -h vmcodadbAdmin! 
+  145  mysql -ucodadbadmin -p -h vmcodadb2
+  166  mysql -uroot
+  173  mysql -uroot
+  176  mysql -uroot coda_5 < coda_5.sql 
+  190  mysqladmin -uroot shutdown
+  192  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  198  mysql -uroot
+  199  mysql -urepluser -p -h vmcodadb2
+  200  mysql -uroot
+  203  mysql -uroot
+  206  mysql -uroot
+  208  mysql -uroot
+  219  mysql -u root
+  238  mysql -u root
+  247  chown mysql:mysql trans*
+  251  mysql -u root
+  259  mysql -uroot
+  266  mysql -u root
+  271   mysqladmin shutdown -uroot  --port=3306
+  281  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  288  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  305  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  317  mysqlbinlog trans.000001 
+  320  mysql -uroot
+  322  mysqlbinlog trans.000001 
+  323  mysqlbinlog trans.000001 > trans.out
+  343  mysql -uroot
+  360  mysql -uroot
+  361  ps -elf | grep mysql
+  367  ps -elf | grep mysql
+  372  ps -elf | grep mysql
+  375  ps -elf | grep mysql
+  377  ps -elf | grep mysql
+  379  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  380  mysql -uroot
+  381  ps -elf | grep mysql
+  382  cd /var/lib/mysql
+  386  ln -s /DB/mariadb/10.0/p3306/sysfiles/mysql.sock mysql.sock
+  388  mysql -uroot
+  390  mysql -uroot
+  391  mysql -urepluser -prepluser! -hvmcodadb1
+  392  mysql -urepluser -prepluser! 
+  393  mysql -urepluser -p -hvmcodadb1
+  394  mysql -uroot
+  395  mysql -urepluser -prepluser! -hvmcodadb1
+  396  mysql -urepluser -prepluser! 
+  398  mysql -uroot
+  399  mysql -urepluser -p 
+  400  mysql -urepluser -p -hvmcodadb1
+  401  mysql -uroot
+  411  mysql -uroot
+  413  mysql -uroot -p -hvmcodadb1 -P3306
+  414  mysql -uroot -hvmcodadb1 -P3306
+  422  mysql -uroot
+  430  mysql -uroot
+  434  mysql -u root
+  442  init.d/mysql status
+  443  init.d/mysql -h
+  444  init.d/mysql configtest
+  445  init.d/mysql stop
+  447  init.d/mysql start
+  461  mysql -u root
+  481  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  482  mysql -uroot -hvmcodadb1 -P3306
+  484  ps -ef|grep -i mysql
+  485  mysql -usupersa -p -hvmcodadb1 -P3306
+  486  mysql -uroot -p -hvmcodadb1 -P3306
+  499  mysqladmin shutdown -uroot -p --port=3306
+  500  ps -ef|grep -i mysql
+  513  top |grep -i mysqld
+  559  mysql -usupersa -p -hvmcodadb1 -P3306
+  560  mysql -uroot -p -hvmcodadb1 -P3306
+  561  mysql -uroot -hvmcodadb1 -P3306
+  562  lsof | grep mysql | grep delete
+  563  lsof | grep mysql | grep tempdir
+  564  lsof | grep mysql
+  565  lsof-h | grep mysql
+  566  lsof | grep mysql
+  569  lsof | grep mysql
+  570  lsof | grep mysql | grep delet
+  576  lsof | grep mysql | grep relay-log
+  600  ps -ef | grep mysql
+  608  rpm -qa | grep mysql
+  610  lsof | grep mysql
+  619  lsof | grep mysql
+  623  lsof | grep mysql
+  624  date;lsof | grep mysql
+  628  ps -ef | grep mysql
+  635  mysql -uroot -hvmcodadb1
+  637   ps -ef|grep -i mysql
+  640  mysql
+  653  mysql 
+  658  mysql
+  660  mysql
+  663  mysql
+  694  mysql
+  710  chown mysql:mysql backup
+  711  mysql coda_5 < backup/coda_5.sql 
+  713  mysql
+  714  mysql coda_5 < backup/coda_5.sql 
+  716  mysql
+  722  mysqladmin shutdown --port=3306
+  723  mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+  724  mysql
+  729  mysql coda_5;
+  732  ps -elf |grep -i mysql
+  733  mysql
+  734  mysql coda_5;
+  735  mysql
+  812  mysql -u codadbadmin -p coda_5
+  879  mysql -usupersa -p 
+  880  mysql -usupersa -p -hvmcodadb1
+  881  mysql -uroot
+  883  mysql -uroot
+  887  mysql -uroot
+  888  mysql -urepluser -p -hvmcodadb2.disneytoonstudios.com
+  889  mysql -uroot
+  890  mysql -urepluser -p -hvmcodadb1.disneytoonstudios.com
+  891  mysql -uroot
+  892  mysql -urepluser -p -hvmcodadb2.disneytoonstudios.com
+  899  mysql -urepluser -p -hvmcodadb2
+  902  mysqladmin -urepl0user -P3306 -prepluser! -hvmcodadb1 extended-status | grep Slave_running | cut -d'|' -f3 | sed -e 's/\ //g
+  903  mysqladmin -urepl0user -P3306 -prepluser! -hvmcodadb1 extended-status | grep Slave_running | cut -d'|' -f3 | sed -e 's/\ //g'
+  904  mysqladmin -urepluser -P3306 -prepluser! -hvmcodadb1 extended-status | grep Slave_running | cut -d'|' -f3 | sed -e 's/\ //g'
+  909  mysql -u codadbadmin -p coda_5
+  910  mysql -uroot
+  914  mysql -uroot coda_5 < coda_5_test.sql 
+  915  mysql -uroot 
+  923  mysql -uroot
+  957  mysql -u root -p mysql
+  958  mysql -u codauser -p mysql
+  959  mysql -u codauser -p
+  999  mysql -u root -p mysql
+ 1000  ps -fe | grep -i sql
+ 1001  mysql -u root -p mysql
+ 1002  histoy | grep -i sql
+ 1003  history | grep -i sql
+.....
+[root@vmcodadb1 ~]# mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 1362353
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| coda_5             |
+| information_schema |
+| mysql              |
+| newtest            |
+| performance_schema |
+| test               |
++--------------------+
+6 rows in set (0.00 sec)
+
+MariaDB [(none)]> 
+
+^^^^^
+dsiegfriedt@vmcodadb2:~ $ mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 9029
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| coda_5             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| test               |
++--------------------+
+5 rows in set (0.01 sec)
+
+MariaDB [(none)]> 
+
+.....
+15Feb18  list of DB users
+
+MariaDB [(none)]> SELECT User FROM mysql.user;
+
+%%%%%
+@@@ on vmcodadb1
+
+https://www.cyberciti.biz/faq/how-to-show-list-users-in-a-mysql-mariadb-database/
+
+
+MariaDB [(none)]> SELECT User FROM mysql.user;
++-------------+
+| User        |
++-------------+
+| codadbadmin |
+| repluser    |
+| supersa     |
+| root        |
+| root        |
+|             |
+| repluser    |
+| root        |
+|             |
+| repluser    |
+| root        |
++-------------+
+11 rows in set (0.01 sec)
+
+MariaDB [(none)]> 
+
+MariaDB [(none)]> SELECT host, user, password FROM mysql.user;
++---------------------------------+-------------+-------------------------------------------+
+| host                            | user        | password                                  |
++---------------------------------+-------------+-------------------------------------------+
+| localhost                       | root        |                                           |
+| vmcodadb1.disneytoonstudios.com | root        |                                           |
+| 127.0.0.1                       | root        |                                           |
+| ::1                             | root        |                                           |
+| localhost                       |             |                                           |
+| vmcodadb1.disneytoonstudios.com |             |                                           |
+| %                               | supersa     | *192238469AE4C8FE6E7C19C42006A53E7F54C42B |
+| %                               | codadbadmin | *A64F7D0B74D60C91E4492A7108381129C9DFA9CF |
+| %                               | repluser    | *75CB1A286808D20451E618EBD0726BB6A42A6B67 |
+| vmcodadb1.disneytoonstudios.com | repluser    | *75CB1A286808D20451E618EBD0726BB6A42A6B67 |
+| localhost                       | repluser    |                                           |
++---------------------------------+-------------+-------------------------------------------+
+11 rows in set (0.01 sec)
+
+MariaDB [(none)]> 
+
+
+%%%%%
+@@@ uptime for vmcodadb1
+[root@vmcodadb1 ~]# uptime
+ 12:52:07 up 654 days,  3:14,  1 user,  load average: 0.15, 0.11, 0.13
+[root@vmcodadb1 ~]# date -d "654 days ago"
+Mon May  2 13:52:23 PDT 2016
+
+.....
+27Feb18  zabbix upgrade based on Mariadb
+
+dsiegfriedt@mayday:~ $ ll /DB/mariadb/10.0/p3306/data/
+total 8.4G
+drwxr-xr-x. 6 mysql mysql 4.0K Feb 27 04:55 .
+drwxr-xr-x. 9 mysql mysql 4.0K Oct 24  2016 ..
+-rw-rw----. 1 mysql mysql  16K Oct 24  2016 aria_log.00000001
+-rw-rw----. 1 mysql mysql   52 Oct 24  2016 aria_log_control
+-rw-rw----. 1 mysql mysql  76M Feb 27 12:38 ibdata1
+-rw-rw----. 1 mysql mysql 1.0G Feb 27 12:38 ib_logfile0
+-rw-rw----. 1 mysql mysql 1.0G Feb 27 12:38 ib_logfile1
+-rw-rw----. 1 mysql mysql  147 Feb 27 04:55 mariadb-bin.index
+-rw-rw----  1 mysql mysql 1.1G Feb 20 12:38 mariadb-bin.000540
+-rw-rw----  1 mysql mysql 1.1G Feb 21 21:36 mariadb-bin.000541
+-rw-rw----  1 mysql mysql 1.1G Feb 23 06:03 mariadb-bin.000542
+-rw-rw----  1 mysql mysql 1.1G Feb 24 14:24 mariadb-bin.000543
+-rw-rw----  1 mysql mysql 1.1G Feb 25 21:57 mariadb-bin.000544
+-rw-rw----  1 mysql mysql 1.1G Feb 27 04:55 mariadb-bin.000545
+-rw-rw----  1 mysql mysql 259M Feb 27 12:38 mariadb-bin.000546
+-rw-r-----. 1 mysql root  6.8M Feb 27 01:00 mayday.disneytoonstudios.com.err
+-rw-rw----. 1 mysql mysql  63K Aug 23  2017 mayday-slow.log
+-rw-rw----. 1 mysql mysql    0 Oct  6  2015 multi-master.info
+drwx------. 2 mysql root  4.0K Oct  6  2015 mysql
+drwx------. 2 mysql mysql 4.0K Oct  6  2015 performance_schema
+drwx------. 2 mysql root  4.0K Oct  6  2015 test
+drwx------. 2 mysql mysql  12K Oct  6  2015 zabbix
+
+[root@mayday ~]# mysql -uroot
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 6470378
+Server version: 10.0.20-MariaDB-enterprise-log MariaDB Enterprise Certified Binary
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| test               |
+| zabbix             |
++--------------------+
+5 rows in set (0.00 sec)
+
+MariaDB [(none)]> SELECT User FROM mysql.user;
++-------------+
+| User        |
++-------------+
+| backupadmin |
+| zabbix      |
+| root        |
+| root        |
+|             |
+| root        |
+| zabbix      |
+|             |
+| root        |
++-------------+
+9 rows in set (0.02 sec)
+
+MariaDB [(none)]> SELECT host, user, password FROM mysql.user;
++------------------------------+-------------+-------------------------------------------+
+| host                         | user        | password                                  |
++------------------------------+-------------+-------------------------------------------+
+| localhost                    | root        |                                           |
+| mayday.disneytoonstudios.com | root        |                                           |
+| 127.0.0.1                    | root        |                                           |
+| ::1                          | root        |                                           |
+| localhost                    |             |                                           |
+| mayday.disneytoonstudios.com |             |                                           |
+| %                            | zabbix      | *DEEF4D7D88CD046ECA02A80393B7780A63E7E789 |
+| localhost                    | zabbix      | *DEEF4D7D88CD046ECA02A80393B7780A63E7E789 |
+| %                            | backupadmin | *81A01ECB2AD2EF880D8A2432C4D052EA37DD1073 |
++------------------------------+-------------+-------------------------------------------+
+9 rows in set (0.00 sec)
+
+@@@ not in /etc/passwd
+
+[root@mayday ~]# id zabbix
+uid=992(zabbix) gid=990(zabbix) groups=990(zabbix),1100(prodctn)
+[root@mayday ~]# 
+
+..........................................................................................................
+1Mar18  vmmariadb1 replication check
+
+@@@ replication commands
+https://mariadb.com/kb/en/library/replication-commands/
+
+MariaDB [mysql]> SHOW MASTER STATUS;
++--------------+----------+--------------+------------------+
+| File         | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++--------------+----------+--------------+------------------+
+| trans.000086 | 24629052 |              | mysql,test       |
++--------------+----------+--------------+------------------+
+1 row in set (0.00 sec)
+
+[root@vmmariadb1 ~]# ll /DB/mariadb/10.0/
+               ^
+total 0
+drwxr-xr-x. 8 mysql mysql 78 Jun 19  2015 p3306
+drwxr-xr-x. 8 mysql mysql 78 Apr  5  2016 p4096
+
+[root@vmmariadb1 ~]# systemctl status mysql
+● mysql.service - LSB: start and stop MySQL
+   Loaded: loaded (/etc/rc.d/init.d/mysql)
+   Active: failed (Result: exit-code) since Mon 2016-03-28 19:56:35 PDT; 1 years 11 months ago
+     Docs: man:systemd-sysv-generator(8)
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
+
+MariaDB [mysql]> show master status;
++--------------+----------+--------------+------------------+
+| File         | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++--------------+----------+--------------+------------------+
+| trans.000086 | 24645017 |              | mysql,test       |
++--------------+----------+--------------+------------------+
+1 row in set (0.00 sec)
+
+MariaDB [mysql]> show slave status;
+Empty set (0.00 sec)
+
+MariaDB [mysql]> show slave hosts;
++-----------+------+------+-----------+
+| Server_id | Host | Port | Master_id |
++-----------+------+------+-----------+
+|         2 |      | 3306 |         1 |
++-----------+------+------+-----------+
+1 row in set (0.00 sec)
+
+[root@vmmariadb1 ~]# service mysql status
+MySQL is running but PID file could not be found           [FAILED]
+
+yum provides */init.d/mysql
+MariaDB-server-10.0.24-1.el7.centos.x86_64 : MariaDB: a very fast and robust SQL database server
+Repo        : @mariadb
+Matched from:
+Filename    : /etc/init.d/mysql
+
+
+
+################################
+
+[root@vmmariadb2 ~]# ll /DB/mariadb/10.0/
+               ^
+total 0
+drwxr-xr-x. 9 mysql mysql 94 Apr  1  2016 p3306
+
+
+MariaDB [mysql]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| depot_dev          |
+| depot_production   |
+| dtsweb             |
+| faceroll           |
+| faceroll_django    |
+| information_schema |
+| joomla             |
+| mediawiki          |
+| mysql              |
+| notification       |
+| performance_schema |
+| rt4                |
+| stu                |
+| test               |
+| tracker            |
++--------------------+
+15 rows in set (0.00 sec)
+
+[root@vmmariadb2 ~]# systemctl status mysql
+● mysql.service - LSB: start and stop MySQL
+   Loaded: loaded (/etc/rc.d/init.d/mysql)
+   Active: inactive (dead)
+     Docs: man:systemd-sysv-generator(8)
+
+MariaDB [mysql]> show slave status;
+
+***** LOTS O STUFF *****
+
+MariaDB [mysql]> show master status;
++--------------+----------+--------------+------------------+
+| File         | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++--------------+----------+--------------+------------------+
+| trans.000074 | 16580877 |              | mysql,test       |
++--------------+----------+--------------+------------------+
+1 row in set (0.00 sec)
+
+[root@vmmariadb2 ~]# service mysql status
+MySQL is running but PID file could not be found           [FAILED]
+
+yum provides */init.d/mysql
+MariaDB-Galera-server-10.0.24-1.el7.centos.x86_64 : MariaDB: a very fast and robust SQL database
+                                                  : server
+Repo        : @mariadb
+Matched from:
+Filename    : /etc/init.d/mysql
+
+
+################################
+.....
+2Mar18  dtsweb has mariadb server running (WTF?) dtsweb has an instance on vmmariadb[1-2]
+
+[root@vmdtsweb ~]# mysql -u mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 4732
+Server version: 5.5.56-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| test               |
++--------------------+
+2 rows in set (0.01 sec)
+
+MariaDB [(none)]> show full tables from test;
+Empty set (0.00 sec)
+
+show full tables from information_schema;
+{SNIP}
+62 rows in set (0.03 sec)
+
+
+@@@ So it looks like dtsweb is running mariadb-server but all tables are empty
+
+.....
+3Mar18 vmmariadb1  did not start at reboot :^(
+
+!254 worked  YAY
+
+mysqld_safe --defaults-file=/DB/mariadb/10.0/p3306/etc/my.cnf --port=3306 &
+mysqld_safe --defaults-file=/DB/mariadb/10.0/p4096/etc/my.cnf --port=4096 &
+.....
+6Mar18  mariadb install for monitor (the new zabbix server)
+
+https://mariadb.com/kb/en/library/yum/
+
+create MariaDB.repo
+yum install MariaDB-server MariaDB-client
+
+.....
+
+See NOTES-DTS 6Mar18  granting priv on mayday for zabbix backup
+
+.....
+7Mar18  what version am I running
+
+SELECT VERSION();
+SELECT @@version;
+
+MariaDB [(none)]> status;
+
+.....
+
+
+.....
+
+
+.....

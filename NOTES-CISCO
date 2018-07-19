@@ -1,0 +1,352 @@
+21Nov12  --siggy
+
+from:
+http://www.cisco.com/en/US/docs/switches/lan/catalyst2960/software/release/12.2_53_se/configuration/guide/swiosfs.html#wp1257631
+
+Preparing to Download or Upload a Configuration File B y Using TFTP
+Before you begin downloading or uploading a configuration file by using TFTP, do these tasks:
+•Ensure that the workstation acting as the TFTP server is properly configured. On a Sun workstation, make sure that the /etc/inetd.conf file contains this line:
+tftp dgram udp wait root /usr/etc/in.tftpd in.tftpd -p -s /tftpboot
+Make sure that the /etc/services file contains this line:
+tftp 69/udp
+
+Note You must restart the inetd daemon after modifying the /etc/inetd.conf and /etc/services files. To restart the daemon, either stop the inetd process and restart it, or enter a fastboot command (on the SunOS 4.x) or a reboot command (on Solaris 2.x or SunOS 5.x). For more information on the TFTP daemon, see the documentation for your workstation.
+
+•Ensure that the switch has a route to the TFTP server. The switch and the TFTP server must be in the same subnetwork if you do not have a router to route traffic between subnets. Check connectivity to the TFTP server by using the ping command.
+•Ensure that the configuration file to be downloaded is in the correct directory on the TFTP server (usually /tftpboot on a UNIX workstation).
+•For download operations, ensure that the permissions on the file are set correctly. The permission on the file should be world-read.
+•Before uploading the configuration file, you might need to create an empty file on the TFTP server. To create an empty file, enter the touch filename command, where filename is the name of the file you will use when uploading it to the server.
+•During upload operations, if you are overwriting an existing file (including an empty file, if you had to create one) on the server, ensure that the permissions on the file are set correctly. Permissions on the file should be world-write.
+Downloading the Configuration File By Using TFTP
+To configure the switch by using a configuration file downloaded from a TFTP server, follow these steps:
+
+Step 1 Copy the configuration file to the appropriate TFTP directory on the workstation.
+Step 2 Verify that the TFTP server is properly configured by referring to the "Preparing to Download or Upload a Configuration File B y Using TFTP" section.
+Step 3 Log into the switch through the console port or a Telnet session.
+Step 4 Download the configuration file from the TFTP server to configure the switch.
+Specify the IP address or hostname of the TFTP server and the name of the file to download.
+Use one of these privileged EXEC commands:
+
+•copy tftp:[[[//location]/directory]/filename] system:running-config
+•copy tftp:[[[//location]/directory]/filename] nvram:startup-config
+
+The configuration file downloads, and the commands are executed as the file is parsed line-by-line.
+This example shows how to configure the software from the file tokyo-confg at IP address 172.16.2.155:
+Switch# copy tftp://172.16.2.155/tokyo-confg system:running-config
+Configure using tokyo-confg from 172.16.2.155? [confirm] y
+Booting tokyo-confg from 172.16.2.155:!!! [OK - 874/16000 bytes]
+Uploading the Configuration File By Using TFTP
+To upload a configuration file from a switch to a TFTP server for storage, follow these steps:
+
+Step 1 Verify that the TFTP server is properly configured by referring to the "Preparing to Download or Upload a Configuration File B y Using TFTP" section.
+Step 2 Log into the switch through the console port or a Telnet session.
+Step 3 Upload the switch configuration to the TFTP server. Specify the IP address or hostname of the TFTP server and the destination filename.
+
+Use one of these privileged EXEC commands:
+•copy system:running-config tftp:[[[//location]/directory]/filename]
+•copy nvram:startup-config tftp:[[[//location]/directory]/filename]
+
+The file is uploaded to the TFTP server.
+This example shows how to upload a configuration file from a switch to a TFTP server:
+Switch# copy system:running-config tftp://172.16.2.155/tokyo-confg
+
+Write file tokyo-confg on host 172.16.2.155? [confirm] y
+#
+Writing tokyo-confg!!! [OK]
+
+&&&&&
+**********************************************************************
+Foundry email from Suri 5Aug03 and 11Aug03
+
+telnet 192.168.0.254
+login: foundry
+passwd:
+en
+login: foundry
+passwd:
+telnet@Core-BI8K# config t
+telnet@Core-BI8K(config)# vlan 13
+telnet@Core-BI8K(config)# show config
+
+bunch-O-stuff
+
+telnet@Core-BI8K(config-vlan-13)#vlan 14				#switch to this vlan
+telnet@Core-BI8K(config-vlan-14)#no untag e 4/19 e 4/20 e 4/21 		#remove ports from this vlan
+telnet@Core-BI8K(config-vlan-14)#vlan 13				#switch to this vlan
+telnet@Core-BI8K(config-vlan-13)#untag e 4/19 to 4/21			#add this port
+added untagged port ethe 4/19 to 4/21 to port-vlan 13.	
+telnet@Core-BI8K(config-vlan-13)#wr mem					#write out changes
+.Write startup-config in progress.
+.Write startup-config done.
+Sync config data in flash...Done 
+
+other commands:
+
+inst e <port number>
+
+for switch support find the port that the switch is plugged into and:
+telnet@Core-BI8K>en
+User Name:foundry
+Password:
+telnet@Core-BI8K#config t
+telnet@Core-BI8K(config)#vlan 14
+telnet@Core-BI8K(config-vlan-14)#tag e 3/16
+added tagged port ethe 3/16 to port-vlan 14.
+telnet@Core-BI8K(config-vlan-14)#wr mem
+.Write startup-config in progress.
+.Write startup-config done.
+Sync config data in flash...Done
+
+This added vlan 14 support to switch 10.1.10.7 (3524 on 20nov03 with help from Suri)
+
+Looking at the config of a port:
+
+sh int e BLADE/PORT
+
+telnet@Core-BI8K#sh int e 1/2
+GigabitEthernet1/2 is down, line protocol is down
+  Hardware is GigabitEthernet, address is 0004.8084.1c01 (bia 0004.8084.1c01)
+  Configured speed 1Gbit, actual unknown, configured duplex fdx, actual unknown
+  Member of L2 VLAN ID 10, port is untagged, port state is BLOCKING
+  STP configured to OFF, priority is level0, flow control enabled
+  mirror disabled, monitor disabled
+  Not member of any active trunks
+  Not member of any configured trunks
+  No port name
+  MTU 1518 bytes, encapsulation ethernet
+  30 second input rate: 0 bits/sec, 0 packets/sec, 0.00% utilization
+  30 second output rate: 0 bits/sec, 0 packets/sec, 0.00% utilization
+  0 packets input, 0 bytes, 0 no buffer
+  Received 0 broadcasts, 0 multicasts, 0 unicasts
+  0 input errors, 0 CRC, 0 frame, 0 ignored
+  0 runts, 0 giants, DMA received 0 packets
+  0 packets output, 0 bytes, 0 underruns
+  Transmitted 0 broadcasts, 0 multicasts, 0 unicasts
+  0 output errors, 0 collisions, DMA transmitted 0 packets
+**********************************************************************
+Cisco 3524 vlan switch	(pavel)
+
+telnet (upper one is 10.1.10.7; lower one is 10.1.10.17)
+enable
+config terminal
+interface fastethernet 0/20
+switchport access vlan 10
+exit
+exit
+write m
+exit
+**********************************************************************
+&&&&&
+http://www.cisco.com/en/US/docs/switches/lan/catalyst2960/software/release/12.2_53_se/configuration/guide/swtrbl.html#wp1466701
+&&&&&
+21Nov12  --siggy
+
+to enable ping
+config t
+interface vlan 1
+ip address 10.124.208.115
+no shutdown
+exit
+exit
+wr (to save)
+&&&&&
+21Nov12  --siggy
+
+to backup running-config
+
+touch /tftpboot/the-name-of-the-backup-file.cfg
+chmod 777 /tftpboot/the-name-of-the-backup-file.cfg
+
+minicom into the switch/router
+en
+copy running-config tftp://10.124.208.101/the-name-of-the-backup-filecfg
+
+&&&&&
+21Nov12  --siggy
+
+to upload a config to a switch
+
+minicom into the switch/router
+en
+copy tftp://10.124.208.101/name_of_the_cfg_file.cfg nvram:startup-config
+
+reload
+&&&&&
+21Nov12  --siggy
+
+When trying to put the original config back... I set the IP to 10.124.208.115.   when I did the "no shut" for vlan1 it complained that it overlapped with vlan 101.
+en
+config t
+interface vlan 101
+shutdown
+exit
+interface vlan1
+no shut
+ (WORKED OK)
+exit
+exit
+copy tftp://10.124.208.101/name_of_the_cfg_file.cfg nvram:startup-config
+ (WORKED OK)
+&&&&&
+28jan13  --siggy what VLANs are configured
+
+http://www.cisco.com/en/US/docs/switches/lan/catalyst2960/software/release/12.2_55_se/configuration/guide/swvlan.html#wp1236518
+
+sh vlan brief
+
+SWUF-VPL-ACCESS03#sh vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Gi1/0/1, Gi1/0/2, Gi1/0/3, Gi1/0/4
+100  AxisEnc-VLAN100                  active    Fa1/0/25, Fa1/0/26
+102  APC-PDU-VLAN102                  active    Fa1/0/27, Fa1/0/28
+103  Digi-VLAN103                     active    Fa1/0/29, Fa1/0/30
+104  IRTrans-VLAN104                  active    Fa1/0/31, Fa1/0/32
+105  Linux-VLAN105                    active    Fa1/0/45, Fa1/0/46
+199  Mgmt-VLAN199                     active    Fa1/0/33, Fa1/0/34, Fa1/0/35, Fa1/0/36, Fa1/0/37, Fa1/0/38, Fa1/0/39, Fa1/0/40
+                                                Fa1/0/41, Fa1/0/42, Fa1/0/43, Fa1/0/44
+231  VPL-VLAN231                      active    Fa1/0/1, Fa1/0/2, Fa1/0/3, Fa1/0/4, Fa1/0/5, Fa1/0/6
+232  VPL-VLAN232                      active    Fa1/0/7, Fa1/0/8, Fa1/0/9, Fa1/0/10, Fa1/0/11, Fa1/0/12
+233  VPL-VLAN233                      active    Fa1/0/13, Fa1/0/14, Fa1/0/15, Fa1/0/16, Fa1/0/17, Fa1/0/18
+234  VPL-VLAN234                      active    Fa1/0/19, Fa1/0/20, Fa1/0/21, Fa1/0/22, Fa1/0/23, Fa1/0/24
+1002 fddi-default                     act/unsup 
+1003 token-ring-default               act/unsup 
+1004 fddinet-default                  act/unsup 
+1005 trnet-default                    act/unsup 
+
+&&&&&
+28May13  --siggy Cisco port status
+
+http://www.cisco.com/en/US/products/hw/switches/ps708/products_tech_note09186a008015bfd6.shtml#poris
+
+Benson C5 switch port 9
+SWUF-VPL-ACCESS03#sh int Fast 1/0/9
+FastEthernet1/0/9 is up, line protocol is up (connected) 
+  Hardware is Fast Ethernet, address is 001f.9ee2.280b (bia 001f.9ee2.280b)
+  Description: * | VPL Device | FastE | EDG | LOCAL | DIRECTV | *
+  MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Full-duplex, 100Mb/s, media type is 10/100BaseTX
+  input flow-control is off, output flow-control is unsupported 
+  ARP type: ARPA, ARP Timeout 04:00:00
+  Last input never, output 00:00:00, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue: 0/40 (size/max)
+  5 minute input rate 0 bits/sec, 0 packets/sec
+  5 minute output rate 2000 bits/sec, 1 packets/sec
+     5569137 packets input, 1390765002 bytes, 0 no buffer
+     Received 1187417 broadcasts (1100672 multicasts)
+     0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 watchdog, 1100672 multicast, 0 pause input
+     0 input packets with dribble condition detected
+     15392617 packets output, 2131832522 bytes, 0 underruns
+     0 output errors, 0 collisions, 1 interface resets
+     0 babbles, 0 late collision, 0 deferred
+     0 lost carrier, 0 no carrier, 0 PAUSE output
+     0 output buffer failures, 0 output buffers swapped out
+
+C5 port 33  (unused adn nothing plugged in)
+
+SWUF-VPL-ACCESS03#sh int Fast 1/0/33
+FastEthernet1/0/33 is down, line protocol is down (notconnect) 
+  Hardware is Fast Ethernet, address is 001f.9ee2.2825 (bia 001f.9ee2.2825)
+  Description: * | Reserved | FastE | EDG | LOCAL | DIRECTV | *
+  MTU 1500 bytes, BW 10000 Kbit, DLY 1000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Auto-duplex, Auto-speed, media type is 10/100BaseTX
+  input flow-control is off, output flow-control is unsupported 
+  ARP type: ARPA, ARP Timeout 04:00:00
+  Last input never, output never, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue: 0/40 (size/max)
+  5 minute input rate 0 bits/sec, 0 packets/sec
+  5 minute output rate 0 bits/sec, 0 packets/sec
+     0 packets input, 0 bytes, 0 no buffer
+     Received 0 broadcasts (0 multicasts)
+     0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 watchdog, 0 multicast, 0 pause input
+     0 input packets with dribble condition detected
+     0 packets output, 0 bytes, 0 underruns
+     0 output errors, 0 collisions, 1 interface resets
+     0 babbles, 0 late collision, 0 deferred
+     0 lost carrier, 0 no carrier, 0 PAUSE output
+     0 output buffer failures, 0 output buffers swapped out
+
+C5 all ports
+
+SWUF-VPL-ACCESS03#sh inte status       
+
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa1/0/1   * | VPL Device | F connected    231        a-full  a-100 10/100BaseTX
+Fa1/0/2   * | VPL Device | F connected    231        a-full  a-100 10/100BaseTX
+Fa1/0/3   * | VPL Device | F connected    231        a-full  a-100 10/100BaseTX
+Fa1/0/4   * | VPL Device | F connected    231        a-full  a-100 10/100BaseTX
+Fa1/0/5   * | VPL Device | F connected    231        a-full  a-100 10/100BaseTX
+Fa1/0/6   * | VPL Device | F connected    231        a-full  a-100 10/100BaseTX
+Fa1/0/7   * | VPL Device | F connected    232        a-full  a-100 10/100BaseTX
+Fa1/0/8   * | VPL Device | F connected    232        a-full  a-100 10/100BaseTX
+[SNIP]
+Fa1/0/15  * | VPL Device | F connected    233        a-full  a-100 10/100BaseTX
+Fa1/0/16  * | VPL Device | F notconnect   233          auto   auto 10/100BaseTX
+Fa1/0/17  * | VPL Device | F notconnect   233          auto   auto 10/100BaseTX
+Fa1/0/18  * | VPL Device | F connected    233        a-full  a-100 10/100BaseTX
+[SNIP]
+
+&&&&&
+26jun13  --siggy   duplex commands for 3750
+
+sh port capabilities 1/0/port
+(config-if)# speed auto
+en# port speed 1/1 auto
+en# show port 1/1
+en# set port duplex 1/1 auto 
+
+&&&&&
+21May15   Cisco Prime 10.130.25.184
+
+dsiegfri@la1002073d:~ $ ssh admin@10.130.25.184
+Password: 
+Last login: Thu May 21 20:08:09 2015 from 10.130.8.176
+lacpivapp/admin#       --- ? for help ---
+
+lacpivapp/admin#root   --- to get to a root shell ---
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+

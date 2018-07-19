@@ -1,0 +1,1 @@
+while ($_ = $ARGV[0], /^-/) {    shift;    last if /^--$/;    if (/^-D(.*)/) { $debug = $1 }    if (/^-v/)     { $verbose++  }    ...             # other switches}while (<>) {    ...             # code for each line}

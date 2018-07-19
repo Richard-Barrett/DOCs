@@ -1,0 +1,50 @@
+#! /bin/bash
+#*****************************************************************
+# Name: Reboot-Servers
+#
+# Purpose: To reboot Arwen and Aragorn servers.  Make modifications
+#          to the rc.local files on both servers.  The modifications
+#          to the rc.local file are to have all the nodes mount the 
+#          mass storage on reboot of the 2 servers (Arwen & Aragorn).
+#          After this is complete the line will be removed from rc.local.
+#
+# NOTE: We are writing a wrapper around the following:
+#       /usr/bin/reboot
+#       /sbin/shutdown
+#       /sbin/init
+#       All of these commands will be intercepted and pointed to Reboot-Servers.
+#
+# Calls To: None
+#
+#
+# Usage: Reboot-Servers
+#
+#
+# Author	  Date		  Version	  Comments
+# ---------------+----------------+---------------+-------------
+# Ron M. & Siggy  1/29/08          1.0
+#
+#*****************************************************************
+clear
+#
+# Loop for all frodos and umount all mass storage 
+#
+for i in `cat /etc/beowulf/bcs/allnodes`
+  do
+  echo $i
+  rsh $i '( for j in `cat /etc/fstab | grep gandalf | awk '{print $2}'`;do umount $j;done)' 
+done
+#
+# Umount the mass storage on Arwen and Aragorn
+#
+if [ `hostname` == arwen ]; then
+  umount `cat /etc/fstab | grep gandalf | awk '{print $2}'`
+  echo ~linux/NODE-MS-REMOUNT  >> /etc/rc.local
+  rsh aragorn umount `cat /etc/fstab | grep gandalf | awk '{print $2}'`
+  rsh aragorn echo ~linux/NODE-MS-REMOUNT  >> /etc/rc.local
+else
+  umount `cat /etc/fstab | grep gandalf | awk '{print $2}'`
+  echo ~linux/NODE-MS-REMOUNT  >> /etc/rc.local
+  rsh arwen umount `cat /etc/fstab | grep gandalf | awk '{print $2}'`
+  rsh arwen echo ~linux/NODE-MS-REMOUNT  >> /etc/rc.local
+fi

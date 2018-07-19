@@ -1,0 +1,1 @@
+[lslile@h28166 ad-ldap-sync]$ ./ad-ldap-sync.pl -v -D "uid=lslile,ou=directv,ou=people,dc=swengdtv,dc=net" -W  -l /tmp/log --adh ladom01.la.frd.directv.com --adb dc=la,dc=frd,dc=directv,dc=com 

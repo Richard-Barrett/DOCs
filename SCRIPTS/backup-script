@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#***************************************************
+#
+#  --siggy8May06
+#
+#	This is an attempt to script a B/U using
+#	a tape changer.
+#
+#***************************************************
+
+LASTDIR=" "
+BACKUP='date +%M.%d.%y.%H:%M
+TAPENUM=$BACKUP-$???????
+
+#  To get an inventory of what the changer thinks it has type:
+
+#  mtx -f /dev/sg3 inquiry
+
+#Load the first tape
+mtx -f /dev/sg3 load1
+
+#Rewind the freshly loaded tape
+mt  -f /dev/st0 rewind
+
+find /home | cpio -opmv > /dev/st0 2> /root/backup-mon.TOC
+
+#This part needs LOTS-O-WORK
+if EOF
+  
+  #Unload the full tape and load the next one.
+  mt -f /dev/st0 offline
+  mt -f /dev/st0 eject
+  mtx -f /dev/sg3 next
+
+  LASTDIR=sed -n '$p' < /BU/$TAPENUM-list > /tmp/tape-start-file
+  find $LASTDIR | cpio -opmv > /dev/st0 2> /BU/$TAPENUM-list
+
+

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+for i in `cat /root/ms-list`
+do
+   dir=`df | grep $i`
+   if [ -z "$dir" ]
+   then
+      echo "Trying to mount $i"
+      mount $i
+   fi
+done
+# Now let's umount any file systems that may be mounted more then once
+for i in `cat /root/ms-list`
+do
+   dir=`df | grep $i | wc -l`
+   lines=`expr $dir`
+   if [ "$lines" -gt 1 ]
+   then
+      while [ $lines -gt 1 ]
+      do
+         echo "Trying to unmount $i"
+         umount $i
+         lines=`expr $lines - 1`
+      done 
+   fi
+done
+

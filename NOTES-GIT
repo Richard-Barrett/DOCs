@@ -1,0 +1,237 @@
+30Sep16  --siggy
+
+  405  28Sep16-15:22:58  git clone git@gitlab.disneytoonstudios.com:linux/puppet.git
+  410  28Sep16-15:26:24  git clone git@gitlab.disneytoonstudios.com:linux/puppet.git
+  414  28Sep16-15:28:11  git pull
+  428  28Sep16-15:29:13  cd gitlab/puppet
+  441  28Sep16-15:44:19  vi .gitignore 
+  471  28Sep16-15:53:36  cd /disney/home/gracet/gitlab/puppet/modules
+
+VERY much like commands used to SVN
+
+  647  30Sep16-16:54:44  git pull
+  648  30Sep16-17:04:19  man git
+  649  30Sep16-17:04:55  git --help
+  650  30Sep16-17:05:29  git help checkout
+  651  30Sep16-17:05:50  git help commit
+  652  30Sep16-17:08:30  git help log
+  653  30Sep16-17:08:50  git status
+
+^^^^^
+4Jan17  --siggy/Grace
+
+When requested to add "xxdiff" to a RHEL7 workstation.....
+
+https://confluence.disney.com/display/~THOMG112/GIT+Workflow
+
+Created by Grace Thompson, last modified on May 03, 2016 Go to start of metadata
+// Usual workflow
+   (working on master)
+   git clone git@gitlab.disneytoonstudios.com:linux/puppet.git
+   git pull
+   git status
+       make updates
+   git commit -am "message"  #  add the files then commit 
+   git push origin master
+    (working on a branch - recommended)
+   git pull
+   git status
+   git checkout devbranch
+        make updates 
+   git commit -am "message"
+   git checkout master
+   git merge devbranch
+   git push origin master
+
+!!!
+dsiegfriedt@dts3329:~/puppet/hieradata/production/os/workstation $ git push origin master
+Counting objects: 7, done.
+Delta compression using up to 12 threads.
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (7/7), 602 bytes | 0 bytes/s, done.
+Total 7 (delta 4), reused 0 (delta 0)
+To git@gitlab.disneytoonstudios.com:linux/puppet
+   8443e39..19d1425  master -> master
+!!!
+
+@@@ and to force the install/update/change
+
+dsiegfriedt@dts3329:~ $ sudo puppet agent -vt
+[sudo] password for dsiegfriedt: 
+Info: Retrieving pluginfacts
+Error: /File[/var/lib/puppet/facts.d]: Could not evaluate: Could not retrieve information from environment production source(s) puppet://chug.disneytoonstudios.com/pluginfacts
+Info: Retrieving plugin
+Info: Loading facts
+Info: Caching catalog for dts3329.disneytoonstudios.com
+Info: Applying configuration version '1483557850'
+Notice: /Stage[main]/Base/Multipkg[present-packages]/ensure: created
+Notice: Finished catalog run in 33.33 seconds
+
+@@@ xxdiff now installed
+dsiegfriedt@dts3329:~ $ rpm -qa | grep xxdiff
+xxdiff-4.0-1.wdas.el7.x86_64
+dsiegfriedt@dts3329:~ $ 
+
+~~~
+@@@ clear any certs associated with dts3329 on chug
+dsiegfriedt@dts3329:~ $ ssh root@chug
+root@chug's password: 
+Last login: Mon Dec 26 12:07:29 2016 from 10.106.238.116
+[root@chug ~]# puppet cert clean dts3329.disneytoonstudios.com
+Notice: Revoked certificate with serial 644
+Notice: Removing file Puppet::SSL::Certificate dts3329.disneytoonstudios.com at '/var/lib/puppet/ssl/ca/signed/dts3329.disneytoonstudios.com.pem'
+Notice: Removing file Puppet::SSL::Certificate dts3329.disneytoonstudios.com at '/var/lib/puppet/ssl/certs/dts3329.disneytoonstudios.com.pem'
+~~~
+@@@ then clear certs on dts3329  (C&P 1a)
+dsiegfriedt@dts3329:~ $ puppet agent -vt
+Info: Creating a new SSL key for dts3329.disneytoonstudios.com
+Info: Caching certificate for ca
+Info: Caching certificate for dts3329.disneytoonstudios.com
+Error: Could not request certificate: The certificate retrieved from the master does not match the agent's private key.
+Certificate fingerprint: F2:8E:C5:19:A3:FE:E3:D1:18:D0:E3:F4:C3:37:42:64:17:35:02:AD:57:11:72:BC:FA:E3:4C:79:5C:2E:7B:65
+To fix this, remove the certificate from both the master and the agent and then start a puppet run, which will automatically regenerate a certficate.
+On the master:
+  puppet cert clean dts3329.disneytoonstudios.com
+On the agent:
+  1a. On most platforms: find /disney/home/dsiegfriedt/.puppet/ssl -name dts3329.disneytoonstudios.com.pem -delete
+  1b. On Windows: del "/disney/home/dsiegfriedt/.puppet/ssl/dts3329.disneytoonstudios.com.pem" /f
+  2. puppet agent -t
+
+Exiting; failed to retrieve certificate and waitforcert is disabled
+~~~
+
+^^^^^
+21Feb17  --siggy git commandss for making RPM (deadline8)
+
+git@gitlab.disneytoonstudios.com:dsiegfriedt/deadline8.git
+ internal
+Command line instructions
+
+Git global setup
+git config --global user.name "Don Siegfriedt"
+git config --global user.email "don.siegfriedt@disneytoonstudios.com"
+
+Create a new repository
+git clone git@gitlab.disneytoonstudios.com:dsiegfriedt/deadline8.git
+cd deadline8
+touch README.md
+git add README.md
+git commit -m "add README"
+git push -u origin master
+
+Existing folder or Git repository
+cd existing_folder
+git init
+git remote add origin git@gitlab.disneytoonstudios.com:dsiegfriedt/deadline8.git
+git push -u origin master
+
+^^^^^
+23Feb17  Amy making a RPM the DTS way
+
+=========================================================
+
+9609  21Feb17-15:02:47  git add Deadline8.tgz 
+ 9613  21Feb17-15:04:21  git add deadline8launcher.tgz 
+ 9614  21Feb17-15:04:29  git add var-lib.tgz 
+ 9615  21Feb17-15:04:39  git add deadline8.spec.in 
+ 9616  21Feb17-15:06:36  git commit -m "adding file for deadline8 rpm"
+ 9617  21Feb17-15:07:09  git push -u origin master
+ 9619  21Feb17-15:08:11  git pull
+ 9620  21Feb17-15:08:21  git status
+ 9621  21Feb17-15:08:21  git status
+ 9622  21Feb17-15:08:21  git status
+ 9737  22Feb17-17:04:49  git pull
+ 9743  23Feb17-09:22:39  git add Makefile
+ 9744  23Feb17-09:23:04  git commit -m "adding Makefile to the mix"
+ 9745  23Feb17-09:23:20  git push -u origin master
+ 9749  23Feb17-09:27:19  which git
+ 9750  23Feb17-09:27:30  man git
+ 9752  23Feb17-09:28:25  git cleanrpm
+ 9753  23Feb17-09:28:43  git --help
+ 9755  23Feb17-09:29:14  git make-rpm
+ 9765  23Feb17-09:38:08  git commit -m "fix bogus dates"
+ 9768  23Feb17-09:38:51  git commit -m "fix bogus dates"
+ 9769  23Feb17-09:39:13  git push -u origin master
+ 9770  23Feb17-09:44:58  git pull
+ 9771  23Feb17-09:45:04  git status
+
+
+=========================================================
+
+git clone git@gitlab.disneytoonstudios.com:dsiegfriedt/deadline8.git
+
+
+cd /disney/home/dsiegfriedt/JOBS/DISNEYTS/GIT/deadline8
+git clean -f
+git pull
+git status
+<add filename>
+git add <filename>
+git commit -m "<discription of change>"
+git push -u origin master
+
+@@@ OR
+
+cd /disney/home/dsiegfriedt/JOBS/DISNEYTS/GIT/deadline8
+git clean -f
+git pull
+git status
+git checkout <filename>
+<vim filename>
+git commit -m "<discription of change>" <filename>
+git push -u origin master
+
+sudo git make-rpm
+
+=============================
+
+@@@ had to remove existing tgz and have them as the directory structure.
+@@@ have to tell git you removed them with "git rm <filename>"
+@@@ commit and push are needed also
+
+@@@ errors may point to a line number in the script located in [vim /bin/git-make-rpm]
+
+@@@ sudo find /disk1/scratch/rpmbuild-root -name "deadline*" -exec rm -rf '{}' ';'
+
+^^^^^
+19Jul18  start using github for docs
+
+siggy@STRAX:~ $ mkdir GIT
+siggy@STRAX:~/GIT $ git clone https://github.com/efinoob/DOCs
+Cloning into 'DOCs'...
+remote: Counting objects: 3, done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+

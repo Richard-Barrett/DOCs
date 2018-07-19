@@ -1,0 +1,32 @@
+#! /bin/bash
+#*****************************************************************
+# Name: NewUser
+#
+# Purpose: To add new users to the s018 cluster.
+#          
+#
+# Calls To: NewLocalUser, NewRemoteUser, NewPanfsUser
+#
+# Usage: NewUser
+#
+#
+# Author	  Date		  Version	  Comments
+# ---------------+----------------+---------------+-------------
+# Ron M. & Siggy  11/16/07         1.0
+#
+#*****************************************************************
+clear
+#
+# Prompt for type of account
+#
+echo -n "Type of account to create(L=Local R=Remote P=Panfs): "
+read ACCTTYPE
+#
+# Call appropriate routine 
+#
+case "$ACCTTYPE" in
+    [Ll]) /home/rmidiri/scripts/NewLocalUser;;
+    [Rr]) /home/rmidiri/scripts/NewRemoteUser;;
+    [Pp]) /home/rmidiri/scripts/NewPanfsUser;;
+       *) exit 0;;
+esac

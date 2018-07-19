@@ -1,0 +1,324 @@
+10Jan12   ftp01.sys.lax1.oversee.net  ssh is SPECIAL
+
+&&&&&
+
+/etc/init.d/proftpd 
+/usr/local/etc/proftpd.conf
+/etc/ftpd.passwd
+/etc/ftpd.group
+SystemLog /var/log/proftpd/proftpd.log
+TransferLog /var/log/proftpd/xferlog
+
+&&&&&
+*************** ssh  ftp01.sys.lax1.oversee.net -p 3822 ***************
+
+IP=172.22.0.48
+
+&&&&&
+
+vi /etc/ssh/sshd.conf   sed s/22/3822/
+service sshd restart
+
+&&&&&
+
+vi /etc/passwd and rm "ftp" user LEAVE it in group!
+
+&&&&&
+
+follow this link:
+http://sysnetpro.net/os/linux/how-to-sftp-support-in-proftpd.html
+
+&&&&&
+
+[root@ftp01 proftpd-1.3.2]# install_user=proftp install_group=proftp ./configure -prefix=/usr/local -sysconfdir=/etc -localstatedir=/var/run -mandir=/usr/local/man -without-pam -disable-auth-pam -enable-openssl -with-modules=mod_ratio:mod_readme:mod_sftp LDFLAGS=-static
+
+NOPE
+
+yum -y install gcc-c++
+yum -y install openssl-devel.i386 openssl-devel.x86_64
+
+[root@ftp01 proftpd-1.3.2]# install_user=proftp install_group=proftp ./configure -prefix=/usr/local -sysconfdir=/etc -localstatedir=/var/run -mandir=/usr/local/man -without-pam -disable-auth-pam -enable-openssl -with-modules=mod_ratio:mod_readme:mod_sftp LDFLAGS=-static
+
+YUP
+
+&&&&&
+
+edit /etc/proftpd.conf (per website)
+
+&&&&&
+
+/usr/src/proftpd-1.3.2/proftpd (to start by hand)
+
+&&&&&
+
+11Jan12   SFTP (proftp)
+
+email from dyang 11Jan12
+^^^^^
+
+# This is a basic ProFTPD configuration file (rename it to 
+# 'proftpd.conf' for actual use.  It establishes a single server
+# and a single anonymous login.  It assumes that you have a user/group
+# "nobody" and "ftp" for normal operation and anon.
+
+ServerName			"ProFTPD Default Installation"
+ServerType			standalone
+DefaultServer			on
+
+# Port 21 is the standard FTP port.
+Port				22
+
+# Don't use IPv6 support by default.
+UseIPv6				off
+
+# Umask 022 is a good standard umask to prevent new dirs and files
+# from being group and world writable.
+Umask				022
+
+# To prevent DoS attacks, set the maximum number of child processes
+# to 30.  If you need to allow more than 30 concurrent connections
+# at once, simply increase this value.  Note that this ONLY works
+# in standalone mode, in inetd mode you should use an inetd server
+# that allows you to limit maximum number of processes per service
+# (such as xinetd).
+MaxInstances			30
+
+# Set the user and group under which the server will run.
+User				ftp
+Group				ftp	
+
+# To cause every FTP user to be "jailed" (chrooted) into their home
+# directory, uncomment this line.
+DefaultRoot ~
+RequireValidShell off
+AuthOrder mod_auth_file.c mod_auth_unix.c
+AuthUserFile /etc/ftpd.passwd
+AuthGroupFile /etc/ftpd.group
+
+
+#  ADDED for SFTP Support 1-31-11 DYY
+<IfModule mod_sftp.c>
+        SFTPEngine on
+        SFTPLog /var/log/proftpd/sftp.log
+        Port 22
+        SFTPHostKey /etc/ssh/ssh_host_rsa_key
+        SFTPHostKey /etc/ssh/ssh_host_dsa_key
+        SFTPAuthorizedUserKeys file:~/.sftp/authorized_keys
+        SFTPCompression delayed
+        MaxLoginAttempts 6
+</IfModule>
+
+#### END 1-31-11 DYY
+
+
+# Normally, we want files to be overwriteable.
+AllowOverwrite		on
+
+# Bar use of SITE CHMOD by default
+<Limit SITE_CHMOD>
+  DenyAll
+</Limit>
+
+# A basic anonymous configuration, no upload directories.  If you do not
+# want anonymous users, simply delete this entire <Anonymous> section.
+<Anonymous ~ftp>
+  User				ftp
+  Group				ftp
+
+  # We want clients to be able to login with "anonymous" as well as "ftp"
+  UserAlias			anonymous ftp
+
+  # Limit the maximum number of anonymous logins
+  MaxClients			10
+
+  # We want 'welcome.msg' displayed at login, and '.message' displayed
+  # in each newly chdired directory.
+  DisplayLogin			welcome.msg
+  DisplayChdir			.message
+
+  # Limit WRITE everywhere in the anonymous chroot
+  <Limit WRITE>
+    DenyAll
+  </Limit>
+</Anonymous>
+
+
+^^^^^
+&&&&&
+
+http://www.castaglia.org/proftpd/contrib/ftpasswd.html
+
+ftpasswd --passwd --name=bob --uid=1001 --home=/home/bob --shell=/bin/false
+
+ftpasswd --group --name=group-name --gid=group-id --member=user-member1 --member=user-member2 ... 
+
+ftpasswd --passwd --name=user --change-password
+
+&&&&&
+
+To add disk space in VMWare:
+
+select machine
+  RT click select "Edit Settings"
+  click ADD
+  click Hard Disk
+  click Next
+  select Create new virtual disk
+  click Next
+  input size
+  click Next
+  click Next (at the SCSI(0:2))
+  click Finish
+
+reboot
+fdisk -l should show you /dev/sdb
+
+&&&&&
+
+http://www.howtoforge.com/linux_lvm
+#fdisk /dev/sdb
+> n
+> p
+> 1
+>
+>
+> w
+
+# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created
+
+# vgcreate vg_export /dev/sdb1
+  Volume group "vg_export" successfully created
+
+# lvcreate --name lv_export --size 49G vg_export
+  Logical volume "lv_export" created
+
+# lvscan
+  ACTIVE            '/dev/vg_export/lv_export' [49.00 GB] inherit
+  ACTIVE            '/dev/vg_root/lv_root' [19.91 GB] inherit
+  ACTIVE            '/dev/vg_root/lv_tmp' [2.00 GB] inherit
+  ACTIVE            '/dev/vg_root/lv_var' [19.91 GB] inherit
+
+# mkfs.ext3 /dev/vg_export/lv_export
+
+# mount /dev/vg_export/lv_export /export
+
+# vim /etc/fstab
+   /dev/vg_export/lv_export	/export		ext3	defaults	1 2
+
+&&&&&
+
+added /usr/local/bin/addftpuser
+
+&&&&&
+
+/export/ftp S/B root.root and 777
+
+&&&&&
+
+so add users to list in /root/scripts/userlists (NOTE:   NOOOOOO empt line at EOF, if you do you have a user named "--file")
+
+&&&&&
+
+when removing users:
+
+rm -rf /export/ftp/<user>
+vim /etc/ftpd.passwd
+
+&&&&&
+
+12jan12
+change GATEWAY to whatever Zhenhui says (/etc/sysconfig/network-scripts/ifcfg-eth0
+GATEWAY=172.22.0.47 (in this case)
+
+&&&&&
+
+start at next boot
+
+cp /usr/src/proftpd-1.3.2/contrib/dist/rpm/proftpd.init.d /etc/init.d/proftpd
+
+cd /etc/rc5.d
+ln -s ../init.d/proftpd S99proftpd
+
+&&&&&
+
+[root@ftp01 init.d]# cat proftpd 
+#!/bin/sh
+
+  # ProFTPD files
+  FTPD_BIN=/usr/local/sbin/proftpd
+  FTPD_CONF=/usr/local/etc/proftpd.conf
+  PIDFILE=/var/run/proftpd.pid
+
+&&&&&
+
+[root@ftp01 init.d]# find / -xdev -name "*proftp*"
+/etc/rc.d/rc5.d/S99proftp
+/etc/rc.d/init.d/proftpd
+/root/proftpd-1.3.4rc2
+/root/proftpd-1.3.4rc2/include/proftpd.h
+/root/proftpd-1.3.4rc2/proftpd.spec
+/root/proftpd-1.3.4rc2/proftpd
+/root/proftpd-1.3.4rc2/locale/proftpd.pot
+/root/proftpd-1.3.4rc2/m4/proftpd.m4
+/root/proftpd-1.3.4rc2/contrib/dist/rpm/proftpd.init.d
+/root/proftpd-1.3.4rc2/contrib/dist/rpm/proftpd.init.d.suse
+/root/proftpd-1.3.4rc2/contrib/dist/rpm/proftpd.logrotate
+/root/proftpd-1.3.4rc2/src/proftpd.8
+/root/proftpd-1.3.4rc2/src/proftpd.8.in
+/root/proftpd-1.3.4rc2/proftpd.pc
+/root/proftpd-1.3.4rc2.tar.gz
+/usr/local/man/man8/proftpd.8
+/usr/local/include/proftpd
+/usr/local/include/proftpd/proftpd.h
+/usr/local/etc/proftpd.conf.dyy
+/usr/local/etc/proftpd.conf.bad
+/usr/local/etc/proftpd.conf.bak
+/usr/local/etc/proftpd.conf-ORIG
+/usr/local/etc/proftpd.conf
+/usr/local/lib/proftpd
+/usr/local/lib/pkgconfig/proftpd.pc
+/usr/local/share/man/man8/proftpd.8
+/usr/local/sbin/proftpd
+/usr/local/sbin/in.proftpd
+/usr/src/proftpd-1.3.2
+/usr/src/proftpd-1.3.2/include/proftpd.h
+/usr/src/proftpd-1.3.2/proftpd.spec
+/usr/src/proftpd-1.3.2/proftpd
+/usr/src/proftpd-1.3.2/locale/proftpd.pot
+/usr/src/proftpd-1.3.2/contrib/dist/rpm/proftpd.init.d
+/usr/src/proftpd-1.3.2/contrib/dist/rpm/proftpd.init.d.suse
+/usr/src/proftpd-1.3.2/contrib/dist/rpm/proftpd.logrotate
+/usr/src/proftpd-1.3.2/src/proftpd.8
+/usr/src/proftpd-1.3.2/src/proftpd.8.in
+/usr/src/proftpd-1.3.2/proftpd.pc
+/home/proftp
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+&&&&&
+
+
+

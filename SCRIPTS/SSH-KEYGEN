@@ -1,0 +1,85 @@
+#!/bin/nsh
+
+SELECTED_TARGETS=`echo $1 | sed s/\s$//g`	# The target that this script is running on.  Should be passed as a paramter from the batch job.
+KEYUSER=$2 			# The user that the key should be created for
+KEYGROUP=$3			# The group that the key should be owned by
+
+for SELECTED_TARGET in $SELECTED_TARGETS
+do
+    # Build a list of cluster nodes from the /etc/hosts file
+    # Access will be granted to ssh between each host listed in there
+    CLUSTER_NODES=`echo -n \`egrep "[a-z][a-z][0-9][a-z][a-z][a-z][0-9][0-9][0-9]$" //${SELECTED_TARGET}/etc/hosts | awk '{print $NF}'\``
+   
+    # Loop through each host in the node list
+    for SOURCE in $CLUSTER_NODES
+    do
+        # Check to see if a key already exists
+        if [ -e "//${SOURCE}/home/${KEYUSER}/.ssh/id_dsa.pub" ]
+        then
+            echo "Found SSH key for user ${KEYUSER} on ${SOURCE}"
+        else
+            echo "Key doesn't exist for ${KEYUSER}.  Attempting to create one in //${SOURCE}/home/${KEYUSER}/.ssh."
+    
+            # Generate a key on the "source" box
+            cd //${SOURCE}
+            nexec -e su - ${KEYUSER} -c "/usr/bin/ssh-keygen -N \"\" -t dsa -b 1024 -q -f /home/${KEYUSER}/.ssh/id_dsa"
+            cd -
+
+            # Check that the file was created
+            if [ -e "//${SOURCE}/home/${KEYUSER}/.ssh/id_dsa.pub" ]
+            then
+                echo "Key generation sucessful on ${SOURCE}"
+            else 
+                echo "Key generation failed:\n$OUTPUT"
+                exit 1
+            fi
+        fi
+
+        # Add the key for each source to each target (each host found in /etc/hosts)
+        for TARGET in $CLUSTER_NODES
+        do  
+            echo "Adding key from ${SOURCE} to ${TARGET}"
+
+            # Try and figure out if the key already exists, so we don't clutter the file with duplicates    
+            if [ -e "//${SOURCE}/home/${KEYUSER}/.ssh/id_dsa.pub" ]
+            then
+                ENTRIES=`grep "\`cat //${SOURCE}/home/${KEYUSER}/.ssh/id_dsa.pub\`" //${TARGET}/home/${KEYUSER}/.ssh/authorized_keys 2>/dev/null | wc -l | sed s/" "//g`
+
+                echo "Found $ENTRIES matching entries in /home/${KEYUSER}/.ssh/id_dsa.pub on ${SOURCE}"
+                if [ $ENTRIES -gt 0 ]
+                then
+                    echo "Entry already exists in authorized_keys for ${SOURCE} on ${TARGET}"
+                else
+
+                    # Make .ssh dir if it doesn't exist.
+                    if [ ! -d "//${TARGET}/home/${KEYUSER}/.ssh" ] 
+                    then
+                        echo "Creating .ssh directory for ${KEYUSER}"
+                        mkdir -p //${TARGET}/home/${KEYUSER}/.ssh
+                    fi
+
+                    # Append the contents of the key we generated into the authorized_keys file on the "target" systems
+                    echo "Appending key to authorized_keys on ${TARGET}"
+                    cat //${SOURCE}/home/${KEYUSER}/.ssh/id_dsa.pub >> //${TARGET}/home/${KEYUSER}/.ssh/authorized_keys
+                fi
+            fi
+    
+            # Adjust permissions and ownership
+            echo "Changing owner and permissions on ${TARGET}"
+            chmod 400 //${TARGET}/home/${KEYUSER}/.ssh/authorized_keys
+            chown -R ${KEYUSER}:${KEYGROUP} //${TARGET}/home/${KEYUSER}/.ssh
+    
+            # SSH to public and ipc interfaces of the host to add it to known_hosts file
+            # Disable PasswordAutnentication incase the key generation failed, the script won't hang
+            echo "Attempting to ssh to ${TARGET} to accept key"
+            cd //${SOURCE}
+
+            echo "Accepting key for ${TARGET}"
+            nexec -e su - ${KEYUSER} -c "ssh -o StrictHostKeyChecking=no -o PasswordAuthentication=no ${TARGET} date"
+
+            echo "Accepting key for ${TARGET}-ipc"
+            nexec -e su - ${KEYUSER} -c "ssh -o StrictHostKeyChecking=no -o PasswordAuthentication=no ${TARGET}-ipc date"
+            cd -
+        done
+    done
+done

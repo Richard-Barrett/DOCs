@@ -1,0 +1,10 @@
+#!/bin/bash
+cp /etc/sudoers /etc/sudoers.ORIG$$
+
+if [ `cat /etc/sudoers | grep STOROPS | wc -l` -eq 2 ]; then
+    exit 0
+else 
+	sed -e '/SECURITY=/s/$/\nUser_Alias      STOROPS=%StorOps/' -e '/#####\ \[all/s/$/\nSTOROPS         ALL=(ALL)      NOPASSWD\: ALL/' /etc/sudoers > /tmp/siggy-test
+fi
+
+mv /tmp/siggy-test /etc/sudoers

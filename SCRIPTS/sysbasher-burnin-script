@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Burn in test for new machines.  To be added to initial build
+#  --siggy 8jan09
+# This will check if "/var/tmp/BURN-IN-run" is present.  If it is not it 
+# will run sysbasher for ? hours.  Apon exiting it will create "BURN-IN-run" file.
+
+# This script AND teh sys_basher binary are to be put in /root (??) and 
+# "/root/sysbasher-burnin-script" added to the end of /etc/rc.local.  Once the 
+# script is run once it touches a file in /root.  Subsequent reboots check for the 
+# existance of this file, in order to see if it is to re-run the burn-in proceedure.
+
+
+#check for "/rootBURN-IN-ran"
+if [ -f /root/BURN-IN-ran ]; then
+   exit 0
+else
+   /root/sys_basher -f
+fi
+
+touch /root/BURN-IN-ran
+
+echo "***** DONE *****"

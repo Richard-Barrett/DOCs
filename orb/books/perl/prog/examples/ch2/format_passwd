@@ -1,0 +1,1 @@
+# a report on the /etc/passwd fileformat STDOUT_TOP =                    Passwd FileName                Login    Office   Uid   Gid Home------------------------------------------------------------------.format STDOUT =@<<<<<<<<<<<<<<<<<< @||||||| @<<<<<<@>>>> @>>>> @<<<<<<<<<<<<<<<<<$name,              $login,  $office,$uid,$gid, $home.

@@ -1,0 +1,78 @@
+
+(1)
+sqldump to a text file, find/replace, re-import the sqldump.
+
+http://www.mediacollege.com/computer/database/mysql/backup.html 
+
+mysqldump to text
+mysqldump -u username -p [database name] [table name] > [filename]
+
+http://blog.winhost.com/using-mysqldump-to-backup-and-restore-your-mysql-databasetables/ (windows)
+
+(2)
+How to Find & Replace Data in MySQL
+To find a string in a certain field and replace it with another string:
+update [table_name] set [field_name] = replace([field_name],'[string_to_find]','[string_to_replace]');
+update [table_name] set [field_name] = replace([field_name],'[lasan1]','[lasan4]');
+
+(3)
+http://www.mediawiki.org/wiki/Extension:Replace_Text
+
+(4)
+
+
+
+
+
+
+
+
+http://dev.mysql.com/doc/mysql-windows-excerpt/5.0/en/resetting-permissions-windows.html
+stop mysql
+Create a text file containing
+       UPDATE mysql.user SET Password=PASSWORD('MyNewPass') WHERE User='root';
+       FLUSH PRIVILEGES;
+cmd shell
+<path to MySQL>\mysqld-nt --init-file=c:\\mysql-init.txt
+
+...............................................................................................
+
+25Nov13  --siggy
+
+stop mysql
+
+F&R lasan1 lasan4
+
+d:\appconfig\mediawiki\mysql\mysql\data\ib_logfile[0-1]
+
+start mysql
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................
+
+...............................................................................................

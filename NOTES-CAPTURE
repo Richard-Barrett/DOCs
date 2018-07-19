@@ -1,0 +1,472 @@
+22Sep11  --siggy
+
+/users/dsiegfriedt/MegaRAID-help has MegaCli64 -h
+
+&&&&&&&&&&&&&
+
+[root@thumper1 ifs]# date;/root/capture-Dave.bash -l 1312500599651 00000000000000000001 00000000000000000429;date
+Sat Oct 22 09:08:25 PDT 2011
+/root/capture-Dave.bash: line 142: syntax error near unexpected token `done'
+/root/capture-Dave.bash: line 142: `	     done   #dsk    '
+Sat Oct 22 09:08:50 PDT 2011
+
+linking of 429 files takes 25seconds
+
+&&&&&&&&&&&&&&&
+
+[root@thumper1 1312500599651]# for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_123-satNet10-satFx135.ats/$i >> /d23/file_123-satNet10-satFx135.ats; done &
+
+by hand had to cd /ifs/1312500599651
+
+a "linked list" had been made by calling the above (-l flag)
+
+cat transceiver/filename (from /tmp/index.????) to disk ??
+
+so we have:
+
+BASEDIR=/ifs
+TIMDIR=1312500599651
+XCEIVER=`ls $TIMDIR`
+FILENAME=`cat /tmp/index.??`
+
+
+&&&&&&&&&&&&&&&
+
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_101-satNet15-satFx126.ats/$i >> /d1/file_101-satNet15-satFx126.ats; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_102-satNet15-satFx132.ats/$i >> /d2/file_102-satNet15-satFx132.ats; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_103-satNet0-satFx7.bts/$i >> /d3/file_103-satNet0-satFx7.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_104-satNet0-satFx9.bts/$i >> /d4/file_104-satNet0-satFx9.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_105-satNet0-satFx14.bts/$i >> /d5/file_105-satNet0-satFx14.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_106-satNet0-satFx18.bts/$i >> /d6/file_106-satNet0-satFx18.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_107-satNet0-satFx21.bts/$i >> /d7/file_107-satNet0-satFx21.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_108-satNet15-satFx17.ats/$i >> /d8/file_108-satNet15-satFx17.ats; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_109-satNet15-satFx136.ats/$i >> /d9/file_109-satNet15-satFx136.ats; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_110-satNet2-satFx11.bts/$i >> /d10/file_110-satNet2-satFx11.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_111-satNet0-satFx1.bts/$i >> /d11/file_111-satNet0-satFx1.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_112-satNet0-satFx4.bts/$i >> /d12/file_112-satNet0-satFx4.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_115-satNet3-satFx25.bts/$i >> /d15/file_115-satNet3-satFx25.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_116-satNet10-satFx129.ats/$i >> /d16/file_116-satNet10-satFx129.ats; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_117-satNet3-satFx26.bts/$i >> /d17/file_117-satNet3-satFx26.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_118-satNet0-satFx24.bts/$i >> /d18/file_118-satNet0-satFx24.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_119-satNet0-satFx26.bts/$i >> /d19/file_119-satNet0-satFx26.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_121-satNet0-satFx27.bts/$i >> /d21/file_121-satNet0-satFx27.bts; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_122-satNet10-satFx130.ats/$i >> /d22/file_122-satNet10-satFx130.ats; done &
+for i in `cat /tmp/index.*`; do cat /ifs/1312500599651/file_123-satNet10-satFx135.ats/$i >> /d23/file_123-satNet10-satFx135.ats; done &
+
+
+&&&&&&&&&&&&&&&&&
+
+for i in NetworkManager abrtd acpid atd auditd avahi-daemon bluetooth cgconfig ip6tables irqbalance iscsi iscsid kdump ksm ksmtuned libvirt-guests libvirtd lvm2-monitor mdmonitor rhnsd rhsmcertd rpcgssd rpcidmapd spice-vdagentd; do chkconfig $i off; done
+
+for i in NetworkManager abrtd acpid atd auditd avahi-daemon bluetooth cgconfig ip6tables irqbalance iscsi iscsid kdump ksm ksmtuned libvirt-guests libvirtd lvm2-monitor mdmonitor rhnsd rhsmcertd rpcgssd rpcidmapd spice-vdagentd; do service $i stop; done
+
+
+&&&&&&&&&&&&&&&&&&
+When installing new drives  email from Andrew   23Sep11 
+
+[root@thumper1 MegaCli]# pwd
+/opt/MegaRAID/MegaCli
+
+
+[root@thumper1 MegaCli]# ./MegaCli64 -CfgEachDskRaid0 [WT] [ADRA] [Direct] [CachedBadBBU] [-strpsz64] [-Default] -a0
+                                     
+Adapter 0: Created VD 20
+Configured physical device at Encl-40:Slot-20.
+
+1 physical devices are Configured on adapter 0.
+
+Exit Code: 0x00
+
+[root@thumper1 MegaCli]# 
+
+&&&&&&&&&&&&&&&&&&&&
+
+From: Koert, Michaela [mailto:Michaela.Koert@lsi.com]
+Sent: Thursday, September 08, 2011 7:10 AM
+To: Checkos, Christopher R
+Subject: 490258-110014123
+
+ 
+
+Andrew,
+
+To clear the foreign configuration:
+
+MegaCli -CfgForeign -Clear -a0
+
+MegaCli -CfgEachDskRaid0 [WT] [ADRA] [Direct] [CachedBadBBU] [-strpsz64] [-Default] -a0
+
+MegaCLI - http://www.lsi.com/downloads/Public/MegaRAID%20Common%20Files/8.02.16_MegaCLI.zip
+
+Best Regards,
+
+Michaela Koert
+Technical Support Engineer
+Global Support Services
+
+LSI Corporation
+4165 Shackleford Road
+Norcross, GA 30093
+Phone: 1-800-633-4545
+Email:  support@lsi.com
+
+&&&&&&&&&&
+
+on thumper in /root   format.sh
+
+[root@thumper1 MegaCli]# cat /root/format.sh 
+#!/bin/bash
+
+Format() {
+fdisk /dev/sd$1 << EOF
+n
+p
+1
+
+
+t
+7
+w
+EOF
+}
+
+
+
+
+for DRV in b c d e f g h i j k l m n o p q r s t u v w x y; do
+echo $DRV
+#Format $DRV
+#mkfs.ntfs /dev/sd${DRV}1 -Q
+done
+
+#for ((DRV=1; DRV<=24; DRV++)); do
+
+#done
+for ((CNT=1; CNT<=24; CNT++)); do
+
+                #echo "$CNT"
+
+                printf -v HEX "%x" $(( $CNT + 97 ))
+
+                DRVLET=`echo -e "\x${HEX}"`
+
+                DRV=$CNT
+
+                echo “DRIVE sd${DRVLET}      is number $DRV”
+	mount /dev/sd${DRVLET}1 /DISKS/d$DRV
+done
+
+&&&&&&&&&&&&&&
+
+[root@thumper1 MegaCli]# ./MegaCli64 -AdpAllInfo -aALL
+                                     
+Adapter #0
+
+==============================================================================
+                    Versions
+                ================
+Product Name    : LSI MegaRAID SAS 9280-24i4e
+Serial No       : SV12701729
+FW Package Build: 12.9.0-0038
+
+                    Mfg. Data
+                ================
+Mfg. Date       : 06/27/11
+Rework Date     : 00/00/00
+Revision No     : 19C
+Battery FRU     : N/A
+
+                Image Versions in Flash:
+                ================
+BIOS Version       : 3.18.00_4.09.05.00_0x0416A000
+FW Version         : 2.90.03-0933
+Preboot CLI Version: 04.04-010:#%00008
+WebBIOS Version    : 6.0-18-e_13-Rel
+NVDATA Version     : 2.06.03-0010
+Boot Block Version : 2.02.00.00-0000
+BOOT Version       : 01.250.04.219
+
+                Pending Images in Flash
+                ================
+None
+
+                PCI Info
+                ================
+Vendor Id       : 1000
+Device Id       : 0079
+SubVendorId     : 1000
+SubDeviceId     : 9290
+
+Host Interface  : PCIE
+
+Number of Frontend Port: 0 
+Device Interface  : PCIE
+
+Number of Backend Port: 8 
+Port  :  Address
+0        500062b20021d43f 
+1        0000000000000000 
+2        0000000000000000 
+3        0000000000000000 
+4        0000000000000000 
+5        0000000000000000 
+6        0000000000000000 
+7        0000000000000000 
+
+                HW Configuration
+                ================
+SAS Address      : 500062b20021d400
+BBU              : Absent
+Alarm            : Present
+NVRAM            : Present
+Serial Debugger  : Present
+Memory           : Present
+Flash            : Present
+Memory Size      : 512MB
+TPM              : Absent
+On board Expander: Present
+Upgrade Key      : Absent
+Temperature sensor for ROC    : Absent
+Temperature sensor for controller    : Absent
+
+On board Expander FW version : 25.05.04.00
+
+                Settings
+                ================
+Current Time                     : 20:37:50 10/23, 2011
+Predictive Fail Poll Interval    : 300sec
+Interrupt Throttle Active Count  : 16
+Interrupt Throttle Completion    : 50us
+Rebuild Rate                     : 30%
+PR Rate                          : 30%
+BGI Rate                         : 30%
+Check Consistency Rate           : 30%
+Reconstruction Rate              : 30%
+Cache Flush Interval             : 4s
+Max Drives to Spinup at One Time : 24
+Delay Among Spinup Groups        : 2s
+Physical Drive Coercion Mode     : Disabled
+Cluster Mode                     : Disabled
+Alarm                            : Enabled
+Auto Rebuild                     : Enabled
+Battery Warning                  : Disabled
+Ecc Bucket Size                  : 15
+Ecc Bucket Leak Rate             : 1440 Minutes
+Restore HotSpare on Insertion    : Disabled
+Expose Enclosure Devices         : Enabled
+Maintain PD Fail History         : Enabled
+Host Request Reordering          : Enabled
+Auto Detect BackPlane Enabled    : SGPIO/i2c SEP
+Load Balance Mode                : Auto
+Use FDE Only                     : No
+Security Key Assigned            : No
+Security Key Failed              : No
+Security Key Not Backedup        : No
+Default LD PowerSave Policy      : Controller Defined
+Maximum number of direct attached drives to spin up in 1 min : 0 
+Any Offline VD Cache Preserved   : No
+Allow Boot with Preserved Cache  : No
+Disable Online Controller Reset  : No
+PFK in NVRAM                     : No
+Use disk activity for locate     : No
+
+                Capabilities
+                ================
+RAID Level Supported             : RAID0, RAID1, RAID5, RAID6, RAID00, RAID10, RAID50, RAID60, PRL 11, PRL 11 with spanning, SRL 3 supported, PRL11-RLQ0 DDF layout with no span, PRL11-RLQ0 DDF layout with span
+Supported Drives                 : SAS, SATA
+
+Allowed Mixing:
+
+Mix in Enclosure Allowed
+Mix of SAS/SATA of HDD type in VD Allowed
+
+                Status
+                ================
+ECC Bucket Count                 : 0
+
+                Limitations
+                ================
+Max Arms Per VD          : 32 
+Max Spans Per VD         : 8 
+Max Arrays               : 128 
+Max Number of VDs        : 64 
+Max Parallel Commands    : 1008 
+Max SGE Count            : 60 
+Max Data Transfer Size   : 8192 sectors 
+Max Strips PerIO         : 42 
+Max LD per array         : 16 
+Min Strip Size           : 8 KB
+Max Strip Size           : 1.0 MB
+Max Configurable CacheCade Size: 0 GB
+Current Size of CacheCade      : 0 GB
+Current Size of FW Cache       : 431 MB
+
+                Device Present
+                ================
+Virtual Drives    : 24 
+  Degraded        : 0 
+  Offline         : 0 
+Physical Devices  : 26 
+  Disks           : 24 
+  Critical Disks  : 0 
+  Failed Disks    : 0 
+
+                Supported Adapter Operations
+                ================
+Rebuild Rate                    : Yes
+CC Rate                         : Yes
+BGI Rate                        : Yes
+Reconstruct Rate                : Yes
+Patrol Read Rate                : Yes
+Alarm Control                   : Yes
+Cluster Support                 : No
+BBU                             : Yes
+Spanning                        : Yes
+Dedicated Hot Spare             : Yes
+Revertible Hot Spares           : Yes
+Foreign Config Import           : Yes
+Self Diagnostic                 : Yes
+Allow Mixed Redundancy on Array : No
+Global Hot Spares               : Yes
+Deny SCSI Passthrough           : No
+Deny SMP Passthrough            : No
+Deny STP Passthrough            : No
+Support Security                : No
+Snapshot Enabled                : No
+Support the OCE without adding drives : Yes
+Support PFK                     : No
+Support PI                      : No
+Support Boot Time PFK Change    : No
+Disable Online PFK Change       : No
+Support Shield State            : No
+Block SSD Write Disk Cache Change: No
+
+                Supported VD Operations
+                ================
+Read Policy          : Yes
+Write Policy         : Yes
+IO Policy            : Yes
+Access Policy        : Yes
+Disk Cache Policy    : Yes
+Reconstruction       : Yes
+Deny Locate          : No
+Deny CC              : No
+Allow Ctrl Encryption: No
+Enable LDBBM         : No
+Support Breakmirror  : No
+Power Savings        : No
+
+                Supported PD Operations
+                ================
+Force Online                            : Yes
+Force Offline                           : Yes
+Force Rebuild                           : Yes
+Deny Force Failed                       : No
+Deny Force Good/Bad                     : No
+Deny Missing Replace                    : No
+Deny Clear                              : No
+Deny Locate                             : No
+Support Temperature                     : No
+Disable Copyback                        : No
+Enable JBOD                             : No
+Enable Copyback on SMART                : No
+Enable Copyback to SSD on SMART Error   : Yes
+Enable SSD Patrol Read                  : No
+PR Correct Unconfigured Areas           : Yes
+Enable Spin Down of UnConfigured Drives : Yes
+Disable Spin Down of hot spares         : No
+Spin Down time                          : 30 
+T10 Power State                         : No
+                Error Counters
+                ================
+Memory Correctable Errors   : 0 
+Memory Uncorrectable Errors : 0 
+
+Cluster Active        : No
+
+                Default Settings
+                ================
+Phy Polarity                     : 0 
+Phy PolaritySplit                : 0 
+Background Rate                  : 30 
+Strip Size                       : 64kB
+Flush Time                       : 4 seconds
+Write Policy                     : WB
+Read Policy                      : Adaptive
+Cache When BBU Bad               : Disabled
+Cached IO                        : No
+SMART Mode                       : Mode 6
+Alarm Disable                    : Yes
+Coercion Mode                    : None
+ZCR Config                       : Unknown
+Dirty LED Shows Drive Activity   : No
+BIOS Continue on Error           : No
+Spin Down Mode                   : None
+Allowed Device Type              : SAS/SATA Mix
+Allow Mix in Enclosure           : Yes
+Allow HDD SAS/SATA Mix in VD     : Yes
+Allow SSD SAS/SATA Mix in VD     : No
+Allow HDD/SSD Mix in VD          : No
+Allow SATA in Cluster            : No
+Max Chained Enclosures           : 16 
+Disable Ctrl-R                   : Yes
+Enable Web BIOS                  : Yes
+Direct PD Mapping                : No
+BIOS Enumerate VDs               : Yes
+Restore Hot Spare on Insertion   : No
+Expose Enclosure Devices         : Yes
+Maintain PD Fail History         : Yes
+Disable Puncturing               : No
+Zero Based Enclosure Enumeration : No
+PreBoot CLI Enabled              : Yes
+LED Show Drive Activity          : Yes
+Cluster Disable                  : Yes
+SAS Disable                      : No
+Auto Detect BackPlane Enable     : SGPIO/i2c SEP
+Use FDE Only                     : No
+Enable Led Header                : No
+Delay during POST                : 0 
+EnableCrashDump                  : No
+Disable Online Controller Reset  : No
+EnableLDBBM                      : No
+Un-Certified Hard Disk Drives    : Allow
+Treat Single span R1E as R10     : No
+Max LD per array                 : 16
+Power Saving option              : All power saving options are enabled
+Default spin down time in minutes: 30 
+Enable JBOD                      : No
+TTY Log In Flash                 : No
+Auto Enhanced Import             : No
+BreakMirror RAID Support         : No
+Disable Join Mirror              : No
+Enable Shield State              : No
+Time taken to detect CME         : 60s
+
+Exit Code: 0x00
+[root@thumper1 MegaCli]# 
+
+
+&&&&&&&&&&&&&&&
+[root@thumper1 MegaCli]# ./MegaCli64 -AdpGetProp PatrolReadRate -aALL
+                                     
+Adapter 0: Patrol Read Rate = 30%
+
+Exit Code: 0x00
+[root@thumper1 MegaCli]# ./MegaCli64 -AdpSetProp PatrolReadRate 1 -aALL
+                                     
+Adapter 0: Set Patrol Read Rate to 1% success.
+
+Exit Code: 0x00
+[root@thumper1 MegaCli]# ./MegaCli64 -AdpAutoRbld -Dsbl -a0
+                                     
+Adapter 0: AutoRebuild is Disabled.
+
+Exit Code: 0x00
+[root@thumper1 MegaCli]# ./MegaCli64 -AdpSetProp -LoadBalanceMode 1 -aALL
+                                     
+Adapter 0: Set Load Balance Mode to Disable success.
+
+Exit Code: 0x00
+
+&&&&&&&&&&&&&&&&&
+

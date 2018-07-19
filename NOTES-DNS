@@ -1,0 +1,31 @@
+11Aug11  --siggy
+
+Add to named.conf
+
+//These are our primary zones
+// 11Aug11  --siggy
+
+zone "isi-cap.com" { type master; file "/var/named/db.isi-cap.com"; };
+
+//zone "192.168.0.in-addr.arpa" { type master; file "/var/named/db.192.168.0; };
+
+^^^^^
+
+use h2n to creat forward and reverse maps
+
+^^^^^
+
+make sure /etc/resolv.conf points to itself
+
+^^^^^
+
+7Feb12   creating a /etc/hosts type file from a DNS map
+
+cat lax1.oversee.net | awk '{print $NF"\t\t"$1}' >> hosts.lax1.oversee.net
+
+^^^^^
+
+9Feb17  --siggy  IDM (ip)  zone list
+
+ipa dnszone-find
+

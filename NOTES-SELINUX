@@ -1,0 +1,75 @@
+18Sep13 
+
+From http://selinuxproject.org/
+
+Is SELinux enabled on my system?
+
+To find out if SELinux is enabled on your system you can run sestatus. If the SELinux status says enforcing you are being protected by SELinux. If it says permissive SELinux is enabled but is not protecting you, and disabled means it is completely disabled. 
+
+^^^^^
+How do I disable SELinux?
+
+Though we feel that most users should leave SELinux enabled, especially because it can help mitigate zero-day attacks, we understand that there are some circumstances where it may need to be disabled.
+
+If you feel like SELinux is stopping an application from working it is best to put it in permissive mode and test the application. If the application runs correctly in permissive mode but not enforcing you may need to add some rules to the policy, or relabel some files. Check the users and administrators section for details on doing this.
+
+To put an SELinux system into permissive mode temporarily you can run setenforce as root:
+
+# setenforce 0
+
+If you are having issues booting up and would like to boot your system with SELinux in permissive mode you can edit the /etc/selinux/config file and change the SELINUX variable to permissive (this will not set the current running mode of SELinux).
+
+To disable SELinux altogether you can change the SELINUX variable in /etc/selinux/config to DISABLED and reboot. 
+
+^^^^^
+25Sep13  --siggy   log files
+/var/log/audit/audit.log
+
+Time is seconds from last boot :^(
+
+cat /var/log/audit/audit.log | perl -ne 'chomp; if ( /(.*msg=audit\()(\d+)(\.\d+:\d+.*)/ ) { $td = scalar localtime $2; print "$1$td$3\n"; }'
+
+^^^^^
+File location
+
+/etc/selinux
+^^^^^
+5Aug15  --siggy   
+
+setenforce 0
+The above command will disable SE Linux for your current running session. However if you want to disable it permanently then follow the below steps
+
+vi /etc/selinux/config
+
+#SELINUX=enforcing (comment this line and add the below line)
+
+SELINUX=disabled
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+^^^^^
+

@@ -1,0 +1,1 @@
+use Fcntl;use SDBM_File;tie(%hash, SDBM_File, 'Op.dbmx', O_RDWR|O_CREAT, 0644);# read/writes of %hash are now read/writes of the file, Op.dmxuntie %h;

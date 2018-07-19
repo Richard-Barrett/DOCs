@@ -1,0 +1,571 @@
+9Oct17   ansible server
+collector.disneytoonstudios.com
+
+ll /etc/ansible
+total 36
+-rw-rw-r--. 1 root        prodctn 18074 Sep  9 09:08 ansible.cfg
+drwxr-xr-x. 2 gracet      prodctn    31 Sep  9 09:36 awx
+drwxr-xr-x. 4 gracet      prodctn  4096 Sep  9 09:07 foreman_ansible_inventory
+-rw-r--r--. 1 gracet      prodctn   401 Sep  4 22:17 foreman.ini
+drwxr-xr-x. 2 gracet      prodctn    24 Sep  4 20:13 group_vars
+-rw-r--r--. 1 dsiegfriedt prodctn  1976 Oct 11 13:15 hosts
+drwxrwxr-x. 2 root        prodctn     6 Jun 27 07:50 roles
+drwxr-xr-x. 2 gracet      prodctn    58 Aug 27 15:56 tmp
+-rw-r--r--. 1 gracet      prodctn   337 Aug 31 19:48 windows-desktops.yml
+
+
+******************************************************************************************************
+11Oct17 ansible
+
+hostname:
+collector.disneytoonstudios.com
+
+[root@collector ~]# vim /etc/ansible/hosts
+
+history:
+
+[root@collector ~]# history | grep ansible
+   34  yum install ansible
+   39  ls -lrt |grep ansible
+   40  chgrp prodctn ansible/
+   42  chmod g+w ansible/
+   43  cd ansible/
+   48  chmod -R g+w ansible/
+   50  ansible eagle -m ping
+   51  cat /etc/ansible/hosts 
+   52  ansible corsair -m ping
+   64  ansible -i ~/software/foreman_ansible_inventory/foreman_ansible_inventory.py foreman_environment_gracet -m ping
+   67  ansible -i foreman_ansible_inventory.py foreman_environment_gracet -m ping
+   68  cat foreman_ansible_inventory.index
+   69  ansible -i foreman_ansible_inventory.index foreman_hostgroup_base_7workstation_tumbl_computenode -m ping
+   70  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_computenode -m ping
+   73  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_computenode -m ping
+   74  ./foreman_ansible_inventory.py --help
+   76  cd /etc/ansible/foreman_ansible_inventory/
+   78  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_computenode -a "uptime"
+   79  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_computenode -m ping"
+   80  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_computenode -m ping
+   82  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_computenode -m ping
+  200  history |grep ansible
+  207  history |grep ansible
+  208  ansible corsair -m ping
+  209  ansible -i foreman_ansible_inventory.py foreman_hostgroup_osx -a uptime
+  210  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_desktop -a uptime
+  211  ansible -i foreman_ansible_inventory.py foreman_hostgroup_base_7workstation_tumbl_desktop -a "nvidia-smi |grep Driver"
+  233  history | grep -i ansible
+  234  man ansible
+  235  man ansible-doc
+  238  which ansible
+  240  vim /etc/ansible/hosts
+  242  history | grep ansible
+
+
+******************************************************************************************************
+11Oct17  change group on a file (in this case /etc/init.d/deadline10launcher)
+
+http://docs.ansible.com/ansible/latest/file_module.html
+- file:
+    path: /etc/foo.conf
+    owner: foo
+    group: foo
+    mode: 0644
+- file:
+    src: /file/to/link/to
+    dest: /path/to/symlink
+    owner: foo
+    group: foo
+    state: link
+- file:
+    src: '/tmp/{{ item.src }}'
+    dest: '{{ item.dest }}'
+    state: link
+  with_items:
+    - { src: 'x', dest: 'y' }
+    - { src: 'z', dest: 'k' }
+
+# touch a file, using symbolic modes to set the permissions (equivalent to 0644)
+- file:
+    path: /etc/foo.conf
+    state: touch
+    mode: "u=rw,g=r,o=r"
+
+# touch the same file, but add/remove some permissions
+- file:
+    path: /etc/foo.conf
+    state: touch
+    mode: "u+rw,g-wx,o-rwx"
+
+# create a directory if it doesn't exist
+- file:
+    path: /etc/some_directory
+    state: directory
+    mode: 0755
+
+******************************************************************************************************
+@@@ I think it should look like this
+
+---
+  -hosts: renderfarmtest
+  remote_user: root
+  tasks:
+  -name change the group of /etc/init.d/deadline10launcher to prodctn
+  -file: 
+    path: /etc/init.d/deadline10launcher
+    owner: root
+    group:prodctn
+  
+
+@@@ another one to start deadline10
+
+---
+  -hosts: renderfarmtest
+  remote_user: root
+  tasks:
+  - name: make sure deadline10launcher is running
+    service: name=deadline10launcher state=started
+
+
+>>>>><<<<<<
+dsiegfriedt@collector:/etc/ansible $ cat test-playbook.yml 
+---
+  -hosts: renderfarmtest
+  remote_user: root
+  tasks:
+  -name change the group of /etc/init.d/deadline10launcher to prodctn
+  -file: 
+    path: /etc/init.d/deadline10launcher
+    owner: root
+    group:prodctn
+>>>>><<<<<
+
+ansible-playbook test-playbook.yml
+ERROR! Syntax Error while loading YAML.
+
+
+The error appears to have been in '/etc/ansible/test-playbook.yml': line 6, column 3, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+  -name change the group of /etc/init.d/deadline10launcher to prodctn
+  -file:
+  ^ here
+
+ansible-playbook test-playbook.yml --syntax-check
+
+EFin syntax is a bitch
+
+)))))(((((
+dsiegfriedt@collector:/etc/ansible $ cat test-playbook.yml 
+---
+  - hosts: renderfarmtest
+    remote_user: root
+    tasks:
+      - name: change the group of /etc/init.d/deadline10launcher to prodctn
+        file: 
+          path: /etc/init.d/deadline10launcher 
+          group: prodctn
+)))))(((((
+
+dsiegfriedt@collector:/etc/ansible $ ansible-playbook test-playbook.yml
+
+PLAY [renderfarmtest] **********************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************
+fatal: [d20743]: UNREACHABLE! => {"changed": false, "msg": "SSH Error: data could not be sent to remote host \"d20743\". Make sure this host can be reached over ssh", "unreachable": true}
+fatal: [d20744]: UNREACHABLE! => {"changed": false, "msg": "SSH Error: data could not be sent to remote host \"d20744\". Make sure this host can be reached over ssh", "unreachable": true}
+fatal: [d20746]: UNREACHABLE! => {"changed": false, "msg": "SSH Error: data could not be sent to remote host \"d20746\". Make sure this host can be reached over ssh", "unreachable": true}
+fatal: [d20745]: UNREACHABLE! => {"changed": false, "msg": "SSH Error: data could not be sent to remote host \"d20745\". Make sure this host can be reached over ssh", "unreachable": true}
+fatal: [d20742]: UNREACHABLE! => {"changed": false, "msg": "SSH Error: data could not be sent to remote host \"d20742\". Make sure this host can be reached over ssh", "unreachable": true}
+	to retry, use: --limit @/etc/ansible/test-playbook.retry
+
+PLAY RECAP *********************************************************************************************************************************
+d20742                     : ok=0    changed=0    unreachable=1    failed=0   
+d20743                     : ok=0    changed=0    unreachable=1    failed=0   
+d20744                     : ok=0    changed=0    unreachable=1    failed=0   
+d20745                     : ok=0    changed=0    unreachable=1    failed=0   
+d20746                     : ok=0    changed=0    unreachable=1    failed=0   
+
+sudo su -
+
+re-ran and it WORKED!!!!   WTF is going on
+
+made changes to the "host" file
+
+******************************************************************************************************
+11Oc17 bulk start of DL 8&10
+
+[root@collector ansible]# ansible-playbook DL-bulk-start.yml --syntax-check
+
+playbook: DL-bulk-start.yml
+[root@collector ansible]# cat DL-bulk-start.yml 
+---
+  - hosts: renderfarmDL8 renderfarmDL10
+    remote_user: root
+    tasks:
+      - name: Bulk start of deadline (both 8 and 9)
+        systemd:
+          name: deadline10launcher
+          state: started    
+
+
+******************************************************************************************************
+12Oct17   TIL on the train
+
+ansible-doc -l    ### list all docs
+
+gather_facts: no
+
+grouping hostnames:
+ renderfarmDL8:renderfarmDL10   ###will run both lists
+ prodctn:&mac   		###will run on machines that are in both lists
+
+-debug:
+  msg: "prints always"
+
+>>>>> OR <<<<<
+
+-debug:
+  msg: "playbook -vv+"
+  verbosity: 2
+
+******************************************************************************************************
+12Oct17
+
+@@@ to gather_facts via adhoc
+ansible siggytest -m setup
+
+@@@ you can use hostnames as well as inventory groups (from hosts)
+ansible d20615 -m setup
+
+
+@@@ to poweroff the renderfarm with one (1) command
+
+[root@collector ansible]# cat DL-SOS-shutdown.yml 
+---
+  -hosts: renderfarmDL8:renderfarmDL10
+    gather_facts: no
+        # getting ssh need tty errors
+	# https://stackoverflow.com/questions/40261388/getting-module-failure-error-with-pipelining-true-in-ansible
+        # >>>>>
+    vars:
+        ansible_ssh_pipelining: no
+    tasks:
+     - name: Disable require tty access in /etc/sudoers
+       replace: dest="/etc/sudoers"
+                regexp='^Defaults    requiretty'
+                replace='Defaults    !requiretty'
+        # <<<<<<
+    tasks:
+    - name: shutdown
+    #command: /sbin/shutdown -h now
+      command: /usr/sbin/poweroff
+      become: yes
+
+    - name: wait go down
+      local_action: wait_for host={{ ansible_ssh_host }} port=22 state=stopped
+@@@
+
+
+
+******************************************************************************************************
+18Oct17  virt-tool-install
+
+yum list | grep rhev
+rhevm-guest-agent-common.noarch     1.0.12-4.el7ev   rhel-7-server-rh-common
+
+collector:/etc/ansible/playbook/virt-tool-install.yml
+
+
+[root@collector ansible]# cat playbooks/virt-tool-install.yml 
+---
+- hosts: ### not all hostsjust VMs on RHEVM
+  gather_facts: no
+  remote_user: root
+
+  tasks:
+
+  - name: install rhevm-guest-agent-common
+    yum:
+      name: rhevm-guest-agent-common.noarch
+      state: present
+
+  - name: Make sure a service is running
+    systemd: state=started name=rhevm-guest-agent-common.noarch
+
+ansible-playbook playbooks/virt-tool-install.yml --syntax-check #OK @@@ need to get a dynamic hosts list from RHEVM
+
+
+******************************************************************************************************
+18Oct17   on collector ovirt-engine-sdk-python needed to be installed
+
+yum install ovirt-engine-sdk-python
+
+@@@ also needs ovirt-engine-sdk-python (but that was installed)
+
+
+[root@collector playbooks]# ansible desktopDL -m ping
+
+******************************************************************************************************
+18Oct17   ping playbook
+
+[root@collector playbooks]# cat test.yml 
+---
+
+- hosts: renderfarmDL8
+  gather_facts: false
+  tasks:
+    - ping:
+
+******************************************************************************************************
+dynamic inventory wil have to run a collection yaml to populate group_vars.. 
+then use a variable in whatever playbook/roll you want
+
+******************************************************************************************************
+19Oct17
+
+@@@ get cert
+[root@skipper ~]# keytool -exportcert -keystore /etc/pki/ovirt-engine/.truststore -alias cacert -storepass mypass -file /root/rhvm.cer
+
+keytool 
+	-exportcert 
+	-keystore /etc/pki/ovirt-engine/.truststore 
+	-alias cacert 
+	-storepass mypass 
+	-file /root/rhvm.cer
+
+@@@ command line to collect list of hostnames
+
+/usr/bin/rhevm-shell -c -u root -l "https://rhevm.disneytoonstudios.com/ovirt-engine" -A /root/rhvm.cer -E "list-vms --show-all"
+
+/usr/bin/rhevm-shell 
+		     -c 
+		     -u root 
+		     -l "https://rhevm.disneytoonstudios.com/ovirt-engine" 
+		     -A /root/rhvm.cer 
+		     -E "list-vms --show-all"
+@@@ failing cert verification
+
+******************************************************************************************************
+23Oct17 pluralsite ansible training notes
+
+Ansible Vault for passwd
+
+ALWAYS a spce after "=" and ":"
+
+ansible_ssh_host: <IP>
+                 ^
+ansible_ssh_user: <user name>
+                 ^
+ansible_ssh_pass: <passwd>
+                 ^
+
+>>><<<
+[datacenter: chldren]
+renderfarmDL8
+renderfarmDL10
+
+>>><<<
+[datacenter: vars]
+ansible_ssh_user: <user name>
+                 ^
+ansible_ssh_pass: <passwd>
+                 ^
+>>><<<
+precedence
+(1) all
+(2) groupname
+(3) hostname
+
+    key:value      #pair
+>>><<<
+
+group => all
+
+---
+#This is our user
+username: all_username
+
+	  -m user #usser add
+	  -a "name={{username}}
+	  passwd- 12345"
+	  --sudo
+
+---Playbooks---
+
+
+---
+- hosts: webserver
+ ^      ^
+  remote_user: root
+^^            ^
+  tasks:
+^^      ^
+  -name: "info statment when running"
+^^      ^
+    yum: name=ntpd state=present
+^^^^    ^         ^
+  -name: "more running info"
+^^      ^
+    service: name=ntpd state=started enabled=yes
+^^^^        ^         ^             ^
+
+>>><<<
+
+sudo: yes
+     ^
+sudo_user: <username>
+          ^
+
+>>><<<
+MISC
+
+-- limit retry file
+
+-include: filename.yml   # to break up long task/files
+
+register: <variable      # keyboard input or results of previous command to be used as a variable
+
+-debug: msg "blahblahbla"  # output during run, like print statements
+
+prompt:	    		   # prompts for input... does NOT echo to screen
+
+handler:		   # exacute on chnage (ie: restart process after change)
+
+tags:			   # to add additional way to sorthosts (ie: only prod:webserver)
+
+
+******************************************************************************************************
+16Nov17  Notes from Ansible training
+
+45SA don't know how to ssh into AWS VMs
+
+Daniel Witley
+
+ansible-workshop.redhat.gov.io
+                    resource
+		    decks
+
+Order of Presidence
+
+[all:vars]
+
+groups
+
+host
+
+NOTE: numbering d206[10:46]
+
+... -msetup # collect env vars
+
+   1st precidence =  ~/.ansible.cfg
+   Last precidence = /etc/ansible/ansible.conf
+
+... -k #askes for passwd (if in a commandline or script you don't want a plain text passwd)
+
+http://galaxy.ansible.com
+
+ansible.com/get-started
+           /comunity
+
+Ansible Tower = GUI
+
+"if you have big toys you will make big mistakes" (10)
+
+******************************************************************************************************
+29Nov17  playbooks for DL8 => DL10 
+
+
+@@@ Ree talked Doug into DL10 upgrade starting tomorrow
+
+dsiegfriedt@collector:/etc/ansible/playbooks $ cat DL-remove-8.yml
+---
+# - hosts: renderfarmDL8:renderfarmDL10
+   gather_facts: no
+        #getting ssh need tty errors
+        #>>>>>
+   vars:
+    ansible_ssh_pipelining: no
+   tasks:
+    - name: Disable require tty access in /etc/sudoers
+      replace: dest="/etc/sudoers"
+               regexp='^Defaults    requiretty'
+               replace='Defaults    !requiretty'
+        #<<<<<<
+   tasks:
+    - name: Remove Deadline8
+    #command: /sbin/shutdown -h now
+   shell: |
+      /usr/bin/systemctl stop deadline8launcher
+      /opt/Thinkbox/Deadline8/uninstall
+      chkconfig --del deadline8launcher
+      for i in `cat /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/after-uninstall-cleanup-list; do rm -f $i; done
+   become: yes
+
+    #- name: wait go down
+    # local_action: wait_for host={{ ansible_ssh_host }} port=22 state=stopped
+
+dsiegfriedt@collector:/etc/ansible/playbooks $ cat DL-install-config-10.yml
+---
+#  -hosts: renderfarmDL8:renderfarmDL10
+    gather_facts: no
+        #getting ssh need tty errors
+        #>>>>>
+    vars:
+        ansible_ssh_pipelining: no
+    tasks:
+     - name: Disable require tty access in /etc/sudoers
+       replace: dest="/etc/sudoers"
+                regexp='^Defaults    requiretty'
+                replace='Defaults    !requiretty'
+        #<<<<<<
+    tasks:
+    - name: Install/configure Deadline10
+    #command: /sbin/shutdown -h now
+    shell: |
+        /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/deadline-silent-install
+      become: yes
+
+    #- name: wait go down
+    # local_action: wait_for host={{ ansible_ssh_host }} port=22 state=stopped
+
+    tasks:
+      - name: change the group of /etc/init.d/deadline10launcher to prodctn
+        file: 
+          path: /etc/init.d/deadline10launcher 
+          group: prodctn
+
+((((()))))
+@@@ hosts changed too
+
+[renderfarmDL10]
+d20608
+d20609
+d206[10:46]
+d20708
+d20709
+d207[10:41]
+
+******************************************************************************************************
+2Jan18  open-vm-tools
+
+
+
+
+
+******************************************************************************************************
+
+
+******************************************************************************************************
+
+
+******************************************************************************************************
+
+
+******************************************************************************************************
+
+
+******************************************************************************************************
+
+
+******************************************************************************************************

@@ -1,0 +1,43 @@
+#!/bin/bash
+#******************************************************************
+# Name: SHUTDOWN-MASTER
+#
+# Purpose: This is the master shutdown script.  It shuts down the 
+#          nodes first, then the Cipricos.  This way the nodes don't
+#          hang during shutdown. 
+#
+# Calls To: SHUTDOWN-NODES, SHUTDOWN-CIPRICO, & SHUTDOWN-PANASAS
+#
+#  Author	Date		Version
+# -------------+----------------+-----------
+# Siggy         17Sep07		 1.0
+#
+#*******************************************************************
+#
+# First stop automount and then umount -a on arwen
+
+rsh arwen '(/sbin/service autofs stop; /bin/umount -a)'
+
+# The same for aragorn
+
+/sbin/service autofs stop
+/bin/umount -a
+
+#*******************************************************************
+# Then call SHUTDOWN-NODES
+
+/root/SHUTDOWN-NODES
+
+#*******************************************************************
+# Then shutdown the RAIDS
+
+/root/SHUTDOWN-CIPRICO
+
+#*******************************************************************
+# Then finally shutdown the Panasas
+
+/root/SHUTDOWN-PANASAS
+
+echo "Then you will have to power off the shelves" 
+echo ""
+echo "You will need to power off the boxes when they are done shutting down"

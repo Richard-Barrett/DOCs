@@ -1,0 +1,680 @@
+
+URLS:
+https://www.sophos.com/support/downloads.aspx
+
+https://www.sophos.com/en-us/mysophos/my-account/endpoint-and-server-protection.aspx
+
+https://sophserv.sophos.com/?TabHier=Single%20Contact%20Support-Technical%20support-Licensed
+
+https://support.nutbourne.com/hc/en-us/articles/215884158-Uninstalling-Sophos-Endpoint-Security-Control-Without-Tamper-Protection-Password
+
+https://community.sophos.com/kb/pl-pl/29287 #watch the video over and over
+
+https://community.sophos.com/kb/pl-pl/119791
+
+https://www.youtube.com/watch?v=nMS04Gg-y2Q
+
+https://www.windows-commandline.com/change-user-password-in-windows-command-line/
+
+@@@create service user (for Sophos)
+https://community.sophos.com/kb/pl-pl/113954
+
+@@@ changing update manager user name
+https://community.sophos.com/kb/en-us/112598
+
+https://community.sophos.com/kb/en-us/12386
+
+https://community.sophos.com/kb/pl-pl/12391
+
+https://community.sophos.com/kb/en-us/119744
+
+https://docs.sophos.com/esg/deployment-packager/1-3/help/en-us/pdf/sdp_13_ugeng.pdf
+
+https://www.syskit.com/blog/credssp-required-by-server-solutions/
+
+https://www.youtube.com/watch?v=MPrAZNDuyYQ
+
+https://community.sophos.com/kb/en-us/119691
+
+
+21Apr17 
+https://www.sophos.com/en-us/mysophos/my-account/endpoint-and-server-protection.aspx
+Endpoint Protection - Advanced 2	E8A6E93OH4	27 Mar 2017	26 Mar 2021
+
+To open a ticket:
+
+@@ Long way
+click "Support"  --> "Open a Support Case" --> "Technical Support" --> Licensed --> SophServ
+
+@@ short way
+https://sophserv.sophos.com/?TabHier=Single%20Contact%20Support-Technical%20support-Licensed
+
+
+
+Sophos
+Thank you for signing up for Sophos Central, our new security management platform.
+
+Click Activate to get started.
+
+As a reminder, your username is your email address: don.siegfriedt@disneytoonstudios.com
+Log in page: central.sophos.com
+
+If there's anything I can do to improve your experience with Sophos Central, please send your comments to support@sophos.com
+
+Jonathan Shaw
+Product Manager, Sophos Central
+sophos.com/central
+
+=============================================================================================
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+6Nov17 cp all exe to /disney/apps/sophos/
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+21Apr17  downloads
+********************************************
+@@@From:
+https://www.sophos.com/support/downloads.aspx
+
+@@@ to create installer packages (for Mac)
+Sophos Deployment Packager
+       sdp_13_sfx
+
+@@@ FIRST NOT sophosinstaller  FPoS
+Sophos Enterprise Console
+       sec_550_sfx.exe
+
+Sophos Report Interface
+       sec_ri_51_sfx.exe
+
+Virtualization Scan Controller
+       svsc_20_sfx
+
+********************************************
+
+EndPoint and Server for Windows
+	 escw_106_sa_sfx.exe
+
+Endpoint and Server for Linux 
+	 sav-linux-9-i386.tgz
+
+Endpoint for Mac OS X
+	 savosx96sa.zip
+
+********************************************
+
+Sophos for Network Storage
+       savna3sfx.msi
+
+
+********************************************
+@@@ on sophosav these can be found
+c:\Users\Administrator\Downloads\
+
+=============================================================================================
+21Apr17  deleteing Sophos EndPoint witout "Tamper Protection Password"
+
+https://support.nutbourne.com/hc/en-us/articles/215884158-Uninstalling-Sophos-Endpoint-Security-Control-Without-Tamper-Protection-Password
+
+@@@ Catch22 could not install Sophos Central because I had installed EndPoint Protection.  EndPoint prtection has a password that was not advertised SO,I had to follow the above directions to get EdnPoint uninstalled to install central which will install EndPoint.   YAY
+=============================================================================================
+26Apr17
+
+cleaned (search and delete) any sophos files/directories
+
+re-downloaded sec_550_sfx.exe and started install
+
+SQL
+SOPHOSAV\administrator
+N...
+
+Update Manager
+SOPHOSAV\administrator
+N...
+
+
+=============================================================================================
+28Apr17  shred folders (FPoS!!!! Windows)
+
+Check on the server that the C:\ProgramData\Sophos\Update Manager\Update Manager folder (default location) is shared and the group 'Everyone' has read access. 
+
+the path is:
+
+C:\ProgramFiles(x86)\sophos\UpdateManager
+
+@@@ to ping machine is AD you need to add .win.disneytoonstudios.com
+
+https://community.sophos.com/kb/pl-pl/29287 #watch the video over and over
+
+=============================================================================================
+3May17  on Mac  need to install by hand because it is NOT in AD   (FPoS)
+
+https://community.sophos.com/kb/pl-pl/119791
+
+@@@ had to uninstall in order to get it to point at sophosav
+-press CMD (⌘) + Spacebar on your keyboard to open Spotlight, then type 'Remove Sophos' and press Enter. 
+Follow the steps in the Removal app to complete the Uninstall process.
+
+@@@installed from my homedir on my Mac (Tomcat)
+
+cd /Users/dsiegfriedt/Sophos Installer.app/Contents/Resources/
+
+cat > grouppath.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"> 
+<dict> 
+<key>GroupPath</key>
+<string>\sophosav\Mac</string>
+</dict>
+</plist>
+
+Double click Sophos Installer.app
+
+=============================================================================================
+22May17  Found instructional video
+
+https://www.youtube.com/watch?v=nMS04Gg-y2Q
+
+
+click "Updating"
+      RT click Default
+
+address = (HTTP or UNC) \\SOPHOSAV\SophosUpdate
+Username: DTSAD\SophosUpdateMgr
+
+
+=============================================================================================
+5Jun17
+@@@ FUCKING sophos does not install IIS (to serve website content... had to find/install IIS
+https://www.w-systems.com/www/wmobilehelp/howto_install_iis_win2016.htm
+
+@@@ setup to serv files to Unix/Linux
+https://community.sophos.com/kb/en-us/38238
+
+----
+
+@@@ to serve 
+https://community.sophos.com/kb/en-us/64787
+Files cannot be downloaded from the \bin directory
+
+IIS7 has a security feature called 'Request Filtering' that can prevent the web-server from serving files and directories. For example, files in a \bin directory will not be available. This only occurs if the 'Request Filtering' feature has been enabled.
+
+To allow files in the \bin directory, run the following command:
+
+%systemroot%\system32\inetsrv\appcmd.exe set config /section:requestfiltering /-"hiddenSegments.[segment='bin']"
+
+For more information on Request Filtering and checking whether it is installed see this article.
+
+----
+
+Files with no extension cannot be downloaded
+
+Linux / Unix / OS X endpoints will not be able to download files that have no file extension for example: '\S000\savlinux\talpaversion', the error is visible to a browser and in IIS logging as 404.17. 
+
+To allow files without extensions to download, add a MIME Type of '.' within IIS Manager, this can also be achieved with the following command:
+
+%systemroot%\system32\inetsrv\appcmd.exe set config /section:staticContent /+"[fileExtension='.',mimeType='Sophos/Linux']"
+
+----
+
+IIS web-servers that use NTLM authentication
+
+SAV for Linux / Unix / OS X only support Basic or Digest authentication with web servers and proxies. When a web-server only allows 
+NTLM (labeled Integrated Windows Authentication in IIS Manager) the update will fail.
+
+In the properties for your IIS website select 'Directory Security' then click 'Edit' within Authentication and access control. The 
+web-server must allow Basic, Digest, or Anonymous access for Linux / Unix clients to update.
+
+
+
+=============================================================================================
+6Jun17
+
+Open IIS manager
+  open SOPHOSAV => Sites => Deafult Web Site
+       RT click => Manage Website => Advanced Settings
+
+@@@ change Physical Path to C:\Program Files (x86)\Sophos\Update Manager
+    
+=============================================================================================
+12Jun17  INFO from NOTES-DTS moved to here
+
+2May17  set user passwd (commnd line ) windows 2012R2
+
+@@@ any changes to dtsad you need to force the changes out (or else wait for FUCKING ever, or so it seems)
+gpupdate /force
+
+https://www.windows-commandline.com/change-user-password-in-windows-command-line/
+
+How to change local user password
+net user  loginid  newpassword
+
+If you want to change the password for your domain account then you can do it by running the below command.
+net  user  loginid  *  /domain
+
+@@@create service user (for Sophos)
+https://community.sophos.com/kb/pl-pl/113954
+
+@@@ changing update manager user name
+https://community.sophos.com/kb/en-us/112598
+
+cd C:\Program Files (x86)\Sophos\Enterprise Console\
+UpdateManagerHelper.exe -c SOPHOSAV DTSAD\SophosUpdateMgr S...
+
+@@@ info on creating an account(s) for sophos
+https://community.sophos.com/products/endpoint-security-control/f/sophos-endpoint-software/5992/sophos-update-manager-database-account---password-change
+
+12Ju17
+
+@@@found some site to help set up IIS on sophosav
+
+@@@ no other documentation site that you need to change etc/hosts
+@@@ this seems to have fixed my problem
+https://www.youtube.com/watch?v=LMWW12FGoHM
+https://www.youtube.com/watch?v=PRcVGakKnhY
+
+@@@ I ended up setting up a new site rather than trying to re-set the Default
+https://technet.microsoft.com/en-us/library/dn236383.aspx
+
+
+@@@ other sites
+https://community.sophos.com/kb/en-us/38238
+http://www.advancedinstaller.com/user-guide/tutorial-iis.html
+https://technet.microsoft.com/en-us/library/dn236383.aspx
+https://www.sophos.com/en-us/support/documentation/enterprise-console.aspx
+
+*****
+12Jun17
+https://community.sophos.com/kb/en-us/12386
+
+@@@ FUCK IIS and just use "Network Volume"
+
+\\sophosav\sophosupdate\CIDs\S000\ESCOSX\
+                              ^^^
+			      zerozerozero
+*****
+
+@@@ to check if web services are running type:
+powershell
+Get-Service –Name AppHostSVC, W3SVC, WAS
+
+******************************************************************************************************
+
+15May17  MAC protection Sophos
+
+https://community.sophos.com/kb/pl-pl/12391
+
+@@@ on my mac I used:
+sophosav.disneytoonstudios.com/sophos/ESCOSX
+administrator
+N....
+
+@@@for Mac
+https://community.sophos.com/kb/en-us/12386
+
+&&&&&
+******************************************************************************************************
+21Apr17  Sophos
+
+cp of license in JOBS/DISNEYTS/LICENSING/
+
+email from Grace with all the particulars 27Mar17  and a cp in ~/JOBS/DISNEY/SOPHOS
+
+=============================================================================================
+12Jun17  install failed on new laptop with error ox80070002 (file not found)
+
+BUT when I looked:
+
+cd c:\
+
+dir \\sophosav\sophosupdate\CIDs\S000\SAVSCFXP
+
+there is was "setup.exe"
+
+@@@according to this URL:
+https://community.sophos.com/kb/en-us/12386
+
+=============================================================================================
+20Jun17  make a IOS (munki) installer
+
+https://community.sophos.com/kb/en-us/119744
+
+
+Standalone Installer
+
+@@@ done on tomcat
+
+Download the Standalone installer for Sophos Anti-Virus for Mac OS X from the Sophos website
+Unzip the downloaded SophosInstaller.zip file revealing 'Sophos Installer.app' 
+Open Terminal
+In Terminal type:
+cd ~/Downloads/Sophos\ Installer.app/Contents/MacOS/
+
+NOTE: This command assumes that the standalone installer was downloaded to the currently logged in Users 'Downloads' folder
+
+Run:
+CreateUpdatePreconfig
+#command with the required arguments.  
+Information on what arguments can be used can be found later in this article, or by running the following command:
+
+./CreateUpdatePreconfig
+
+NOTE:  This tool must be run with root priveleges, an example of this tool's usage is:
+
+sudo ./CreateUpdatePreconfig -PrimaryServerType 2 -PrimaryServerUserName MyUserName -PrimaryServerPassword MyPassword
+
+The credentials have now been added to 'Sophos Installer.app' and can be distributed
+
+=============================================================================================
+21Jun17  sophos deployment packager
+
+@@@ doc
+https://docs.sophos.com/esg/deployment-packager/1-3/help/en-us/pdf/sdp_13_ugeng.pdf
+
+c:\Users\Administrator\Downloads\sdp_13_sfx.exe
+
+#@@@installed in 
+#c:\sdp_13
+
+#@@@ doble click DeploymentPackager (in c:\sdp_13)
+
+#@@@ Path:
+#c:\Users\Administrator\Desktop\MAC-Sophos-Installer.app\Content\Install
+
+@@@FUCKING PIECE OF SHIT
+the gui doesn't give you o hint of WTF it wants....  moving down the CLI (page 98) way gives you all the info you need......
+
+@@@ 
+Create a protection package using the CLI
+Before using this section, read Create a protection package using the GUI (page 6).
+To run the Deployment Packager in command line mode, use the following format as a minimum:
+
+DeploymentPackager.exe -cli -mng yes -cidpath <CIDpath> -sfxpath <SFXpath> -crt R
+
+where <CIDpath> is the path to the relevant central installation directory and <SFXpath> is the
+path of the output package. -crt R automatically removes third-party protection software.
+The packager returns a value of zero when run successfully and non-zero for an error condition,
+together with a message to standard error method (stderr).
+Command-line options
+You can also use other command line qualifiers, as listed below.
+-mng yes
+Enable Remote Management.
+-mngcfg
+Specify path to custom Remote Management configuration files.
+-scf
+Install Sophos Client Firewall.
+-ntp
+Install Sophos Network Threat Protection.
+-hmpa
+Install Sophos Exploit Prevention.
+-patch <Management Server URL>
+Install Sophos Patch Agent with the Management Server address. The address should be a
+fullyqualified domain name. Example: http://<server name>.
+
+SO
+
+c:\sdp_13\DeploymentPackager.exe -cli -mng yes -arch 64 -user dtsad\administrator -pwd <passwd here> -s -cidpath \\sophosav\sophosupdate\CIDs\S000\SAVSCFXP\ -sfxpath ESCOSX -crt R
+
+@@@ trying to find ESCOSX folder so that Gisel may make a .dmg which we could push with munki :^(
+@@@ so the path I am looking for on sophosav is not local..... FUCKING microsloth counts it as a "Network" file
+@@@ search for \\sophosav\sophosupdate\CIDs\S000\ESCOSX and BOOM there is is.   I EFin HATE microsloth!
+
+FAILED, but it gave a log location:
+
+@@@ FPoS ProgramData is a hidden directory FPoS (had to fix that :^(
+
+c:\ProgramData\Sophos\DeploymentPackager\Log\log.txt
+	Source Path: \\sophosav\sophosupdate\CIDs\S000\ does not point to a valid package:
+	Source folder: \\sophosav\sophosupdate\CIDs\S000\ must point to a software distibution location.
+
+@@@ kept trying it till I found the correct path it was looking for (I think....may be for windoz)
+@@@ screen capture in ~dsiegfriedt/JOBS/DISNEYTS/sophos-deploy-packager.jpg
+@@@ now trying from command line
+
+c:\sdp_13\DeploymentPackager.exe -cli -mng yes -arch 64 -user dtsad\administrator -pwd <passwd here> -s -cidpath \\sophosav\sophosupdate\CIDs\S000\SAVSCFXP\ -sfxpath ESCOSX -crt R
+
+@@@ looks like it is working....15:46
+c:\sdp_13>DeploymentPackager.exe -cli -mng yes -arch 64 -user dtsad\administrator -pwd N3xtPhaze -cidpath \\sophosav\SophosUpdate\CIDs\S000\SAVSCFXP\ -sfxpath ESCOSX -crt R
+
+c:\sdp_13>Establishing package components to transfer...
+Copying package data and ConfigUpdate tool to local machine...
+Creating setup configuration script...
+Creating the final self-extracting archive...
+
+7-Zip (a) [32] 16.02 : Copyright (c) 1999-2016 Igor Pavlov : 2016-05-21
+
+Scanning the drive:
+79 folders, 985 files, 300140459 bytes (287 MiB)
+
+Creating archive: \cid_packager_archive.7z
+
+Items to compress: 1064
+
+Files read from disk: 985
+Archive size: 205473145 bytes (196 MiB)
+Everything is Ok
+c:/sdp_13\7za\7zSD.sfx
+C:\Users\ADMINI~1\AppData\Local\Temp\1\CIDPackager\cid_packager_setup.txt
+\cid_packager_archive.7z
+        1 file(s) copied.
+Cleaning up package components from local machine...
+Package generation complete.
+
+c:\sdp_13>
+
+@@@ collecting all files for examples 
+
+@@@ from c:\ProgramData\Sophos\DeploymentPackager\Log\log.txt
+/disney/home/dsiegfriedt/JOBS/DISNEYTS/SOPHOS/log.txt
+
+@@@ output is a file named whatever the "-sfxpath" in
+@@@ in this case:
+c:\ESCOSX
+
+@@@copied to SOPHOS dir in my home account
+
+@@@ FUCK YOU SOPHOS you FPoS
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/SOPHOS $ file ESCOSX 
+ESCOSX: PE32 executable (GUI) Intel 80386, for MS Windows
+****************************************************************************
+@@@ back to GUI and see if it creates a MS.exe
+c:\sdp_13 => DeplaymentPackager
+
+@@@ fails missing sed/sed64
+
+@@@ looks like it may have some good info
+https://community.sophos.com/kb/en-us/63182
+
+@@@ 17:00 sent mail to support@sophos.com
+@@@ with this message
+
+Greetings
+
+I am trying to create  a dmg to push to our Macs.  Your documentation is H-I-G-H-L-Y geared towards windows... what special sauce do I need to create a standalone package?
+
+I have tried it in the GUI and I get (in the log file):
+SED not found
+SED64 not found
+
+I have tried it from the command prompt and get the same error
+
+Yet if I point it towards "SAVSCFXP" it builds fine.
+c:\sdp_13>DeploymentPackager.exe -cli -mng yes -arch 64 -user dtsad\administrator -pwd N3xtPhaze -cidpath \\sophosav\SophosUpdate\CIDs\S000\SAVSCFXP\ -sfxpath ESCOSX -crt R
+
+This command fails (I looked in the directory and there is in fact no SED[64]
+c:\sdp_13>DeploymentPackager.exe -cli -mng yes -arch 64 -user dtsad\administrator -pwd N3xtPhaze -cidpath \\sophosav\SophosUpdate\CIDs\S000\ESCOSX\ -sfxpath ESCOSX -crt R
+
+@@@ Sophos case #7369532
+
+no provision to create an installable flag for munki FPoS
+
+=============================================================================================
+Oct17  see NOTES-MAC to create a sophos.pkg for macs
+=============================================================================================
+25Oct17  Grace asks about RPD to sophosav.....
+DONE and doc updated
+=============================================================================================
+2Nov17 may have a passwd change problem.... following steps from:
+
+https://community.sophos.com/kb/en-us/112598
+
+command prompt:
+cd C:\Program Files(x86)\Sophos\Enterprise Console\
+   UpdateManagerHelper.exe -L   step3 = SOPHOSAV
+
+step4 = UpdateManagerHelper -c SOPHOSAV DTSAD\Administrator C... -nowarn
+
+I was able to winscp the notepad file to my SOPHOS dir.  (see below)
+
+c:\Program Files (x86)\Sophos\Enterprise Console>UpdateManagerHelper.exe -L
+Id      Hostname        EndpointAddress IdentityTag     MatchesConfiguration    SoftwareVersion
+1       SOPHOSAV        Router$sophosav b101d6ef-761d-4dde-b67d-b6be349deb08    ConfigurationSame   1.6.2.186
+
+c:\Program Files (x86)\Sophos\Enterprise Console>UpdateManagerHelper.exe -c SOPHOSAV DTSAD\Administrator <PASSWD> -nowarn
+INFO: Checking database consistency
+INFO: Changing the default share credentials for update manager 'SOPHOSAV' from 'SOPHOSAV\Administrator:********' to 'DTSAD\Administrator:********'
+INFO: Removed ticket 'BEGIN_SECURE_TICKET_dcb636a93b4b4e2fbb9d1ac3d543d39a_END_SECURE_TICKET' from the secret store
+INFO: Added new ticket 'BEGIN_SECURE_TICKET_74254261e8574a9490fb828699866a7e_END_SECURE_TICKET' to the secret store
+INFO: Changes to update manager 'SOPHOSAV' committed
+INFO: Checking child update managers that update from '\\SOPHOSAV\SophosUpdate'
+INFO: No child update managers needed reconfiguring
+INFO: Changing updating policies that reference '\\SOPHOSAV\SophosUpdate'
+INFO: Checking updating policy 'Default'
+INFO: No updating policies needed to be changed
+Done
+
+c:\Program Files (x86)\Sophos\Enterprise Console>
+
+=============================================================================================
+3Nov17 
+
+@@@ windts002 says it has installed the scanner but can not report back to the "Enterprise Console"
+
+@@@ ping from sophosav to windts002 does not work (it would help if it were on)
+
+dsiegfriedt@dts3329:~ $ rdesktop -0 -g 1800x1000 -a 16 -r sound:local windows10
+Autoselected keyboard map en-us
+ERROR: CredSSP: Initialize failed, do you have correct kerberos tgt initialized ?
+Failed to connect, CredSSP required by server.
+dsiegfriedt@dts3329:~ $ 
+
+https://www.syskit.com/blog/credssp-required-by-server-solutions/
+
+	Go to Control Panel -> System
+	Click on “Allow remote access to your computer”
+	Click on the “Remote” tab
+	Uncheck the box next to “Allow connections only from computers running Remote Desktop 
+	^^^^^^^
+	with Network Level Authentication”
+	
+@@@ redesktop works now YAY but Sophos won't protect it :^(
+
+=============================================================================================
+6Nov17  SVN download location
+
+https://www.sophos.com/en-us/mysophos/my-account/endpoint-and-server-protection.aspx
+@@@ Nope   chat pointed me to 888.767.4679
+
+12:50 On Hold (queue)
+12:52 gave up   over to open an email ticket
+
+@@@ EFed the account... I can login but all the info is Grace  (Joy)
+
+
+=============================================================================================
+@@@ found a video that shplains some stuff
+https://www.youtube.com/watch?v=MPrAZNDuyYQ
+
+@@@ AD-sync #automatically install when added to AD minute ~7
+
+=============================================================================================
+7Nov17
+
+@@@ error trying to get to windows10
+
+kb29287 (80070002)
+https://community.sophos.com/kb/en-us/119691
+
+Policies => Updateing => Default => RT click View/Edit Policy => "Primary Server"
+
+changed from:
+\\10.106.230.131\SophosUpdate
+to:
+\\10.106.230.131\Program Files (x86)\Sophos\Update Manager\SophosUpdateMgr(.exe)
+ !!!!! had to change it back
+
+@@@ had to export the correct directory (||SOPHOSAV\SophosUpdate
+
+((()))
+looked at WDS and that had a different path
+\\10.106.230.131\Program Files (x86)\Sophos\Update Manager\CIDs\S000\SAVSCFXP\
+((()))
+
+@@@ CIDs dir does not exist   #BONUS  Windows10 does not search entire disk (from c:)
+@@@ from the logs it looks like Sophos changed the path....
+
+@@@ video!!!
+
+@@@ to search in FUCKING windows10.... in the windows exporer, go to c:, select this machine(C:),
+    in the upper Right corner type in what you are looking for
+
+SAVSCFXP = c:\ProgramData\Sophos\Update Manager\Update Manager\CIDs\S000\ 
+=============================================================================================
+9Nov17 Grace setup a GPO to allow access (via rdesktop) to all the windows boxes.
+
+***** See 3Nov17 *****
+
+@@@ hoping that this will clear some (if not all) the fffffffd errors
+=============================================================================================
+9Nov17 log /config locations
+
+on sophosav
+@@@ config file:
+This PC > LocalDisk (c:) > ProgramData > Sophos > AutoUpdate > Config > iconn.cfg
+
+ConnectionAddress = \\10.106.230.131\Program Files (x86)\Sophos\Update Manager\CIDs\S000\SAVSCFXP\
+UserName = DTSAD\Administrator
+
+@@@ that looks OK
+@@@ log file:
+This PC > LocalDisk (c:) > ProgramData > Sophos > AutoUpdate > Logs > acl
+
+@@@ use winscp to get the logs to my SOPHOS/TROUBLE dir
+
+
+=============================================================================================
+13Nov17
+
+@@@ Grace found a DNS problem that seems to have cleared up all of my problems.  
+
+=============================================================================================
+14Nov17
+
+@@@ Doc created/edited.....
+
+http://confluence.disneytoonstudios.com/display/TEC/SOPHOS+Anti-virus
+
+=============================================================================================
+
+
+=============================================================================================
+
+
+=============================================================================================
+
+
+=============================================================================================
+
+
+=============================================================================================
+
+
+=============================================================================================
+
+
+=============================================================================================
+
+
+=============================================================================================
+
+

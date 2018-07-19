@@ -1,0 +1,111 @@
+13Nov14  --siggy  Script to email SOX PDFs automagically
+
+ssh lasysmon
+
+uuencode is not builtin.. you have to install it
+yum -y install sharutils
+
+[root@lasysmon audit]# pwd
+/usr/local/scripts/audit
+
+[root@lasysmon audit]# cat linux_SOX_files.bash 
+[[[[[
+#!/bin/bash
+
+#12Nov14  --siggy
+#This is a script to translates and mails the SOX files to Aric on the first day of the month.
+#Linux does not have the facility to create PDFs so you have to create a postscript (ps) file first.
+#Then you can create the PDF from there.
+
+#The audit script is added to the crontab.
+#00 08 1 * * /usr/local/scripts/audit/audit 2>&1
+#8:00am on the first day of every month.
+
+#This script is added to crontab. 
+#00 09 1 * * /usr/local/scripts/audit/linux_SOX_files.bash 2>&1
+#9:00am it will do the conversion and mail the PDFs on the first day of every month.
+
+#go to where the files end up
+cd /tmp
+
+#create a ps file from the text output from the audit script.
+enscript -p ccapp.system_permissions.ps ccapp.system_permissions
+enscript -p ccapp.user_permissions.ps ccapp.user_permissions
+
+#create a PDF from the ps file.
+ps2pdf ccapp.system_permissions.ps ccapp.system_permissions.pdf
+ps2pdf ccapp.user_permissions.ps ccapp.user_permissions.pdf
+
+#mail to Aric
+#need to use uuencode to allow PDF attachments
+uuencode ccapp.system_permissions.pdf ccapp.system_permissions.pdf | mail -s "Linux SOXs system files"  abarton@ri-net.com -c dsiegfriedt@ri-net.com
+uuencode ccapp.user_permissions.pdf ccapp.user_permissions.pdf | mail -s "Linux SOXs user files"  abarton@ri-net.com -c dsiegfriedt@ri-net.com
+
+]]]]]
+
+DON'T forget
+chmod +x linux_SOX_files.bash
+
+**********************************************************************
+3Oct16  --siggy   security updates needed
+
+yum list-sec
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+
+**********************************************************************
+
+

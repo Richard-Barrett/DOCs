@@ -1,0 +1,63 @@
+*** You need to add entries to both the forward and reverse zones ***
+
+ Currently, pl1rns702.admin.edmunds.com is the DNS server.
+Forward Zone DNS
+
+   1. Log into pl1rns702.admin.edmunds.com
+   2. After your sudo, type prodnamed, this will put you in "/nfs/common/named/chroot-production"
+   3. cd var/named/zones-forward (for editing forward maps)
+   4. Backup file to the archives directory.  We currently use the following syntax for the backup: "<file name><your name><date>-<time>" ie cp db.admin.edmunds.com archives/db.admin.edmunds.com-jeff-nov1809-1154
+   5. Edit the zone file
+         1. Edit the second line, marked by "@  SOA".  You will see a series of number at the end of this line between 2 brackets.  The first set of 10 numbers in those brackets should reflect the date with 2 extra numbers.  Modify the first 8 number to the current date.  If you are making an additional change to a zone file that was already modified on the same day, update the last 2 numbers of that set of 10, to the next higher number.  IE: 2009111900 would be updated to 2009111901, etc.
+         2. Add the entries at the bottom of the file.  Denote the date and your name (make sure it's commented out!) above your additions
+         3. Of course, save your file after your are done.
+   6. Find the PID for the named service and restart it.
+         1. ps -ef | grep name
+         2. kill -HUP <PID>  Don't forget the "-" before the "HUP" other wise you will kill the named service and get the stick.
+   7. Verify that name service is still up ps -ef | grep name
+   8. tail -f /var/log/messages and look for the zone with the correct SOA (from step 5).  This will verify that it's been updated.
+   9. Verify that the correct IPs are resolving: host <server> 10.69.37.4 for the primary DNS seever.  
+  10. Verify that the correct IPs are resolving: host <server> 10.69.37.7 for the slave DNS server.  
+
+Reverse Zone DNS
+
+   1. Log into pl1rns702.admin.edmunds.com
+   2. After your sudo, type prodnamed, this will put you in "/nfs/common/named/chroot-production"
+   3. cd var/named/zones-reverse
+   4. Backup file to the archives directory.  We currently use the following syntax for the backup: "<file name><your name><date>-<time>" ie cp db.admin.edmunds.com archivesdb.admin.edmunds.com-jeff-nov1809-1154
+   5. Edit the zone file.  This is different from "zones-forward" in that you are looking for the file for that specific subnet. ie db.10.96.205
+         1. Edit the second line, marked by "@  SOA".  You will see a series of number at the end of this line between 2 brackets.  The first set of10 numbers in those brackets should reflect the date with 2 extra numbers.   Modify the first 8 number to the current date.  If you are making an additional change to a zone file that was already modified on the same day, update the last 2 numbers of that set of 10, to the next higher number.  IE: 2009111900 would be updated to 2009111901, ect
+         2. Add the entries at the bottom of the file.  Denote the date and your name (make sure it's commented out!) above your additions
+         3. Of course, save your file after your are done.
+   6. Find the PID for the named service and restart it.
+         1. ps -ef | grep name
+         2. kill -HUP <PID>  Don't forget the "-" before the "HUP" other wise you will kill the named service and get the stick.
+   7. Verify that name service is still up
+   8. tail -f /var/log/messages and look for the zone with the correct SOA (from step 5).  This will verify that it's been updated.
+   9. Verify that the correct IPs are resolving: "host <IP>".
+
+COREZONES.CONF
+pl1rns702.admin.edmunds.com://nfs/common/named/chroot-production/etc
+
+One of the DNS configuration files is corezones.conf.  This file is a map of maps. 
+
+In the example below we see that the "forward" mapping zone named "admin.edmunds.com" has a master file for that zone in zones-forward/db.admin.edmunds.com
+       (this path assumes the starting point of /var/named.  We are in a chrooted location so logically this is the correct FQPN)
+
+zone "admin.edmunds.com"    IN {type master;       file "zones-forward/db.admin.edmunds.com";};
+
+There are also sections for "reverse" mapping.
+
+zone "1.42.10.in-addr.arpa"    IN {type master;    file "zones-reverse/db.10.42.1";                };
+
+Both forward and reverse entries are needed to to make the IP range available in DNS.
+
+If the IP adress range you are adding is not in corezones.conf you must create/add the new IP for DNS to respond to it.  There are 4 places the you must add the new range.
+
+    * pl1rns702.admin.edmunds.com /nfs/common/named/chroot-production/etc/corezones.conf
+    * pl1rns702.admin.edmunds.com /nfs/common/named/chroot-preproduction/etc/corezones.conf
+    * pl1rns703.admin.edmunds.com /nfs/common/named/chroot-production/etc/corezones.conf
+    * pl1rns703.admin.edmunds.com /nfs/common/named/chroot-preproduction/etc/corezones.conf
+
+As you add the new IP range you must kill -HUP <named PID> for each of the production and preproduction instaces on the primary DNS server (pl1rns702) and the slave DNS server (pl1rns703) in order to make the new IP range active. 
+

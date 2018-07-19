@@ -1,0 +1,20 @@
+
+cat >> /sbin/scsi_disktimeout.sh<<EOF
+	
+#!/bin/bash 
+for i in \`ls /sys/block | grep sd\` 
+do 
+   echo "190" > /sys/block/$i/device/timeout 
+done 
+EOF
+chmod +x /sbin/scsi_disktimeout.sh 
+	
+cat >> /etc/udev/rules.d/52-netapp.rules<<EOF
+BUS="scsi", PROGRAM="/sbin/scsi_disktimeout.sh" 
+EOF
+/sbin/udevstart  
+
+
+for i in `ls /sys/block | grep sd`; do echo $i > /root/vmware-test; echo "37" > /sys/block/sda/device/timeout; done
+
+

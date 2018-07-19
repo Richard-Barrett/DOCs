@@ -1,0 +1,1 @@
+#! /bin/ksh# Lotto Plus Random Number GeneratorIDX=0while [ $IDX -lt 5 ]do ((IDX=$IDX + 1)) NUM=$RANDOM ((SOL=$NUM % 47 + 1)) echo "Random number $IDX = $SOL" doneNUM=$RANDOM((SOL=$NUM % 27 +1))echo "Mega number = $SOL" 

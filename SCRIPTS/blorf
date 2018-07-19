@@ -1,0 +1,2 @@
+find / \( -mtime +2 -a -mtime -7 \)|perl -ne 'chomp;($i,$m,$c)=(stat)[1,9,10];printf"M:%s\t$i\t$_\n",localtime($m)."  C:".localtime($c)'
+looks like Wednesday night pickup may be going away.   Some of the guys asked me for you email address, an I wanted to check if was Ok for me to give it to them.

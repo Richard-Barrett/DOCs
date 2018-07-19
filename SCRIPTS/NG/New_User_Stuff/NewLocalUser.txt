@@ -1,0 +1,112 @@
+#! /bin/bash
+#*****************************************************************
+# Name: NewLocalUser
+#
+# Purpose: To add new local users to the s018 cluster.
+#
+#
+# Calls To: None
+#
+#
+# Usage: NewLocalUser
+#
+#
+# Author	  Date		  Version	  Comments
+# ---------------+----------------+---------------+-------------
+# Ron M. & Siggy  11/16/07         1.0
+#
+#*****************************************************************
+clear
+#
+# Prompt for account to create
+#
+echo -n "Enter account to create: "
+read ACCOUNT
+#
+FULLNAME=`echo $ACCOUNT | tr '[A-Z]' '[a-z]'`
+FNAME=`echo ${FULLNAME:0:1}`
+LNAME=`echo $FULLNAME | cut -d" " -f2`
+LOGINNAME=`echo $FNAME$LNAME`
+echo $LOGINNAME
+#
+#   Set group ID to 1018 & Site to s018
+#
+MYGIDNUM=1018
+MYSITENAME=s018
+#
+# Search for highest GID in passwd file and create one higher
+# NOTE: as of 1/10/08 all local user accounts will have a GID of 50,000 or greater
+#
+cat /etc/passwd | awk -F: '{print $3}' | sort -nr | sed s/65534// | sed /^$/d > bignum
+#
+Lastuid=`awk '{if (NR == 1) print $1}' bignum`
+let MYUIDNUM=Lastuid+1
+rm -f bignum
+echo ""
+echo "*********************************"
+echo "Login Name is: $LOGINNAME"
+echo "User's ID is: $MYUIDNUM"
+echo "User's Group ID is: $MYGIDNUM"
+echo "User's Site is: $MYSITENAME"
+echo "*********************************"
+echo ""
+echo -n "Is the above information correct? (Y or N): "
+read CORRECT
+if [ $CORRECT = "N" ] || [ $CORRECT = "n" ]; then
+  echo "Exiting program..."
+  exit 0
+fi
+#***************************************************************************
+#                        Tasks to be performed on NetSun                   *
+#***************************************************************************
+#
+#**** Edit passwd, shadow, & auto_Group and push maps
+#
+echo "Going to NETSUN.  This may take some time.  Please be patient..."
+sleep 5
+#
+ssh netsun '(chmod 744 /etc/passwd;echo "$LOGINNAME:x:$MYUIDNUM:$MYGIDNUM:$FULLNAME:/home/$LOGINNAME:/bin/bash"  >> /etc/passwd;sort /etc/passwd > /etc/passwd.TMP;mv /etc/passwd.TMP /etc/passwd;chmod 444 /etc/passwd;chmod 744 /etc/shadow;echo "$LOGINNAME:*:13531::::::" >> /etc/shadow;sort /etc/shadow > /etc/shadow.TMP;mv /etc/shadow.TMP /etc/shadow;chmod 444 /etc/shadow;cd /var/yp;make)'
+#
+# Back on Aragorn-
+#
+# Check gandalf12 for space for new home account
+  echo ""
+  echo "Disk usage for gandalf12..."
+  ssh gandalf12 df -h
+#
+# Check gandalf25 for space for new home account
+  echo ""
+  echo "Disk usage for gandalf25..."
+  ssh gandalf25 df -h
+#
+echo -n "Which gandalf do you want the home directory created  (12 or 25)? "
+read HOMEDIR
+echo ""
+echo ""
+echo "Creating home account on gandalf $HOMEDIR"
+#
+#********Gandalf12************
+if [ $HOMEDIR = "12" ]; then
+   DEVICE=gandalf12:/home1
+   ssh gandalf12 mkdir /base/home1/s018/$ACCOUNT
+fi
+#********Gandalf25************
+if [ $HOMEDIR = "25" ]; then
+   DEVICE=gandalf25:/ms25_1/u
+   ssh gandalf25 mkdir /base/ms25_1/u/s018/$ACCOUNT
+fi
+ssh netsun "(echo -e \"$ACCOUNT \t\t $DEVICE/$ACCOUNT\" >> /etc/auto_home;cd /var/yp;make)"
+#
+# Set account privileges
+#
+#
+#********Gandalf12************
+if [ $HOMEDIR = "12" ]; then
+   DEVICE=gandalf12:/home1
+   ssh gandalf12 chown ${ACCOUNT}.s018 /base/home1/s018/$ACCOUNT
+fi
+#********Gandalf25************
+if [ $HOMEDIR = "25" ]; then
+   DEVICE=gandalf25:/ms25_1/u
+   ssh gandalf25 chown ${ACCOUNT}.s018 /base/ms25_1/u/s018/$ACCOUNT
+fi

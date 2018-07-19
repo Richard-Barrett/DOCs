@@ -1,0 +1,616 @@
+18Oct16  --siggy  maya/lmgrd/flexnet
+
+on dipper
+
+LOG:
+/scratch2/mayalmgrd.log
+
+cat /etc/inint.d/MayaLicenseInitScript
+
+# Flexlm server to license Maya software
+#
+# chkconfig: 2345 99 01
+# description: This process is run from /opt/flexnetserver/
+# processname: lmgrd
+# process is run as user lmadmin
+
+# source function library.
+. /etc/rc.d/init.d/functions
+
+FLEXNETHOME=/opt/flexnetserver
+LOGFILE=/scratch2/mayalmgrd.log
+LICENSE_FILE=$FLEXNETHOME/license.lic
+SERVER=$FLEXNETHOME/lmgrd
+
+{SNIP}
+
+license text file:
+/opt/flexnetserver/dipper.disneytoonstudios.comA0D3C104563C.lic
+
+dsiegfriedt@dipper:/opt $ ll flexnetserver/
+total 7.7M
+drwxr-xr-x.  3 root     root    4.0K Sep  9 16:28 .
+drwxr-xr-x. 10 root     root    4.0K Sep  2 12:48 ..
+-r--r--r--.  1 root     root    3.3M Sep  9 16:22 LicenseAdministration.pdf
+-r-xr-xr-x.  1 root     root    1.6M Sep  9 16:22 adskflex
+-rw-r--r--.  1 csteinke prodctn  14K Sep  7 17:01 dipper.disneytoonstudios.comA0D3C104563C.lic
+drwxr-xr-x.  2 root     root    4.0K Sep  9 16:28 flexnetserver_11.12
+lrwxrwxrwx.  1 root     root      44 Sep  7 17:02 license.lic -> dipper.disneytoonstudios.comA0D3C104563C.lic
+-rw-r--r--.  1 root     root     24K Sep  7 17:02 license.lic-20160907
+-r-xr-xr-x.  1 root     root    1.5M Sep  9 16:22 lmgrd
+-r-xr-xr-x.  1 root     root    1.3M Sep  9 16:22 lmutil
+
+dsiegfriedt@dipper:/opt $ ps -ef | grep flex
+root      9438  9432  0 Sep09 ?        00:05:19 adskflex -T dipper.disneytoonstudios.com 11.13 3 -c :license.lic: -lmgrd_port 6978 -srv Zm5cHvCLrjrkG35VOrLMSsd4MkJEXehTZo6K9htT58AtD5avvUukMH6tAwmRusX -daemon_port 820 --lmgrd_start 57d345f1 -vdrestart 0
+ 
+STATUS:
+/opt/flexnetserver/lmutil lmstat -a -c /opt/flexnetserver/license.lic
+
+dsiegfriedt@dipper:/opt/flexnetserver $ cat /var/flexlm/maya.lic 
+SERVER dipper.disneytoonstudios.com 0 
+USE_SERVER 
+
+ERRORS:
+~dsiegfriedt/JOBS/DISNEYTS/MAYA/MAYA2017/AdlmErrorCodes
+
+
+20Oct16 email from Rik Bomberger
+The times I got the error below, it meant that either the license needed a more current version of the server software, or, that the updated MayaConfig.pit or ProductInformation.pit file, was not copied up to our apps tree.
+
+Autodesk Maya 2017Licensing ErrorA licensing error occurred that Autodesk systems were not able to handle for you. Please contact Autodesk Customer Support for help in resolving this error.GetFeatureAuthorizationStatus 1 (Failure)
+
+Not sure how DTS is dealing with this, but there are two files which are updated whenever you install or uninstall Maya.  If the updated files are not available to the app when it is launched, you will get license errors.
+
+When Maya is installed locally, the two files are in the paths below:
+
+/var/opt/Autodesk/Adlm/.config/ProductInformation.pit
+
+AND for each version of Maya
+
+/var/opt/Autodesk/Adlm/Maya201x/MayaConfig.pit
+
+Files in place on dipper..... NOT in place on dts3329
+dsiegfriedt@dts3329:/disney/apps/autodesk $ ll /var/opt/
+total 4.0K
+drwxr-xr-x.  3 root root   36 Oct 17 09:34 .
+drwxr-xr-x. 22 root root 4.0K Oct 17 09:45 ..
+lrwxrwxrwx.  1 root root   38 Oct 17 09:34 Autodesk -> /disney/apps/autodesk/var/opt/Autodesk
+dr-xr-xr-x.  4 root root   38 Oct 19 10:35 hpremote
+
+dsiegfriedt@dts3329:/disney/apps/autodesk $ ll /var/opt/Autodesk/Adlm/
+total 852K
+drwxr-xr-x. 10 root root  185 Jun  3  2015 .
+drwxr-xr-x.  3 root root   22 Jun  3  2015 ..
+drwxrwxrwx.  2 root root  120 Apr 29 15:51 .config
+drwxr-xr-x.  2 root root 2.7K Jun  3  2015 ASR
+drwxr-xr-x.  2 root root   61 Jun  3  2015 Maya2014
+drwxr-xr-x.  2 root root   61 Jun  3  2015 Maya2015
+drwxr-xr-x.  2 root root   61 Jun  3  2015 Maya2016
+drwxr-xr-x. 16 root root  358 Jun  3  2015 R7
+drwxr-xr-x. 17 root root  381 Jun  3  2015 R9
+drwxr-xr-x. 17 root root  381 Jun  3  2015 R11
+
+To which I posed the question.......
+Poking around could I just copy the files available on dipper into the corresponding directories of   /disney/apps/autodesk/var/opt/Autodesk?
+
+There are only a few instances in ASR (on dipper) that I could copy into ASR where Maya2016 info lives... the rest of the directories are unique. 
+
+on dipper
+ 1170  cp -r Maya2017/ /disney/apps/autodesk/var/opt/Autodesk/Adlm 
+ 1171  ll
+ 1172  cp -r R12/ /disney/apps/autodesk/var/opt/Autodesk/Adlm 
+ 1173  ll /disney/apps/autodesk/var/opt/Autodesk/Adlm
+ 1174  ll ASR/
+ 1175  cp ASR/* /disney/apps/autodesk/var/opt/Autodesk/Adlm/ASR/
+ 1176  ll /disney/apps/autodesk/var/opt/Autodesk/Adlm/ASR/
+
+on dts3329
+dsiegfriedt@dts3329:/disney/apps/autodesk/var/opt/Autodesk/Adlm $ gig ENGR -s
+
+Setting Up Environment
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+     PRODUCTION ➜ 'ENGR'
+       GIG_MODE ➜ 'stage'
+
+Configuring ENGR
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+    /disney/shows/default/dshell/gig_ENGR.py
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+                                                                    ☠  Welcome to stage for ENGR ☠                                                                      
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+id: cannot find name for group ID 1825200333
+dsiegfriedt@dts3329:/disney/apps/autodesk/var/opt/Autodesk/Adlm $ run_maya -g
+Launching Maya Version 2017
+Appending collection and product paths...
+Loading extension lists
+Parsing /disney/sw/collections/el72/stage/unified/00000040/maya/MayaExtList.previstools
+Parsing /disney/sw/collections/el72/stage/unified/00000040/maya/MayaExtList.runScripts
+Maya Launch Command: /apps/autodesk/Maya_2017/maya/bin/maya -script /disney/share/tmp/mayaStartup_dsiegfriedt_6f13e76c-9722-11e6-9c48-6c3be50b4fc6.mel
+dsiegfriedt@dts3329:/disney/apps/autodesk/var/opt/Autodesk/Adlm $ maya: Autodesk Maya 2017Licensing ErrorA licensing error occurred that Autodesk systems were not able to handle for you. Please contact Autodesk Customer Support for help in resolving this error.GetFeatureAuthorizationStatus 1 (Failure)
+
+dsiegfriedt@dts3329:/disney/apps/autodesk/var/opt/Autodesk/Adlm $ exit
+exit
+dsiegfriedt@dts3329:/disney/apps/autodesk/var/opt/Autodesk/Adlm $ 
+
+maya2017 needs to be re-installed :^(
+
+From Rik:
+In the short term, to be sure, you could reinstall all the versions of Maya you are using, and then copy up all the files.
+
+
+((((()))))
+18Oct16  --siggy website to make human readable license files
+
+https://knowledge.autodesk.com/support/autocad/troubleshooting/caas/sfdcarticles/sfdcarticles/How-to-understand-and-manage-your-Autodesk-licenses-video-s.html?utm_source=MASE&utm_medium=ILAR&utm_campaign=BAA%2520Referrals%2520from%2520ILAR
+
+www.licenseparcer.com
+
+20Oct16:
+Email from Rik Bomberger
+Not sure how DTS is dealing with this, but there are two files which are updated whenever you install or uninstall Maya.  If the updated files are not available to the app when it is launched, you will get license errors.
+
+When Maya is installed locally, the two files are in the paths below:
+
+/var/opt/Autodesk/Adlm/.config/ProductInformation.pit
+
+/var/opt/Autodesk/Adlm/Maya201x/MayaConfig.pit
+
+AND for each version of Maya
+
+((((()))))
+24Oct16  --siggy
+
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017/maya $ cat /disney/apps/autodesk/Maya_2017/maya/var/opt/Autodesk/Adlm/Maya2017/install.env 
+ADLMLICENSETYPE=network
+ADLMPRODUCTKEY=657I1
+ADLMPRODUCTVERSION=2017.0.0.F
+ADLMSERIALNUMBER=398-24997120
+
+reinstall using a prefix.....
+sudo rpm -ihv --prefix=/disney/apps/autodesk/Maya_2017/maya_2017 ~dsiegfriedt/JOBS/DISNEYTS/MAYA/MAYA2017/Maya2017_64-2017.0-1720.x86_64.rpm
+
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:Maya2017_64-2017.0-1720          ################################# [100%]
+export LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R12/lib64:
+./adlmreg -ih S 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+./adlmreg -ih N 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+libadlmutil.so: cannot open shared object file: No such file or directorylibadlmutil.so: cannot open shared object file: No such file or directorywarning: %post(Maya2017_64-2017.0-1720.x86_64) scriptlet failed, exit status 1
+
+sudo yum erase Maya2017_64.x86_64
+
+(needed more cleanup)
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017 $ sudo rpm -ihv --prefix=/disney/apps/autodesk/Maya_2017/maya_2017 ~dsiegfriedt/JOBS/DISNEYTS/MAYA/MAYA2017/Maya2017_64-2017.0-1720.x86_64.rpm
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:Maya2017_64-2017.0-1720          ################################# [100%]
+export LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R12/lib64:
+./adlmreg -ih S 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+./adlmreg -ih N 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+libadlmutil.so: cannot open shared object file: No such file or directorylibadlmutil.so: cannot open shared object file: No such file or directorywarning: %post(Maya2017_64-2017.0-1720.x86_64) scriptlet failed, exit status 1
+
+-------------------
+24Oct16  --siggy
+
+cd /opt
+mv Autodesk Autodesk-ORIG
+ln -s /disney/apps/autodesk/Maya_2017/maya/autodesk/maya/opt/Autodesk /opt
+
+[root@dipper Autodesk]# pwd
+/var/opt/Autodesk
+[root@dipper Autodesk]# ln -s /disney/apps/autodesk/Maya_2017/maya/autodesk/maya/var/opt/Adlm /var/opt/Autodesk/
+[root@dipper Autodesk]# ll /var/opt/Autodesk/
+total 8
+lrwxrwxrwx. 1 root root   63 Oct 24 14:36 Adlm -> /disney/apps/autodesk/Maya_2017/maya/autodesk/maya/var/opt/Adlm
+drwxr-xr-x. 6 root root 4096 Sep  2 12:48 Adlm-ORIG
+[root@dipper Autodesk]# 
+
+maya still fails to open
+
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017/maya/autodesk/maya/var/opt/Autodesk/Adlm $ which maya
+/usr/local/bin/maya
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017/maya/autodesk/maya/var/opt/Autodesk/Adlm $ maya
+AdlmInt Error: The AUTODESK_ADLM_THINCLIENT_ENV XML file could not be loaded
+maya: Autodesk Maya 2017Licensing ErrorA licensing error occurred that Autodesk systems were not able to handle for you. Please contact Autodesk Customer Support for help in resolving this error.GetFeatureAuthorizationStatus 6 (Initialization Error)
+
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017/maya/autodesk/maya $ bin/adlmreg -ih S 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+libadlmutil.so: cannot open shared object file: No such file or directory
+
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017/maya/autodesk/maya $ sudo ln -s /disney/apps/autodesk/Maya_2017/maya/autodesk/maya/opt/Autodesk/Adlm/R12 /opt/Autodesk/Adlm/
+
+[sudo] password for dsiegfriedt: 
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017/maya/autodesk/maya $ ll /opt/Autodesk/Adlm/
+total 46K
+drwxr-xr-x. 6 root root 107 Oct 24 15:01 .
+drwxr-xr-x. 4 root root  47 Jun  3  2015 ..
+drwxr-xr-x. 3 root root  62 Jun  3  2015 FLEXnet
+drwxr-xr-x. 5 root root  66 Jun  3  2015 R7
+drwxr-xr-x. 5 root root  66 Jun  3  2015 R9
+drwxr-xr-x. 5 root root  66 Jun  3  2015 R11
+lrwxrwxrwx. 1 root root  72 Oct 24 15:01 R12 -> /disney/apps/autodesk/Maya_2017/maya/autodesk/maya/opt/Autodesk/Adlm/R12
+
+dsiegfriedt@dts3329:/disney/apps/autodesk/Maya_2017/maya/autodesk/maya $ bin/maya
+/disney/apps/autodesk/Maya_2017/maya_2017/autodesk/maya2017/bin/maya.bin: /opt/Autodesk/Adlm/R12/lib64/libcrypto.so.10: no version information available (required by /lib64/libssh2.so.1)
+/disney/apps/autodesk/Maya_2017/maya_2017/autodesk/maya2017/bin/maya.bin: relocation error: /lib64/libssh2.so.1: symbol EVP_rc4, version libcrypto.so.10 not defined in file libcrypto.so.10 with link time reference
+
+25Oct16  --siggy
+as myself:
+dsiegfriedt@dts3329:~ $ maya
+/disney/apps/autodesk/Maya_2017/maya_2017/autodesk/maya2017/bin/maya.bin: /opt/Autodesk/Adlm/R12/lib64/libcrypto.so.10: no version information available (required by /lib64/libssh2.so.1)
+/disney/apps/autodesk/Maya_2017/maya_2017/autodesk/maya2017/bin/maya.bin: relocation error: /lib64/libssh2.so.1: symbol EVP_rc4, version libcrypto.so.10 not defined in file libcrypto.so.10 with link time reference
+
+as root:
+dsiegfriedt@dts3329:~ $ sudo /usr/local/bin/maya
+AdlmInt Error: The AUTODESK_ADLM_THINCLIENT_ENV XML file could not be loaded
+maya: Autodesk Maya 2017Licensing ErrorA licensing error occurred that Autodesk systems were not able to handle for you. Please contact Autodesk Customer Support for help in resolving this error.GetFeatureAuthorizationStatus 6 (Initialization Error)
+
+in gig ENGR -s
+dsiegfriedt@dts3329:~ $ run_maya -g
+Launching Maya Version 2017
+Appending collection and product paths...
+Loading extension lists
+Parsing /disney/sw/collections/el72/stage/unified/00000047/maya/MayaExtList.previstools
+Parsing /disney/sw/collections/el72/stage/unified/00000047/maya/MayaExtList.runScripts
+Maya Launch Command: /apps/autodesk/Maya_2017/maya/bin/maya -script /disney/share/tmp/mayaStartup_dsiegfriedt_14359ad6-9b0d-11e6-944f-6c3be50b4fc6.mel
+dsiegfriedt@dts3329:~ $ AdlmInt Error: The AUTODESK_ADLM_THINCLIENT_ENV XML file could not be loaded
+maya: Autodesk Maya 2017Licensing ErrorA licensing error occurred that Autodesk systems were not able to handle for you. Please contact Autodesk Customer Support for help in resolving this error.GetFeatureAuthorizationStatus 6 (Initialization Error)
+
+((((()))))
+27Oct16  --siggy
+yum erase Maya2017
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017 $ sudo yum localinstall ./Maya2017_64-2017.0-1720.x86_64.rpm 
+Loaded plugins: langpacks, package_upload, post-transaction-actions, product-id, search-disabled-repos, subscription-manager
+Repository 'adobe-linux-x86_64' is missing name in configuration, using id
+Examining ./Maya2017_64-2017.0-1720.x86_64.rpm: Maya2017_64-2017.0-1720.x86_64
+Marking ./Maya2017_64-2017.0-1720.x86_64.rpm to be installed
+Resolving Dependencies
+--> Running transaction check
+---> Package Maya2017_64.x86_64 0:2017.0-1720 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+========================================================================================================================================================================
+ Package                             Arch                           Version                               Repository                                               Size
+========================================================================================================================================================================
+Installing:
+ Maya2017_64                         x86_64                         2017.0-1720                           /Maya2017_64-2017.0-1720.x86_64                         2.5 G
+
+Transaction Summary
+========================================================================================================================================================================
+Install  1 Package
+
+Total size: 2.5 G
+Installed size: 2.5 G
+Is this ok [y/d/N]: y
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : Maya2017_64-2017.0-1720.x86_64                                                                                                                       1/1 
+export LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R12/lib64:
+./adlmreg -ih S 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+./adlmreg -ih N 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+Registration failed with code: 13
+Registration failed with code: 13
+Uploading Package Profile
+  Verifying  : Maya2017_64-2017.0-1720.x86_64                                                                                                                       1/1 
+
+Installed:
+  Maya2017_64.x86_64 0:2017.0-1720                                                                                                                                      
+
+Complete!
+
+oooooooooooooooooooooooooooooooooo   "Registration failed with code: 13 while trying to do something with MayaConfig.pit"
+looks like the product key is wrong for 2017 (is the same as 2016)
+
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ cat ./bin/License.env
+#AUTODESK_ADLM_THINCLIENT_ENV=$MAYA_LOCATION/Licensing/AdlmThinClientCustomEnv.xml
+#SYNHUB_CONFIG_PATH=<SYNCFG_DIR>
+
+#gen from 2017 install
+#MAYA_LICENSE=657I1
+
+#cp from 2016 install
+MAYA_LICENSE=657H1
+MAYA_LICENSE_METHOD=network
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ bin/adlmreg -ih N 657H1 657H1 2017.0.0.F 398-24997120 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+Registration failed with code: 13
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ bin/adlmreg -ih N 657I1 657I1 2017.0.0.F 398-24997120 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+Registration failed with code: 32
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ vim ./bin/License.env
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ bin/adlmreg -ih N 657H1 657H1 2017.0.0.F 398-24997120 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+Registration failed with code: 13
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ bin/adlmreg -ih N 657I1 657I1 2017.0.0.F 398-24997120 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+Registration failed with code: 32
+
+(found AFTER the fact)
+code: 13 = ADLM has already been initialized
+code: 32 = The serial number supplied was not found
+()
+
+/opt and /var/opt were still linked to /disney.... 
+deleted links
+yum erase Maya2017
+yum install Maya2017
+
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ sudo yum localinstall Maya2017_64-2017.0-1720.x86_64.rpm
+Loaded plugins: langpacks, package_upload, post-transaction-actions, product-id, search-disabled-repos, subscription-manager
+Repository 'adobe-linux-x86_64' is missing name in configuration, using id
+Examining Maya2017_64-2017.0-1720.x86_64.rpm: Maya2017_64-2017.0-1720.x86_64
+Marking Maya2017_64-2017.0-1720.x86_64.rpm to be installed
+Resolving Dependencies
+--> Running transaction check
+---> Package Maya2017_64.x86_64 0:2017.0-1720 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+========================================================================================================================================================================
+ Package                             Arch                           Version                               Repository                                               Size
+========================================================================================================================================================================
+Installing:
+ Maya2017_64                         x86_64                         2017.0-1720                           /Maya2017_64-2017.0-1720.x86_64                         2.5 G
+
+Transaction Summary
+========================================================================================================================================================================
+Install  1 Package
+
+Total size: 2.5 G
+Installed size: 2.5 G
+Is this ok [y/d/N]: y
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : Maya2017_64-2017.0-1720.x86_64                                                                                                                       1/1 
+export LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R12/lib64:
+./adlmreg -ih S 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+./adlmreg -ih N 01GH1 657H1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+libadlmutil.so: cannot open shared object file: No such file or directorylibadlmutil.so: cannot open shared object file: No such file or directorywarning: %post(Maya2017_64-2017.0-1720.x86_64) scriptlet failed, exit status 1
+Non-fatal POSTIN scriptlet failure in rpm package Maya2017_64-2017.0-1720.x86_64
+Uploading Package Profile
+  Verifying  : Maya2017_64-2017.0-1720.x86_64                                                                                                                       1/1 
+
+Installed:
+  Maya2017_64.x86_64 0:2017.0-1720                                                                                                                                      
+
+Complete!
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ 
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ which maya
+/usr/local/bin/maya
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ maya
+AdlmInt Error: The AUTODESK_ADLM_THINCLIENT_ENV XML file could not be loaded
+maya: Autodesk Maya 2017Licensing ErrorA licensing error occurred that Autodesk systems were not able to handle for you. Please contact Autodesk Customer Support for help in resolving this error.GetFeatureAuthorizationStatus 6 (Initialization Error)
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ cat /usr/autodesk/maya/bin/License.env
+AUTODESK_ADLM_THINCLIENT_ENV=$MAYA_LOCATION/Licensing/AdlmThinClientCustomEnv.xml
+SYNHUB_CONFIG_PATH=<SYNCFG_DIR>
+MAYA_LICENSE=unlimited
+MAYA_LICENSE_METHOD=network
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ vim /usr/autodesk/maya/bin/License.env
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ cat /usr/autodesk/maya/bin/License.env
+#AUTODESK_ADLM_THINCLIENT_ENV=$MAYA_LOCATION/Licensing/AdlmThinClientCustomEnv.xml
+#SYNHUB_CONFIG_PATH=<SYNCFG_DIR>
+MAYA_LICENSE=unlimited
+MAYA_LICENSE_METHOD=network
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ 
+
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ ll /opt
+total 4.0K
+drwxr-xr-x.  6 root root   58 Oct 27 14:15 .
+dr-xr-xr-x. 20 root root 4.0K Oct 17 09:47 ..
+drwxr-xr-x.  3 root root   20 Oct 27 14:15 Autodesk
+drwxr-xr-x.  3 root root   19 Oct 17 09:25 google
+drwxr-xr-x.  5 root root   50 Oct 19 10:35 hpremote
+drwxr-xr-x.  2 root root    6 Mar  9  2015 rh
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ ll /opt/Autodesk/
+total 0
+drwxr-xr-x. 3 root root 20 Oct 27 14:15 .
+drwxr-xr-x. 6 root root 58 Oct 27 14:15 ..
+drwxr-xr-x. 2 root root 38 Oct 27 14:16 Synergy
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ ll /opt/Autodesk/Synergy/
+total 4.0K
+drwxr-xr-x. 2 root root   38 Oct 27 14:16 .
+drwxr-xr-x. 3 root root   20 Oct 27 14:15 ..
+-rw-r--r--. 1 root root 2.0K Oct 27 14:16 Maya2017.2017.1.64.syncfg
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ ll /var/opt/
+Autodesk/ hpremote/ 
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ ll /var/opt/Autodesk/
+total 0
+drwxr-xr-x. 3 root root 17 Oct 27 14:15 .
+drwxr-xr-x. 4 root root 36 Oct 27 14:15 ..
+drwxr-xr-x. 4 root root 31 Oct 27 14:16 Adlm
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ ll /var/opt/Autodesk/Adlm/
+total 4.0K
+drwxr-xr-x. 4 root root   31 Oct 27 14:16 .
+drwxr-xr-x. 3 root root   17 Oct 27 14:15 ..
+drwxr-xr-x. 2 root root 4.0K Oct 27 14:16 ASR
+drwxr-xr-x. 2 root root   27 Oct 27 14:16 Maya2017
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ ll /var/opt/Autodesk/Adlm/Maya2017/
+total 8.0K
+drwxr-xr-x. 2 root root   27 Oct 27 14:16 .
+drwxr-xr-x. 4 root root   31 Oct 27 14:16 ..
+-rwxr-xr-x. 1 root root 4.5K Jun 16 11:45 MayaConfig.pit
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017/TEMP $ env | grep -i library
+LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R12/lib64
+
+***** no ".pit" file found in the /opt/*****
+
+@@@
+From: 
+https://knowledge.autodesk.com/search-result/caas/CloudHelp/cloudhelp/2016/ENU/Installation-Maya/files/GUID-E7E054E1-0E32-4B3C-88F9-BF820EB45BE5-htm.html
+
+Network licensing
+/usr/autodesk/maya2016-x64/bin/adlmreg -i N <productKey1> <productKey2> 2016.0.0.F <serialNum>
+/var/opt/Autodesk/Adlm/Maya2016/MayaConfig.pit
+For example:
+
+/usr/autodesk/maya2016-x64/bin/adlmreg -i S 657F1 657F1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2016/MayaConfig.pit
+This step updates the product information .pit file, which you can copy to other machines that have the same configuration if you are installing many instances of Maya.
+
+@@@
+
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ env | grep -i library
+LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R12/lib64
+dsiegfriedt@dts3329:/usr/autodesk/maya2017 $ bin/adlmreg -ih N 01GH1 657I1 2016.0.0.F 000-00000000 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+libadlmutil.so: cannot open shared object file: No such file or directory
+
+-_-_-
+From:
+http://www.studiosysadmins.com/board/threadview/4449/
+
+(modified for 2017 and DTS S/N)
+/usr/autodesk/maya2017/bin/licensechooser /usr/autodesk/maya2017/ network unlimited Maya
+export LD_LIBRARY_PATH=/opt/Autodesk/Adlm/R12/lib64/
+/usr/autodesk/maya2017/bin/adlmreg -i N 657I1 657I1 2017.0.0.F
+398-24997120 /var/opt/Autodesk/Adlm/Maya2017/MayaConfig.pit
+
+The problem with this is that /opt/Autodesk/Adlm/R12/lib64 don't exist on my local install
+                                            ^^^^^^^^^^^^^^
+
+        If you already have a successful installation on a different
+        machine with all your registered serial numbers. You can
+        copy and paste the ProductInformation.pit file from a
+        working computer, to the one that is giving you issues.
+
+
+-_-_-
+
+
+((((()))))
+28Oct  --siggy
+
+Worked (seemingly) for MARI... try it on maya
+
+CLEAN UP:
+ 4069  28Oct16-16:27:00  sudo yum erase Maya2017_64-2017.0-1720.x86_64
+
+ 4072  28Oct16-16:28:38  sudo rm -rf /opt/Autodesk/
+ 
+ 4077  28Oct16-16:29:07  sudo rm -rf  /var/opt/Autodesk/
+
+ 4086  28Oct16-16:31:49  sudo rm -rf /usr/autodesk/
+
+INSTALL:
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017 $ sudo yum install ./Maya2017_64-2017.0-1720.x86_64.rpm
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017 $ ll /opt/Autodesk/
+total 0
+drwxr-xr-x. 3 root root 20 Oct 28 16:43 .
+drwxr-xr-x. 6 root root 58 Oct 28 16:43 ..
+drwxr-xr-x. 2 root root 38 Oct 28 16:44 Synergy
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017 $ ll /var/opt/Autodesk/
+total 0
+drwxr-xr-x. 3 root root 17 Oct 28 16:43 .
+drwxr-xr-x. 4 root root 36 Oct 28 16:43 ..
+drwxr-xr-x. 4 root root 31 Oct 28 16:44 Adlm
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017 $ ll /usr/autodesk/
+total 8.0K
+drwxr-xr-x.  3 root root   32 Oct 28 16:44 .
+drwxr-xr-x. 16 root root 4.0K Oct 28 16:43 ..
+lrwxrwxrwx.  1 root root    8 Oct 28 16:44 maya -> maya2017
+drwxr-xr-x. 27 root root 4.0K Oct 28 16:44 maya2017
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/MAYA/MAYA2017 $ rpm -ql Maya2017_64-2017.0-1720.x86_64 > may2017-file-listing
+
+/opt/Autodesk
+/usr/autodesk/maya2017/
+/var/opt/Autodesk/Adlm
+
+
+((((()))))
+31Oct16  --siggy
+Grace suggested stopping here and trying it on the RHEL6 machine
+
+and it works..... 
+using FQPN and through gig (ENGR)
+
+on a 7.2 machine I still get errors.
+
+((((()))))
+1Nov16  --siggy
+
+maya2016 not opening .....license errors
+
+1) may2017 installed on dipper----- erased
+2) /opt/Autodesk was from maya2017 install
+   		 removed and replace with link to /disney/apps/autodesk/opt/Autodesk
+3) /var/opt/Autodesk was from maya2017 install
+   		 removed and replace with link to /disney/apps/autodesk/var/opt/Autodesk 
+
+FYI {{{{{ /var/opt/Autodesk/Adlm/Maya2016/install.env }}}}}  		 
+
+
+[root@dipper opt]# cat /var/opt/Autodesk/Adlm/Maya2016/install.env 
+ADLMLICENSETYPE=network
+ADLMPRODUCTKEY=657H1
+ADLMPRODUCTVERSION=2016.0.0.F
+ADLMSERIALNUMBER=396-73990785
+	serial number is not in licens list......
+changed to:
+ADLMSERIALNUMBER=396-29751533.... NOPE
+
+((((()))))
+1Nov16 --siggy  maya troubleshooting
+
+/apps/maya starts ...then just goes away.  Try:
+
+/apps/maya -prompt
+
+[root@dipper opt]# less /scratch2/mayalmgrd.log 
+
+
+
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+((((()))))
+
+
+
+

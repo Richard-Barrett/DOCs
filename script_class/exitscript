@@ -1,0 +1,1 @@
+#! /bin/kshecho This script always returns an errorexit 1

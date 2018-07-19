@@ -1,0 +1,1 @@
+use File::Copy;copy("src-file", "dst-file");copy("Copy.pm", \*STDOUT);use POSIX;use File::Copy 'cp';$fh = FileHandle->new("/dev/null", "r");cp($fh, "dst-file");'*****use File::Copy "cp"

@@ -1,0 +1,1530 @@
+19Apr17  migrate KVM to VMWare
+
+
+URL
+http://www.wh33ly.nl/wp/?s=Convert+Linux+KVM
+
+
+in RHEV power off the VM
+export
+
+click:
+Data center
+  storage
+   Virt-v2v (exported VM)
+     @@@ in the "General" tab you will see the path to where the exported VM is located
+     @@@ in this test is is  = bulldog.disneytoonstudios.com:/scratch2/exports/virt-v2v/
+     ^^^^^^
+     dsiegfriedt@bulldog:~ $ ll /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/99a656dd-8e6a-4b65-bca1-9a81bc9c55d2/
+     total 24G
+     drwxr-xr-x. 2 vdsm kvm 4.0K Apr 19 11:08 .
+     drwxrwxr-x. 7 vdsm kvm 4.0K Apr 19 11:08 ..
+     -rw-rw----. 1 vdsm kvm  25G Apr 19 11:15 b4964808-ecf2-4234-b63c-9bb5525dc297
+     -rw-r--r--. 1 vdsm kvm  319 Apr 19 11:08 b4964808-ecf2-4234-b63c-9bb5525dc297.meta
+     ^^^^^
+     @@@ 2Oct17 see ~/JOBS/DISNEYTS/RHEV/VMIDs for list of uuids and disk sizes
+
+https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Virtualization/3.0/html/Administration_Guide/Exporting-virtual-machine.html
+https://access.redhat.com/discussions/881153
+
+@@@ ~/images for results of the convert
+
+28Sep17  nest-cluster location for transmuted vmdk
+
+dsiegfriedt@dts3329:~ $ sudo mount nest-cluster.disneytoonstudios.com:/ /siggy
+
+dsiegfriedt@dts3329:~ $ find /siggy/nest -name "*vmdk"
+@@@ looking for testsiggy42
+
+/siggy/nest/vsphere_dev/testsigg42/testsigg42-flat.vmdk
+/siggy/nest/vsphere_dev/testsigg42/testsigg42.vmdk
+
+@@@ looks like I am further ahead than I thought... opening up vcsa there is a testsiggy42 there.   
+@@@ looks like I just injected the vmdk into the filesystem. But that is NOT the way it is done.  
+@@@ 
+
+2Oct17
+Create a new VM in VMware, but instead of creating a new virtual disk, point VMware at the uploaded .vmdk
+
+
+=>>>>>>>6Oct17
+@@ starting over with a new VM migrationtest42
+
+login to rhevm
+get VM Id: 181b1179-6a05-4d77-b74b-0293ac185ac3 (on leadbottom)
+poweroff migrationtest42
+click:
+Data center
+  storage
+   Virt-v2v     
+     @@@ in the "General" tab you will see the path to where the exported VM is located
+     @@@ in this test it is = bulldog.disneytoonstudios.com:/scratch2/exports/virt-v2v/scratch2/exports/virt-v2v
+
+[root@bulldog ~]# ll /scratch2/exports/virt-v2v/
+total 4
+drwxrwxr-x. 5 vdsm kvm 4096 Jun  8  2015 c3858ef8-13d5-480d-a5a4-bc60489ef54a
+-rwxrwxr--. 1 vdsm kvm    0 Oct  6 15:30 __DIRECT_IO_TEST__
+
+ll -R /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/:
+total 12
+drwxrwxr-x. 2 vdsm kvm 4096 Oct  2 11:59 dom_md
+drwxrwxr-x. 7 vdsm kvm 4096 Sep 24 16:16 images
+drwxrwxr-x. 4 vdsm kvm 4096 May  6  2015 master
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/dom_md:
+total 8
+-rwxrwxr-x. 1 vdsm kvm        0 May  6  2015 ids
+-rwxrwxr-x. 1 vdsm kvm 16777216 May  6  2015 inbox
+-rwxrwxr-x. 1 vdsm kvm      512 Oct  2 11:59 leases
+-rw-r--r--. 1 vdsm kvm      364 Oct  2 11:59 metadata
+-rwxrwxr-x. 1 vdsm kvm 16777216 May  6  2015 outbox
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images:
+total 20
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  4  2015 351d07cd-94a7-4c39-ad06-828e24c6ade4
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  8  2015 6c1ef688-bd32-4a80-a9c2-1af25b34a540
+drwxr-xr-x. 2 vdsm kvm 4096 Apr 19 11:08 99a656dd-8e6a-4b65-bca1-9a81bc9c55d2
+drwxr-xr-x. 2 vdsm kvm 4096 Aug 18 14:41 9eabca7f-fb9b-4646-907a-8571c2e21800
+drwxrwxr-x. 2 vdsm kvm 4096 May  6  2015 b45a24de-42c9-4e7c-a46c-1b6ab368be7e
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/351d07cd-94a7-4c39-ad06-828e24c6ade4:
+total 8388616
+-rw-rw-r--. 1 vdsm kvm 8589934592 Jun  4  2015 56a7f69e-17da-49a2-9697-43863b8473ff
+-rw-r--r--. 1 vdsm kvm        330 Jun  4  2015 56a7f69e-17da-49a2-9697-43863b8473ff.meta
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/6c1ef688-bd32-4a80-a9c2-1af25b34a540:
+total 33554440
+-rw-rw-r--. 1 vdsm kvm 34359738368 Jun  8  2015 a060c246-9933-4580-a4c9-6fe2461b0d4b
+-rw-r--r--. 1 vdsm kvm         330 Jun  8  2015 a060c246-9933-4580-a4c9-6fe2461b0d4b.meta
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/99a656dd-8e6a-4b65-bca1-9a81bc9c55d2:
+total 24710532
+-rw-rw----. 1 vdsm kvm 26843545600 Apr 19 11:15 b4964808-ecf2-4234-b63c-9bb5525dc297
+-rw-r--r--. 1 vdsm kvm         319 Apr 19 11:08 b4964808-ecf2-4234-b63c-9bb5525dc297.meta
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/9eabca7f-fb9b-4646-907a-8571c2e21800:
+total 200
+-rw-rw----. 1 vdsm kvm 198656 Aug 18 14:41 e03d136b-8a92-43d1-b65b-02baff519a8b
+-rw-r--r--. 1 vdsm kvm    260 Aug 18 14:41 e03d136b-8a92-43d1-b65b-02baff519a8b.meta
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/b45a24de-42c9-4e7c-a46c-1b6ab368be7e:
+total 32505864
+-rwxrwxr-x. 1 vdsm kvm 33285996544 May  6  2015 8b1a7f47-aadd-4b94-8c1a-902e576a18a4
+-rwxrwxr-x. 1 vdsm kvm         330 May  6  2015 8b1a7f47-aadd-4b94-8c1a-902e576a18a4.meta
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master:
+total 8
+drwxrwxr-x. 2 vdsm kvm 4096 May  6  2015 tasks
+drwxrwxr-x. 7 vdsm kvm 4096 Sep 24 16:16 vms
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/tasks:
+total 0
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms:
+total 20
+drwxrwxr-x. 2 vdsm kvm 4096 May  6  2015 1c1c847e-67d8-423d-8942-7bdbf7b76aae
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  8  2015 2967b01f-9fdd-4761-a6d7-df56326a9fdf
+drwxr-xr-x. 2 vdsm kvm 4096 Apr 19 11:15 4897fee7-f5fa-4de6-81de-8c1f89e8edc8
+drwxr-xr-x. 2 vdsm kvm 4096 Aug 18 14:41 9b65577a-6526-484f-90ec-cf0228ff1bc6
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  4  2015 e160a5a7-8d86-4461-bf85-06e33df2200d
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/1c1c847e-67d8-423d-8942-7bdbf7b76aae:
+total 8
+-rwxrwxr-x. 1 vdsm kvm 4654 May  6  2015 1c1c847e-67d8-423d-8942-7bdbf7b76aae.ovf
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/2967b01f-9fdd-4761-a6d7-df56326a9fdf:
+total 8
+-rw-r--r--. 1 vdsm kvm 4664 Jun  8  2015 2967b01f-9fdd-4761-a6d7-df56326a9fdf.ovf
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/4897fee7-f5fa-4de6-81de-8c1f89e8edc8:
+total 12
+-rw-r--r--. 1 vdsm kvm 9543 Apr 19 11:15 4897fee7-f5fa-4de6-81de-8c1f89e8edc8.ovf
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/9b65577a-6526-484f-90ec-cf0228ff1bc6:
+total 8
+-rw-r--r--. 1 vdsm kvm 7318 Aug 18 14:41 9b65577a-6526-484f-90ec-cf0228ff1bc6.ovf
+
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/e160a5a7-8d86-4461-bf85-06e33df2200d:
+total 8
+-rw-r--r--. 1 vdsm kvm 4669 Jun  4  2015 e160a5a7-8d86-4461-bf85-06e33df2200d.ovf
+[root@bulldog ~]# 
+
+dsiegfriedt@dts3329:~/images/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images $ ll
+total 46K
+drwxr-xr-x. 7 root prodctn 270 Oct  6 16:46 .
+drwxr-xr-x. 5 root prodctn  72 Oct  6 16:51 ..
+drwxr-xr-x. 2 root prodctn 113 Oct  6 16:51 6c1ef688-bd32-4a80-a9c2-1af25b34a540
+drwxr-xr-x. 2 root prodctn 113 Oct  6 16:35 9eabca7f-fb9b-4646-907a-8571c2e21800
+drwxr-xr-x. 2 root prodctn 113 Oct  6 16:46 99a656dd-8e6a-4b65-bca1-9a81bc9c55d2
+drwxr-xr-x. 2 root prodctn 113 Oct  6 16:35 351d07cd-94a7-4c39-ad06-828e24c6ade4
+drwxr-xr-x. 2 root prodctn 113 Oct  6 16:37 b45a24de-42c9-4e7c-a46c-1b6ab368be7e
+dsiegfriedt@dts3329:~/images/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images $ 
+
+
+qemu-img convert -O vmdk /disney/home/dsiegfriedt/images/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images whatever.vmdk
+
+@@@ NOPE
+
+
+18Aug17   RHEV (kvm) => (vmdk) VMWare
+
+@@@ see 28Sep17
+
+https://access.redhat.com/discussions/881153
+http://www.wh33ly.nl/wp/?p=397
+
+shut down VM
+RT click and select export
+ @@@ for export path
+DTS => Storage => (S/B a Virt-v2v) select => Path noted 
+
+Path:  bulldog.disneytoonstudios.com:/scratch2/exports/virt-v2v
+
+[root@bulldog ~]# ll /scratch2/exports/virt-v2v/
+total 4
+drwxrwxr-x. 5 vdsm kvm 4096 Jun  8  2015 c3858ef8-13d5-480d-a5a4-bc60489ef54a
+-rwxrwxr--. 1 vdsm kvm    0 Aug 18 15:02 __DIRECT_IO_TEST__
+
+@@@ no need to look in empty directory
+[root@bulldog ~]# ll /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/
+total 12
+drwxrwxr-x. 2 vdsm kvm 4096 May  6  2015 dom_md
+drwxrwxr-x. 7 vdsm kvm 4096 Aug 18 14:41 images
+drwxrwxr-x. 4 vdsm kvm 4096 May  6  2015 master
+
+@@@ assumed "images" is what needs to be converted
+[root@bulldog ~]# ll /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/
+total 20
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  4  2015 351d07cd-94a7-4c39-ad06-828e24c6ade4
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  8  2015 6c1ef688-bd32-4a80-a9c2-1af25b34a540
+drwxr-xr-x. 2 vdsm kvm 4096 Apr 19 11:08 99a656dd-8e6a-4b65-bca1-9a81bc9c55d2
+drwxr-xr-x. 2 vdsm kvm 4096 Aug 18 14:41 9eabca7f-fb9b-4646-907a-8571c2e21800
+drwxrwxr-x. 2 vdsm kvm 4096 May  6  2015 b45a24de-42c9-4e7c-a46c-1b6ab368be7e
+
+@@@ basing guess on the date
+[root@bulldog ~]# ll /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/9eabca7f-fb9b-4646-907a-8571c2e21800/
+total 200
+-rw-rw----. 1 vdsm kvm 198656 Aug 18 14:41 e03d136b-8a92-43d1-b65b-02baff519a8b
+-rw-r--r--. 1 vdsm kvm    260 Aug 18 14:41 e03d136b-8a92-43d1-b65b-02baff519a8b.meta
+
+@@@ no extension so I had to check
+[root@bulldog ~]# file /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/9eabca7f-fb9b-4646-907a-8571c2e21800/e03d136b-8a92-43d1-b65b-02baff519a8b
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/9eabca7f-fb9b-4646-907a-8571c2e21800/e03d136b-8a92-43d1-b65b-02baff519a8b: QEMU QCOW Image (v2), 107374182400 bytes
+
+[root@bulldog ~]# cp -r /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images /disney/home/dsiegfriedt/[root@bulldog ~]# chown dsiegfriedt /disney/home/dsiegfriedt/images
+
+[root@dts3329 ~]# qemu-img convert -O vmdk /disney/home/dsiegfriedt/images/9eabca7f-fb9b-4646-907a-8571c2e21800/e03d136b-8a92-43d1-b65b-02baff519a8b testsiggy42.vmdk
+
+
+[root@dts3329 ~]# ll -h
+{SNIP}
+-rw-r--r--. 1 root root     13M Aug 18 15:44 testsiggy42.vmdk
+{SNIP}
+
+14Nov17 @@@ turns out this VM did not build because windows got in the way.
+
+***************************************************************************************************************
+9Oct17  start the convertion
+
+@@@ to me it looks like the 5 files in the images dir may be partitions.   I won't know until I get whatever.vmdk installed in vsphere.
+
+@@@ I picked the top directory
+
+/disney/home/dsiegfriedt/images/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images
+
+[root@dts3329 images]# qemu-img convert -f raw -O vmdk -o compat6 /disney/home/dsiegfriedt/images/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/351d07cd-94a7-4c39-ad06-828e24c6ade4/56a7f69e-17da-49a2-9697-43863b8473ff whatever.vmdk
+
+
+[root@dts3329 images]# ll -h
+total 9.2G
+drwxr-xr-x. 2 root prodctn  113 Oct  6 16:35 351d07cd-94a7-4c39-ad06-828e24c6ade4
+drwxr-xr-x. 2 root prodctn  113 Oct  6 16:51 6c1ef688-bd32-4a80-a9c2-1af25b34a540
+drwxr-xr-x. 2 root prodctn  113 Oct  6 16:46 99a656dd-8e6a-4b65-bca1-9a81bc9c55d2
+drwxr-xr-x. 2 root prodctn  113 Oct  6 16:35 9eabca7f-fb9b-4646-907a-8571c2e21800
+drwxr-xr-x. 2 root prodctn  113 Oct  6 16:37 b45a24de-42c9-4e7c-a46c-1b6ab368be7e
+-rw-r--r--. 1 root prodctn 6.9G Oct  9 11:54 whatever.vmdk
+
+@@@  I have been in the wrong place.  When I did a find for the VM Id I found that "migrationtest42" (or the UUID for it) was in a different place than I was trying
+
+@@@ so the UUID I was looking for (from RHEV console) is 181b1179-6a05-4d77-b74b-0293ac185ac3.  The find showed me:
+[root@bulldog virt-v2v]# find . -name "*181*"
+./c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/181b1179-6a05-4d77-b74b-0293ac185ac3
+./c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/181b1179-6a05-4d77-b74b-0293ac185ac3/181b1179-6a05-4d77-b74b-0293ac185ac3.ovf
+
+@@@ I was looking for date changes.....
+
+
+[root@bulldog c3858ef8-13d5-480d-a5a4-bc60489ef54a]# ll master/vms/
+total 24
+drwxr-xr-x. 2 vdsm kvm 4096 Oct  9 12:12 181b1179-6a05-4d77-b74b-0293ac185ac3
+{SNIP}
+
+ll master/vms/181b1179-6a05-4d77-b74b-0293ac185ac3/
+total 12
+-rw-r--r--. 1 vdsm kvm 8810 Oct  9 12:12 181b1179-6a05-4d77-b74b-0293ac185ac3.ovf
+
+
+@@@ confused.... the ovf is only 8K
+
+@@@ try the convert from the "vms" dir level on "bulldog"
+@@@ NOPE   qemu not installed on bulldog  :^(
+
+[root@bulldog virt-v2v]# time cp -r c3858ef8-13d5-480d-a5a4-bc60489ef54a /disney/home/dsiegfriedt/images
+
+real	17m42.602s
+user	0m0.109s
+sys	1m34.592s
+@@@ disk size = 40G
+
+cd /disney/home/dsiegfriedt/images/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms
+
+9Oct17
+
+***** EFin RHEV **** confused about what these ovf files are.   Creating another test VM on RHEV to see if they line up as partitions
+@@@ migrationtest2
+
+***************************************************************************************************************
+16Oct17
+@@@ finally got VMs to delete (NO help from RH)   I "dsiassociated" the VM and then was able to delete.
+
+create new VM testsiggy1
+@@@ I logged into testsiggy1... minimal install.  touch /blah; created /root/born-on-date
+poweroff testsiggy1
+Right click... Export
+      @@@ need templates to export
+      click Templates
+      select template
+      RT click and export
+      @@@ did all 3 templates (small, medium, and large)
+VM Id:  c1799f7c-879b-4bda-87b7-2a9d030af377
+
+Storage --> Virt-v2v == bulldog.disneytoonstudios.com:/scratch2/exports/virt-v2v
+
+@@@ detach export domain
+
+Data Center --> DTS (top) --> --> select Virt-v2v (bottom) --> RT click put it in maintenance (mode) --> detach
+
+https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Virtualization/3.1/html/Administration_Guide/Detaching_storage_domains_from_a_data_center.html
+
+ssh bulldog
+cd /scratch2/exports/virt-v2v
+
+cp bulldog.disneytoonstudios.com:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/c1799f7c-879b-4bda-87b7-2a9d030af377 /disney/home/dsiegfriedt/JOBS/DISNEYTS/RHEV/
+
+@@@ DOH only 7k :^(
+
+need to copy the templates too... just have to find them
+
+bulldog:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/master
+
+[root@bulldog master]# ll vms
+total 28
+drwxrwxr-x. 2 vdsm kvm 4096 May  6  2015 1c1c847e-67d8-423d-8942-7bdbf7b76aae
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  8  2015 2967b01f-9fdd-4761-a6d7-df56326a9fdf
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 16 09:54 3e71f057-b4ad-4a55-965a-2cff3e06ce7a
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 16 09:56 7995ef6f-1805-45b3-b959-7bf0becadc4b
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 16 10:00 c1799f7c-879b-4bda-87b7-2a9d030af377
+drwxr-xr-x. 2 vdsm kvm 4096 Jun  4  2015 e160a5a7-8d86-4461-bf85-06e33df2200d
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 16 09:55 e731a416-c9a4-4ec8-b89a-6ee626428aa2
+
+@@@ now to figure out which are the template (or do I have to?)
+
+
+du -sh /scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/
+72G
+
+
+@@@ copy to my home account.   
+[root@bulldog virt-v2v]# time cp -r c3858ef8-13d5-480d-a5a4-bc60489ef54a/ /disney/home/dsiegfriedt/JOBS/DISNEYTS/RHEV/
+
+real	12m10.356s
+user	0m0.100s
+sys	1m7.303s
+[root@bulldog virt-v2v]# 
+
+@@@ mount netapp to copy 
+sudo mount nest-cluster.disneytoonstudios.com:/ /siggy
+
+
+
+***************************************************************************************************************
+17Oct17   where the ISOs live (for future reference)
+
+[root@skipper log]# ll /disk2/var/lib/exports/iso/0c5a20b4-25f5-4333-b57c-685d613d5d67/images/11111111-1111-1111-1111-111111111111/
+total 11929876
+-rwxr--r--  1 root root 4380329984 Sep 21  2016 en_sql_server_2008_r2_standard_x86_x64_ia64_dvd_521546.iso
+-rwxr-xr-x  1 root root  344981504 May 19  2016 rhev-hypervisor7-7.2-20160413.0.iso
+-rw-r--r--. 1 vdsm kvm   350715904 Apr 13  2015 rhev-tools-setup.iso
+-rwxr-xr-x  1 vdsm kvm  4297373696 Dec  6  2013 SW_DVD5_Windows_Svr_Std_and_DataCtr_2012_R2_64Bit_English_Core_MLF_X19-05182.iso
+-rw-r--r--. 1 vdsm kvm     2949120 Apr 13  2015 virtio-win_amd64.vfd
+-rw-r--r--. 1 vdsm kvm   154619904 Apr 13  2015 virtio-win.iso
+-rw-r--r--. 1 vdsm kvm     2949120 Apr 13  2015 virtio-win_x86.vfd
+-rwxrw-rw-  1 root root 2682257408 Apr 19  2011 Windows_Server_2008_R2_Enterprise_64bit_SP1.iso
+
+
+***************************************************************************************************************
+17Oct17
+
+not able to attach exports domain
+
+skipper:/var/log/engine.log
+
+2017-10-17 10:43:22,100 ERROR [org.ovirt.engine.core.dal.dbbroker.auditloghandling.AuditLogDirector] (org.ovirt.thread.pool-7-thread-28) [40ed687f] Correlation ID: 40ed687f, Job ID: 9b3b23d0-b093-4370-9b68-ee89e6633a25, Call Stack: null, Custom Event ID: -1, Message: Failed to attach Storage Domain Virt-v2v to Data Center DTS. (User: dsiegfriedt@disneytoonstudios.com)
+
+https://bobcares.com/blog/how-to-fix-ovirt-error-failed-to-attach-storage-domain-to-data-center/
+
+
+[root@skipper ovirt-engine]# less /etc/ovirt-engine-setup.conf.d/20-setup-ovirt-post.conf
+@@@ NOPE
+
+[root@skipper ovirt-engine]# ovirt-iso-uploader list
+Please provide the REST API password for the admin@internal oVirt Engine user (CTRL+D to abort): K...
+ISO Storage Domain Name   | Datacenter                | ISO Domain Status
+ISO_DOMAIN                | DTS                       | maintenance
+
+[root@skipper ovirt-engine]# engine-image-uploader list
+Please provide the REST API password for the admin@internal oVirt Engine user (CTRL+D to abort): 
+ERROR: There are no export storage domains.
+
+
+@@@ logged into theorem to find a mount path to try the mount by hand
+
+theorem-1# less /ifs/data/rhev/data/04c5b503-073f-43f8-b050-efe3452cf08f/dom_md/metadata
+
+@@@ gave me:
+REMOTE_PATH=theorem.disneytoonstudios.com:/ifs/data/rhev/data
+
+
+***************************************************************************************************************
+18Oct17  migrations a VM from RHEVM to rhev-engine
+
+...other steps
+
+
+RHEVM:
+Data Center => DTS => ...Bottom... select export domaine (Virt-v2v) => RT click and select Maintenance mode = > Detach
+
+system ++> Storage ++> (bottom) VM Import(Tab) ++> select VM to import ++> RT click Import ++> OK
+
+
+rhev-engine:
+Data Center => ...Bottom... "Attach Export" select domain (radio button) => OK 
+
+
+***************************************************************************************************************
+20Oct17 back to beginning
+
+@@@ following the steps from this URL:
+http://www.wh33ly.nl/wp/?p=397
+
+@@@ created new VM siggytest1
+
+run testsiggy1 (starts on oljammer)
+
+
+[root@oljammer ~]# ps -fe | grep testsiggy1
+
+[root@oljammer ~]# ps -fe | grep siggytest1
+root     47348 47311  0 15:58 pts/0    00:00:00 grep --color=auto siggytest1
+qemu     48918     1  1 00:16 ?        00:14:08 /usr/libexec/qemu-kvm -name siggytest1 -S -machine rhel6.5.0,accel=kvm,usb=off -cpu SandyBridge -m 4096 -realtime mlock=off -smp 2,maxcpus=32,sockets=16,cores=2,threads=1 -uuid 46e544b5-d2c5-4677-ba0b-8731c6908c60 -smbios type=1,manufacturer=Red Hat,product=RHEV Hypervisor,version=7.2-20160516.0.el7ev,serial=30393137-3436-584D-5135-333130303544,uuid=46e544b5-d2c5-4677-ba0b-8731c6908c60 -no-user-config -nodefaults -chardev socket,id=charmonitor,path=/var/lib/libvirt/qemu/domain-siggytest1/monitor.sock,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=2017-10-23T17:16:19,driftfix=slew -global kvm-pit.lost_tick_policy=discard -no-hpet -no-shutdown -boot strict=on -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 -device virtio-scsi-pci,id=scsi0,bus=pci.0,addr=0x4 -device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5 -drive if=none,id=drive-ide0-1-0,readonly=on,format=raw -device ide-cd,bus=ide.1,unit=0,drive=drive-ide0-1-0,id=ide0-1-0 -drive file=/rhev/data-center/74b058ec-c846-4a35-b395-5209f9006e2e/eba0b83c-9aa5-4954-804a-96a4e447e4b2/images/f0787194-73b7-4781-b0c6-633b78b72be8/7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f,if=none,id=drive-virtio-disk0,format=qcow2,serial=f0787194-73b7-4781-b0c6-633b78b72be8,cache=none,werror=stop,rerror=stop,aio=native -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x6,drive=drive-virtio-disk0,id=virtio-disk0,bootindex=2 -netdev tap,fd=54,id=hostnet0,vhost=on,vhostfd=56 -device virtio-net-pci,netdev=hostnet0,id=net0,mac=00:1a:4a:43:ea:06,bus=pci.0,addr=0x3,bootindex=1 -chardev socket,id=charchannel0,path=/var/lib/libvirt/qemu/channels/46e544b5-d2c5-4677-ba0b-8731c6908c60.com.redhat.rhevm.vdsm,server,nowait -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=com.redhat.rhevm.vdsm -chardev socket,id=charchannel1,path=/var/lib/libvirt/qemu/channels/46e544b5-d2c5-4677-ba0b-8731c6908c60.org.qemu.guest_agent.0,server,nowait -device virtserialport,bus=virtio-serial0.0,nr=2,chardev=charchannel1,id=channel1,name=org.qemu.guest_agent.0 -device usb-tablet,id=input0 -vnc 10.106.239.14:19,password -k en-us -device cirrus-vga,id=video0,bus=pci.0,addr=0x2 -msg timestamp=on
+
+-drive file=/rhev/data-center/74b058ec-c846-4a35-b395-5209f9006e2e/eba0b83c-9aa5-4954-804a-96a4e447e4b2/images/f0787194-73b7-4781-b0c6-633b78b72be8/7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f
+
+
+[root@oljammer ~]# lvs | grep 7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f
+  7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f eba0b83c-9aa5-4954-804a-96a4e447e4b2 -wi-ao----    1.00g        
+
+@@@ now power off the VM, to make sure we have the correct VM 
+
+[root@oljammer ~]# lvs | grep 7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f
+  7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f eba0b83c-9aa5-4954-804a-96a4e447e4b2 -wi-------    1.00g           
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+@@@ and we do
+
+@@@ had to search /dev to find the correct LV.  I searched for the second field from the lvs above (see ^^^)
+
+lvchange -ay /dev/eba0b83c-9aa5-4954-804a-96a4e447e4b2/
+
+qemu-img convert -f raw -O vmdk -o compat 6 /rhev/data-center/74b058ec-c846-4a35-b395-5209f9006e2e/eba0b83c-9aa5-4954-804a-96a4e447e4b2/images/f0787194-73b7-4781-b0c6-633b78b72be8/7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f /var/lib/libvirt/qemu/<VM>_rootvg.vmdk
+
+@@@ WTF is the <VM>_rootvg.vmdk?
+
+@@@ SIGH
+[root@oljammer ~]# ll  /var/lib/libvirt/qemu/
+total 0
+drwxr-xr-x. 3 qemu qemu  60 Jun  7  2016 channel
+drwxrwxr-x. 2 vdsm qemu 920 Oct 23 22:12 channels
+drwxr-x---. 2 qemu qemu  60 Jun  7  2016 domain-vmcoda
+drwxr-x---. 2 qemu qemu  60 Sep 26 02:49 domain-vmcodadb1
+drwxr-x---. 2 qemu qemu  60 Jun 26 22:51 domain-vmcron
+drwxr-x---. 2 qemu qemu  60 Sep 26 04:23 domain-vmdepotapp
+drwxr-x---. 2 qemu qemu  60 Sep 26 17:58 domain-vmfaceroll
+drwxr-x---. 2 qemu qemu  60 Jul 10 16:07 domain-vmgitlab
+drwxr-x---. 2 qemu qemu  60 Jun 26 23:04 domain-vmhaproxy
+drwxr-x---. 2 qemu qemu  60 Jun 26 22:53 domain-vmlogger
+drwxr-x---. 2 qemu qemu  60 Aug  6 21:37 domain-vmmariadb1
+drwxr-x---. 2 qemu qemu  60 Sep 26 04:17 domain-vmnetmonitor
+drwxr-x---. 2 qemu qemu  60 Sep 26 04:15 domain-vmnetworkmgr
+drwxr-x---. 2 qemu qemu  60 Jun 26 22:45 domain-vmnotify
+drwxr-x---. 2 qemu qemu  60 Jul 10 22:42 domain-vmotp
+drwxr-x---. 2 qemu qemu  60 Jun 26 22:58 domain-vmprism01
+drwxr-x---. 2 qemu qemu  60 Jun 26 23:47 domain-vmprism03
+drwxr-x---. 2 qemu qemu  60 Sep 26 13:44 domain-vmprism05
+drwxr-x---. 2 qemu qemu  60 Jun 26 23:05 domain-vmprism08
+drwxr-x---. 2 qemu qemu  60 Jun 27 21:43 domain-vmprism11
+drwxr-x---. 2 qemu qemu  60 Jun 26 22:56 domain-vmprodcron
+drwxr-x---. 2 qemu qemu  60 Sep 26 04:13 domain-vmprodcronel6
+drwxr-x---. 2 qemu qemu  60 Sep 19 23:33 domain-vmwinfmp
+drwxr-x---. 2 qemu qemu  60 Sep 19 23:30 domain-zu-cala-rt
+drwxr-xr-x. 2 qemu qemu  40 Jun  7  2016 nvram
+drwxr-xr-x. 2 qemu qemu  40 Jun  7  2016 save
+drwxr-xr-x. 2 qemu qemu  40 Jun  7  2016 snapshot
+
+@@@ based on ll -rt channels had the closest time :^(
+
+[root@oljammer ~]# ll -rt /var/lib/libvirt/qemu/channels
+total 0
+srwxrwxr-x. 1 qemu qemu 0 Jun  7  2016 956df9d4-787f-46c9-aec2-cb5f84de9f0a.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun  7  2016 956df9d4-787f-46c9-aec2-cb5f84de9f0a.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:45 563d3ac0-3689-4503-a76a-02ebbe832f0f.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:45 563d3ac0-3689-4503-a76a-02ebbe832f0f.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:51 b55ee006-be98-4ace-bd50-7762e0473a85.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:51 b55ee006-be98-4ace-bd50-7762e0473a85.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:53 86bc291f-2aaa-4a08-9b98-fee4362bd991.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:53 86bc291f-2aaa-4a08-9b98-fee4362bd991.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:56 6fcbe9d2-43dd-4187-9112-1c6b60b62073.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:56 6fcbe9d2-43dd-4187-9112-1c6b60b62073.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:58 05523caa-9170-4f5d-bd4d-aef60645d0a1.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 22:58 05523caa-9170-4f5d-bd4d-aef60645d0a1.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 23:04 6f7e9267-3f14-4f34-b8cf-809f2437feee.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 23:04 6f7e9267-3f14-4f34-b8cf-809f2437feee.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 23:05 28164be5-e517-47db-80da-40731eeefdec.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 23:05 28164be5-e517-47db-80da-40731eeefdec.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 23:47 37559a99-836a-4f30-a41c-75ae78607f1f.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 26 23:47 37559a99-836a-4f30-a41c-75ae78607f1f.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jun 27 21:43 0f5e2718-c628-40a9-9c26-757c9b9ffa4b.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jun 27 21:43 0f5e2718-c628-40a9-9c26-757c9b9ffa4b.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jul 10 16:07 7879ee3c-a8f1-4d04-8318-d1d27cd8ef35.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jul 10 16:07 7879ee3c-a8f1-4d04-8318-d1d27cd8ef35.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Jul 10 22:42 9a02c0da-a412-4b70-8976-e3001ced0a47.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Jul 10 22:42 9a02c0da-a412-4b70-8976-e3001ced0a47.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Aug  6 21:37 4786fa12-bfb7-4c91-bfe2-3942a28bafd6.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Aug  6 21:37 4786fa12-bfb7-4c91-bfe2-3942a28bafd6.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 19 23:30 e71439ca-9b7c-4082-a711-b2b966dd2f57.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 19 23:30 e71439ca-9b7c-4082-a711-b2b966dd2f57.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 19 23:33 a89e4c7d-6c2d-4b07-8476-f671a640d99d.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 19 23:33 a89e4c7d-6c2d-4b07-8476-f671a640d99d.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 02:49 42c0d392-7868-45d0-8672-2a71d87e0a9d.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 02:49 42c0d392-7868-45d0-8672-2a71d87e0a9d.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:13 0f8b761e-d586-482b-99b7-805a9daea447.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:13 0f8b761e-d586-482b-99b7-805a9daea447.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:15 fd120d72-fee0-4cfe-8b2e-e8ed00891bdd.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:15 fd120d72-fee0-4cfe-8b2e-e8ed00891bdd.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:17 7802174f-17b1-42f6-bb3c-2a973b3c3bca.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:17 7802174f-17b1-42f6-bb3c-2a973b3c3bca.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:23 78cb9ea7-090a-44d5-b9d6-986977557e69.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 04:23 78cb9ea7-090a-44d5-b9d6-986977557e69.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 13:44 dff12b5a-7ce8-4d53-b576-69cf87883192.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 13:44 dff12b5a-7ce8-4d53-b576-69cf87883192.com.redhat.rhevm.vdsm
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 17:58 485edb27-cfea-4d98-a1ce-4f0f3ea4aa2a.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Sep 26 17:58 485edb27-cfea-4d98-a1ce-4f0f3ea4aa2a.com.redhat.rhevm.
+
+@@@ OK now we figure out this EFing shite
+
+[root@oljammer ~]# cd /rhev/data-center/
+
+@@@ eba0b83c-9aa5-4954-804a-96a4e447e4b2 was used because it was part of the results from the "lvs" above
+
+[root@oljammer data-center]# ll /rhev/data-center/mnt/blockSD/eba0b83c-9aa5-4954-804a-96a4e447e4b2/
+total 0
+drwxr-xr-x.  2 vdsm kvm  160 Jun  7  2016 dom_md
+drwxr-xr-x. 60 vdsm kvm 1200 Oct 23 20:06 images
+
+@@@ f07<TAB> was used from the "disk file" above
+
+[root@oljammer data-center]# ll /rhev/data-center/mnt/blockSD/eba0b83c-9aa5-4954-804a-96a4e447e4b2/images/f0787194-73b7-4781-b0c6-633b78b72be8/
+total 0
+lrwxrwxrwx. 1 vdsm kvm 78 Oct 23 20:06 7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f -> /dev/eba0b83c-9aa5-4954-804a-96a4e447e4b2/7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f
+
+@@@ this is the /dev path I needed to activate the correct volume (which I  did not)
+
+lvchange -an /dev/eba0b83c-9aa5-4954-804a-96a4e447e4b2  # failed :^(  other volumes were in use and could not deactivate
+
+
+@@@ so now with siggytest1 powered off and the correct path found we now check /var/lib/libvirt/qemu/ for siggytest1 (or the uuid for it)
+
+
+[root@oljammer data-center]# ll -a /var/lib/libvirt/qemu/channels/
+total 0
+drwxrwxr-x.  2 vdsm qemu 920 Oct 23 22:12 .
+drwxr-x--x. 29 qemu qemu 580 Oct 23 22:12 ..
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:58 05523caa-9170-4f5d-bd4d-aef60645d0a1.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:58 05523caa-9170-4f5d-bd4d-aef60645d0a1.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 27 21:43 0f5e2718-c628-40a9-9c26-757c9b9ffa4b.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 27 21:43 0f5e2718-c628-40a9-9c26-757c9b9ffa4b.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:13 0f8b761e-d586-482b-99b7-805a9daea447.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:13 0f8b761e-d586-482b-99b7-805a9daea447.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 23:05 28164be5-e517-47db-80da-40731eeefdec.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 23:05 28164be5-e517-47db-80da-40731eeefdec.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 23:47 37559a99-836a-4f30-a41c-75ae78607f1f.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 23:47 37559a99-836a-4f30-a41c-75ae78607f1f.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 02:49 42c0d392-7868-45d0-8672-2a71d87e0a9d.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 02:49 42c0d392-7868-45d0-8672-2a71d87e0a9d.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Aug  6 21:37 4786fa12-bfb7-4c91-bfe2-3942a28bafd6.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Aug  6 21:37 4786fa12-bfb7-4c91-bfe2-3942a28bafd6.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 17:58 485edb27-cfea-4d98-a1ce-4f0f3ea4aa2a.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 17:58 485edb27-cfea-4d98-a1ce-4f0f3ea4aa2a.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:45 563d3ac0-3689-4503-a76a-02ebbe832f0f.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:45 563d3ac0-3689-4503-a76a-02ebbe832f0f.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 23:04 6f7e9267-3f14-4f34-b8cf-809f2437feee.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 23:04 6f7e9267-3f14-4f34-b8cf-809f2437feee.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:56 6fcbe9d2-43dd-4187-9112-1c6b60b62073.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:56 6fcbe9d2-43dd-4187-9112-1c6b60b62073.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:17 7802174f-17b1-42f6-bb3c-2a973b3c3bca.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:17 7802174f-17b1-42f6-bb3c-2a973b3c3bca.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jul 10 16:07 7879ee3c-a8f1-4d04-8318-d1d27cd8ef35.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jul 10 16:07 7879ee3c-a8f1-4d04-8318-d1d27cd8ef35.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:23 78cb9ea7-090a-44d5-b9d6-986977557e69.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:23 78cb9ea7-090a-44d5-b9d6-986977557e69.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:53 86bc291f-2aaa-4a08-9b98-fee4362bd991.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:53 86bc291f-2aaa-4a08-9b98-fee4362bd991.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun  7  2016 956df9d4-787f-46c9-aec2-cb5f84de9f0a.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun  7  2016 956df9d4-787f-46c9-aec2-cb5f84de9f0a.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jul 10 22:42 9a02c0da-a412-4b70-8976-e3001ced0a47.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jul 10 22:42 9a02c0da-a412-4b70-8976-e3001ced0a47.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 19 23:33 a89e4c7d-6c2d-4b07-8476-f671a640d99d.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 19 23:33 a89e4c7d-6c2d-4b07-8476-f671a640d99d.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:51 b55ee006-be98-4ace-bd50-7762e0473a85.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Jun 26 22:51 b55ee006-be98-4ace-bd50-7762e0473a85.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 13:44 dff12b5a-7ce8-4d53-b576-69cf87883192.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 13:44 dff12b5a-7ce8-4d53-b576-69cf87883192.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 19 23:30 e71439ca-9b7c-4082-a711-b2b966dd2f57.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 19 23:30 e71439ca-9b7c-4082-a711-b2b966dd2f57.org.qemu.guest_agent.0
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:15 fd120d72-fee0-4cfe-8b2e-e8ed00891bdd.com.redhat.rhevm.vdsm
+srwxrwxr-x.  1 qemu qemu   0 Sep 26 04:15 fd120d72-fee0-4cfe-8b2e-e8ed00891bdd.org.qemu.guest_agent.0
+
+@@@ powering up siggytest1 to see if the UI gives a hint to which UUID is the VM.
+@@@ from the UI
+
+VM Id: 46e544b5-d2c5-4677-ba0b-8731c6908c60
+
+@@@ why yes it did.  Wondering if it was missing due to the volume not being active.    We'll see
+
+ll -rt /var/lib/libvirt/qemu/channels/
+{SNIP}
+srwxrwxr-x. 1 qemu qemu 0 Oct 23 23:43 46e544b5-d2c5-4677-ba0b-8731c6908c60.org.qemu.guest_agent.0
+srwxrwxr-x. 1 qemu qemu 0 Oct 23 23:43 46e544b5-d2c5-4677-ba0b-8731c6908c60.com.redhat.rhevm.vdsm
+
+@@@ powered off siggytest1 and this UUID is no longer there (in /var/lib/libvirt/qemu/channels/)
+
+@@@ now we manually activate the volume with path from above
+
+lvchange -ay /dev/eba0b83c-9aa5-4954-804a-96a4e447e4b2/7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f
+
+@@@ still not listed in /var/lib/libvirt/qemu/channels
+@@@ going to try the convert with all the correct names.... see WTF happens
+
+which qemu-img
+/usr/bin/qemu-img
+
+qemu-img convert -f raw -O vmdk -o compat6 /rhev/data-center/74b058ec-c846-4a35-b395-5209f9006e2e/eba0b83c-9aa5-4954-804a-96a4e447e4b2/images/f0787194-73b7-4781-b0c6-633b78b72be8/7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f /var/lib/libvirt/qemu/46e544b5-d2c5-4677-ba0b-8731c6908c60_rootvg.vmdk
+
+@@@ didn't error but I can't find it
+@@@ try with a different name (that is esier to fine)
+
+[root@oljammer data-center]# qemu-img convert -f raw -O vmdk -o compat6 /rhev/data-center/74b058ec-c846-4a35-b395-5209f9006e2e/eba0b83c-9aa5-4954-804a-96a4e447e4b2/images/f0787194-73b7-4781-b0c6-633b78b72be8/7eb1dcc8-72d0-47eb-b2b5-0ea7ce2c3f1f /var/lib/libvirt/qemu/siggytest1_rootvg.vmdk
+[root@oljammer data-center]# 
+
+[root@oljammer data-center]# find / -iname "*siggy*"
+/var/lib/libvirt/qemu/siggytest1_rootvg.vmdk
+/var/lib/stateless/writable/var/lib/libvirt/qemu/siggytest1_rootvg.vmdk
+/var/log/libvirt/qemu/siggytest1.log
+/var/log/libvirt/qemu/testsiggy1.log
+/var/log/libvirt/qemu/vmtestsiggy.log
+/var/log/libvirt/qemu/vmsiggy42.log
+/var/log/libvirt/qemu/siggytest3.log
+/var/log/libvirt/qemu/siggytest2.log
+/var/log/libvirt/qemu/siggytest4.log
+[root@oljammer data-center]# 
+
+
+[root@oljammer data-center]# ll -h /var/lib/libvirt/qemu/
+{SNIP}
+-rw-r--r--. 1 root root 1.1G Oct 23 23:58 siggytest1_rootvg.vmdk
+{SNIP}
+
+[root@oljammer data-center]# scp /var/lib/libvirt/qemu/siggytest1_rootvg.vmdk dts3329:/tmp
+
+
+***************************************************************************************************************
+26Oct17
+
+dsiegfriedt@dts3329:~ $ ssh root@oljammer
+root@oljammer's password: 
+X11 forwarding request failed on channel 0
+Last login: Wed Oct 25 05:07:34 2017 from 10.106.238.148
+[root@oljammer ~]# cd /var/lib/libvirt/qemu/
+[root@oljammer qemu]# ll
+total 47132448
+drwxr-xr-x. 3 qemu qemu          60 Jun  7  2016 channel
+drwxrwxr-x. 2 vdsm qemu         920 Oct 25 06:55 channels
+drwxr-x---. 2 qemu qemu          60 Oct 24 00:16 domain-siggytest1
+drwxr-x---. 2 qemu qemu          60 Sep 26 02:49 domain-vmcodadb1
+drwxr-x---. 2 qemu qemu          60 Jun 26 22:51 domain-vmcron
+drwxr-x---. 2 qemu qemu          60 Sep 26 04:23 domain-vmdepotapp
+drwxr-x---. 2 qemu qemu          60 Sep 26 17:58 domain-vmfaceroll
+drwxr-x---. 2 qemu qemu          60 Jul 10 16:07 domain-vmgitlab
+drwxr-x---. 2 qemu qemu          60 Jun 26 23:04 domain-vmhaproxy
+drwxr-x---. 2 qemu qemu          60 Jun 26 22:53 domain-vmlogger
+drwxr-x---. 2 qemu qemu          60 Aug  6 21:37 domain-vmmariadb1
+drwxr-x---. 2 qemu qemu          60 Sep 26 04:17 domain-vmnetmonitor
+drwxr-x---. 2 qemu qemu          60 Sep 26 04:15 domain-vmnetworkmgr
+drwxr-x---. 2 qemu qemu          60 Jun 26 22:45 domain-vmnotify
+drwxr-x---. 2 qemu qemu          60 Jul 10 22:42 domain-vmotp
+drwxr-x---. 2 qemu qemu          60 Jun 26 22:58 domain-vmprism01
+drwxr-x---. 2 qemu qemu          60 Jun 26 23:47 domain-vmprism03
+drwxr-x---. 2 qemu qemu          60 Sep 26 13:44 domain-vmprism05
+drwxr-x---. 2 qemu qemu          60 Jun 26 23:05 domain-vmprism08
+drwxr-x---. 2 qemu qemu          60 Jun 26 22:56 domain-vmprodcron
+drwxr-x---. 2 qemu qemu          60 Sep 26 04:13 domain-vmprodcronel6
+drwxr-x---. 2 qemu qemu          60 Oct 25 06:55 domain-vmradius
+drwxr-x---. 2 qemu qemu          60 Sep 19 23:33 domain-vmwinfmp
+drwxr-x---. 2 qemu qemu          60 Sep 19 23:30 domain-zu-cala-rt
+drwxr-xr-x. 2 qemu qemu          40 Jun  7  2016 nvram
+drwxr-xr-x. 2 qemu qemu          40 Jun  7  2016 save
+-rw-r--r--. 1 root root  1073938432 Oct 23 23:58 siggytest1_rootvg.vmdk
+drwxr-xr-x. 2 qemu qemu          40 Jun  7  2016 snapshot
+-rw-r--r--. 1 root root 47189786624 Oct 25 05:29 vmprism11.vmdk
+[root@oljammer qemu]# scp vmprism11.vmdk dts3329:/tmp
+root@dts3329's password: 
+vmprism11.vmdk                                        100%   44GB 111.7MB/s   06:43    
+[root@oljammer qemu]# 
+[root@oljammer qemu]# 
+[root@oljammer qemu]# 
+[root@oljammer qemu]# 
+[root@oljammer qemu]# scp siggytest1_rootvg.vmdk dts3329:/tmp
+root@dts3329's password: 
+Permission denied, please try again.
+root@dts3329's password: 
+Permission denied, please try again.
+root@dts3329's password: 
+siggytest1_rootvg.vmdk                                100% 1024MB 102.4MB/s   00:10    
+
+
+dsiegfriedt@dts3329:~ $ ll /siggy/nest/vsphere_prod/
+dsiegfriedt@dts3329:~ $ cd /siggy/nest/vsphere_prod/
+
+@@@ Needs to be a dir....   mkdir vmprism11
+
+***************************************************************************************************************
+14Nov17
+
+@@@ able to import/upload vmdk to nest-prod/vmprism11 datastore 
+
+@@@ first try imported into the incorrect place.
+
+dsiegfriedt@dts3329:~ $ ll /siggy/nest/vsphere_prod/
+total 45G
+{SNIP}
+drwxr-xr-x.  2 root root 4.0K Nov 14 14:00 vmprism11
+-rw-r--r--.  1 root root  44G Nov 14 09:35 vmprism11.vmdk
+
+@@@ second try looks like it is in the correct location
+
+dsiegfriedt@dts3329:~ $ ll /siggy/nest/vsphere_prod/vmprism11/
+total 28G
+drwxr-xr-x.  2 root root 4.0K Nov 14 14:00 .
+drwxrwxrwx. 28 root root 4.0K Nov 14 09:17 ..
+-rw-r--r--.  1 root root  27G Nov 14  2017 vmprism11.vmdk
+
+
+***************************************************************************************************************
+14Nov17
+
+@@@ so the import of vmprism11.vmdk did not work.  I think I figured that the template it is built on (large/thin/dependent)
+@@@ is not available (I hope)   now I have to figure out where the "template" images are.   YAY
+
+Back to UUID hell  (see 6Oct17)
+
+@@@ may have to delete templates from export domain do a ll -R and then add them again JUST FUCKING FIND the UUID
+
+***************************************************************************************************************
+19Nov17
+
+removed siggytest
+
+BEFORE:
+dsiegfriedt@bulldog:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a $ ll images/
+total 20K
+drwxr-xr-x. 5 vdsm kvm 4.0K Nov 19 14:03 .
+drwxr-xr-x. 5 vdsm kvm 4.0K Oct 17 16:19 ..
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:18 6c1ef688-bd32-4a80-a9c2-1af25b34a540
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:19 351d07cd-94a7-4c39-ad06-828e24c6ade4
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:11 b45a24de-42c9-4e7c-a46c-1b6ab368be7e
+
+RE-exported vmprism11
+AFTER:
+
+dsiegfriedt@bulldog:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a $ ll images/
+total 24K
+drwxr-xr-x. 6 vdsm kvm 4.0K Nov 19 20:29 .
+drwxr-xr-x. 5 vdsm kvm 4.0K Oct 17 16:19 ..
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:18 6c1ef688-bd32-4a80-a9c2-1af25b34a540
+drwxr-xr-x. 2 vdsm kvm 4.0K Nov 19 20:29 9c98ec7c-4856-4546-a514-ff5784c20853
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:19 351d07cd-94a7-4c39-ad06-828e24c6ade4
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:11 b45a24de-42c9-4e7c-a46c-1b6ab368be7e
+dsiegfriedt@bulldog:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a $ 
+
+@@@ leading me to believe 9c9* is the exported vmprism11
+
+dsiegfriedt@bulldog:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images $ ll -R 9c98ec7c-4856-4546-a514-ff5784c20853/
+9c98ec7c-4856-4546-a514-ff5784c20853/:
+total 16G
+drwxr-xr-x. 2 vdsm kvm 4.0K Nov 19 20:29 .
+drwxr-xr-x. 6 vdsm kvm 4.0K Nov 19 20:29 ..
+-rw-rw----. 1 vdsm kvm  16G Nov 19 20:32 197e6b2b-f39a-45a0-9202-41f04f548fb5
+-rw-r--r--. 1 vdsm kvm  260 Nov 19 20:29 197e6b2b-f39a-45a0-9202-41f04f548fb5.meta
+
+@@@ looking for ovf
+dsiegfriedt@bulldog:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images $ ll -R *
+6c1ef688-bd32-4a80-a9c2-1af25b34a540:
+total 33G
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:18 .
+drwxr-xr-x. 6 vdsm kvm 4.0K Nov 19 20:29 ..
+-rw-r--r--. 1 vdsm kvm  32G Oct 17 16:18 a060c246-9933-4580-a4c9-6fe2461b0d4b
+-rw-r--r--. 1 vdsm kvm  330 Oct 17 16:18 a060c246-9933-4580-a4c9-6fe2461b0d4b.meta
+
+9c98ec7c-4856-4546-a514-ff5784c20853:
+total 16G
+drwxr-xr-x. 2 vdsm kvm 4.0K Nov 19 20:29 .
+drwxr-xr-x. 6 vdsm kvm 4.0K Nov 19 20:29 ..
+-rw-rw----. 1 vdsm kvm  16G Nov 19 20:32 197e6b2b-f39a-45a0-9202-41f04f548fb5
+-rw-r--r--. 1 vdsm kvm  260 Nov 19 20:29 197e6b2b-f39a-45a0-9202-41f04f548fb5.meta
+
+351d07cd-94a7-4c39-ad06-828e24c6ade4:
+total 8.1G
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:19 .
+drwxr-xr-x. 6 vdsm kvm 4.0K Nov 19 20:29 ..
+-rw-r--r--. 1 vdsm kvm 8.0G Oct 17 16:19 56a7f69e-17da-49a2-9697-43863b8473ff
+-rw-r--r--. 1 vdsm kvm  330 Oct 17 16:19 56a7f69e-17da-49a2-9697-43863b8473ff.meta
+
+b45a24de-42c9-4e7c-a46c-1b6ab368be7e:
+total 32G
+drwxr-xr-x. 2 vdsm kvm 4.0K Oct 17 16:11 .
+drwxr-xr-x. 6 vdsm kvm 4.0K Nov 19 20:29 ..
+-rwxr-xr-x. 1 vdsm kvm  31G Oct 17 16:11 8b1a7f47-aadd-4b94-8c1a-902e576a18a4
+-rwxr-xr-x. 1 vdsm kvm  330 Oct 17 16:11 8b1a7f47-aadd-4b94-8c1a-902e576a18a4.meta
+dsiegfriedt@bulldog:/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images $
+
+@@@ why does b45a* have different perms???
+
+
+
+***************************************************************************************************************
+21Nov17  
+@@@ started removing things from the export domain to get a handle on WTF is going on
+
+Removed all from "VM Import"
+
+[root@bulldog virt-v2v]# ll c3858ef8-13d5-480d-a5a4-bc60489ef54a/
+total 12
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 18 10:00 dom_md
+drwxr-xr-x. 2 vdsm kvm 4096 Nov 21 09:18 images
+drwxr-xr-x. 4 vdsm kvm 4096 Oct 17 16:19 master
+[root@bulldog virt-v2v]# ll c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/
+total 0
+
+@@@ saw that there was a "Template Import"
+
+[root@bulldog virt-v2v]# ll c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/
+total 12
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 17 16:19 3e71f057-b4ad-4a55-965a-2cff3e06ce7a
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 17 16:19 7995ef6f-1805-45b3-b959-7bf0becadc4b
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 17 16:19 e731a416-c9a4-4ec8-b89a-6ee626428aa2
+
+@@@ removed the "small" template
+
+[root@bulldog virt-v2v]# ll c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/
+total 8
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 17 16:19 3e71f057-b4ad-4a55-965a-2cff3e06ce7a
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 17 16:19 e731a416-c9a4-4ec8-b89a-6ee626428aa2
+[root@bulldog virt-v2v]# 
+
+@@@ removed the "medium" template
+
+[root@bulldog virt-v2v]# ll c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/
+total 4
+drwxr-xr-x. 2 vdsm kvm 4096 Oct 17 16:19 e731a416-c9a4-4ec8-b89a-6ee626428aa2
+
+@@@ leaving the "large template"
+
+[root@bulldog virt-v2v]# ll c3858ef8-13d5-480d-a5a4-bc60489ef54a/master/vms/e731a416-c9a4-4ec8-b89a-6ee626428aa2/
+total 4
+-rw-r--r--. 1 vdsm kvm 3929 Oct 17 16:19 e731a416-c9a4-4ec8-b89a-6ee626428aa2.ovf
+
+-----
+export vmprism11
+
+then there will be just the VM adn the template to copy
+
+
+***************************************************************************************************************
+21Nov17 VMware-ovftool
+
+trying it on my machine..... trying to install it from home.
+
+***************************************************************************************************************
+22Nov17
+
+@@@ from my home accout (where I copied c3858ef8-13d5-480d-a5a4-bc60489ef54a)
+
+dsiegfriedt@dts3329:~ $ qemu-img convert -O vmdk c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/9c98ec7c-4856-4546-a514-ff5784c20853/197e6b2b-f39a-45a0-9202-41f04f548fb5 vmprism11.vmdk
+
+-rw-r--r--.   1 dsiegfriedt prodctn  16G Nov 22 14:41 vmprism11.vmdk
+
+
+***************************************************************************************************************
+27Nov17  adding/uploading/registering disks
+
+https://pubs.vmware.com/vsphere-51/index.jsp?topic=%2Fcom.vmware.vsphere.vm_admin.doc%2FGUID-79116E5D-22B3-4E84-86DF-49A8D16E7AF2.html
+
+	Add an existing hard disk that is configured as a boot disk during virtual machine creation.
+	To ensure that the virtual machine can boot, remove the existing disk before you add the boot disk. After you add a new 
+	SCSI disk to the virtual machine, you might need to go into the BIOS setup to ensure that the disk you were using to 
+	boot the virtual machine is still selected as the boot disk. You can avoid this problem by not mixing adapter types, 
+	and by using device node 0 on the first SCSI adapter as the boot disk.
+
+>>>>>
+
+@@@ on powerup
+
+pwd
+/siggy/nest/vsphere_prod/vmprism11
+
+dsiegfriedt@dts3329:/siggy/nest/vsphere_prod/vmprism11 $ ll
+total 16G
+drwxr-xr-x.  2 root root 4.0K Nov 27 14:35 .
+drwxrwxrwx. 29 root root 4.0K Nov 27 13:44 ..
+-rwxrwxr-x.  1 root root   84 Nov 27  2017 .lck-ca1e528900000000
+-rwxrwxr-x.  1 root root   84 Nov 27  2017 .lck-cb1e528900000000
+-rwxrwxr-x.  1 root root   84 Nov 27  2017 .lck-cd1e528900000000
+-rwxrwxr-x.  1 root root   84 Nov 27  2017 .lck-d61e528900000000
+-rw-------.  1 root root 8.5K Nov 27 14:36 vmprism11.nvram
+-rw-r--r--.  1 root root    0 Nov 27 13:18 vmprism11.vmsd
+-rwxr-xr-x.  1 root root 2.6K Nov 27 14:35 vmprism11.vmx
+-rw-------.  1 root root    0 Nov 27 14:35 vmprism11.vmx.lck
+-rw-r--r--.  1 root root  198 Nov 27 13:18 vmprism11-1c036253.hlog
+-rw-------.  1 root root 2.0G Nov 27 14:35 vmprism11-406b66b5.vswp
+-rw-r--r--.  1 root root  16G Nov 27 14:36 vmprism11-real.vmdk
+-rw-r--r--.  1 root root 183K Nov 27 14:37 vmware.log
+-rw-r--r--.  1 root root  52K Nov 27 13:28 vmware-1.log
+-rw-r--r--.  1 root root 176K Nov 27 14:03 vmware-2.log
+-rw-r--r--.  1 root root 209K Nov 27 14:18 vmware-3.log
+-rw-r--r--.  1 root root  51K Nov 27 14:34 vmware-4.log
+-rw-------.  1 root root 110M Nov 27 14:35 vmx-vmprism11-1080780469-1.vswp
+
+
+less vmware.log
+
+...
+2017-11-27T22:36:08.289Z| vcpu-0| I125: DISKLIB-DSCPTR: DescriptorWriteFromBuffer: /vmfs/volumes/11e2f489-ebcec2bf/vmprism11/vmpris
+m11-real.vmdk: Descriptor file is locked (retries left 5/5).
+...
+<<<<<
+
+@@@ in rhevm vmprism11 has the following properties
+
+Template:    	       large (Thin/Dependent)
+Operating System:      Red Hat Enterprise Linux 7.x x64
+Default Display Type:  VNC
+Priority:	       Low
+
+Defineded Memory:		16384 MB
+Physical Memory Guaranteed:	8192 MB
+Number of CPU Cores:		4 (1 Socket(s), 4 Core(s) per Socket)
+Guest CPU Count:		N/A
+Highly Available:		No
+Number of Monitors:		1
+USB Policy:			Disabled
+
+Origin:				oVirt
+Run On:				Any Host in Cluster
+Custom Properties:		Not-Configured
+Cluster Compatibility Version:	3.5
+VM Id:		      		0f5e2718-c628-40a9-9c26-757c9b9ffa4b
+
+Disk = 100G  (vmprism11_Disk1)  107374182400
+
+network:
+	eth0
+	traffic
+	traffic
+	00:1a:4a:ea:19
+	1000Mbps
+
+***************************************************************************************************************
+ssh root@vsphere-prod-01
+(N0...)
+
+/bin/vmkfstools
+
+[root@vsphere-prod-01:/vmfs/volumes/11e2f489-ebcec2bf/vmprism11] ls -al
+total 16568216
+drwxr-xr-x    2 root     root          4096 Nov 27 23:39 .
+drwxrwxrwx   29 root     root          4096 Nov 27 23:44 ..
+-rwxrwxr-x    1 root     root            84 Nov 28 19:05 .lck-5b33528900000000
+-rwxrwxr-x    1 root     root            84 Nov 28 19:05 .lck-5d33528900000000
+-rwxrwxr-x    1 root     root            84 Nov 28 19:05 .lck-6133528900000000
+-rwxrwxr-x    1 root     root            84 Nov 28 19:05 .lck-ca1e528900000000
+-rw-r--r--    1 root     root           198 Nov 27 21:18 vmprism11-1c036253.hlog
+-rw-------    1 root     root     2147483648 Nov 27 23:39 vmprism11-406b66b5.vswp
+-rw-r--r--    1 root     root     16898260992 Nov 28 01:59 vmprism11-real.vmdk
+-rw-------    1 root     root          8684 Nov 28 01:58 vmprism11.nvram
+-rw-r--r--    1 root     root             0 Nov 27 21:18 vmprism11.vmsd
+-rwxr-xr-x    1 root     root          2646 Nov 27 23:39 vmprism11.vmx
+-rw-------    1 root     root             0 Nov 27 23:39 vmprism11.vmx.lck
+-rw-r--r--    1 root     root         53231 Nov 27 21:28 vmware-1.log
+-rw-r--r--    1 root     root        179757 Nov 27 22:03 vmware-2.log
+-rw-r--r--    1 root     root        213649 Nov 27 22:18 vmware-3.log
+-rw-r--r--    1 root     root         51764 Nov 27 22:34 vmware-4.log
+-rw-r--r--    1 root     root        215184 Nov 27 23:00 vmware-5.log
+-rw-r--r--    1 root     root        265109 Nov 28 01:59 vmware.log
+-rw-------    1 root     root     115343360 Nov 27 23:39 vmx-vmprism11-1080780469-1.vswp
+
+@@@ poweroff vsphere vmprism11
+
+[root@vsphere-prod-01:/vmfs/volumes/11e2f489-ebcec2bf/vmprism11] ls -al
+total 16568228
+drwxr-xr-x    2 root     root          4096 Nov 28 19:07 .
+drwxrwxrwx   29 root     root          4096 Nov 27 23:44 ..
+-rw-r--r--    1 root     root           198 Nov 27 21:18 vmprism11-1c036253.hlog
+-rw-r--r--    1 root     root     16898260992 Nov 28 01:59 vmprism11-real.vmdk
+-rw-------    1 root     root          8684 Nov 28 19:07 vmprism11.nvram
+-rw-r--r--    1 root     root             0 Nov 27 21:18 vmprism11.vmsd
+-rwxr-xr-x    1 root     root          2645 Nov 28 19:07 vmprism11.vmx
+-rw-r--r--    1 root     root         53231 Nov 27 21:28 vmware-1.log
+-rw-r--r--    1 root     root        179757 Nov 27 22:03 vmware-2.log
+-rw-r--r--    1 root     root        213649 Nov 27 22:18 vmware-3.log
+-rw-r--r--    1 root     root         51764 Nov 27 22:34 vmware-4.log
+-rw-r--r--    1 root     root        215184 Nov 27 23:00 vmware-5.log
+-rw-r--r--    1 root     root        292484 Nov 28 19:07 vmware.log
+
+
+
+https://serverfault.com/questions/838356/cant-boot-converted-vm-from-kvm-on-vmware-esxi/838900
+
+I converted a VM using the command qemu-img convert -O vmdk, after that i uploaded the disk to the VMware datastore and created VM with IDE disk.
+
+When i boot (initramfs) i get an error:
+
+init[1]: segfault at a8 ip 00007f1dde6110ae sp 00007fffe3ddd718 error 4 in libc-2.19.so[7f1dde5e2000+1a2000]
+
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+If i boot the system using a gentoo livecd, i can do modprobe dm-mod and vgchange -ay, after that i can mount my system. So i think LVM is ok.
+
+I do not understand what I need to fix. When i converted VMs without LVM everything was fine.
+
+@@@ I wonder if I took exports off line (made it inactive) before I copied/converted
+
+#### Start again ####
+
+remove from disk via vcsa
+
+http://www.wh33ly.nl/wp/?s=Convert+Linux+KVM
+
+in RHEV power off the VM
+export
+
+click:
+Data center
+  DTS
+    storage (bottom)
+     Virt-v2v (exported VM)
+       @@@ in the "General" tab you will see the path to where the exported VM is located
+       @@@ in this test is is  = bulldog.disneytoonstudios.com:/scratch2/exports/virt-v2v/
+     Select Virt-v2v and put it into "Maintenance"  
+
+[root@bulldog images]# pwd
+/scratch2/exports/virt-v2v/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images
+
+[root@bulldog images]# ll
+total 4
+drwxr-xr-x. 2 vdsm kvm 4096 Nov 21 09:38 9c98ec7c-4856-4546-a514-ff5784c20853
+
+[root@bulldog images]# ll 9c98ec7c-4856-4546-a514-ff5784c20853/
+total 16492632
+-rw-rw----. 1 vdsm kvm 16890593280 Nov 21 09:43 197e6b2b-f39a-45a0-9202-41f04f548fb5
+-rw-r--r--. 1 vdsm kvm         260 Nov 21 09:38 197e6b2b-f39a-45a0-9202-41f04f548fb5.meta
+
+@@@ copied to ~dsiegfriedt
+
+drwxr-xr-x.   5 dsiegfriedt prodctn   72 Nov 21 09:36 c3858ef8-13d5-480d-a5a4-bc60489ef54a
+
+sudo qemu-img convert -f raw -O vmdk -o compat6 /disney/home/dsiegfriedt/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/9c98ec7c-4856-4546-a514-ff5784c20853/197e6b2b-f39a-45a0-9202-41f04f548fb5 /tmp/vmprism11.vmdk
+
+dsiegfriedt@dts3329:~ $ ll -rt /tmp
+{SNIP}
+-rw-r--r--.  1 root        root        16G Nov 28 11:56 vmprism11.vmdk
+
+@@@ import it into vsphere
+==================================================
+@@@ in vcsa 
+
+datastore => nest-prod => (create a folder (folder with a green  "+") Right side
+give it the VM name (vmprism11)
+disk with uparrow to import teh vmdk into the new folder
+
+29Nov17
+[root@vsphere-prod-01:/vmfs/volumes/11e2f489-ebcec2bf/vmprism11] mv vmprism11.vmdk vmprism11-ORIG.vmdk
+
+[root@vsphere-prod-01:/vmfs/volumes/11e2f489-ebcec2bf/vmprism11] vmkfstools -i vmprism11-ORIG.vmdk -d zeroedthick v
+mprism11.vmdk
+Destination disk format: VMFS zeroedthick
+Cloning disk 'vmprism11-ORIG.vmdk'...
+Clone: 95% done.
+[root@vsphere-prod-01:/vmfs/volumes/11e2f489-ebcec2bf/vmprism11] ls -la
+total 33117360
+drwxr-xr-x    2 root     root          4096 Nov 29 19:41 .
+drwxrwxrwx   28 root     root          4096 Nov 29 00:43 ..
+-rw-r--r--    1 root     root           198 Nov 29 00:43 vmprism11-1c036253.hlog
+-rw-r--r--    1 root     root     16890593280 Nov 29 00:51 vmprism11-ORIG.vmdk
+-rw-------    1 root     root     16890593280 Nov 29 19:41 vmprism11-flat.vmdk
+-rw-------    1 root     root           494 Nov 29 19:41 vmprism11.vmdk
+-rw-r--r--    1 root     root             0 Nov 29 00:43 vmprism11.vmsd
+-rwxr-xr-x    1 root     root          2550 Nov 29 16:52 vmprism11.vmx
+-rw-r--r--    1 root     root         53238 Nov 29 16:51 vmware.log
+
+
+No OS found on powerup
+
+@@@ copied 2 ".ovf" files #that are part of the template used to build vmprism11 on RHEV
+@@@ with the 2 ovfs in place re-ran the vmkfstool
+
+[root@vsphere-prod-01:/vmfs/volumes/11e2f489-ebcec2bf/vmprism11] vmkfstools -i vmprism11-ORIG.vmdk -d zeroedthick v
+mprism11.vmdk
+Destination disk format: VMFS zeroedthick
+Cloning disk 'vmprism11-ORIG.vmdk'...
+Clone: 95% done.
+
+[root@vsphere-prod-01:/vmfs/volumes/11e2f489-ebcec2bf/vmprism11] ls -alh 
+total 33117572
+drwxr-xr-x    2 root     root        4.0K Nov 29 21:02 .
+drwxrwxrwx   28 root     root        4.0K Nov 29 20:59 ..
+-rw-r--r--    1 root     root        8.6K Nov 29 20:54 0f5e2718-c628-40a9-9c26-757c9b9ffa4b.ovf
+-rw-r--r--    1 root     root        3.8K Nov 29 20:55 e731a416-c9a4-4ec8-b89a-6ee626428aa2.ovf
+-rw-r--r--    1 root     root         198 Nov 29 00:43 vmprism11-1c036253.hlog
+-rw-r--r--    1 root     root       15.7G Nov 29 00:51 vmprism11-ORIG.vmdk
+-rw-------    1 root     root       15.7G Nov 29 21:02 vmprism11-flat.vmdk
+-rw-------    1 root     root        8.5K Nov 29 20:57 vmprism11.nvram
+-rw-------    1 root     root         494 Nov 29 21:02 vmprism11.vmdk
+-rw-r--r--    1 root     root           0 Nov 29 00:43 vmprism11.vmsd
+-rwxr-xr-x    1 root     root        2.7K Nov 29 20:57 vmprism11.vmx
+-rw-r--r--    1 root     root       52.0K Nov 29 16:51 vmware-1.log
+-rw-r--r--    1 root     root      179.9K Nov 29 20:57 vmware.log
+
+
+
+***************************************************************************************************************
+29Nov17
+
+https://blogs.vmware.com/vapp/2009/08/inside-the-ovf-package.html
+
+
+https://docs.openstack.org/image-guide/convert-images.html
+	@@@ The -f format flag is optional. If omitted, qemu-img will try to infer the image format.
+
+sudo qemu-img convert -O vmdk -o compat6 /disney/home/dsiegfriedt/c3858ef8-13d5-480d-a5a4-bc60489ef54a/images/9c98ec7c-4856-4546-a514-ff5784c20853/197e6b2b-f39a-45a0-9202-41f04f548fb5 /tmp/vmprism11.vmdk[sudo] password for dsiegfriedt: 
+dsiegfriedt@dts3329:~ $ 
+
+cp to vmprism11
+re-name to vmprism11-nof.vmdk (no -f)
+vmkfstools -i vmprism11-nof.vmdk -d zeroedthick vmprism11.vmdk
+
+@@@ try to boot
+
+***************************************************************************************************************
+30Nov17
+
+dracut-initqueue  Warning: dracut-initqueue timeout - starting timeout scripts
+
+A start job is running for dev-mapp...oot.device
+
+OK Started dracut initqueue hook.
+OK Reached target Remote File Systems (Pre).
+OK Reached target Remote File SYstem.
+*** A start job is running for dev-mapp...oot.device (??min ??s / no limit)
+
+boot in rescue mode ***** OK *****
+
+in /var/log/messages:
+
+Client 'host/vmprism11.disneytoonstudios.cm@DISNEYTOONSTUDIOS.COM' not found in Kerberos database.
+
+reboot using RHEL7.2
+
+***************************************************************************************************************
+20Dec17  possible tool from RedHat to find UUIDs
+
+[root@leadbottom ~]# lvs -o +tags | grep "24b6dfe8-c9db-450d-8bc6-fcb00e13cc09
+
+***************************************************************************************************************
+20Dec17 
+
+sudo mount nest-cluster.disneytoonstudios.com:/ /siggy
+
+cd /siggy/nest/vsphere_prod/vmprism11/
+
+ll
+total 48G
+drwxr-xr-x.  2 root root 4.0K Dec 20 15:35 .
+drwxrwxrwx. 30 root root 4.0K Dec  1 13:43 ..
+-rwxrwxr-x.  1 root root   84 Dec 20  2017 .lck-b075528900000000
+-rwxrwxr-x.  1 root root   84 Dec 20  2017 .lck-b375528900000000
+-rwxrwxr-x.  1 root root   84 Dec 20  2017 .lck-b663528900000000
+-rwxrwxr-x.  1 root root   84 Dec 20  2017 .lck-b875528900000000
+-rw-------.  1 root root 8.5K Dec 20 15:35 vmprism11.nvram
+-rw-------.  1 root root  496 Dec  8 02:04 vmprism11.vmdk
+-rw-r--r--.  1 root root    0 Nov 28 16:43 vmprism11.vmsd
+-rwxr-xr-x.  1 root root 2.9K Dec 20 15:35 vmprism11.vmx
+-rw-------.  1 root root    0 Dec 20 15:35 vmprism11.vmx.lck
+-rw-r--r--.  1 root root  198 Nov 28 16:43 vmprism11-1c036253.hlog
+-rw-------.  1 root root 8.0G Dec 20 15:35 vmprism11-406b66b5.vswp
+-rw-r--r--.  1 root root  16G Nov 28 16:51 vmprism11-ORIG.vmdk
+-rw-------.  1 root root 100G Dec 20 15:34 vmprism11-flat.vmdk
+-rw-r--r--.  1 root root  16G Nov 29 14:48 vmprism11-nof.vmdk
+-rw-r--r--.  1 root root 290K Dec 20 15:38 vmware.log
+-rw-r--r--.  1 root root 608K Dec  8 00:31 vmware-8.log
+-rw-r--r--.  1 root root 597K Dec  8 00:39 vmware-9.log
+-rw-r--r--.  1 root root 462K Dec  8 01:43 vmware-10.log
+-rw-r--r--.  1 root root 430K Dec  8 01:49 vmware-11.log
+-rw-r--r--.  1 root root 433K Dec  8 02:04 vmware-12.log
+-rw-r--r--.  1 root root 3.2M Dec 20 15:34 vmware-13.log
+-rw-------.  1 root root 110M Dec 20 15:35 vmx-vmprism11-1080780469-1.vswp
+
+@@@ same error
+
+@@@***** on dts3329 *****@@@
+
+ll /usr/lib/systemd/system | grep dracut
+lrwxrwxrwx. 1 root root   55 Nov 30  2016 dracut-cmdline.service -> ../../dracut/modules.d/98systemd/dracut-cmdline.service
+lrwxrwxrwx. 1 root root   57 Nov 30  2016 dracut-initqueue.service -> ../../dracut/modules.d/98systemd/dracut-initqueue.service
+lrwxrwxrwx. 1 root root   53 Nov 30  2016 dracut-mount.service -> ../../dracut/modules.d/98systemd/dracut-mount.service
+lrwxrwxrwx. 1 root root   57 Nov 30  2016 dracut-pre-mount.service -> ../../dracut/modules.d/98systemd/dracut-pre-mount.service
+lrwxrwxrwx. 1 root root   57 Nov 30  2016 dracut-pre-pivot.service -> ../../dracut/modules.d/98systemd/dracut-pre-pivot.service
+lrwxrwxrwx. 1 root root   59 Nov 30  2016 dracut-pre-trigger.service -> ../../dracut/modules.d/98systemd/dracut-pre-trigger.service
+lrwxrwxrwx. 1 root root   56 Nov 30  2016 dracut-pre-udev.service -> ../../dracut/modules.d/98systemd/dracu-pre-udev.service
+lrwxrwxrwx. 1 root root   56 Nov 30  2016 dracut-shutdown.service -> ../../dracut/modules.d/98systemd/dracu-shutdown.service
+
+[root@dts3329 init.d]# ll /usr/lib/dracut/
+total 140
+drwxr-xr-x.  2 root root    96 Nov 30  2016 dracut.conf.d
+lrwxrwxrwx.  1 root root    19 Nov 30  2016 dracut-functions -> dracut-functions.sh
+-rwxr-xr-x.  1 root root 54571 Jun  8  2016 dracut-functions.sh
+-rwxr-xr-x.  1 root root  1111 Jun  8  2016 dracut-initramfs-restore
+-rwxr-xr-x.  1 root root  1188 Jun  8  2016 dracut-init.sh
+-rwxr-xr-x.  1 root root 41512 Jun  8  2016 dracut-install
+-rwxr-xr-x.  1 root root 13469 Jun  8  2016 dracut-logger.sh
+-rwxr-xr-x.  1 root root    31 Jun  8  2016 dracut-version.sh
+drwxr-xr-x. 64 root root  4096 Jun  8  2016 modules.d
+-rwxr-xr-x.  1 root root  7216 Jun  8  2016 skipcpio
+
+ll /usr/lib/dracut/modules.d/98systemd
+total 172
+-rw-r--r--. 1 root root  935 Jun  8  2016 dracut-cmdline-ask.service
+-rwxr-xr-x. 1 root root  422 Jun  8  2016 dracut-cmdline-ask.sh
+-rw-r--r--. 1 root root 1117 Sep 12  2013 dracut-cmdline.service
+-rw-r--r--. 1 root root 1553 Sep 12  2013 dracut-cmdline.service.8
+-rw-r--r--. 1 root root  442 Sep 12  2013 dracut-cmdline.service.8.asc
+-rwxr-xr-x. 1 root root 2324 Jun  8  2016 dracut-cmdline.sh
+-rw-r--r--. 1 root root  976 Sep 12  2013 dracut-emergency.service
+-rwxr-xr-x. 1 root root 1102 Sep 12  2013 dracut-emergency.sh
+-rw-r--r--. 1 root root 1356 Jun  8  2016 dracut-initqueue.service
+-rw-r--r--. 1 root root 1548 Sep 12  2013 dracut-initqueue.service.8
+-rw-r--r--. 1 root root  439 Sep 12  2013 dracut-initqueue.service.8.asc
+-rwxr-xr-x. 1 root root 2223 Jun  8  2016 dracut-initqueue.sh
+-rw-r--r--. 1 root root  983 Sep 12  2013 dracut-mount.service
+-rw-r--r--. 1 root root 1529 Sep 12  2013 dracut-mount.service.8
+-rw-r--r--. 1 root root  416 Sep 12  2013 dracut-mount.service.8.asc
+-rwxr-xr-x. 1 root root 1170 Sep 12  2013 dracut-mount.sh
+-rw-r--r--. 1 root root 1015 Sep 12  2013 dracut-pre-mount.service
+-rw-r--r--. 1 root root 1544 Sep 12  2013 dracut-pre-mount.service.8
+-rw-r--r--. 1 root root  434 Sep 12  2013 dracut-pre-mount.service.8.asc
+-rwxr-xr-x. 1 root root  611 Sep 12  2013 dracut-pre-mount.sh
+-rw-r--r--. 1 root root 1015 Jun  8  2016 dracut-pre-pivot.service
+-rw-r--r--. 1 root root 1539 Sep 12  2013 dracut-pre-pivot.service.8
+-rw-r--r--. 1 root root  429 Sep 12  2013 dracut-pre-pivot.service.8.asc
+-rwxr-xr-x. 1 root root 1146 Jun  8  2016 dracut-pre-pivot.sh
+-rw-r--r--. 1 root root 1127 Sep 12  2013 dracut-pre-trigger.service
+-rw-r--r--. 1 root root 1548 Sep 12  2013 dracut-pre-trigger.service.8
+-rw-r--r--. 1 root root  440 Sep 12  2013 dracut-pre-trigger.service.8.asc
+-rwxr-xr-x. 1 root root  577 Sep 12  2013 dracut-pre-trigger.sh
+-rw-r--r--. 1 root root 1159 Sep 12  2013 dracut-pre-udev.service
+-rw-r--r--. 1 root root 1535 Sep 12  2013 dracut-pre-udev.service.8
+-rw-r--r--. 1 root root  424 Sep 12  2013 dracut-pre-udev.service.8.asc
+-rwxr-xr-x. 1 root root 1523 Sep 12  2013 dracut-pre-udev.sh
+-rw-r--r--. 1 root root  677 Jun  8  2016 dracut-shutdown.service
+-rw-r--r--. 1 root root 3607 Sep 12  2013 dracut-shutdown.service.8
+-rw-r--r--. 1 root root 1689 Sep 12  2013 dracut-shutdown.service.8.asc
+-rw-r--r--. 1 root root  135 Jun  8  2016 dracut-tmpfiles.conf
+-rw-r--r--. 1 root root  940 Sep 12  2013 emergency.service
+-rw-r--r--. 1 root root  247 Sep 12  2013 initrd.target
+-rwxr-xr-x. 1 root root 9674 Jun  8  2016 module-setup.sh
+-rw-r--r--. 1 root root  877 Sep 12  2013 rescue.service
+-rwxr-xr-x. 1 root root 2013 Jun  8  2016 rootfs-generator.sh
+
+
+man dracut-initqueue.service
+
+NAME
+       dracut-initqueue.service - runs the dracut main loop to find the real root
+
+SYNOPSIS
+       dracut-initqueue.service
+
+DESCRIPTION
+       This service runs all the main loop of dracut in the initramfs to find the real root.
+
+
+
+less dracut-initqueue.sh
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+man dracut.bootup
+
+
+NAME
+       dracut.bootup - boot ordering in the initramfs
+
+DESCRIPTION
+       This flow chart illustrates the ordering of the services, if systemd is used in the dracut
+       initramfs.
+
+                                               systemd-journal.socket
+                                                          |
+                                                          v
+                                               dracut-cmdline.service
+                                                          |
+                                                          v
+                                               dracut-pre-udev.service
+                                                          |
+                                                          v
+                                                systemd-udevd.service
+                                                          |
+                                                          v
+           local-fs-pre.target                dracut-pre-trigger.service
+                    |                                     |
+                    v                                     v
+            (various mounts)  (various swap  systemd-udev-trigger.service
+                    |           devices...)               |             (various low-level   (various low-level
+                    |               |                     |             services: seed,       API VFS mounts:
+                    v               v                     v             tmpfiles, random     mqueue, configfs,
+             local-fs.target   swap.target     dracut-initqueue.service    sysctl, ...)        debugfs, ...)
+                    |               |                     |                    |                    |
+                    \_______________|____________________ | ___________________|____________________/
+                                                         \|/
+                                                          v
+                                                   sysinit.target
+                                                          |
+                                        _________________/|\___________________
+                                       /                  |                    \
+                                       |                  |                    |
+                                       v                  |                    v
+                                   (various               |              rescue.service
+                                  sockets...)             |                    |
+                                       |                  |                    v
+                                       v                  |              rescue.target
+                                sockets.target            |
+                                       |                  |
+                                       \_________________ |                                 emergency.service
+                                                         \|                                         |
+                                                          v                                         v
+                                                    basic.target                             emergency.target
+                                                          |
+                                                          |
+                                   ______________________/|
+                                  /                       |
+                                  |                       v
+                                  |            dracut-pre-mount.service
+                                  |                       |
+                                  |                       v
+                                  |                  sysroot.mount
+                                  |                       |
+                                  |                       v
+                                  |             initrd-root-fs.target
+                      (custom initrd services)            |
+                                  |                       v
+                                  |             dracut-mount.service
+                                  |                       |
+                                  |                       v
+                                  |            initrd-parse-etc.service
+                                  |                       |
+                                  |                       v
+                                  |            (sysroot-usr.mount and
+                                  |             various mounts marked
+                                  |               with fstab option
+                                  |                x-initrd.mount)
+                                  |                       |
+                                  |                       v
+                                  |                initrd-fs.target
+                                  \______________________ |
+                                                         \|
+                                                          v
+                                                     initrd.target
+                                                          |
+                                                          v
+                                               dracut-pre-pivot.service
+                                                          |
+                                                          v
+                                                initrd-cleanup.service
+                                                     isolates to
+                                               initrd-switch-root.target
+                                                          |
+                                                          v
+                                   ______________________/|
+                                  /                       |
+                                  |        initrd-udevadm-cleanup-db.service
+                                  |                       |
+                      (custom initrd services)            |
+                                  |                       |
+                                  \______________________ |
+                                                         \|
+                                                          v
+                                              initrd-switch-root.target
+                                                          |
+                                                          v
+                                              initrd-switch-root.service
+                                                          |
+                                                          v
+                                                     switch-root
+
+AUTHOR
+       Harald Hoyer
+
+SEE ALSO
+       dracut(8) bootup(7)
+
+dracut                                          06/08/2016                               DRACUT.BOOTUP(7)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+@@@***** on dts3329 *****@@@
+
+
+***************************************************************************************************************
+20Dec17 rhevm DB backup howto
+
+https://access.redhat.com/solutions/797463
+
+***************************************************************************************************************
+21Dec17  dracut troubleshooting
+
+https://fedoraproject.org/wiki/How_to_debug_Dracut_problems
+
+@@@ edit /etc/default/grub
+
+1. Remove rhgb and quiet from the kernel command line
+
+2. Add rd.shell to the kernel command line. This will present a shell should dracut be unable to locate your root device
+
+3. Add rd.shell rd.debug log_buf_len=1M to the kernel command line so that dracut shell commands are printed as they are executed
+
+4. Inspect the system logs:
+ # less /run/initramfs/rdsosreport.txt
+ # journalctl -a
+ # dmesg
+ # less /run/initramfs/init.log
+
+
+Summary of dracut kernel command line options
+A selection of the most common debugging related dracut options:
+
+rd.shell       	   	Drop to a shell, if the initramfs fails.
+rd.debug 		set -x for the dracut shell.
+rd.break=[cmdline|pre-udev|pre-trigger|initqueue|pre-mount|mount|pre-pivot|cleanup] 
+drop the shell on defined breakpoint (use egrep 'rd.?break' /usr/lib/dracut/modules.d/99base/init.sh to find the breakpoints supported by your dracut version)
+rd.udev.info   	  	 set udev to loglevel info
+rd.udev.debug 		 set udev to loglevel debug
+
+@@@ Grace to the rescue!!!  
+
+vmware converter
+
+@@@ See
+
+http://confluence.disneytoonstudios.com/display/TEC/RHEV+to+VMware+Migration+Page
+
+
+***************************************************************************************************************
+27Dec17  list of active VMs on RHEV
+less /disney/depts/tech/systems/log/rhev/rhev.list.2017-12-27-1139   @@@ 64
+
+***************************************************************************************************************
+
+2Jan18  vmtools not running
+
+yum install open-vm-tools
+
+[root@vmprism11 ~]# systemctl list-unit-files | grep tools
+vmtoolsd.service                              enabled 
+[root@vmprism11 ~]# systemctl status vmtoolsd.service
+● vmtoolsd.service - Service for virtual machines hosted on VMware
+   Loaded: loaded (/usr/lib/systemd/system/vmtoolsd.service; enabled; vendor preset: enabled)
+   Active: inactive (dead)
+     Docs: http://github.com/vmware/open-vm-tools
+[root@vmprism11 ~]# 
+[root@vmprism11 ~]# 
+[root@vmprism11 ~]# 
+[root@vmprism11 ~]# systemctl start vmtoolsd.service
+[root@vmprism11 ~]# systemctl status vmtoolsd.service
+● vmtoolsd.service - Service for virtual machines hosted on VMware
+   Loaded: loaded (/usr/lib/systemd/system/vmtoolsd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2018-01-02 13:32:23 PST; 2s ago
+     Docs: http://github.com/vmware/open-vm-tools
+ Main PID: 25193 (vmtoolsd)
+   CGroup: /system.slice/vmtoolsd.service
+           └─25193 /usr/bin/vmtoolsd
+
+Jan 02 13:32:23 vmprism11.disneytoonstudios.com systemd[1]: Started Service for virtual machines host...e.
+Jan 02 13:32:23 vmprism11.disneytoonstudios.com systemd[1]: Starting Service for virtual machines hos.....
+Hint: Some lines were ellipsized, use -l to show in full.
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+Jan18
+
+
+DTSWEB did not have mariadb enabled during boot
+
+
+11Jan18  vmprism?? not working (seem to be down -Jammes)
+  fails puppet agent --test
+  fails to start elasticsearch.service
+
+
+***************************************************************************************************************
+22Jan18 problem with powering on clones is that UUIDs are the same... you need to change them
+
+https://www.linuxquestions.org/questions/linux-server-73/cloning-and-vg-uuids-change-4175485450/
+***************************************************************************************************************
+1Feb18  converted vmmariadb2
+
+Start:	4:07:08
+Stop:	4:35:17
+
+mount nest01:/ /mnt
+du -sh /mnt/nest/vsphere_prod/vmmariadb2-copy/
+23G	/mnt/nest/vsphere_prod/vmmariadb2-copy/
+***************************************************************************************************************
+***************************************************************************************************************
+***************************************************************************************************************
+***************************************************************************************************************
+***************************************************************************************************************
+***************************************************************************************************************
+***************************************************************************************************************

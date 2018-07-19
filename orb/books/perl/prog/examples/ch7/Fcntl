@@ -1,0 +1,1 @@
+use Fcntl;$nonblock_flag = O_NDELAY();$create_flag = O_CREAT();$read_write_flag = O_RDWR();

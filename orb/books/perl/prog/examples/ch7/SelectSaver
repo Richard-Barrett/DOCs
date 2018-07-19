@@ -1,0 +1,1 @@
+use SelectSaver;select $fh_old;{    my $saver = new SelectSaver($fh_new); # selects $fh_new}# block ends; object pointed to by "my" $saver is destroyed# previous handle, $fh_old is now selected# alternative invocation, without file handle argumentmy $saver = new SelectSaver; # selected file handle remains unchanged

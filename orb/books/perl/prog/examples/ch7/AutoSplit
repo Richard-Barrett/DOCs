@@ -1,0 +1,1 @@
+# from a programuse AutoSplit;autosplit_modules(@ARGV)# or from the command lineperl -MAutoSplit -e 'autosplit($ARGV[0], $ARGV[1], $k, $chk, $modtime)' ... # another interfaceperl -MAutoSplit -e 'autosplit_lib_modules(@ARGV)' ...*****perl -MAutoSplit -e 'autosplit($ARGV[0], $ARGV[1], 0, 1, 1)'

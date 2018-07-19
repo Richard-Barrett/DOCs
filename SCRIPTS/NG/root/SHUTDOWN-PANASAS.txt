@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ssh pan1 -l admin syscontrol shutdown

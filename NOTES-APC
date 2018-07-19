@@ -1,0 +1,780 @@
+23Jun15  --siggy
+
+#Testing switched version of APC PDU
+#Model Number AP8958NA3 ( Rack PDU 2G, Switched, ZeroU, 20A, 208V, (7) C13 & (1) C19, L620 Cord )
+
+#Existing APC PDUs
+#Model Number AP8841 ( RACK PDU 2G, METERED, ZEROU, 30A, 200/208V, (36) C13 & (6) C19 )
+
+#UCS Server Technology CS-12HD-2 ( 12 - C19 )
+==========================================================================================================
+The UCS will need 1 TTL:
+Rack PDU, Switched, 2U Horizontal, 30A, 208V, 16 x C13 (AP7911A)
+http://www.apc.com/products/resource/include/techspec_index.cfm?base_sku=AP7911A
+
+The NetApp racks will need 2each (3 racks) for shelves (6 TTL)
+http://www.apc.com/products/resource/include/techspec_index.cfm?base_sku=AP8941
+
+==========================================================================================================
+
+
+33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+29Jul15  --siggy
+3 main commands to see the configuration of the outlets
+
+olondelay all
+olstatus all
+olname all
+tcpip
+
+33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+
+#Set up ssh
+
+apc>console help
+Usage: console --  Configuration Options
+    console [-t <enable | disable>] (telnet)
+            [-s <enable | disable>] (ssh)
+            [-pt <telnet-port>] (23 and 5000-32768)
+            [-ps <ssh-port>] (22 and 5000-32768)
+            [-b <2400 | 9600 | 19200 | 38400>] (serial baud rate)
+
+apc>console -s enable
+E002: Success
+Reboot required for change to take effect.
+
+
+* Reboot required for change to take effect.
+apc>reboot
+E000: Success
+Reboot Management Interface
+Enter 'YES' to continue or <ENTER> to cancel : yes
+Rebooting...
++++++
+apc>console -ps 22
+E002: Success
+Reboot required for change to take effect.
+
+
+apc>reboot
+E000: Success
+Reboot Management Interface
+Enter 'YES' to continue or <ENTER> to cancel : yes
+Rebooting...
++++++
+
+#just ssh would not work.....
+#http://ubuntuforums.org/showthread.php?t=1665600
+# add "-t" and it works
+
+dsiegfri@la1002073d:~/REPUBLIC $ ssh -t apc@10.130.24.26
+apc@10.130.24.26's password: 
+
+apc>
+apc>userPasswd siggy apc apc
+E000: Success
+
+apc>userPasswd ookongo apc apc
+E000: Success
+
+apc>userAdd nixmgt             
+E000: Success
+
+apc>userPasswd nixmgt apc apc 
+E000: Success
+
+apc>
+apc>olAssignUsr all siggy               
+E000: Success
+
+apc>olAssignUsr all ookongo
+E000: Success
+
+apc>olAssignUsr all nixmgt 
+E000: Success
+
+apc>userList
+E000: Success
+Name                 User Type            Status    Outlets
+----                 ---------            ------    -------
+apc                  Super                ******    1-8
+device               Device               Enabled   1-8
+readonly             ReadOnly             Enabled   1-8
+nixmgt               Outlet               Enabled   1-8
+ookongo              Outlet               Enabled   1-8
+siggy                Outlet               Enabled   1-8
+
++++++
+
+24Jun15 --siggy
+
+apc>ftp help
+Usage: ftp --  Configuration Options
+    ftp [-p <port-number>] (21 and 5001-32768)
+        [-S <enable | disable>]
+
+apc>ftp -S enable            
+E002: Success
+Reboot required for change to take effect.
+
+apc>ftp -p 21
+E002: Success
+Reboot required for change to take effect.
++++++
+
+[nixmgt@lasysmon ~]$ ftp 10.130.24.26
+Connected to 10.130.24.26.
+220 AP8958NA3 Network Management Card AOS v6.1.3 FTP server ready.
+431 Unable to use security mechanism.
+431 Unable to use security mechanism.
+KERBEROS_V4 rejected as an authentication type
+Name (10.130.24.26:nixmgt): apc
+331 User name okay, need password.
+Password:
+230 User logged in, proceed.
+ftp> get config.ini
+local: config.ini remote: config.ini
+227 Entering Passive Mode (10,130,24,26,187,188).
+150 File status okay; about to open data connection.
+226 Closing data connection.
+28170 bytes received in 7.1 seconds (3.8 Kbytes/s)
+ftp> bye
+221 Goodbye.
++++++
+
+apc>olname 8 lasan3-Right
+E000: Success
+
+apc>olstatus all          
+E000: Success
+ 1: top-of-the-moning: On 
+ 2: some-random-name: On 
+ 3: some-other-random-name: On 
+ 4: light-of-my-life: On 
+ 5: lasan4-Left: On 
+ 6: lasan4-Right: On 
+ 7: lasan3-Left: On 
+ 8: lasan3-Right: On 
+
++++++
+25Jun15  --siggy
+# seems you can't create a script to run expect.   You can write a "answere file" and call it from expect.
+
+expect -f 24jun15-expect
+
+
+dsiegfri@la1002073d:~/REPUBLIC/APC $ cat 24jun15-expect 
+#25Jun15  --siggy
+#Seems that you can not create a script for expect.  You can create an "answer file" and call that from expect.
+# Usage is /usr/bin/expect -f /home/dsiegfri/REPUBLIC/APC/24jun15-expect
+
+spawn telnet 10.130.24.26
+
+expect "User Name : "
+send "nixmgt\r"
+
+expect "*?assword*"
+send "apc\r"
+expect "apc>"
+
+send "oloff 4\r"
+
+sleep 20
+
+#run over and look at the light plugged into #4
+
+expect "apc>"
+
+send "olstatus all\r"
+expect "apc>"
+
+send "olon 4\r"
+expect "apc>"
+
+send "exit\r"
+
++++++
+From: Siegfriedt, Donald
+Sent: Thursday, June 25, 2015 1:26 PM
+To: Schroeder, Thomas
+Cc: Okong'o, Othieno
+Subject: switched APC PDUs
+
+Finished the scripting and started shopping........  JUST for the main components, I wasn't sure if you wanted to replace all the rack PDUs.
+
+Short version:
+1x AP7911A
+8x AP8941
+
+Long version:
+
+The UCS rack (Rack #7 )will need (1 TTL):
+Rack PDU, Switched, 2U Horizontal, 30A, 208V, 16 x C13 (AP7911A)
+http://www.apc.com/products/resource/include/techspec_index.cfm?base_sku=AP7911A
+
+plus for MISC equipment plugged in (2 TTL)
+http://www.apc.com/products/resource/include/techspec_index.cfm?base_sku=AP8941
+ 
+The NetApp racks will need 2each (3 racks... 12, 13, 14) for shelves (6 TTL)
+http://www.apc.com/products/resource/include/techspec_index.cfm?base_sku=AP8941
+
+The NetApp rack with Heads (12, 14) will need an 2 each (4 TTL)  [we have one of these as a POC]
+http://www.apc.com/products/resource/include/techspec_index.cfm?base_sku=AP8958
+
++++++
+26jun15  --siggy
+
+#To make sure teh socket does not come on after power failure you have to set the socket to never power up.
+
+#and then you can turn it on by hand when appropriate.
+
+#First pass through clicky-clicky then FTPing the config.ini to my local machine.
+
+
+dsiegfri@la1002073d:~/REPUBLIC/APC $ diff config.ini-23jun15 config.ini-26jun15 
+5c5
+< ; Configuration file, generated on 06/23/2015 at 12:34:10 by Administrator apc
+---
+> ; Configuration file, generated on 06/25/2015 at 12:53:52 by Administrator apc
+383,390c383,390
+< OUTLET_NAME_A1=Outlet 1
+< OUTLET_NAME_A2=Outlet 2
+< OUTLET_NAME_A3=Outlet 3
+< OUTLET_NAME_A4=Outlet 4
+< OUTLET_NAME_A5=Outlet 5
+< OUTLET_NAME_A6=Outlet 6
+< OUTLET_NAME_A7=Outlet 7
+< OUTLET_NAME_A8=Outlet 8
+---
+> OUTLET_NAME_A1=top-of-the-moning
+> OUTLET_NAME_A2=some-random-name
+> OUTLET_NAME_A3=some-other-random-name
+> OUTLET_NAME_A4=light-of-my-life
+> OUTLET_NAME_A5=lasan4-Left
+> OUTLET_NAME_A6=lasan4-Right
+> OUTLET_NAME_A7=lasan3-Left
+> OUTLET_NAME_A8=lasan3-Right
+402c402
+< OUTLET_POWER_ON_DELAY_A4=0
+---
+> OUTLET_POWER_ON_DELAY_A4=-1
+
+!!!!!
+
+# Now through typy-typy
+apc>olOnDelay help
+Usage: olOnDelay  -- Set or read the power on delay time.
+    olOnDelay [id#:]<all | outlet name | outlet#> [time]
+
+apc>olOnDelay 5 -1
+E000: Success
+
+apc>olOnDelay all
+E000: Success
+ 1: top-of-the-moning: 0 sec
+ 2: some-random-name: 0 sec
+ 3: some-other-random-name: 0 sec
+ 4: light-of-my-life: -1 sec
+ 5: lasan4-Left: -1 sec
+ 6: lasan4-Right: 0 sec
+ 7: lasan3-Left: 0 sec
+ 8: lasan3-Right: 0 sec
+
+!!!!!
+2Jul15  --siggy
+#Could not find it anywhere else..... temp readings
+#expect into the PDU.....
+
+tempreading F
+humreading
+prodinfo
+whoami
+
+apc>about
+E000: Success
+Hardware Factory
+---------------
+Model Number: 		AP8941
+Serial Number: 		5A1510E04081
+Hardware Revision: 	02
+Manufacture Date: 	03/04/2015
+MAC Address: 		00 C0 B7 E8 DE 6D
+Management Uptime: 	0 Days 0 Hours 9 Minutes
+
+Network Management Card
+---------------
+Model Number: 		AP9537
+Serial Number: 		5A1510E02632
+Hardware Revision: 	05
+Manufacture Date: 	03/04/2015
+
+Application Module
+---------------
+Name: 			rpdu2g
+Version: 		v6.1.0
+Date: 			May  6 2014
+Time: 			13:10:01
+
+APC OS(AOS)
+---------------
+Name: 			aos
+Version: 		v6.1.3
+Date: 			Nov 15 2013
+Time: 			10:40:47
+
+APC Boot Monitor
+---------------
+Name: 			bootmon
+Version: 		v1.0.8
+Date: 			Apr  8 2014
+Time: 			10:59:40
+
+apc>
+!!!!!
+17Nov14  --siggy
+
+#!/usr/bin/expect
+
+spawn /usr/kerberos/bin/telnet 10.130.24.26
+expect "User Name : "
+send "apc\r"
+expect "Password : "
+send "apc\r"
+expect "Administrator@apc>"
+send "tempReading F\r"
+send "exit"
+!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+7Jul15  --siggy   APC 8491 PDU
+
+apc>about
+E000: Success
+Hardware Factory
+---------------
+Model Number: 		AP8941
+Serial Number: 		5A1510E04081
+Hardware Revision: 	02
+Manufacture Date: 	03/04/2015
+MAC Address: 		00 C0 B7 E8 DE 6D
+Management Uptime: 	0 Days 0 Hours 9 Minutes
+
+Network Management Card
+---------------
+Model Number: 		AP9537
+Serial Number: 		5A1510E02632
+Hardware Revision: 	05
+Manufacture Date: 	03/04/2015
+
+Application Module
+---------------
+Name: 			rpdu2g
+Version: 		v6.1.0
+Date: 			May  6 2014
+Time: 			13:10:01
+
+APC OS(AOS)
+---------------
+Name: 			aos
+Version: 		v6.1.3
+Date: 			Nov 15 2013
+Time: 			10:40:47
+
+APC Boot Monitor
+---------------
+Name: 			bootmon
+Version: 		v1.0.8
+Date: 			Apr  8 2014
+Time: 			10:59:40
+
+apc>
+
+
+
+
+apc>userAdd [siggy ookongo mixmgt]
+
+apc>user -n siggy -pw apc
+
+apc>console ?
+Usage: console --  Configuration Options
+    console [-t <enable | disable>] (telnet)
+            [-s <enable | disable>] (ssh)
+            [-pt <telnet-port>] (23 and 5000-32768)
+            [-ps <ssh-port>] (22 and 5000-32768)
+            [-b <2400 | 9600 | 19200 | 38400>] (serial baud rate)
+
+apc>console -s enable
+E002: Success
+Reboot required for change to take effect.
+
+
+* Reboot required for change to take effect.
+apc>console -t disable
+E002: Success
+Reboot required for change to take effect.
+
+
+* Reboot required for change to take effect.
+apc>console -ps 22    
+E002: Success
+Reboot required for change to take effect.
+
+
+* Reboot required for change to take effect.
+apc>reboot
+
+apc>prodinfo
+E000: Success
+RPDU ID:          1*
+AOS 6.1.3
+Switched Rack PDU 6.1.0 
+Model:            AP8941
+Name:             rack9-test
+Location:         Unknown
+Contact:          Unknown
+Present Outlets:  24
+Switched Outlets: 24
+Metered Outlets:  0
+Max Current:      24 A
+Phases:           1
+Banks:            2
+Uptime:           0 Days 0 Hours 1 Minute
+Network Link:     Link Active
+
+apc>?
+
+System Commands:
+---------------------------------------------------------------------------
+For command help: command ? 
+
+?           about       alarmcount  boot        bye         cd          
+clrrst      console     date        delete      dir         dns         
+email       eventlog    exit        firewall    format      ftp         
+help        lang        lastrst     ledblink    logzip      netstat     
+ntp         ping        portspeed   prompt      pwd         quit        
+radius      reboot      resetToDef  session     smtp        snmp        
+snmptrap    snmpv3      system      tcpip       tcpip6      user        
+userdflt    web         whoami      xferINI     xferStatus  
+
+Device Commands:
+---------------------------------------------------------------------------
+bkLowLoad   bkNearOver  bkOverLoad  bkReading   bkRestrictn devLowLoad  
+devNearOver devOverLoad devReading  devStartDly dispID      humLow      
+humMin      humHyst     humReading  lcd         lcdBlink    olAssignUsr 
+olCancelCmd olDlyOff    olDlyOn     olDlyReboot olGroups    olName      
+olOff       olOffDelay  olOn        olOnDelay   olRbootTime olReboot    
+olStatus    olUnasgnUsr phLowLoad   phNearOver  phOverLoad  phReading   
+phRestrictn prodInfo    sensorName  tempHigh    tempMax     tempHyst    
+tempReading userAdd     userDelete  userList    userPasswd  energyWise  
+
+
+apc>userlist
+E000: Success
+Name                 User Type            Status    Outlets
+----                 ---------            ------    -------
+apc                  Super                ******    1-24
+device               Device               Enabled   1-24
+readonly             ReadOnly             Enabled   1-24
+nixmgt               Outlet               Enabled   
+ookongo              Outlet               Enabled   
+siggy                Outlet               Enabled   
+
+apc>ftp -S enable
+E002: Success
+Reboot required for change to take effect.
+
+
+apc>ftp -p 21
+E002: Success
+Reboot required for change to take effect.
+
+
+apc>olAssignUsr all siggyy
+E203: User Does Not Exist
+E000: Success
+
+apc>olAssignUsr all siggy 
+E000: Success
+
+apc>olAssignUsr all ookongo
+E000: Success
+
+apc>olAssignUsr all nxmgt  
+E203: User Does Not Exist
+E000: Success
+
+apc>olAssignUsr all nixmgt
+E000: Success
+
+
+#logged in as siggy
+
+apc>userlist
+E000: Success
+Name                 User Type            Status    Outlets
+----                 ---------            ------    -------
+apc                  Super                ******    1-24
+device               Device               Enabled   1-24
+readonly             ReadOnly             Enabled   1-24
+nixmgt               Outlet               Enabled   1-24
+ookongo              Outlet               Enabled   1-24
+siggy                Outlet               Enabled   1-24
+
+
+apc>olstatus all
+E000: Success
+ 1: Outlet 1: Off 
+ 2: Outlet 2: Off 
+ 3: Outlet 3: Off 
+ 4: Outlet 4: Off 
+ 5: Outlet 5: Off 
+ 6: Outlet 6: Off 
+ 7: Outlet 7: Off 
+ 8: Outlet 8: Off 
+ 9: Outlet 9: Off 
+10: Outlet 10: Off 
+11: Outlet 11: Off 
+12: Outlet 12: Off 
+13: Outlet 13: Off 
+14: Outlet 14: Off 
+15: Outlet 15: Off 
+16: Outlet 16: Off 
+17: Outlet 17: Off 
+18: Outlet 18: Off 
+19: Outlet 19: Off 
+20: Outlet 20: Off 
+21: Outlet 21: Off 
+22: Outlet 22: Off 
+23: Outlet 23: Off 
+24: Outlet 24: Off 
+
+apc>olon all     
+E000: Success
+
+apc>
+apc>
+apc>olstatus all
+E000: Success
+ 1: Outlet 1: On 
+ 2: Outlet 2: On 
+ 3: Outlet 3: On 
+ 4: Outlet 4: On 
+ 5: Outlet 5: On 
+ 6: Outlet 6: On 
+ 7: Outlet 7: On 
+ 8: Outlet 8: On 
+ 9: Outlet 9: On 
+10: Outlet 10: On 
+11: Outlet 11: On 
+12: Outlet 12: On 
+13: Outlet 13: On 
+14: Outlet 14: On 
+15: Outlet 15: On 
+16: Outlet 16: On 
+17: Outlet 17: On 
+18: Outlet 18: On 
+19: Outlet 19: On 
+20: Outlet 20: On 
+21: Outlet 21: On 
+22: Outlet 22: On 
+23: Outlet 23: On 
+24: Outlet 24: On 
+
+apc>
+
+apc>?     
+
+System Commands:
+---------------------------------------------------------------------------
+For command help: command ? 
+
+?           about       alarmcount  bye         cd          dir         
+eventlog    exit        help        lang        netstat     pwd         
+quit        whoami      
+
+Device Commands:
+---------------------------------------------------------------------------
+humReading  olCancelCmd olDlyOff    olDlyOn     olDlyReboot olName      
+olOff       olOffDelay  olOn        olOnDelay   olRbootTime olReboot    
+olStatus    prodInfo    tempReading userList    
+
+apc>pwd
+/
+
+apc>dir
+E000: Success
+     2787840 Nov 15  2013  apc_hw05_aos_613.bin
+     2208724 May  6  2014  apc_hw05_rpdu2g_610.bin
+       45000 Jul  8  8:37  config.ini
+           0 Mar  4  0:00  ssl/
+           0 Mar  4  0:00  ssh/
+           0 Mar  4  0:00  logs/
+           0 Mar  4  0:00  sec/
+           0 Mar  4  0:00  dbg/
+           0 Mar  4  0:00  fwl/
+           0 Mar  4  0:00  email/
+           0 Mar  4  0:00  lang/
+           0 Mar  4  0:00  pdu/
+           0 Mar  4  0:00  rms/
+
+#ftp (from lasysmon) and get "config.ini" (~dsiegfri/REPUBLIC/APC/config.ini-8jul15*)
+
+apc>
+apc>olondelay ?
+Usage: olOnDelay  -- Set or read the power on delay time.
+    olOnDelay [id#:]<all | outlet name | outlet#> [time]
+
+apc>olondelay 1 -1
+E000: Success
+
+apc>olondelay all 
+E000: Success
+ 1: out-one: -1 sec
+ 2: out-two: 0 sec
+ 3: out-three: 0 sec
+ 4: Outlet 4: 0 sec
+ 5: Outlet 5: 0 sec
+ 6: Outlet 6: 0 sec
+ 7: Outlet 7: 0 sec
+ 8: Outlet 8: 0 sec
+ 9: Outlet 9: 0 sec
+10: Outlet 10: 0 sec
+11: Outlet 11: 0 sec
+12: Outlet 12: 0 sec
+13: Outlet 13: 0 sec
+14: Outlet 14: 0 sec
+15: Outlet 15: 0 sec
+16: Outlet 16: 0 sec
+17: Outlet 17: 0 sec
+18: Outlet 18: 0 sec
+19: Outlet 19: 0 sec
+20: Outlet 20: 0 sec
+21: Outlet 21: 0 sec
+22: Outlet 22: 0 sec
+23: Outlet 23: 0 sec
+24: Outlet 24: 0 sec
+
+apc>
+
+#edited config.ini (on lasysmon:/tmp/config.ini) 
+# ftp put, reboot
+# puts file but doesn't boot from that file.... can be 2 config.ini files (scratching my head)
+
+
+#Below works 8Jul15  --siggy
+dsiegfri@la1002073d:~/REPUBLIC/APC $ cat blah 
+spawn /usr/bin/ssh nixmgt@10.130.24.26
+expect "nixmgt@10.130.24.26's password: "
+send "apc\r"
+expect "apc>"
+send "olstatus all\r"
+expect "apc>"
+send "exit"
+
+!!!!!
+29Jul15  --siggy
+Both LT and RT are configured to look the same.   ol7 (NetApp head) does NOT come on after power is restored.
+Network switches and shelves DO come on when power is restored.
+
+
+RACK12-NA-[R L]T (10.130.24.10/11)
+
+
+[nixmgt@lasysmon ~]$ ssh 10.130.24.10
+nixmgt@10.130.24.10's password: 
+
+American Power Conversion               Network Management Card AOS      v6.1.3
+(c) Copyright 2013 All Rights Reserved  RPDU 2g                          v6.1.0
+-------------------------------------------------------------------------------
+Name      : rack12-NA-LT                              Date : 07/29/2015
+Contact   : Unknown                                   Time : 13:20:48
+Location  : Unknown                                   User : Outlet User
+Up Time   : 0 Days 21 Hours 4 Minutes                 Stat : P+ N4+ N6+ A+
+
+Type ? for command listing
+Use tcpip command for IP address(-i), subnet(-s), and gateway(-g)
+
+apc>
+apc>olondelay all            
+E000: Success
+ 1: NA-shelf-bottom: 0 sec
+ 2: Empty: 0 sec
+ 3: Empty: 0 sec
+ 4: NA-shelf-middle: 0 sec
+ 5: Empty: 0 sec
+ 6: Empty: 0 sec
+ 7: NA-lasan5-6: -1 sec
+ 8: C19-socket: -1 sec
+ 9: Empty: 0 sec
+10: Empty: 0 sec
+11: Empty: 0 sec
+12: Empty: 0 sec
+13: Empty: 0 sec
+14: Empty: 0 sec
+15: Empty: 0 sec
+16: C19-socket: -1 sec
+17: Empty: 0 sec
+18: Empty: 0 sec
+19: Empty: 0 sec
+20: Empty: 0 sec
+21: Empty: 0 sec
+22: Cisco-2248-U38: 0 sec
+23: Cisco-2248-U40: 0 sec
+24: C19-socket: -1 sec
+
+!!!!!
+27Aug15  --siggy  setting name of PDU
+
+  Host Name:		apcE8DE6D
+
+apc>system -n RACK13-NA-RT
+E000: Success
+
+apc>tcpip                  
+E000: Success
+
+Active IPv4 Settings
+--------------------
+  Active IPv4 Address:		10.130.24.13
+  Active IPv4 Subnet Mask:	255.255.252.0
+  Active IPv4 Gateway:		10.130.24.1
+
+Manually Configured IPv4 Settings
+---------------------------------
+
+  IPv4:			enabled
+  Manual Settings:	enabled
+
+  IPv4 Address:		10.130.24.13
+  Subnet Mask:		255.255.252.0
+  Gateway:		10.130.24.1
+  MAC Address:		00 C0 B7 E8 DE 6D
+  Domain Name:		ri-net.com
+  Host Name:		RACK13-NA-RT
+
+apc>exitConnection to 10.130.24.13 closed.
+You have new mail in /var/spool/mail/root
+[root@lasysmon tmp]# 
+[root@lasysmon tmp]# 
+[root@lasysmon tmp]# 
+[root@lasysmon tmp]# 
+[root@lasysmon tmp]# ssh apc@10.130.24.13
+apc@10.130.24.13's password: 
+
+
+American Power Conversion               Network Management Card AOS      v6.1.3
+(c) Copyright 2013 All Rights Reserved  RPDU 2g                          v6.1.0
+-------------------------------------------------------------------------------
+Name      : RACK13-NA-RT                              Date : 08/27/2015
+Contact   : Unknown                                   Time : 11:39:20
+Location  : Unknown                                   User : Super User
+Up Time   : 4 Days 7 Hours 0 Minutes                  Stat : P+ N+ A+
+
+
+
+!!!!!
+
+!!!!!
+

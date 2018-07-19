@@ -1,0 +1,1706 @@
+23jul10  --jthompson
+
+http://intranet/display/ec/NetApp+Info+and+How+To%27s
+
+disk replacement
+
+You can use the filer name IF you jump off pl1rad705.admin.edmunds.com
+
+(dsiegfriedt)[ ~ ] {4} > ssh siggy@10.128.4.210
+
+IPs listed at the bottom....
+
+ONLY one connection at a time!   If it dumps you out... someone else is logged in.
+
+ALL accounts are local to the filer.... so it is "siggy" on all of them.
+
+
+pl1nne300> uptime
+ 10:26am up 775 days, 19:03 1807322517415 NFS ops, 496857909 CIFS ops, 481 HTTP ops, 0 FCP ops, 0 iSCSI ops
+
+pl1nne300> vol< status -f
+
+Broken disks
+
+RAID Disk	Device	HA  SHELF BAY CHAN Pool Type  RPM  Used (MB/blks)    Phys (MB/blks)
+---------	------	------------- ---- ---- ---- ----- --------------    --------------
+failed  	0a.54 	0a    3   6   FC:A   -  FCAL 10000 136000/278528000  137104/280790184 
+
+### the "a" loop is ABOVE the head
+### the "b" loop is BELOW the head
+
+### set advanced commands (like becoming root)
+
+pl1nne300> priv set advanced
+Warning: These advanced commands are potentially dangerous; use
+         them only when directed to do so by Network Appliance
+         personnel.
+
+#### Bracket the suspect disk by turning on teh LEDs (on both sides)
+
+pl1nne300*> led_on 0a.53
+pl1nne300*> led_on 0a.55
+
+### Then turn them off (while watching) JUST to make sure you don't replace the wrong disk
+
+pl1nne300*> led_off 0a.53
+pl1nne300*> led_off 0a.55
+
+### replace the bad disk
+
+### unset advaced priv.....
+
+pl1nne300*> priv set
+
+pl1nne300> vol status -f
+
+Broken disks (empty)
+
+### NO broken disks... GOOOD!!!!!
+
+pl1nne300> Fri Jul 23 10:34:04 PDT [pl1nne300: diskown.changingOwner:info]: changing ownership for disk 0a.54 (S/N V5YU1W6A) from unowned (ID -1) to pl1nne300 (ID 118057895)
+
+#### the "changing ownership is BIG!   Without this the system does not know it has a spare disk.
+
+pl1nne300> vol status -s
+
+### Overall status of the head.
+
+Spare disks
+
+RAID Disk	Device	HA  SHELF BAY CHAN Pool Type  RPM  Used (MB/blks)    Phys (MB/blks)
+---------	------	------------- ---- ---- ---- ----- --------------    --------------
+Spare disks for block or zoned checksum traditional volumes or aggregates
+spare   	0a.54 	0a    3   6   FC:A   -  FCAL 10000 136000/278528000  137422/281442144 
+
+pl1nne300>
+Fri Jul 23 10:35:00 PDT [pl1nne300: monitor.globalStatus.ok:info]: The system's global status is normal. 
+
+
+pl1nne300> 
+
+###############################
+
+27jul10  --siggy
+
+"a" loop is above the head
+"b" loop is below the head
+
+###############################
+
+http://intranet/display/ec/Filer+admin+IP+addresses
+
+ssh siggy@10.128.4.210 == pl1nne300
+
+172.16.4.34    	       3050ca
+172.16.1.146           960-dc2
+10.16.16.204           pl1nne004
+10.16.16.205           pl1nne005
+10.128.6.21    	       pl1nne100
+10.128.6.22    	       pl1nne101
+10.96.194.100          pl1nne102
+10.111.1.110           pl1nvf102-1111
+10.113.1.110           pl1nvf102-1113
+10.96.194.101          pl1nne103
+10.111.1.111           pl1nvf103-1111
+10.113.1.111           pl1nvf103-1113
+#10.96.194.102         pl1nne104
+10.111.1.112           pl1nvf104-1111
+10.113.1.112           pl1nvf104-1113
+#10.96.194.103         pl1nne105
+10.111.1.113           pl1nvf105-1111
+10.113.1.113           pl1nvf105-1113
+10.4.252.6    	       Pl1nne106
+10.4.252.7    	       pl1nne107
+10.128.4.210           pl1nne300
+10.128.4.211           pl1nne301
+10.128.4.212           pl1nne302
+10.128.4.213           pl1nne303
+10.128.4.214           pl1nne304
+10.128.4.215           pl1nne305
+10.128.4.216           pl1nne306
+10.128.4.217           pl1nne307
+10.96.194.210          pl1nne500
+10.96.194.211          pl1nne501
+10.96.2.212    	       pl1nne702
+10.96.2.213    	       pl1nne703
+10.96.2.214    	       pl1nne704
+10.96.2.215    	       pl1nne705
+11:20 AM In the hosts file on pl1rad705   # The DFM server
+
+&&&&&&&
+
+10.69.37.61		pl1rad519.media.edmunds.com
+#10.32.33.8		jthompson-mac
+10.32.35.234		jthompson-GX620.edmunds.hq
+10.32.34.81		jthompson-620.edmunds.hq
+10.32.33.10		jthompson-E6400.edmunds.hq
+#10.32.33.8		jthompson-vm
+10.32.69.201		ps1rad717.edmunds.hq ps1rad717
+10.32.69.30		ps1rad719.edmunds.hq ps1rad719
+10.32.69.246		ps1wap025.edmunds.hq ps1wap025
+#
+#
+# IS hosts
+10.32.69.101	PS1WAP001.edmunds.hq
+10.32.69.102	PS1WAP002.edmunds.hq
+10.32.69.103	PS1WAP003.edmunds.hq
+10.32.69.115	PS1WAP015.edmunds.hq
+172.16.4.110	VPN.sm.edmunds-corp.com
+10.32.76.13	PS1WAP013.edmunds.hq
+10.32.76.14	PS1WAP014.edmunds.hq
+10.32.69.80	SMPMON02.edmunds.hq
+10.32.69.81	SMPMON03.edmunds.hq
+10.32.69.106	PS1WAP006.edmunds.hq
+10.32.69.110	PS1WAP010.edmunds.hq
+10.32.69.244	PS1WAP023.edmunds.hq
+10.32.69.125	PS1RAP025.edmunds.hq
+10.32.69.126	PS1RAP026.edmunds.hq
+10.32.69.222	PS1RDB002.edmunds.hq
+10.32.69.240	PS1VVM001.edmunds.hq
+10.32.69.241	PS1VVM002.edmunds.hq
+10.32.69.104	PS1WAP004.edmunds.hq
+10.32.69.105	PS1WAP005.edmunds.hq
+10.32.69.107	PS1WAP007.edmunds.hq
+10.32.69.108	PS1WAP008.edmunds.hq
+10.32.69.109	PS1WAP009.edmunds.hq
+10.32.69.111	PS1WAP011.edmunds.hq
+10.32.69.112	PS1WAP012.edmunds.hq
+10.32.69.117	PS1WAP017.edmunds.hq
+10.32.69.119	SNC-MID1.edmunds.hq
+10.32.62.4	PS1WAP024.edmunds.hq
+10.32.69.209	PS1WAP026.edmunds.hq
+10.32.69.221	PS1WAP027.edmunds.hq
+10.32.69.245	BAK01.edmunds.hq
+172.16.4.33	Maserati.sm.edmunds-corp.com
+172.16.4.13	dc13.edmunds-corp.com
+172.16.4.23	dc23.sm.edmunds-corp.com
+10.69.37.161	pl1rad900.admin.edmunds.com
+#?		PS1WAP117.edmunds.hq
+#?		CCMPUB.edmunds.hq
+#?		CCMSUB.edmunds.hq
+
+10.16.16.204    pl1nne004
+10.16.16.205    pl1nne005
+[root@pl1rad519 root]# 
+
+
+###############################
+27Apr12  Jeff (to the rescue)
+
+to [en-dis]able HA,  ssh into the head and type:
+cf enable   OR cf disable
+
+###############################
+30Apr12  Jeff (is my God!)
+
+(01:41:13 PM) siggy2037: More NetApp question (if I may) hey is there an easy (CLI) way to change IP address and the mailhost/IP name
+(02:29:16 PM) xraynmanx: IP address, no.  mailhost yes.  options autosupport will give you all the autosupport settings.  looks for the mail host and use that option to change it
+(02:30:05 PM) siggy2037: cool....thanks!   I owe you (once again)!
+###############################
+7Dec11 NetApp filer logins   --dleeds
+
+(03:10:34 PM) Daniel Leeds: try loggong on to filer04.sys.corp.oversee.net as dsiegfriedt with pass of oversee99 	  				 	 	 	   	 	  	   		  	 
+(03:12:28 PM) don.siegfriedt@oversee.net/work: I'm in
+(03:12:50 PM) Daniel Leeds: ok
+(03:13:05 PM) Daniel Leeds: account works, will need to add your keys to all the filers 
+(03:15:07 PM) don.siegfriedt@oversee.net/work: how does one do that?
+(03:15:40 PM) Daniel Leeds: i have to slap it on every filer, if you look on hermit.internal you see all the filers under /remote/filerXX etc 
+(03:16:22 PM) Daniel Leeds: in each etc/sshd directory you create one that matches the username and then create a .ssh/authorized_keys with your key
+(03:18:24 PM) don.siegfriedt@oversee.net/work: on it
+(03:18:58 PM) Daniel Leeds: yeah do filer04 corp first and make sure it works.  then just tar the dsiegfried dir up and untar it under etc/sshd on all the other filer roots
+(03:19:16 PM) don.siegfriedt@oversee.net/work: ok
+(03:21:51 PM) don.siegfriedt@oversee.net/work: worked for filer04.sys.corp.oversee.net
+
+[root@hermit remote]# hostname
+hermit.internal
+[root@hermit remote]# pwd
+/remote
+[root@hermit remote]# for i in `ls | grep filer`; do echo $i; done
+filer001.sys.lax1_root
+filer002.sys.lax1_root
+filer01.sys.corp_root
+filer01.sys.lax1_root
+filer02.sys.corp_root
+filer02.sys.lax1_root
+filer03.sys.corp
+filer03.sys.lax1_root
+filer04.sys.corp_root
+filer04.sys.lax1_root
+filer1.lad_root
+filer1.lap_root
+filer2.lad_root
+filer2.lap_root
+
+&&&&&
+
+9Dec11  dleeds   NetApp 
+
+#ssh filer003.sys.lax1.oversee.net
+
+filer03> vol create qa_web_shared_bco -l en_US aggr0 5G
+Fri Dec  9 15:01:24 PST [filer03: vol.language.changed:info]: Language on volume qa_web_shared_bco changed to en_US
+
+The new language mappings will be available after reboot
+Fri Dec  9 15:01:24 PST [filer03: vv_config_worker:notice]: XL - Language of Volume qa_web_shared_bco has been changed to en_US.
+Creation of volume 'qa_web_shared_bco' with size 5g on containing aggregate
+'aggr0' has completed.
+
+filer03> snap reserve qa_web_shared_bco 0		# NO snaps
+
+filer03> snap sched qa_web_shared_bco 0 0 0  		# NO snaps This keeps the vol at full size (no reserve for snaps)
+
+filer03> exportfs -r		      	  		# export the newly created vol 
+
+[dsiegfriedt@hermit ~]$ hostname
+hermit.internal
+
+sudo vim /remote/filer03.sys.corp/etc/exports
+
+add 
+/vol/qa_web_shared_bco	-sec=sys,rw=www01.bco.qa.corp.oversee.net:www02.bco.qa.corp.oversee.net,root=www01.bco.qa.corp.oversee.net:www02.bco.qa.corp.oversee.net
+
+***************************************************************************
+**********there is a -sec,rw AND a root section that has to be in place
+***************************************************************************
+
+[root@www01 ~]# hostname
+www01.bco.qa.corp.oversee.net
+
+[root@www01 ~]# cat /etc/fstab
+/dev/vg1/root           /                       ext3    defaults        1 1
+LABEL=/boot             /boot                   ext3    defaults        1 2
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+/dev/vg1/swap           swap                    swap    defaults        0 0
+
+#added 9dec11  --siggy
+filer03.sys.corp.oversee.net:/vol/qa_web_shared_bco /remote/badcreditoffers.com  nfs        rw,tcp,nfsvers=3,rsize=32768,wsize=32768,hard,bg,intr 0 0
+
+REMEMBER to make the mount point and chown it to the owner (if any)
+
+exportfs -a
+
+&&&&&
+11Jan12   NetAPP commands (when logged into a filer)
+
+environment status shelf
+&&&&&
+18Jan12  --siggy
+
+vol status
+aggr status
+aggr show_space -h
+&&&&&
+Everythnig now goes to filer00[12].   vmware is obvious... make vols in "data"
+
+2 aggr:
+filer002> aggr status
+           Aggr State           Status            Options
+filer002_vmware_aggr1 online          raid_dp, aggr     root, nosnap=on, raidsize=23
+                                64-bit            
+filer002_data_aggr1 online          raid_dp, aggr     nosnap=on, raidsize=23
+                                64-bit            
+&&&&&
+
+3Feb12 finding a drive on a shelf
+
+(02/03/2012 09:41:25 AM) siggy2037: hey.... NetApp (FAS3070) question.   I am supposed to pull out drive 25 from a shelf (per NetApp).....  How are they counted.   I can't find the notes you gave me to make them blink :^(
+(09:41:47 AM) jefft01@amgen.com: what kind of shelves are they?
+(09:41:57 AM) siggy2037: big and yellow
+(09:42:03 AM) jefft01@amgen.com: ds14 or ds4243
+(09:42:03 AM) siggy2037: I don't know
+(09:42:08 AM) jefft01@amgen.com: what kind of drives
+(09:42:20 AM) siggy2037: hang on... let me look
+(09:43:31 AM) siggy2037: ds14
+(09:44:04 AM) jefft01@amgen.com: did they give you the drive number?  not 25 but something like 2a.32
+
+(09:44:19 AM) jefft01@amgen.com: here's what you type to get it to light up
+(09:44:24 AM) jefft01@amgen.com: priv set advanced
+(09:44:35 AM) jefft01@amgen.com: led_on <drive>
+(09:45:01 AM) siggy2037: and you bracket the one you want to pull/select
+(09:45:07 AM) jefft01@amgen.com: correct
+
+(09:45:26 AM) jefft01@amgen.com: i would light up the one you need to replace and then one on each side
+(09:45:31 AM) jefft01@amgen.com: then turn off the one you want to replace
+(09:45:43 AM) siggy2037: ok let me look for the drive..... the address is shelf/position.... correct?
+(09:45:51 AM) jefft01@amgen.com: correct
+(09:45:54 AM) jefft01@amgen.com: well...
+(09:46:02 AM) jefft01@amgen.com: it would be the adapter plus the drive number
+(09:46:16 AM) jefft01@amgen.com: but the drives aren't always numbered correctly
+(09:46:31 AM) jefft01@amgen.com: is it a failed drive?
+(09:46:42 AM) jefft01@amgen.com: fcadmin device_map
+(09:47:00 AM) jefft01@amgen.com: will give you a list of all the drives.  if it's in bypass you'll see BYP
+(09:47:04 AM) jefft01@amgen.com: instead of a number
+(09:47:37 AM) siggy2037: COOL!   thanks!
+(09:53:24 AM) siggy2037: so.... if I am reading this right....
+
+Loop Map for channel 1a: 
+Translated Map: Port Count 29
+		  7  33  34  35  32  36  37  38  39  40  42  43  41  44  45  17 
+		 18  19  16  20  21  22  23  24  26  27   9  28  29 
+Shelf mapping: 
+		Shelf 1:  29  28  27  26 XXX  24  23  22  21  20  19  18  17  16 
+		Shelf 2:  45  44  43  42  41  40  39  38  37  36  35  34  33  32 
+
+(09:53:43 AM) siggy2037: I am looking for 1a.37
+(09:53:44 AM) jefft01@amgen.com: ok so led_on 1a.26
+(09:53:53 AM) siggy2037: ahhh OK
+(09:53:57 AM) jefft01@amgen.com: no you should be looking for 1a.25
+(09:54:01 AM) siggy2037: and 1a.24
+(09:54:05 AM) jefft01@amgen.com: correct
+(09:54:27 AM) siggy2037: and the one between them is my object of desire
+(09:54:46 AM) jefft01@amgen.com: correct
+
+^^^^^
+
+(02:38:04 PM) jefft01@amgen.com: make sure you set the filer back so that you can only run the standard command set
+(02:38:10 PM) jefft01@amgen.com: priv set
+(02:38:16 PM) siggy2037: ahhh  OK
+(02:38:32 PM) jefft01@amgen.com: you'll know if you're in the advanced menu if there is an * at teh prompt
+(02:38:48 PM) jefft01@amgen.com: it's just go practice to set it back
+(02:38:52 PM) jefft01@amgen.com: *good
+
+
+&&&&&
+15Feb12  getting a volume list from a filer
+
+http://unixfoo.blogspot.com/2009/01/netapp-volume-commands.html
+
+vol status    (To find out the volumes on a filer)
+vol status -f (for failed disk)
+vol status -s (for spare disk)
+aggr status -r aggr0 (To find out the disks in an aggregate 0)
+aggr status -r (To find out the disks in all aggregates)
+
+&&&&&
+16Feb12 from email
+
+There is a method for upgrading the disks without taking the volumes
+offline. This is the method most commonly used. I haven't had a volume
+go offline. 
+
+1. Check or set the raid.background_disk_fw_update option to on
+To Check:  options raid.background_disk_fw_update.enable
+To Set:    options raid.background_disk_fw_update.enable on
+
+2. Place the new disk firmware File into the /etc/disk_fw directory
+
+The system will recognize the new available version and will
+non-disruptively upgrade all the disks requiring a firmware update to
+that new version in the background.  
+
+Nate Bevins
+Sr. Systems Engineer
+Insight Integrated Systems
+626.376.2937
+
+&&&&&
+22Feb12   Jeff   Manual autosupport run
+
+(02:11:03 PM) siggy2037: is there a way to make autosupport run manually?
+(02:27:34 PM) jefft01@amgen.com: options autosupport.doit 
+(02:27:43 PM) jefft01@amgen.com: after doit add a word
+(02:27:59 PM) jefft01@amgen.com: if its a case with netapp you should put the case number
+(02:28:33 PM) siggy2037: so any word.... like "hotgoatroperswitbigboots"
+(02:33:58 PM) jefft01@amgen.com: let me check, i have my netapp guy talking to me right now
+(02:35:07 PM) jefft01@amgen.com: yeah he said that's fine he thinks 256 is the max
+(02:35:10 PM) jefft01@amgen.com: but he's not sure
+(03:04:55 PM) siggy2037: did you read the word?    I found it on your resume
+
+
+&&&&&
+23Feb12   more NetApp commands found on the web
+
+disk show (lists all disks on filer)
+storage show disk -T
+storage show disk < disk >
+environment status shelf
+sysconfig -v 
+
+disk_fw_update < disk or disk list >
+
+&&&&&
+28Feb12  Dan Yang (IM)
+
+This will force creation of a new snapshot: snapman@hermit.internal:  ~/p4/systems/snapman/bin/create-masterdb-snapshot.pl  ~/p4/systems/snapman/snapconfigs/ds_db1_ds_lap_dsstats_sp_raw_data.conf   
+This will force mounting of the latest snapshot: root@edwconvdb01.ds.lax1.oversee.net:  /usr/local/bin/mount_latest_snapshot_client.pl /usr/local/etc/ds_db1_ds_lap_dsstats_sp_raw_data.conf  
+
+&&&&&
+5Mar12  adding a user  --siggy
+
+filer2-lad> useradmin help user
+Usage:
+useradmin user add <login_name>
+	[-c "comments"]
+	[-n "full name"]
+	-g <group1>[,<group2>,...,<groupN>]
+	[-M <password max-age>]
+	[-m <password min-age>]
+useradmin user delete <login_name>
+useradmin user modify <login_name> [-f]
+	[-c "comments"]
+	[-n "full name"]
+	[-g <group1>[,<group2>,...,<groupN>]]
+	[-M <password max-age>]
+	[-m <password min-age>]
+useradmin user list [-x] [-g group]
+useradmin user list [login_name]
+To list valid groups: 
+useradmin group list
+
+&&&&&
+8Mar12 MISC commands 
+
+Confirm that there are two paths to every disk by entering the following command:
+storage show disk -p
+
+###############################
+29Jan14  --siggy  Mounting entire netapp (large scale updates to exports)
+mkdir /lasan4
+
+by hand
+mount lasan4:/vol/vol0 /lasan4
+by fstab
+lasan4:/vol/vol0  /lasan4    nfs     tcp,rsize=32768,wsize=32768,hard,nointr,nolock,noac,timeo=600   0 0
+###############################
+31Jan14  --siggy   Disk LEDs
+
+blink_on <diskid>
+blink_off <diskid>
+
+led_on <diskid>
+led_off <diskid>
+
+###############################
+26Jun14  --siggy (Denise)  Snapshot
+
+open vSphere
+select VM you want to snapshot
+RT click
+  select Snapshot
+  select Take Snapshot...
+  give a comprehensive name and click OK
+
+20Nov14  --siggy (Denise/OT) reverting to snapshot
+select VM you want to snapshot
+RT click
+  select Snapshot
+  Select "Revert to Current Snapshot"
+
+    select Snapshot
+    select Snapshot Manager
+    delete current snapshot
+
+###############################
+28Apr15  --siggy
+In order to see what autosupport.doit does
+
+Login into lasan5
+
+lasan5> options autosupport.doit 'TEST-28Apr15'
+Tue Apr 28 10:53:30 PDT [lasan5:callhome.invoke:info]: Call home for USER_TRIGGERED (TEST-28Apr15)  
+lasan5> 
+
+#This emails NetApp and a list of people.  Example of mail:
+
+***
+Sent: Tuesday, April 28, 2015 10:54 AM
+To: Siegfriedt, Donald; Banh, Denise
+Subject: System Alert from lasan5
+
+USER_TRIGGERED (TEST-28Apr15) on lasan5 at Tue Apr 28 10:53:31 PDT 2015
+***
+
+lasan5> exportfs -p /vol/vol0
+lasan5> exportfs             
+/vol/vol0	-sec=sys,rw
+lasan5> exportfs -r
+
+login to lasysmon and sudo su -
+
+mount lasan5:/vol/vol0 /lasan5
+
+cd /lasan5/etc//log/autosupport
+
+look for date of interest and cd to that.
+
+###############################
+
+sysconfig -v 
+license
+
+
+###############################
+
+28Apr15  --siggy
+
+To make sure I get email from each autosupport 
+
+dsiegfri@la1002073d:~ $ ssh root@lasan[5 6]
+root@lasan[5 6]'s password: 
+
+lasan5> options autosupport.partner.to dsiegfriedt@ri-net.com,deniseba@ri-net.com
+You are changing option autosupport.partner.to, which applies to
+both members of the HA configuration in takeover mode.
+This value must be the same on both HA members to ensure correct
+takeover and giveback operation.
+
+
+lasan6> options autosupport.partner.to dsiegfriedt@ri-net.com,deniseba@ri-net.com
+You are changing option autosupport.partner.to, which applies to
+both members of the HA configuration in takeover mode.
+This value must be the same on both HA members to ensure correct
+takeover and giveback operation.
+
+
+###############################
+5May15  --siggy  Zabbix had reported that we had used 99% of the inodes for this volume.
+
+http://community.netapp.com/t5/Network-Storage-Protocols-Discussions/Inodes-Full-90/td-p/61135
+
+lasan6> vol options /vol/vmware_backups
+nosnap=off, nosnapdir=off, minra=off, no_atime_update=off, nvfail=off, 
+ignore_inconsistent=off, snapmirrored=off, create_ucode=off, 
+convert_ucode=off, maxdirsize=167772, schedsnapname=ordinal, 
+fs_size_fixed=off, guarantee=volume, svo_enable=off, svo_checksum=off, 
+svo_allow_rman=off, svo_reject_errors=off, no_i2p=off, 
+fractional_reserve=100, extent=off, try_first=volume_grow, 
+read_realloc=off, snapshot_clone_dependency=off, dlog_hole_reserve=off,
+nbu_archival_snap=off
+
+
+lasan6> maxfiles vmware_backups     
+Volume vmware_backups: maximum number of files is currently 31876689 (31422337 used).
+
+
++20% = 38252026
+
+lasan6> maxfiles vmware_backups 38252026
+The new maximum number of files will be rounded to 38252011.
+
+lasan6> maxfiles vmware_backups         
+Volume vmware_backups: maximum number of files is currently 38252011 (31422337 used).
+
+------------------------------
+
+ssh lasan4 df -hi
+Filesystem               iused      ifree  %iused  Mounted on
+/vol/cmimages/        31876689          0    100%  /vol/cmimages/
+...
+
+lasanlasan4> maxfiles cmimages        
+Volume cmimages: maximum number of files is currently 31876689 (31876689 used).
+
+Filesystem               total       used      avail capacity  Mounted on
+/vol/cmimages/          4377GB     4087GB      290GB      93%  /vol/cmimages/
+
+
+lasan4> Fri Jul 22 09:28:22 PDT last message repeated 2 times
+Fri Jul 22 09:29:23 PDT [lasan4:wafl.vol.outOfInodes:notice]: file system on Volume cmimages is out of inodes  
+lasan4> maxfiles cmimages 38252027
+
+The new maximum number of files will be rounded to 38252011.
+
+Filesystem               iused      ifree  %iused  Mounted on
+/vol/cmimages/        31876696    6375315     83%  /vol/cmimages/
+
+------------------------------
+
+
+
+
+###############################
+8May15  --siggy  halting netapp steps/script
+
+to [en-dis]able HA,  ssh into the head and type:
+cf enable   OR cf disable
+
+-----
+
+http://community.netapp.com/t5/Data-ONTAP-Discussions/how-to-shutdown-the-storage-system-filer/td-p/59319
+To shutdown a single controller system, simply type halt at the command prompt
+To shutdown a clustered system, simply type halt -f at the command prompt
+
+Halt -t 0 can also be used
+
+-----
+
+https://kb.netapp.com/support/index?page=content&id=3011926&pmv=print&impressions=false
+Clustered Data ONTAP procedure to bring system down:
+
+Notify, disconnect and, if needed, shut down all of the connected CIFS/NFS clients.
+If there are any hosts that have FCP or iSCSI-based LUNs, shut them down before shutting down the storage system.
+If running ONTAP version prior to 8.2, perform the following steps:
+If on a 2-node cluster, run the following: 
+::> cluster ha modify –configured false
+::> storage failover modify –node * -enabled false
+If on a 4+-node cluster, run the following: 
+::> storage failover modify -node * -enabled false
+Log in to all nodes, one at a time (preferably using serial console or RLM/SP) and run:
+::> halt local -inhibit-takeover true
+
+The following will appear after running the halt command above. Type 'y' when prompted if you want to continue:
+  (system node halt)
+
+Warning: Rebooting or halting node "node-01" in an HA enabled cluster
+         with takeover inhibited may result in a data serving failure and
+         client disruption. To ensure continuity of service, do the following
+         before rebooting or halting the node: Disable cluster HA using the
+         command: "cluster ha modify -configured false".
+         To transfer epsilon to the partner node, use the following commands
+         (privilege:advanced):
+                cluster modify -epsilon false -node <local-node>
+                cluster modify -epsilon true -node <partner-node>
+Do you want to continue? {y|n}: y
+
+Every node might take several minutes to shut down. Each node should then reset and return to the LOADER> prompt. If there is no console or RLM/SP access, you should confirm the overall node down status before halting the final node, by running the system node show command. After the last node is halted, you can power down everything safely.
+Physically power down the head, then all the attached disk shelves as needed.
+Physically unplug the cables from power supplies on the back of the storage systems and shelves, to avoid any electrical issues when external power is restored.
+
+-----
+
+Shutdown - Perform steps on both heads of the filer
+
+cf status
+cf disable
+cf status
+
+cifs terminate
+
+sysstsat -x
+
+halt
+Shows halt on the front
+Use powerswitch to turn them all off.
+
+-----
+http://community.netapp.com/t5/Microsoft-Cloud-and-Virtualization-Discussions/NetApp-Powershell-Shutdown-Script/td-p/1474
+
+###############################
+1Jul15  --siggy   copied NOTES from ~dsiegfi/REPUBLIC/NETAPP/NOTES
+
+21jan14  --siggy   lasan[3-4] SN
+
+S/N
+30028482 = LASAN3
+30028483 = LASAN4
+
+SYSID
+0151706784
+0151706738
+
+OnTap 8.1.2 7-mode
+^^^^^
+29jan14  --siggy lasan5
+S/N
+
+SYSID
+2147483968
+
+^^^^^
+2Mar14  DanM.
+
+linux box
+  mount /vol/vol0
+  	lasan[3-4]
+	drsan[3-4]
+
+RCS /vol/vol0/etc
+
+ssh under under sudo
+    tracks who does what 
+^^^^^
+30jun15  --siggy  
+
+dsiegfri@la1002073d:~ $ nslookup 10.130.27.191
+Server:		10.130.24.200
+Address:	10.130.24.200#53
+
+191.27.130.10.in-addr.arpa	name = lasan5.ri-net.com.
+
+dsiegfri@la1002073d:~ $ nslookup 10.130.27.192
+Server:		10.130.24.200
+Address:	10.130.24.200#53
+
+192.27.130.10.in-addr.arpa	name = lasan6.ri-net.com.
+-----
+[root@lasysmon ~]# mount lasan5:/vol/vol0 /lasan5
+-----
+lasan5> rdfile /etc/passwd     
+root:_J9..cSyDcZBq2qg23Qc:0:1::/:
+pcuser::65534:65534::/:
+nobody::65535:65535::/:
+ftp::65533:65533:FTP Anonymous:/home/ftp:
+
+lasan5> rdfile /etc/exports
+/vol/vol0	-sec=sys,rw
+
+lasan5> rdfile /etc/exports
+/vol/vol0	-sec=sys,rw,anon=0
+
+by clicky-clicky edit exports and select "grant root access to all hosts" 
+AND check "enable setuid and setguid executables
+-----
+lasan5> useradmin user list   (gives list of logins)
+Name: root
+Info: Default system administrator.
+Rid: 0
+Groups:
+
+Name: administrator                   
+Info: Built-in account for administering the filer
+Rid: 500
+Groups: swlibadmin,Administrators
+
+Name: dsiegfri                        
+Info: 
+Rid: 131076
+Groups: Administrators
+
+Name: nixmgt                          
+Info: name says it all
+Rid: 131077
+Groups: Administrators
+
+Name: ookongo                         
+Info: 
+Rid: 131075
+Groups: Administrators
+-----
+lasan5> useradmin group list
+Name: Administrators                  
+Info: Members can fully administer the filer
+Rid: 544
+Roles: admin
+
+Name: Backup Operators                
+Info: Members can bypass file security to backup files
+Rid: 551
+Roles: backup,none
+
+Name: Compliance Administrators       
+Info: Members can perform compliance operations
+Rid: 131072
+Roles: compliance
+
+Name: Guests                          
+Info: Users granted Guest Access
+Rid: 546
+Roles: none
+
+Name: Power Users                     
+Info: Members that can share directories
+Rid: 547
+Roles: power
+
+Name: Replicators                     
+Info: not supported
+Rid: 552
+Roles: none
+
+Name: swlibadmin                      
+Info: Members granted full access to the software library
+Rid: 131074
+Roles: none
+
+Name: swlibuser                       
+Info: Members accessing software library
+Rid: 131073
+Roles: none
+
+Name: Users                           
+Info: Ordinary Users
+Rid: 545
+Roles: audit
+-----
+lasan5> useradmin role list 
+Name:    admin                           
+Info:                                    
+Allowed Capabilities: login-*,cli-*,api-*,security-*
+
+Name:    audit                           
+Info:                                    
+Allowed Capabilities: api-snmp-get,api-snmp-get-next
+
+Name:    backup                          
+Info:    Default role for NDMP privileges.
+Allowed Capabilities: login-ndmp
+
+Name:    compliance                      
+Info:    Default role for compliance privileges.
+Allowed Capabilities: cli-cifs*,cli-exportfs*,cli-nfs*,cli-useradmin*,api-cifs-*,api-nfs-*,login-telnet,login-http-admin,login-rsh,login-ssh,api-system-api-*,cli-snaplock*,api-snaplock-*,api-file-*,compliance-*
+
+Name:    none                            
+Info:                                    
+Allowed Capabilities: 
+
+Name:    power                           
+Info:                                    
+Allowed Capabilities: cli-cifs*,cli-exportfs*,cli-nfs*,cli-useradmin*,api-cifs-*,api-nfs-*,login-telnet,login-http-admin,login-rsh,login-ssh
+
+Name:    root                            
+Info:                                    
+Allowed Capabilities: *
+-----
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+passwdless login from lasysmon as nixmgt
+
+MUST add nixmgt as a user (in the administrator group) on BOTH heads
+
+lasan5 > useradmin user add nixmgt
+
+lasan5> useradmin user list
+[SNIP]
+Name: nixmgt                          
+Info: name says it all
+Rid: 131077
+Groups: Administrators
+[SNIP]
+
+lasan5> options ssh
+ssh.access                   *          
+ssh.enable                   on         
+ssh.idle.timeout             0          
+ssh.passwd_auth.enable       on         
+ssh.port                     22         
+ssh.pubkey_auth.enable       on         
+ssh1.enable                  on         
+ssh2.enable                  on     
+
+cd /lasan5/etc/sshd
+mkdir -p nixmgt/.ssh
+cat ~nixmgt/.ssh/id_dsa.pub > nixmgt/.ssh/authorized_keys
+chmod 700 nixmgt/.ssh
+chmod 600 nixmgt/.ssh/authorized_keys
+lasan5> options ssh1.enable off
+lasan5> options ssh1.enable on 
+lasan5> options ssh2.enable off
+lasan5> options ssh2.enable on 
+
+nixmgt@lasysmon .ssh]$ ssh -o StrictHostKeyChecking=no lasan5
+
+lasan5>
+-----
+[nixmgt@lasysmon .ssh]$ ssh -o StrictHostKeyChecking=no lasan5 options ssh
+ssh.access                   *          
+ssh.enable                   on         
+ssh.idle.timeout             0          
+ssh.passwd_auth.enable       on         
+ssh.port                     22         
+ssh.pubkey_auth.enable       on         
+ssh1.enable                  on         
+ssh2.enable                  on         
+
+^^^^^
+
+To shutdown a clustered system, simply type halt -f at the command prompt
+
+cf disable
+cifs terminate
+nfs off
+halt
+
+^^^^^
+lasan6> rdfile /etc/sshd/nixmgt/.ssh/authorized_keys
+ssh-dss AAAAB3NzaC1kc3MAAACBALKmNKtOgWMgec3Vnf+LlU+OwoL5hj8Xgv0av8nJsnqe29pIdaXQpm6l5GIyUH4HKaj/exRz1BGv1hotlC6YkdL+/Cwzq40u6UEqBVmDXguL7Dn/YlYp4xrKB81Y0vS3t5+oVrXQJd8ToUGCPPIJfwobW1ng6Yd5tce6VAPtcZtFAAAAFQDkbxs8ZaW8VbVu/fr1O8C/Ydh/ZwAAAIACpUR8drLTNTx6l1d6czTSuWAKepnAIHacBIrr3VRbqBzRI/w+jycptRsCOwhp/dl15qKigwwGeC8o/syahHb9TnCZN2gbu9nJXJXO5k09RxOY941FXxe6wes/ShsWW1LgyjClgkceRmF+RIeWQsh/MNiGV5bzeXwwCevVe6AMHwAAAIAn2zI93Yqm16/edScuf/jEH8D3PdNDjeDAn7jks8bXpOdTM2MxPv2VGV5kb6QDq5ex7zR69LehzjarvNIdMeLkjizoR4eGqOY7UVjEiUjLXtjnufBTUrAmzEYFEHG91Ou7PBmeKF2MQiBrA/CDX9YSpAWzALQwwrXTnQX3G5uTAA== nixmgt@lasysmon.ri-net.com
+
+^^^^^
+1July15  --siggy
+
+could not log into lasan6 last night before I left.... this morning I can   WTF are we waiting for?
+
+[nixmgt@lasysmon ~]$ ssh lasan6 version
+NetApp Release 8.2.2 7-Mode: Fri Aug 22 01:46:52 PDT 2014
+[nixmgt@lasysmon ~]$ ssh lasan5 version
+NetApp Release 8.2.2 7-Mode: Fri Aug 22 01:46:52 PDT 2014
+[nixmgt@lasysmon ~]$ ssh lasan6 options ssh
+ssh.access                   *          
+ssh.enable                   on         
+ssh.idle.timeout             0          
+ssh.passwd_auth.enable       on         
+ssh.port                     22         
+ssh.pubkey_auth.enable       on         
+ssh1.enable                  on         
+ssh2.enable                  on         
+[nixmgt@lasysmon ~]$ ssh lasan5 options ssh
+ssh.access                   *          
+ssh.enable                   on         
+ssh.idle.timeout             0          
+ssh.passwd_auth.enable       on         
+ssh.port                     22         
+ssh.pubkey_auth.enable       on         
+ssh1.enable                  on         
+ssh2.enable                  on         
+
+^^^^^
+
+[nixmgt@lasysmon ~]$ ssh lasan6 version
+NetApp Release 8.2.2 7-Mode: Fri Aug 22 01:46:52 PDT 2014
+[nixmgt@lasysmon ~]$ ssh lasan5 version
+NetApp Release 8.2.2 7-Mode: Fri Aug 22 01:46:52 PDT 2014
+[nixmgt@lasysmon ~]$ ssh lasan6 options ssh
+ssh.access                   *          
+ssh.enable                   on         
+ssh.idle.timeout             0          
+ssh.passwd_auth.enable       on         
+ssh.port                     22         
+ssh.pubkey_auth.enable       on         
+ssh1.enable                  on         
+ssh2.enable                  on         
+[nixmgt@lasysmon ~]$ ssh lasan5 options ssh
+ssh.access                   *          
+ssh.enable                   on         
+ssh.idle.timeout             0          
+ssh.passwd_auth.enable       on         
+ssh.port                     22         
+ssh.pubkey_auth.enable       on         
+ssh1.enable                  on         
+ssh2.enable                  on         
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+13Jul15  --siggy
+
+[nixmgt@lasysmon ~]$ cat /scripts/siggy/shutdown-lasan5-6.bash 
+#! /bin/bash
+#*****************************************************************
+# Name:shutdown-lasan5-6.bash 
+#
+# Purpose: automated shutwon of NetApp server (these happen to be the BU NetApp)
+#
+# Usage: ./shutdown-lasan5-6.bash
+#
+#
+# Author	      Date     	   Version    Comments
+# ---------------+----------------+---------+--------------------
+#   --siggy       13Jul15           1.0       first pass
+#
+#****************************************************************
+
+#time/date/host
+echo "The date/time is "`date +%d%b%C%y`
+echo "The hostname is "`hostname`
+
+#make shure we have access
+echo "lasan5 version" 
+ssh lasan5 version
+
+#make shure we have access
+echo "lasan6 version"
+ssh lasan6 version
+
+#first pass will echo command
+echo "shutting down lasan5"
+ssh lasan5 halt -f -t0
+
+#first pass will echo command
+echo "shutting down lasan6"
+ssh lasan6 halt -f -t0
+
+^^^^^
+5Aug15  --siggy  NetApp disk speed info
+
+storage show disk -a
+OR
+vol status -r
+^^^^^
+14Aug15  --siggy  setting exports up for shutdown scripts
+
+[nixmgt@lasysmon ~]$ cat /lasan3/etc/exports | grep vol0
+/vol/vol0	-sec=sys,rw,root=10.130.24.211,nosuid
+
+[nixmgt@lasysmon ~]$ cat /lasan4/etc/exports | grep vol0
+/vol/vol0	-sec=sys,rw,root=10.130.24.211,anon=0,nosuid
+/vol/vol0/home	-sec=sys,rw,nosuid
+
+[nixmgt@lasysmon ~]$ cat /lasan5/etc/exports | grep vol0
+/vol/vol0	-sec=sys,rw,root=10.130.24.211,nosuid
+
+[nixmgt@lasysmon ~]$ cat /lasan6/etc/exports | grep vol0
+/vol/vol0	-sec=sys,rw,root=10.130.24.211,nosuid
+/vol/vol0/home	-sec=sys,rw,nosuid
+
+
+^^^^^
+10sep15  --siggy  space in aggr
+
+df -h
+df -Ah
+aggr status -S
+vol status -F (footprint)
+aggr show_space -h
+
+^^^^^
+12Oct15  --siggy  passwdless email
+
+From: Siegfriedt, Donald
+Sent: Tuesday, August 11, 2015 3:43 PM
+To: Banh, Denise
+Cc: Okong'o, Othieno
+Subject: lasan shutdown
+
+The following are the commands needed to create a passwdless login for the shutdown scripts, on both heads.
+
+ssh lasan?
+
+cd /etc/sshd
+
+mkdir -p nixmgt/.ssh
+
+echo "ssh-dss AAAAB3NzaC1kc3MAAACBALKmNKtOgWMgec3Vnf+LlU+OwoL5hj8Xgv0av8nJsnqe29pIdaXQpm6l5GIyUH4HKaj/exRz1BGv1hotlC6YkdL+/Cwzq40u6UEqBVmDXguL7Dn/YlYp4xrKB81Y0vS3t5+oVrXQJd8ToUGCPPIJfwobW1ng6Yd5tce6VAPtcZtFAAAAFQDkbxs8ZaW8VbVu/fr1O8C/Ydh/ZwAAAIACpUR8drLTNTx6l1d6czTSuWAKepnAIHacBIrr3VRbqBzRI/w+jycptRsCOwhp/dl15qKigwwGeC8o/syahHb9TnCZN2gbu9nJXJXO5k09RxOY941FXxe6wes/ShsWW1LgyjClgkceRmF+RIeWQsh/MNiGV5bzeXwwCevVe6AMHwAAAIAn2zI93Yqm16/edScuf/jEH8D3PdNDjeDAn7jks8bXpOdTM2MxPv2VGV5kb6QDq5ex7zR69LehzjarvNIdMeLkjizoR4eGqOY7UVjEiUjLXtjnufBTUrAmzEYFEHG91Ou7PBmeKF2MQiBrA/CDX9YSpAWzALQwwrXTnQX3G5uTAA== nixmgt@lasysmon.ri-net.com" > nixmgt/.ssh/authorized_keys
+
+chmod 700 nixmgt/.ssh
+
+chmod 600 nixmgt/.ssh/authorized_keys
+
+lasan?> options ssh1.enable off
+
+lasan?> options ssh1.enable on
+
+lasan?> options ssh2.enable off
+
+lasan?> options ssh2.enable on
+
+^^^^^
+13Oct15  --siggy  adding usere to lasan3-4 in the audit group
+
+useradmin user add solarwind -g audit
+
+-----
+
+lasan3> useradmin group list                             
+
+lasan3> useradmin user add solarwind -g user
+
+lasan3> useradmin role add snmp_requests -a login-snmp                                              
+Role <snmp_requests> added.
+
+lasan3> Tue Oct 13 09:06:00 PDT [lasan3:useradmin.added.deleted:info]: The role 'snmp_requests' has been added.  
+useradmin group add solarwind -r snmp_requests
+Group <solarwind> added.
+
+lasan3> Tue Oct 13 09:06:36 PDT [lasan3:useradmin.added.deleted:info]: The group 'solarwind' has been added.  
+
+lasan3> useradmin user add swind -g solarwind
+New password:
+Retype new password:
+User <swind> added.
+lasan3> Tue Oct 13 09:11:59 PDT [lasan3:useradmin.added.deleted:info]: The user 'swind' has been added.  
+
+
+lasan3> useradmin role add srmrole -a api-aggr-list-info,api-cifs-share-list-iter-end,api-cifs-share-list-iter-next,api-cifs-share-list-iter-start,api-diagnosis-status-get,api-disk-list-info,api-fcp-adapter-list-info,api-iscsi-node-get-name,api-license-list-info,api-license-v2-list-info,api-lun-list-info,api-lun-map-list-info,api-lun-get-occupied-size,api-nfs-exportfs-list-rules,api-nfs-exportfs-list-rules-2,api-options-list-info,api-perf-object-get-instances,api-quota-report,api-quota-report-iter-end,api-quota-report-iter-next,api-quota-report-iter-start,api-snapshot-list-info,api-system-get-info,api-system-get-version,api-vfiler-list-info,api-vfiler-get-status,api-volume-list-info,login-http-admin,api-perf-object-get-instances-iter-end,api-perf-object-get-instances-iter-next,api-perf-object-get-instances-iter-start,security-api-vfiler,login-ssh
+Role <srmrole> added.
+
+
+
+lasan3> useradmin user list                  
+Name: swind                           
+Info: 
+Rid: 131077
+Groups: solarwind
+
+lasan3> useradmin group list
+Name: solarwind                       
+Info: 
+Rid: 131076
+Roles: snmp_requests
+
+-----
+
+lasan3> useradmin role list srmrole 
+Name:    srmrole                         
+Info:                                    
+Allowed Capabilities: api-aggr-list-info,api-cifs-share-list-iter-end,api-cifs-share-list-iter-next,api-cifs-share-list-iter-start,api-diagnosis-status-get,api-disk-list-info,api-fcp-adapter-list-info,api-iscsi-node-get-name,api-license-list-info,api-license-v2-list-info,api-lun-list-info,api-lun-map-list-info,api-lun-get-occupied-size,api-nfs-exportfs-list-rules,api-nfs-exportfs-list-rules-2,api-options-list-info,api-perf-object-get-instances,api-quota-report,api-quota-report-iter-end,api-quota-report-iter-next,api-quota-report-iter-start,api-snapshot-list-info,api-system-get-info,api-system-get-version,api-vfiler-list-info,api-vfiler-get-status,api-volume-list-info,login-http-admin,api-perf-object-get-instances-iter-end,api-perf-object-get-instances-iter-next,api-perf-object-get-instances-iter-start,security-api-vfiler
+
+lasan3> useradmin group modify solarwind -r srmrole
+Tue Oct 13 10:38:04 PDT [lasan3:useradmin.added.deleted:info]: The group 'solarwind' has been modified.  
+Group <solarwind> modified.
+lasan3> 
+
+
+lasan3> useradmin group list                       
+{SNIP}
+Name: solarwind                       
+Info: 
+Rid: 131076
+Roles: srmrole
+{SNIP}
+
+lasan3> useradmin user modify swind -g solarwind
+User <swind> modified.
+lasan3> Tue Oct 13 10:41:36 PDT [lasan3:useradmin.added.deleted:info]: The user 'swind' has been modified.  
+
+lasan3> useradmin user list                     
+{SNIP}
+Name: swind                           
+Info: 
+Rid: 131077
+Groups: solarwind
+{SNIP}
+lasan3> 
+
+1. create group (useradmin group add solarwind)
+2. create user and add to group (useradmin user add swind -g solarwind)
+3. create role(s) (useradmin role add srmrole -a api-aggr-list-info,api-cifs...)
+4. associate roles to group (useradmin group modify solarwind -r srmrole)
+5. associate user to group (useradmin user modify swind -g solarwind)
+
+
+
+[nixmgt@lasysmon ~]$ ssh lasan5
+
+useradmin role add srmrole -a api-aggr-list-info,api-cifs-share-list-iter-end,api-cifs-share-list-iter-next,api-cifs-share-list-iter-start,api-diagnosis-status-get,api-disk-list-info,api-fcp-adapter-list-info,api-iscsi-node-get-name,api-license-list-info,api-license-v2-list-info,api-lun-list-info,api-lun-map-list-info,api-lun-get-occupied-size,api-nfs-exportfs-list-rules,api-nfs-exportfs-list-rules-2,api-options-list-info,api-perf-object-get-instances,api-quota-report,api-quota-report-iter-end,api-quota-report-iter-next,api-quota-report-iter-start,api-snapshot-list-info,api-system-get-info,api-system-get-version,api-vfiler-list-info,api-vfiler-get-status,api-volume-list-info,login-http-admin,api-perf-object-get-instances-iter-end,api-perf-object-get-instances-iter-next,api-perf-object-get-instances-iter-start,security-api-vfiler,login-ssh
+
+useradmin group add solarwind   
+
+useradmin user add swind -g solarwind 
+
+useradmin group modify solarwind -r srmrole
+
+useradmin user modify swind -g solarwind
+
+lasan3
+lasan4
+lasan5
+lasan6
+
+drsan3
+drsan4
+
+
+
+
+^^^^^
+lasan3> secureadmin status
+ssh2	- active
+ssh1	- active
+ssl	- active
+
+^^^^^
+13Oct15  --siggy ls when logged into a filer
+
+drsan4> priv set advanced
+
+drsan4*> ls /etc/sshd
+.   
+..   
+ssh_host_key.pub   
+ssh_host_key   
+ssh_host_rsa_key   
+ssh_host_rsa_key.pub   
+ssh_host_dsa_key   
+ssh_host_dsa_key.pub   
+drsan4*> priv set         
+drsan4> 
+
+^^^^^
+9Nov15  --siggy  add space to volume (lasan6:/vmware_nfs_backup_pd)
+
+lasan6> df -h
+Filesystem               total       used      avail capacity  Mounted on
+/vol/vmware_nfs_bkups_pd/      380GB      368GB       11GB      97%  /vol/vmware_nfs_bkups_pd/
+/vol/vmware_nfs_bkups_pd/.snapshot       20GB       68GB        0GB     341%  /vol/vmware_nfs_bkups_pd/.snapshot
+
+lasan6> vol options vmware_nfs_bkups_pd 
+nosnap=off, nosnapdir=off, minra=off, no_atime_update=off, nvfail=off, 
+ignore_inconsistent=off, snapmirrored=off, create_ucode=on, 
+convert_ucode=on, maxdirsize=41861, schedsnapname=ordinal, 
+fs_size_fixed=on, guarantee=volume, svo_enable=off, svo_checksum=off, 
+svo_allow_rman=off, svo_reject_errors=off, no_i2p=off, 
+fractional_reserve=100, extent=off, try_first=volume_grow, 
+read_realloc=off, snapshot_clone_dependency=off, dlog_hole_reserve=off,
+nbu_archival_snap=off
+
+lasan6> vol options vmware_nfs_bkups_pd fs_size_fixed off
+
+lasan6> Mon Nov  9 09:00:05 PST [lasan6:wafl.vv.set.size:warning]: Setting volume size for vmware_nfs_bkups_pd to match nominal size.  
+
+lasan6> vol size vmware_nfs_bkups_pd +20g                
+
+vol size: Flexible volume 'vmware_nfs_bkups_pd' size set to 420g.
+
+lasan6> vol options vmware_nfs_bkups_pd fs_size_fixed on 
+
+lasan6> df -h
+Filesystem               total       used      avail capacity  Mounted on
+/vol/vmware_nfs_bkups_pd/      399GB      367GB       31GB      92%  /vol/vmware_nfs_bkups_pd/
+/vol/vmware_nfs_bkups_pd/.snapshot       21GB       68GB        0GB     324%  /vol/vmware_nfs_bkups_pd/.snapshot
+
+^^^^^
+19Jan16  --siggy
+
+creating volumes for UEB and lowering teh snap space to 10%
+
+ueb_BU_cc6 2t
+ueb_BU_pc8 1t
+ueb_BU_ops 500g
+ueb_BU_qa  6t
+ueb_BU_dev 11t
+ueb_BU_prd 6t
+
+lasan6> vol create ueb_BU_cc6 aggr0 2t
+Creation of volume 'ueb_BU_cc6' with size 2t on containing aggregate
+'aggr0' has completed.
+lasan6> df -h
+Filesystem               total       used      avail capacity  Mounted on
+{SNIP}
+/vol/ueb_BU_cc6/        1945GB      152KB     1945GB       0%  /vol/ueb_BU_cc6/
+/vol/ueb_BU_cc6/.snapshot      102GB        0TB      102GB       0%  /vol/ueb_BU_cc6/.snapshot
+
+lasan6> snap reserve ueb_BU_cc6 10
+lasan6> df -h                     
+Filesystem               total       used      avail capacity  Mounted on
+{SNIP}
+/vol/vol0/.snapshot       12GB      208MB       12GB       2%  /vol/vol0/.snapshot
+/vol/ueb_BU_cc6/        1843GB      152KB     1843GB       0%  /vol/ueb_BU_cc6/
+/vol/ueb_BU_cc6/.snapshot      204GB        0TB      204GB       0%  /vol/ueb_BU_cc6/.snapshot
+
+
+^^^^^
+9Feb16  --siggy  disk replacement
+
+lasan3> vol status -f
+
+Broken disks
+
+RAID Disk	Device  	HA  SHELF BAY CHAN Pool Type  RPM  Used (MB/blks)    Phys (MB/blks)
+---------	------  	------------- ---- ---- ---- ----- --------------    --------------
+failed  	0a.02.5 	0a    2   5   SA:B   0   SAS 15000 560000/1146880000 560208/1147307688 
+
+
+Physically replace disk  then.....
+
+
+lasan3> disk show -n
+  DISK       OWNER                    POOL   SERIAL NUMBER         HOME                    DR HOME 
+------------ -------------            -----  -------------	   -------------           -------------            
+0a.02.5      Not Owned                  NONE   0XGZPHSP            
+
+lasan3> disk assign all
+Tue Feb  9 13:06:50 PST [lasan3:diskown.changingOwner:info]: changing ownership for disk 0a.02.5 (S/N 0XGZPHSP) from unowned (ID 4294967295) to lasan3 (ID 2017660485)  
+
+lasan3> disk show -n   
+disk show: No unassigned disks
+
+^^^^^
+16Mar16  --siggy adding to backup operator
+
+useradmin role modify backup -a login-*
+
+lasan4> useradmin group list "Backup Operators"
+Name: Backup Operators                
+Info: Members can bypass file security to backup files
+Rid: 551
+Roles: backup,none
+Allowed Capabilities: login-*
+
+-------------------------------
+
+useradmin user list
+no backup user....
+
+useradmin group list
+Name: Backup Operators                
+Info: Members can bypass file security to backup files
+Rid: 551
+Roles: backup,none
+
+
+useradmin role list
+Name:    backup                          
+Info:    Default role for NDMP privileges.
+Allowed Capabilities: login-*
+
+-------------------------------
+
+lasan4> useradmin user add clyde -g "Backup Operators"
+New password:
+Invalid password. Error: Password must have at least 8 characters
+New password:
+Invalid password. Error: Password must contain at least 1 numeric characters
+New password:
+Retype new password:
+Wed Mar 16 14:52:09 PDT [lasan4:useradmin.added.deleted:info]: The user 'clyde' has been added.  
+User <clyde> added.
+
+^^^^^
+22Apr16  --siggy deleting a volume
+
+lasan5> df -h
+Filesystem               total       used      avail capacity  Mounted on
+{SNIP}
+/vol/UEBTEST/           4864GB      182GB     4682GB       4%  /vol/UEBTEST/
+/vol/UEBTEST/.snapshot      256GB     8232KB      256GB       0%  /vol/UEBTEST/.snapshot
+{SNIP}
+
+lasan5> vol offline /vol/UEBTEST/
+Volume 'UEBTEST' is now offline.
+lasan5> 
+
+lasan5> vol destroy /vol/UEBTEST/
+Are you sure you want to destroy volume 'UEBTEST'? yes
+Fri Apr 22 13:35:25 PDT [lasan5:wafl.vvol.destroyed:info]: Volume UEBTEST destroyed.  
+Fri Apr 22 13:35:25 PDT [lasan5:NwkThd_02:warning]: Client 10.130.26.76 (xid 951875417) is trying to access an offline mount (fileid 64, snapid 0, generation 16037354 and flags 0x0 on volume 0xf6c2a77c [No volume name available])
+Volume 'UEBTEST' destroyed.
+lasan5>
+
+lasan5> vol create ueb_physical aggr0 2t
+Creation of volume 'ueb_physical' with size 2t on containing aggregate
+'aggr0' has completed.
+lasan5> aggr show_space -h              
+Aggregate 'aggr0'
+
+    Total space    WAFL reserve    Snap reserve    Usable space       BSR NVLOG           A-SIS          Smtape
+           45TB          4710GB             0KB            41TB             0KB            39GB             0KB 
+
+Space allocated to volumes in the aggregate
+
+Volume                          Allocated            Used       Guarantee
+vol0                                251GB          8024MB          volume
+sqlbackup_cc6                       653GB           496GB          volume
+sqlbackup_qa                       2059GB          1369GB          volume
+sqlbackup_qa2                      1508GB          1404GB          volume
+ueb_cifs_backup                    5148GB          2707MB          volume
+sql_replication                     100GB           910MB          volume
+sqlbackup_2                        2059GB          1257GB          volume
+softwarelibrary                     854GB           704GB          volume
+db2_backups                         603GB           211GB          volume
+sqlbackup_cc6_tde                  4118GB          3699GB          volume
+ueb_physical                       2059GB           676KB          volume
+
+Aggregate                       Allocated            Used           Avail
+Total space                          18TB          9156GB            22TB 
+Snap reserve                          0KB           975GB             0KB 
+WAFL reserve                       4710GB           450GB          4259GB 
+
+lasan5> 
+
+^^^^^
+****************************************************************************************************************************************
+
+1Dec16  --siggy  for cdot see NOTES-DTS
+^^^^^
+13Dec16  --siggy notes from NetApp onsite
+
+https://10.106.228.132/sysmgr/SysMgr.html#controllerarrayluns&node=nest-01
+
+http://mysupport.netapp.com/NOW/download/software/eseries_santricity/11.30.0X00.0010/download.shtml#linux
+
+
+Old Shelf E2700
+
+New shelf DS2246
+
+
+From: Robert Daniel <Robert.Daniel@netapp.com>
+Date: Monday, December 12, 2016 at 2:45 PM
+To: "don.siegfriedt@disneytoonsstudios.com" <don.siegfriedt@disneytoonsstudios.com>
+Cc: Adrian Vrcic <Adrian.Vrcic@netapp.com>
+Subject: E2700 IP @ Disney Toons
+ 
+Controller 1:
+DTS-E2700-01A.disney.com
+ IP address:                 10.103.80.121                           
+Subnet mask:               255.255.252.0                           
+Gateway:                     10.103.83.254                           
+                                                                              
+Controller 2:
+DTS-E2700-01B.disney.com
+IP address:                   10.103.80.122                           
+Subnet mask:                255.255.252.0                           
+Gateway:                    10.103.83.254    
+ 
+-----
+
+Hello Grace Thompson,
+
+My name is Henry Obando with NetApp Technical Support.  I have been assigned a case for the following system and symptom.
+
+System Name:
+
+Serial Number: 721520000257
+
+Symptom: [CORE] Cannot enable HA Pair
+ 
+1) Run "cf disable" on the filer.
+2) Run “halt” on both filers
+3) At the LOADER> prompt on both filers, type “boot_ontap”, then ctrl-C when the box of asterisks come up for the special boot menu.
+4) At the special boot menu, type “5” to enter maintenance mode on both filers.
+5) At the maintenance mode prompt of both filers, type “storage release disks”.
+6) Next, type “mailbox destroy local”
+7) Next, type “mailbox destroy partner”
+8) Next, type “halt” on both filers.
+
+
+^^^^^
+16Dec16  --siggy  NetApp ASUP (Auto Support)
+
+nest-01 TEST
+CONFIDENTIALITY=NetApp Confidential
+GENERATED_ON=Fri Dec 16 17:17:28 UTC 2016
+VERSION=NetApp Release 8.3.1RC1: Fri Jun 12 15:01:14 PDT 2015
+SYSTEM_ID=0536967672
+SERIAL_NUM=721520000258
+HOSTNAME=nest-01
+SEQUENCE=1154
+SNMP_CONTACT=<unknown>
+SNMP_LOCATION=<unknown>
+PARTNER_SYSTEM_ID=0536968115
+PARTNER_HOSTNAME=<unknown>
+BOOT_CLUSTERED='true'
+
+
+https://kb.netapp.com/support/s/article/how-to-configure-autosupport-in-data-ontap?language=en_US
+
+nest::> autosupport show -node nest-01 -instance
+nest::> autosupport show -node nest-02 -instance
+
+
+nest::> system node run -node nest-01 -command sysconfig -a
+	NetApp Release 8.3.1RC1: Fri Jun 12 15:01:14 PDT 2015
+	System ID: 0536967672 (nest-01); partner ID: 0536968115 ()
+	System Serial Number: 721520000258 (nest-01)
+	System Rev: D0
+	System Storage Configuration: Unknown
+	System ACP Connectivity: Full Connectivity
+
+
+nest::> system node run -node nest-02 -command sysconfig -a
+	NetApp Release 8.3.1RC1: Fri Jun 12 15:01:14 PDT 2015
+	System ID: 0536968115 (nest-02); partner ID: 0536967672 ()
+	System Serial Number: 721520000257 (nest-02)
+	System Rev: D0
+	System Storage Configuration: Unknown
+	System ACP Connectivity: Full Connectivity
+	All-Flash Optimized: false
+
+
+^^^^^
+19Dec16  --siggy NetApp ticket
+
+system autosupport show -fields mail-hosts nest-01
+system autosupport show -fields mail-hosts nest-02
+
+
+ssh admin@10.106.228.132 mgmt 
+
+network interface show
+network interface show-zones
+
+
+
+
+
+
+network interface show -lif cluster_mgmt -instance
+
+                    Vserver Name: nest
+          Logical Interface Name: cluster_mgmt
+                            Role: cluster-mgmt
+                   Data Protocol: none
+                       Home Node: nest-01
+                       Home Port: e0a
+                    Current Node: nest-01
+                    Current Port: e0a
+              Operational Status: up
+                 Extended Status: -
+                      Numeric ID: 1025
+                         Is Home: true
+                 Network Address: 10.106.228.132
+                         Netmask: 255.255.252.0
+             Bits in the Netmask: 22
+                 IPv4 Link Local: -
+                     Subnet Name: -
+           Administrative Status: up
+                 Failover Policy: broadcast-domain-wide
+                 Firewall Policy: mgmt
+                     Auto Revert: false
+                     Sticky Flag: false
+   Fully Qualified DNS Zone Name: none
+         DNS Query Listen Enable: false
+  Load Balancing Migrate Allowed: false
+            Load Balanced Weight: load
+             Failover Group Name: Default
+                        FCP WWPN: -
+                  Address family: ipv4
+                         Comment: -
+                  IPspace of LIF: Default
+  Is Dynamic DNS Update Enabled?: -
+
+nest::system*> node autosupport show
+Node                  State     From          To            Mail Hosts
+--------------------- --------- ------------- ------------- ----------
+nest-01               enable    nest01@disneytoonstudios.com 
+                                              don.siegfriedt@disneytoonstudios.com, tech-sys@disneytoonstudios.com 
+                                                            10.106.228.101
+nest-02               enable    nest02@disneytoonstudios.com 
+                                              don.siegfriedt@disneytoonstudios.com, tech-sys@disneytoonstudios.com 
+                                                            10.106.228.101
+
+^^^^^
+21Dec16  --siggy commands trying to troubleshoot ASUP on nest-02.   Heads not cabled correctly by WDAS :^(
+net int show
+
+system console
+
+system node autosupport show
+
+system node autosupport show -node nest-01
+
+system node autosupport show fields state -node nest01
+
+autosupport show -node nest-01 -instance
+
+system node run -node nest-01
+
+nest-01> ifconfig -a
+
+tomcat:~ dsiegfriedt$ ssh admin@fas8020b-sp
+
+version
+
+system node autosupport show -node nest-02
+
+system node autosupport invoke -node nest-02 -type test
+
+system node autosupport history show
+
+system node autosupport show                    
+
+system autosupport show -fields retry-count             
+
+set diag
+
+debug log show
+
+files mod notifyd show
+
+show -node nest-02 -timestamp >1h
+
+system autosupport history show
+
+system autosupport history show -seq-num 1177 -instance
+
+ping -node nest-02 -destination 10.106.228.101
+
+ping -node nest-01 -destination 10.106.228.101
+
+autosupport show -node nest-02 -instance
+
+ping -node nest-02 -destination 10.106.239.18
+
+system node autosupport show -fields mail-hosts
+
+network traceroute -node nest-02 -destination 10.106.228.101
+
+node run -node nest-02 pktt start e0M -d /etc/crash      
+
+node run -node nest-02 pktt stop e0M               
+
+now browse to:
+https://10.106.239.20/spi/nest-01/etc/crash
+
+^^^^^
+20Dec16  Grace 
+
+1) removed e2700 from the FC loop to the FAS8020s
+2) upgraded FAS8020 to 8.3.2
+3) attached DS2246 to FAS8020s
+4) started configuration (autosupport/networking/aggr create etc.etc.etc.)
+
+^^^^^
+21Dec16  --siggy change passwd
+
+dsiegfriedt@dts3329:~ $ ssh admin@10.106.228.132
+
+nest::> login password -username admin -vserver nest 
+  (security login password)
+
+Please enter your current password: 
+Enter a new password: 
+Enter it again: 
+
+nest::> 
+
+
+nest::> history
+    1  vserver export-policy show
+    2  vserver export-policy rule show
+    3  vserver cifs share show
+    4  vserver name-mapping show
+
+
+@@@to create a volume:
+
+volume create 
+       -vserver nest
+       -volume goatropper		#vol name
+       -aggregate aggr0_01		#which aggr
+       -size 10GB 			#size
+       -percent-snapshot-space 5 	
+       -space-guarantee none 
+       -policy default 
+       -junction-path /jeff		#export point
+
+^^^^^
+20Jan17  --siggy  adding a port to a LIF
+
+net port show
+
+nest-02
+{SNIP}
+	e0d       Default      Default          down     1500  auto/10
+
+
+
+@@@first turn it on
+nest::> set diag
+nest::*> net port mod -node nest-02 -port e0d -up-admin true
+
+@@@EFed it up with:
+nest::> network interface modify -home-node nest-02 -home-port e0d -status-admin up -vserver nest -address 10.106.231.143 *
+
+https://kb.netapp.com/support/s/article/how-to-modify-the-home-port-and-or-home-node-of-an-existing-clustered-ontap-logical-interface-serving-a-san-block-protocol?language=en_US
+
+@@@logged into FAS8020A-SP (as admin)
+
+nest::> network interface modify -vserver nest -lif cluster_mgmt -status-admin down
+nest::> network interface modify -vserver nest -lif cluster_mgmt -home-node nest-01 -home-port e0c
+nest::> network interface modify -vserver nest -lif cluster_mgmt -status-admin up
+
+
+
+nest::> network interface show -vserver nest
+            Logical    Status     Network            Current       Current Is
+Vserver     Interface  Admin/Oper Address/Mask       Node          Port    Home
+----------- ---------- ---------- ------------------ ------------- ------- ----
+nest
+            cluster_mgmt up/up    10.106.231.132/22  nest-01       e0c     true
+            nest-01_mgmt1 
+                         up/up    10.106.239.19/24   nest-01       e0M     true
+            nest-02_mgmt1 
+                         up/up    10.106.239.26/24   nest-02       e0M     true
+3 entries were displayed.
+
+
+@@@ mgmt port S/B 10.106.228.132
+@@@ OK to fix/undo what I did...
+
+nest::network interface> modify -home-node nest-01 -home-port e0c -status-admin up -vserver nest -address 10.106.228.132 *
+
+@@@ What I did before somehow changed the management port IP to 10.106.231.132 (which happend to be assigned to corollary)
+
+^^^^^
+24Jan17  --siggy  add 2nd port (e0d) to LIF
+used GUI to add....
+
+^^^^^
+
+^^^^^
+
+^^^^^
+
+
+

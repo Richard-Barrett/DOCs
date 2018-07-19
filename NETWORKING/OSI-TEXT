@@ -1,0 +1,80 @@
+﻿Description of OSI layers
+
+
+[edit] Layer 7: Application layer
+
+The application layer interfaces directly to and performs common application services for the application processes; it also issues requests to the presentation layer. Note carefully that this layer provides services to user-defined application processes, and not to the end user. For example, it defines a file transfer protocol, but the end user must go through an application process to invoke file transfer. The OSI model does not include human interfaces. The common application services sublayer provides functional elements including the Remote Operations Service Element (comparable to Internet Remote Procedure Call), Association Control, and Transaction Processing (according to the ACID requirements).
+
+Above the common application service sublayer are functions meaningful to user application programs, such as messaging (X.400), directory (X.500), file transfer (FTAM), virtual terminal (VTAM), and batch job manipulation (JTAM). These contrast with user applications that use the services of the application layer, but are not part of the application layer itself.
+
+   1. File Transfer applications using FTAM (OSI protocol) or FTP (TCP/IP Protocol)
+   2. Mail Transfer clients using X.400 (OSI protocol) or SMTP/POP3/IMAP (TCP/IP protocols)
+   3. Web browsers using HTTP (TCP/IP protocol); no true OSI protocol for web applications
+
+[edit] Layer 6: Presentation layer
+
+The Presentation layer doesn't alter the session layer functions as it transfers requests between the layers. It translates 
+the data from the session layer to the application layer and provides a standard interface for the application layer. MIME 
+encoding, data encryption and similar manipulation of the presentation are done at this layer to present the data as a 
+service or protocol that the developer sees fit. Examples of this layer are converting an EBCDIC-coded text file to an 
+ASCII-coded file, or serializing objects and other data structures into and out of XML.
+
+[edit] Layer 5: Session layer
+
+The Session layer controls the dialogues/connections (sessions) between computers. It establishes, manages and terminates the connections between the local and remote application. It provides for full-duplex, half-duplex, or simplex operation, and establishes checkpointing, adjournment, termination, and restart procedures. The OSI model made this layer responsible for "graceful close" of sessions, which is a property of TCP, and also for session checkpointing and recovery, which is not 
+usually used in the Internet protocols suite. Session layers are commonly used in application environments that make use of remote procedure calls (RPCs).
+
+iSCSI, which implements the Small Computer Systems Interface (SCSI) encapsulated into TCP/IP packets, is a session layer protocol increasingly used in Storage Area Networks and internally between processors and high-performance storage devices. iSCSI leverages TCP for guaranteed delivery, and carries SCSI command descriptor blocks (CDB) as payload to create a virtual SCSI bus between iSCSI initiators and iSCSI targets.
+
+[edit] Layer 4: Transport layer
+
+The Transport layer provides transparent transfer of data between end users, providing reliable data transfer services to the upper layers. The transport layer controls the reliability of a given link through flow control, segmentation/desegmentation, and error control. Some protocols are state and connection oriented. This means that the transport layer can keep track of the segments and retransmit those that fail.
+
+Although it was not developed under the OSI Reference Model and does not strictly conform to the OSI definition of the Transport Service, the best known example of a layer 4 protocol is the Transmission Control Protocol (TCP). The transport layer is the layer that converts messages into TCP segments or User Datagram Protocol (UDP), Stream Control Transmission Protocol (SCTP), etc. packets.
+
+Of the actual OSI protocols, not merely protocols developed under the model, there are five classes of transport protocols, ranging from class 0 (which is also known as TP0 and provides the least error recovery) to class 4 (which is also known as TP4 and is designed for less reliable networks, similar to the Internet). Class 4 is closest to TCP, although TCP contains functions, such as the graceful close, which OSI assigns to the Session Layer.
+
+Perhaps an easy way to visualize the Transport Layer is to compare it with a Post Office, which deals with the dispatch and classification of mail and parcels sent. Do remember, however, that a post office manages the outer envelope of mail. Higher layers may have the equivalent of double envelopes, such as cryptographic Presentation services that can be read by the addressee only. Roughly speaking, tunneling protocols operate at the transport layer, such as carrying non-IP protocols such as IBM's SNA or Novell's IPX over an IP network, or end-to-end encryption with IPsec. While Generic Routing Encapsulation (GRE) might seem to be a network layer protocol, if the encapsulation of the payload takes place only at endpoint, GRE becomes closer to a transport protocol that uses IP headers but contains complete frames or packets to deliver to an endpoint. L2TP carries PPP frames inside transport packets.
+
+[edit] Layer 3: Network layer
+
+The Network layer provides the functional and procedural means of transferring variable length data sequences from a source to a destination via one or more networks while maintaining the quality of service requested by the Transport layer. The Network layer performs network routing functions, and might also perform fragmentation and reassembly, and report delivery errors. Routers operate at this layer#%Gâ��#%@sending data throughout the extended network and making the Internet possible. This is a logical addressing scheme #%Gâ��#%@ values are chosen by the network engineer. The addressing scheme is hierarchical. The best known example of a layer 3 protocol is the Internet Protocol (IP). Perhaps it's easier to visualize this layer as managing the sequence of human carriers taking a letter from the sender to the local post office, trucks that carry sacks of mail to other post offices or airports, airplanes that carry airmail between major cities, trucks that distribute mail sacks in a city, and carriers that take a letter to its destinations. Think of fragmentation as splitting a large document into smaller envelopes for shipping, or, in the case of the network layer, splitting an application or transport record into packets.
+
+[edit] Layer 2: Data Link layer
+
+The Data Link layer provides the functional and procedural means to transfer data between network entities and to detect and possibly correct errors that may occur in the Physical layer. Originally, this layer was intended for point-to-point and point-to-multipoint media, characteristic of wide area media in the telephone system. Local area network architecture, which included broadcast-capable multiaccess media, was developed independently of the ISO work, in IEEE Project 802. IEEE work assumed sublayering and management functions not required for WAN use. In modern practice, only error detection, not flow control using sliding window, is present in modern data link protocols such as Point-to-Point Protocol (PPP), and, on local area networks, the IEEE 802.2 LLC layer is not used for most protocols on Ethernet, and, on other local area networks, its flow control and acknowledgment mechanisms are rarely used. Sliding window flow control and acknowledgment is used at the transport layers by protocols such as TCP, but is still used in niches where X.25 offers performance advantages.
+
+Both WAN and LAN services arrange bits, from the physical layer, into logical sequences called frames. Not all physical layer bits necessarily go into frames, as some of these bits are purely intended for physical layer functions. For example, every fifth bit of the FDDI bit stream is not used by the data link layer.
+
+[edit] WAN Protocol Architecture
+
+Connection-oriented WAN data link protocols, in addition to framing, detect and may correct errors. They also are capable of controlling the rate of transmission. A WAN data link layer might implement a sliding window flow control and acknowledgment mechanism to provide reliable delivery of frames; that is the case for SDLC and HDLC, and derivatives of HDLC such as LAPB and LAPD.
+
+[edit] IEEE 802 LAN Architecture
+
+Practical, connectionless LANs began with the pre-IEEE Ethernet specification, which is the ancestor of the IEEE 802.3 This layer manages the interaction of devices with a shared medium, which is the function of a Media Access Control sublayer. Above this MAC sublayer is the media-independent IEEE 802.2 Logical Link Control (LLC) sublayer, which deals with addressing and multiplexing on multiaccess media.
+
+While IEEE 802.3 is the dominant wired LAN protocol and IEEE 802.11 the wireless LAN protocol, obsolescent MAC layers include Token Ring and FDDI. The MAC sublayer detects but does not correct errors.
+
+[edit] Layer 1: Physical layer
+
+The Physical layer defines all the electrical and physical specifications for devices. In particular, it defines the relationship between a device and a physical medium. This includes the layout of pins, voltages, and cable specifications. Hubs, repeaters, network adapters, Host Bus Adapters (HBAs used in Storage Area Networks) and more.
+
+To understand the function of the physical layer in contrast to the functions of the data link layer, think of the physical layer as concerned primarily with the interaction of a single device with a medium, where the data link layer is concerned more with the interactions of multiple devices (i.e., at least two) with a shared medium. The physical layer will tell one device how to transmit to the medium, and another device how to receive from it (in most cases it does not tell the device how to connect to the medium). Obsolescent physical layer standards such as RS-232 do use physical wires to control access to the medium.
+
+The major functions and services performed by the physical layer are:
+
+    * Establishment and termination of a connection to a communications medium.
+    * Participation in the process whereby the communication resources are effectively shared among multiple users. For example, contention resolution and flow control.
+    * Modulation, or conversion between the representation of digital data in user equipment and the corresponding signals transmitted over a communications channel. These are signals operating over the physical cabling (such as copper and optical fiber) or over a radio link.
+
+Parallel SCSI buses operate in this layer, although it must be remembered that the logical SCSI protocol is a transport-layer protocol that runs over this bus. Various physical-layer Ethernet standards are also in this layer; Ethernet incorporates both this layer and the data-link layer. The same applies to other local-area networks, such as Token ring, FDDI, and IEEE 802.11, as well as personal area networks such as Bluetooth and IEEE 802.15.4.
+
+[edit] Interfaces
+
+In addition to standards for individual protocols in transmission, there are also interface standards for different layers to talk to the ones above or below (usually operating-system#%Gâ��#%@specific). For example, Microsoft Windows' Winsock, and Unix's Berkeley sockets and System V Transport Layer Interface, are interfaces between applications (layers 5 and above) and the transport (layer 4). NDIS and ODI are interfaces between the media (layer 2) and the network protocol (layer 3).
+
+OSI Service Specifications are abstractions of functionality commonly present in programming interfaces.
+
+
+

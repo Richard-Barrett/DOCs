@@ -1,0 +1,25 @@
+Change Log file for dsh
+
+$Id: ChangeLog,v 1.4 2005/10/19 20:47:20 lile Exp $
+
+Changes in 1.21:
+
+o Get rid of some small memory leaks detected by valgrind.
+o Fixed a core dump related -v and removing members from the
+  collective on the fly.
+o Updated man page for dshbak, this still needs much work.
+
+Changes in 1.20:
+
+o Make remote_argv dynamic, this allows multiple -o arguments to be
+  used on the command line.
+o Cleaned up code to compile cleanly with fascist warning turned on
+  -Wall -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes
+  -Wmissing-declarations -Wnested-externs -Winline -W.
+o One last reversal of rcmd_pgm and dsh_remote command fixed.
+o Added man page for dsh.
+o Added support to Makefile.am to propagate configure variables
+  into the man pages.
+o Added ChangeLog file
+o Updated README
+o Added INSTALL

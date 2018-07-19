@@ -1,0 +1,172 @@
+15Dec17  
+
+Lots of other stuff but the stuff I need to remember
+
+[root@vmdtsweb scripts]# ll -rt /mnt/departments/Patio/Menus
+total 3806
+-rwxrwxrwx. 1 11902  3001    104 Nov  8  2013 readme.txt
+-rwxrwxrwx. 1 11902  3001  15480 Jul 16  2014 Notes.pdf
+-rwxrwxrwx. 1  2493  3001  48640 May 19  2015 Thumbs.db
+-rwxrwxrwx. 1 12161 games 450650 Nov  1 09:32 menu.11.01.17.pptx
+-rwxrwxrwx. 1 12161 games 408542 Nov  3 09:42 menu.11.03.17.pptx
+-rwxrwxrwx. 1 12161 games 707286 Dec 13 07:35 Breakfast.pdf
+-rwxrwxrwx. 1 12161 games 894176 Dec 13 09:49 Menu.pdf
+[root@vmdtsweb scripts]# 
+
+@@@ menu is showing 13Dec17 menu.
+
+[root@vmdtsweb scripts]# crontab -l
+SHELL=/bin/bash
+
+PATH=/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Sync depot photos to dtsweb employee directory
+0 * * * * /bin/bash /disney/share/www/html/pages/dept_tech/employee_directory/depotPhotoSync.py >/dev/null 2>&1
+
+# Run general depotsync to dtsweb
+0 * * * * /bin/bash /disney/share/www/html/pages/dept_tech/employee_directory/depotSync.py >/dev/null 2>&1
+
+============================================================================================================================
+28Dec17 dts-web   @@@ have to login as root   (root@dts-web)
+
+[root@dts-web ~]# nslookup dts-web
+Server:		192.168.20.1
+Address:	192.168.20.1#53
+
+Name:	dts-web.swna.wdpr.disney.com
+Address: 10.103.80.210
+
+^^^^^
+[root@dts-web ~]# nslookup dtsweb
+Server:		192.168.20.1
+Address:	192.168.20.1#53
+
+dtsweb.swna.wdpr.disney.com	canonical name = dts-web.swna.wdpr.disney.com.
+Name:	dts-web.swna.wdpr.disney.com
+Address: 10.103.80.210
+
+^^^^^
+[root@dts-web ~]# nslookup vmdtsweb
+Server:		192.168.20.1
+Address:	192.168.20.1#53
+
+Non-authoritative answer:
+Name:	vmdtsweb.disneytoonstudios.com
+Address: 10.106.228.25
+
+
+
+
+
+============================================================================================================================
+cp dts-web:/etc/httpd/conf/httpd.conf to vmdtsweb:/etc/httpd/conf/httpd.conf
+
+@@@ when I started httpd it failed and teh journelctl gave me this:
+
+
+dsiegfriedt@vmdtsweb:/etc/httpd/conf $ sudo journalctl
+-- Logs begin at Sun 2017-12-24 12:44:29 PST, end at Thu 2017-12-28 14:21:16 PST. --
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: kmod-libs-20-15.el7_4.4.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                kmod-libs(x86-64) = 20-15.el7_4.4
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: Error: Package: libreport-2.1.11-23.el7_1.i686 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Requires: libreport-python = 2.1.11-23.el7_1
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Removing: libreport-python-2.1.11-23.el7_1.x86_64 (@rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-23.el7_1
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Updated By: libreport-python-2.1.11-38.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-38.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Removing: libreport-python-2.1.11-31.el7.x86_64 (installed)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-31.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Updated By: libreport-python-2.1.11-38.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-38.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-python-2.1.11-10.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-10.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-python-2.1.11-21.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-21.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-python-2.1.11-30.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-30.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-python-2.1.11-35.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-python = 2.1.11-35.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: Error: Package: libreport-2.1.11-23.el7_1.i686 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Requires: libreport-filesystem = 2.1.11-23.el7_1
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Removing: libreport-filesystem-2.1.11-23.el7_1.x86_64 (@rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-23.el7_1
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Updated By: libreport-filesystem-2.1.11-38.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-38.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Removing: libreport-filesystem-2.1.11-31.el7.x86_64 (installed)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-31.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Updated By: libreport-filesystem-2.1.11-38.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-38.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-filesystem-2.1.11-10.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-10.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-filesystem-2.1.11-21.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-21.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-filesystem-2.1.11-30.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-30.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:            Available: libreport-filesystem-2.1.11-35.el7.x86_64 (rhel-7-server-rpms)
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:                libreport-filesystem = 2.1.11-35.el7
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]:  You could try using --skip-broken to work around the problem
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: ** Found 169 pre-existing rpmdb problem(s), 'yum check' output follows:
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-2.1.11-35.el7.x86_64 is a duplicate with abrt-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-addon-ccpp-2.1.11-35.el7.x86_64 is a duplicate with abrt-addon-ccpp-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-addon-kerneloops-2.1.11-35.el7.x86_64 is a duplicate with abrt-addon-kerneloops-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-addon-pstoreoops-2.1.11-35.el7.x86_64 is a duplicate with abrt-addon-pstoreoops-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-addon-python-2.1.11-35.el7.x86_64 is a duplicate with abrt-addon-python-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-addon-xorg-2.1.11-35.el7.x86_64 is a duplicate with abrt-addon-xorg-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-libs-2.1.11-35.el7.x86_64 is a duplicate with abrt-libs-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-python-2.1.11-35.el7.x86_64 is a duplicate with abrt-python-2.1.11-22.el7_1.x86_64
+Dec 24 12:44:29 vmdtsweb.disneytoonstudios.com puppet-agent[16795]: abrt-tui-2.1.11-35.el7.x86_64 is a duplicate with abrt-tui-2.1.11-22.el7_1.x86_64
+dsiegfriedt@vmdtsweb:/etc/httpd/conf $ 
+
+@@@ looks like I may need some 32 bit packages
+
+stopped abrtd
+
+
+cp httpd.conf-dts-web to httpd.conf
+
+[root@vmdtsweb conf]# systemctl start httpd.service 
+Job for httpd.service failed because the control process exited with error code. See "systemctl status httpd.service" and "journalctl -xe" for details.
+[root@vmdtsweb conf]# systemctl status httpd.service
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+   Active: failed (Result: exit-code) since Thu 2017-12-28 14:43:41 PST; 16s ago
+  Process: 12283 ExecStop=/bin/kill -WINCH ${MAINPID} (code=exited, status=1/FAILURE)
+  Process: 2239 ExecReload=/usr/sbin/httpd $OPTIONS -k graceful (code=exited, status=0/SUCCESS)
+  Process: 12281 ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND (code=exited, status=1/FAILURE)
+ Main PID: 12281 (code=exited, status=1/FAILURE)
+
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com systemd[1]: Starting The Apache HTTP Server...
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com httpd[12281]: httpd: Syntax error on line 151 of /etc/http...ry
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com systemd[1]: httpd.service: main process exited, code=exit...URE
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com kill[12283]: kill: cannot find process ""
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com systemd[1]: httpd.service: control process exited, code=e...s=1
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com systemd[1]: Failed to start The Apache HTTP Server.
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com systemd[1]: Unit httpd.service entered failed state.
+Dec 28 14:43:41 vmdtsweb.disneytoonstudios.com systemd[1]: httpd.service failed.
+Hint: Some lines were ellipsized, use -l to show in full.
+
+
+[root@vmdtsweb conf]# pwd
+/etc/httpd/conf
+[root@vmdtsweb conf]# ll
+total 116
+-rw-r--r--. 1 root root 41098 Dec 28 14:43 httpd.conf
+-rw-r--r--. 1 root root 41098 Dec 28 14:19 httpd.conf-dts-web
+-rw-r--r--. 1 root root 11818 Dec 28 14:16 httpd.conf-ORIG
+-rw-r--r--. 1 root root 13077 Dec  2  2014 magic
+[root@vmdtsweb conf]# cp httpd.conf-ORIG httpd.conf
+cp: overwrite ‘httpd.conf’? y
+[root@vmdtsweb conf]# systemctl start httpd.service 
+
+
+============================================================================================================================
+
+
+
+============================================================================================================================
+
+
+
+============================================================================================================================
+
+

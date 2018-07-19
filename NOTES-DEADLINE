@@ -1,0 +1,2413 @@
+5Dec16  --siggy
+
+vmdeadline.disneytoonstudios.com
+((((())))
+@@@ download
+https://thinkboxsoftware.app.box.com/s/7qu0aceguipuwitshig8qw3yqv1mp273/file/198467125571
+
+@@@ 16Jan18 downloaded 10.0.9.7
+https://downloads.thinkboxsoftware.com/?_ga=2.59550509.1262840588.1516140609-1134947193.1516140609#/
+*****thinkbox software (3Aug17)
+don.siegfriedt@disneytoonstudios.com
+dts-siegfriedt
+e....
+
+((((()))))
+
+LOGS
+/var/log/Thinkbox/Deadline10
+/var/log/deadline10launcher.log 
+
+((()))
+LICENSING
+[root@vmdeadline License Server]# 
+
+/opt/Thinkbox/License\ Server/lmutil lmstat -a | grep Users
+
+Users of deadline:  (Total of 135 licenses issued;  Total of 87 licenses in use)
+Users of deadline-balancer:  (Total of 3 licenses issued;  Total of 1 license in use)
+Users of draft:  (Total of 50 licenses issued;  Total of 0 licenses in use)
+
+
+((()))
+FAQs
+http://docs.thinkboxsoftware.com/products/deadline/8.0/1_User%20Manual/manual/faq.html
+
+((()))
+5Dec16  --siggy  Client Configuration
+
+http://docs.thinkboxsoftware.com/products/deadline/7.0/1_User%20Manual/manual/client-config.html#client-config-ref-label
+
+ENV VAR
+dsiegfriedt@dts3329:~ $ export -p | grep -i dead
+declare -x DEADLINE_PATH="/opt/Thinkbox/Deadline8/bin"
+
+LOCAL SLAVE INSTANCE FILE
+dsiegfriedt@dts3329:~ $ cat /var/lib/Thinkbox/Deadline8/slaves/.ini 
+[Deadline]
+SlaveListeningPort=35181
+SlaveProcessID=30286
+SlaveStartedByIdleDetection=False
+
+SYSTEM CONFIG FILE
+dsiegfriedt@dts3329:~ $ cat /var/lib/Thinkbox/Deadline8/deadline.ini 
+[Deadline]
+NetworkRoot=/disney/share/deadline/Repository8
+LicenseMode=Standard
+LicenseServer=27008@vmdeadline
+Region=
+LauncherListeningPort=17080
+LauncherServiceStartupDelay=60
+AutoConfigurationPort=17081
+SlaveStartupPort=17083
+SlaveDataRoot=
+ConnectionType=Repository
+ProxyRoot=
+RestartStalledSlave=false
+NoGuiMode=false
+LaunchSlaveAtStartup=true
+AutoUpdateOverride=
+NetworkRoot0=/disney/share/deadline/Repository8
+#added 8Dec16  --siggy
+LaunchPulseAtStartup=True
+
+(The NetworkRoot setting tells the Client which Repository to connect to.)
+(The LicenseServer setting tells the Client where it can get a license from.)
+(The LauncherListeningPort setting is the port that the Launcher listens on for Remote Control. It must be the same on all Clients.)
+(The AutoConfigurationPort setting is the port that the Clients use when Auto Configuring themselves. It must be the same on all Clients.)
+(The SlaveDataRoot setting tells the Slave where to copy its job files temporarily during rendering. The default location is the “slave” 
+ folder in the same folder as the per-user deadline.ini file. If left blank, the default location will be used as well.)
+(The MultipleSlavesEnabled setting indicates if multiple slaves are allowed to run on this machine or not. The default is True.)
+(The RestartStalledSlave setting indicates if the Launcher should try to restart the Slave on the machine if it becomes stalled. 
+ The default is True.)
+(The LaunchBalancerAtStartup setting controls if the Launcher should automatically launch the Balacner after the launcher starts up. 
+ The default is False.)
+
+@@@ this should be changed on vmdeadline (pulse server)
+
+(The LaunchSlaveAtStartup setting controls if the Launcher should automatically launch the Slave after the launcher starts up. 
+ The default is True.)
+(The AutoUpdateOverride setting can be used to override the Automatic Upgrades setting in the Repository Configuration. If left blank, 
+ then it will not override the Repository Options, which is also the default behavior if this setting isn’t specified.)
+
+
+((()))
+5Dec16 --siggy PULSE
+
+http://docs.thinkboxsoftware.com/products/deadline/7.0/1_User%20Manual/manual/pulse.html
+
+If you launch Pulse, and a Primary Pulse hasn’t been set yet, it will automatically configure itself to be the Primary, and 
+configure itself to be connected to by its host name. These settings can be changed from the Pulse Panel in the Monitor at 
+any time. See the Pulse Configuration documentation for more information.
+
+Command Line Options
+To run Pulse from a command prompt or terminal window, navigate to the Deadline bin folder and run the ‘deadlinepulse’ application. 
+To view all available command line arguments, you can run the following:
+
+deadlinepulse -help
+Available Options
+
+To start Pulse without a user interface, use the -nogui option:
+deadlinepulse -nogui
+
+To start Pulse without the splash screen, use the -nosplash option:
+deadlinepulse -nosplash
+
+To shut down Pulse if it’s already running, use the -shutdown option:
+deadlinepulse -shutdown
+
+((()))
+5Dec16  --siggy LICENSING
+
+http://docs.thinkboxsoftware.com/products/licensing/1.0/Licensing%20Guide/
+
+Error: -1 Cannot find license file
+Error: -2 Invalid license file syntax
+Error: -4 Licensed number of users already reached
+Error: -7 No socket connection to license server manager
+Error: -9 Invalid host
+Error: -10 Feature has expired
+Error: -13 No SERVER lines in license file
+Error: -15 Cannot connect to license server
+Error: -18 License server does not support this feature
+Error: -21 License file does not support this version
+Error: -25 License server does not support this version of this feature
+Error: -96 Server machine is down or not responding
+Error: -96 No such File or Directory
+Error: -96 System Error: 11004 “Comm. error”
+Error: -97 The desired vendor daemon is down.
+
+((()))
+5Dec16  --siggy on my 7.2 workstation
+
+[root@dts3329 ~]# ps -ef | grep dead
+dsiegfr+   670  3426  0 Dec02 pts/2    00:00:00 ssh vmdeadline
+dsiegfr+   671   670  0 Dec02 pts/2    00:00:00 /usr/bin/sss_ssh_knownhostsproxy -p 22 vmdeadline
+root      1294 31665  0 15:36 pts/1    00:00:00 grep --color=auto dead
+prodman+ 29736     1  1 Dec02 ?        01:03:06 ./mono --runtime=v4.0 --config /opt/Thinkbox/Deadline8/bin/deadline_mono_config /opt/Thinkbox/Deadline8/bin/deadlinelauncher.exe -daemon -nogui
+prodman+ 29993 29736  0 Dec02 ?        00:03:57 /opt/Thinkbox/Deadline8/mono/bin/mono-sgen /opt/Thinkbox/Deadline8/bin/deadlinesandbox.exe -socket 38905 -repository /disney/share/deadline/Repository8 -region
+prodman+ 30286 29736  5 Dec02 ?        03:54:22 ./mono --runtime=v4.0 --config /opt/Thinkbox/Deadline8/bin/deadline_mono_config /opt/Thinkbox/Deadline8/bin/deadlineslave.exe -nogui
+prodman+ 30353 30286  0 Dec02 ?        00:03:57 /opt/Thinkbox/Deadline8/mono/bin/mono-sgen /opt/Thinkbox/Deadline8/bin/deadlinesandbox.exe -socket 41321 -repository /disney/share/deadline/Repository8 -region
+
+
+((()))
+5Dec16  --siggy TO BE RUN ON W/S AND RENDER NODES
+
+The Launcher’s main use is to provide a means of remote communication between the Monitor and the Slave or Pulse applications, and 
+therefore should always be left running on your render nodes and workstations. It can also detect if the Slave running on the machine 
+has stalled, and restart it if it does.
+***
+The Slave is the application that controls the rendering applications and should be running on any machine you want to to include in 
+the rendering process.
+
+On Linux, you can start the Launcher from a terminal window by running the deadlinelauncher script in the bin folder.
+***
+
+((()))
+5Dec16  --siggy FAQs (on vmdeadline)
+
+The Deadline Repository is a collection of files and folders that stores various Deadline information which is accessed via a 
+shared network path. It is NOT a program.
+       dsiegfriedt@vmdeadline:/opt/Thinkbox/Deadline8 $ ll /opt/Thinkbox/DeadlineRepository8/
+
+dsiegfriedt@vmdeadline:/opt/Thinkbox/Deadline8 $ ps -ef | grep mongo
+mongodb   5175     1  2 Oct10 ?        1-04:48:33 /usr/bin/mongod --quiet -f /etc/mongod.conf run
+
+How many machines do I install the Deadline Client on?
+
+The Deadline Client includes all the applications required for submitting, monitoring, and rendering jobs. So it should be installed on all of your workstations and render nodes.
+
+Do I have to install the Deadline Client on the Repository machine?
+YES
+
+dsiegfriedt@dts3329:~ $ ps -fe | grep dead
+
+prodman+ 29736     1  1 Dec02 ?        01:03:52 ./mono --runtime=v4.0 --config /opt/Thinkbox/Deadline8/bin/deadline_mono_config /opt/Thinkbox/Deadline8/bin/deadlinelauncher.exe -daemon -nogui
+
+prodman+ 29993 29736  0 Dec02 ?        00:04:00 /opt/Thinkbox/Deadline8/mono/bin/mono-sgen /opt/Thinkbox/Deadline8/bin/deadlinesandbox.exe -socket 38905 -repository /disney/share/deadline/Repository8 -region
+
+prodman+ 30286 29736  5 Dec02 ?        03:55:51 ./mono --runtime=v4.0 --config /opt/Thinkbox/Deadline8/bin/deadline_mono_config /opt/Thinkbox/Deadline8/bin/deadlineslave.exe -nogui
+
+prodman+ 30353 30286  0 Dec02 ?        00:04:01 /opt/Thinkbox/Deadline8/mono/bin/mono-sgen /opt/Thinkbox/Deadline8/bin/deadlinesandbox.exe -socket 41321 -repository /disney/share/deadline/Repository8 -region
+
+@@@to install deadline client
+http://docs.thinkboxsoftware.com/products/deadline/8.0/1_User%20Manual/manual/install-client.html?highlight=client%20install%20linux#silent-install-client-ref-label
+
+The Client consists of the following applications:
+
+    Launcher: Acts as a launch point for the Deadline applications on workstations, and facilitates remote communication on render nodes.
+    Monitor: An all-in-one application that artists can use to monitor their jobs and administrators can use to monitor the farm.
+    Slave: Controls the rendering applications on the render nodes.
+    Command: A command line tool that can submit jobs to the farm and query for information about the farm.
+    Pulse: An optional mini server application that performs maintenance operations on the farm, and manages more advanced features like 
+    	   Auto Con figuration, Power Management, Slave Throttling, and Statistics Gathering. If you choose to run Pulse, it only needs 
+	   to be running on one machine.
+    Balancer: An optional Cloud-controller application that can create and terminate Cloud instances based on things like available jobs 
+    	   and budget settings. If you choose to run Balancer, it only needs to be running on one machine.
+    Web Service: An optional application that handles HTTP requests for information about the farm.
+    Proxy Server: An optional application that handles HTTP or HTTPS connections to a remote repository for use by Deadline applications.
+    License Forwarder: An optional application that acts as a license server for third party applications when using Third Party Usage 
+    	    Based Licensing.
+
+
+((()))
+6Dec16  --siggy deadline client install
+dsiegfriedt@dts3329:~ $ cat JOBS/DISNEYTS/DEADLINE8/deadline-silent-install
+ 
+cd /disney/depts/tech/systems/software/deadline
+
+./DeadlineClient-8.0.4.1-linux-x64-installer.run --mode unattended --connectiontype Repository --repositorydir /disney/share/deadline/Repository8 --licenseserver 27008@vmdeadline  --daemonuser prodmanadm --launcherdaemon true
+
+#21Nov16  --siggy
+#Got deadline-slave to work by:
+#
+#/apps/deadline/Deadline8/bin/deadlinelauncher -slave -pulse
+
+@@@ local version of deadline8 documentation
+file:///disney/depts/tech/systems/software/deadline/Deadline-8.0.4.1-User-Manual/index.html
+
+
+((()))
+6Dec16  --siggy  deadline meeting with Doug
+
+Catalina has conf for multiple slave instances
+remote commands
+       fail
+       connection refused
+
+dikeler   82590  82382  1 Dec03 pts/0    01:10:45 ./mono --runtime=v4.0 --config /disney/apps/thinkbox/8.0.4.1/bin/deadline_mono_config /disney/apps/thinkbox/8.0.4.1/bin/deadlinelauncher.exe -slave -nogui
+	  	 in GUI can start multiple slaves (right now 4 TTL instaces based on 12core/render node)
+
+****************NOT all desktops have 48 cores
+
+@@@ slaves have different port numbers to make scripting miserable
+[root@catalina Deadline8]# ll /var/lib/Thinkbox/Deadline8/slaves/
+total 12
+-rw-rw-r--. 1 dikeler prodctn 94 Dec  5 17:54 catalina2.ini
+-rw-rw-r--. 1 dikeler prodctn 94 Dec  5 17:54 catalina3.ini
+-rw-rw-r--. 1 dikeler prodctn 94 Dec  5 17:54 catalina4.ini
+
+[root@catalina slaves]# cat catalina*
+[Deadline]
+SlaveListeningPort=55736
+SlaveProcessID=58895
+SlaveStartedByIdleDetection=False
+[Deadline]
+SlaveListeningPort=56809
+SlaveProcessID=58902
+SlaveStartedByIdleDetection=False
+[Deadline]
+SlaveListeningPort=36673
+SlaveProcessID=58897
+SlaveStartedByIdleDetection=False
+
+@@@ to stop 
+close monitor
+service deadline8launcher stop
+
+((()))
+7Dec16  --siggy  starting deadline as prodmanadm
+
+[prodmanadm@shootingstar ~]$ /opt/Thinkbox/Deadline8/bin/deadlinelauncher -daemon -nogui & 
+[1] 59552
+[prodmanadm@shootingstar ~]$ Launcher Thread - Launcher thread initializing...
+Launcher Thread - Launcher thread listening on port 17080
+Launcher is running as a service or daemon, delaying startup for 60 seconds
+This delay can be adjusted by setting the LauncherServiceStartupDelay setting in the system deadline.ini file
+Auto Configuration: Picking configuration based on: shootingstar.disneytoonstudios.com / 10.106.227.116
+Auto Configuration: No auto configuration could be detected, using local configuration
+Launcher Thread - Remote Administration is now enabled
+Launcher Thread - Automatic Updates is now enabled
+
+[prodmanadm@shootingstar ~]$ ps -ef | grep dead
+1825200265 59552 59015  5 16:52 pts/3    00:00:01 ./mono --runtime=v4.0 --config /opt/Thinkbox/Deadline8/bin/deadline_mono_config /opt/Thinkbox/Deadline8/bin/deadlinelauncher.exe -daemon -nogui
+1825200265 59573 59552  4 16:52 pts/3    00:00:00 /opt/Thinkbox/Deadline8/mono/bin/mono-sgen /opt/Thinkbox/Deadline8/bin/deadlinesandbox.exe -socket 60767 -repository /disney/share/deadline/Repository8 -region
+1825200265 59677 59015  0 16:52 pts/3    00:00:00 grep dead
+
+@@@ IDM does not automout/respond fast enough to start as "prodmanadm"   local prodmanadm account?
+
+((()))
+8Dec16  --siggy desktops  used by deadline
+LaunchPulseAtStartup=True
+
+(The NetworkRoot setting tells the Client which Repository to connect to.)
+(The LicenseServer setting tells the Client where it can get a license from.)
+(The LauncherListeningPort setting is the port that the Launcher listens on for Remote Control. It must be the same on all Clients.)
+(The AutoConfigurationPort setting is the port that the Clients use when Auto Configuring themselves. It must be the same on all Clients.)
+(The SlaveDataRoot setting tells the Slave where to copy its job files temporarily during rendering. The default location is the “slave” 
+ folder in the same folder as the per-user deadline.ini file. If left blank, the default location will be used as well.)
+(The MultipleSlavesEnabled setting indicates if multiple slaves are allowed to run on this machine or not. The default is True.)
+(The RestartStalledSlave setting indicates if the Launcher should try to restart the Slave on the machine if it becomes stalled. 
+ The default is True.)
+(The LaunchBalancerAtStartup setting controls if the Launcher should automatically launch the Balacner after the launcher starts up. 
+ The default is False.)
+
+@@@ this should be changed on vmdeadline (pulse server)
+
+(The LaunchSlaveAtStartup setting controls if the Launcher should automatically launch the Slave after the launcher starts up. 
+ The default is True.)
+(The AutoUpdateOverride setting can be used to override the Automatic Upgrades setting in the Repository Configuration. If left blank, 
+ then it will not override the Repository Options, which is also the default behavior if this setting isn’t specified.)
+
+((()))
+8Dec16  --siggy desktops used by deadline
+
+blackbird
+catalina
+corsair
+hercules
+lightning
+mustang
+shootingstar
+spitfire
+tempest
+warhawk
+electra
+
+blackbird catalina corsair hercules lightning mustang shootingstar spitfire tempest warhawk electra
+
+
+@@@ added "LaunchPulseAtStartup=True" to the end of /var/lib/Thinkbox/Deadline8/deadline.ini 
+@@@ for added insurance.... I su - prodmanadm to make sure the home account loaded..
+@@@ then stopped/killed/started all deadline processes
+
+((()))
+9Dec16  --siggy  restart steps
+
+service deadline8launcher status
+ps -ef | grep dead
+vim /var/lib/Thinkbox/Deadline8/deadline.ini
+
+     LaunchPulseAtStartup=True   
+
+service deadline8launcher stop
+****kill any remaining processes from deadline
+su - prodmanadm	       		 #this is to load prodmanadm home.  I suspect that the start command is not fast enough
+   ll
+   exit
+service deadline8launcher start
+service deadline8launcher status
+ps -fe | grep dead
+/apps/deadline/Deadline8/bin/deadlinelauncher -pulse
+
+-----
+@@@ the render boxes do not have /var/lib/Thinkbos/Deadline8
+@@@ on d20608 (render box)
+
+vim /etc/init.d/deadline8launcher
+
+...
+if [ -x "$DEADLINEBIN/deadlinelauncher" ]; then
+            #/bin/su - $LAUNCHERSERVICEUSERNAME -c "$DEADLINEBIN/deadlinelauncher -daemon -nogui & echo \$! > $PIDFILE" &> /dev/null
+            #9Dec16  --siggy   added "-pulse" to the start script
+            /bin/su - $LAUNCHERSERVICEUSERNAME -c "$DEADLINEBIN/deadlinelauncher -daemon -nogui -pulse & echo \$! > $PIDFILE" &> /dev/null
+...
+
+
+((()))
+13Dec16  --siggy LOG
+
+/var/log/Thinkbox/Deadline8/
+
+((()))
+13Dec16  GRACE  won't start at boot
+
+/apps/deadline/Deadline8/bin/deadlinelauncher -pulse
+
+-----
+
+((()))
+13Dec16  --siggy LOG
+
+/var/log/Thinkbox/Deadline8/
+
+((()))
+13Dec16  GRACE  deadline8launcher doesn't start at boot
+
+@@@AGAIN Grace to the rescue........deadline8launcher (S20deadline8launcher) starts before the network... mv to S99deadline8launcher
+
+the plan is to loop through the renderfarm and mv S20 to S99
+
+for i in $(seq 609 645); do echo d20$i; ssh -t d20$i sudo mv /etc/rc3.d/S20deadline8launcher /etc/rc3.d/S99deadline8launcher; echo; done
+
+for i in $(seq 637 645); do echo d20$i; ssh -t d20$i sudo mv /etc/rc3.d/S20deadline8launcher /etc/rc3.d/S99deadline8launcher; echo; done
+
+for i in $(seq 708 745); do echo d20$i; ssh -t d20$i sudo mv /etc/rc3.d/S20deadline8launcher /etc/rc3.d/S99deadline8launcher; echo; done
+
+
+((()))
+14Dec16  --siggy  Doug ran out of licenses....
+
+dsiegfriedt@vmdeadline:~ $ cat /opt/Thinkbox/License\ Server/Thinkbox.lic
+SERVER vmdeadline.disneytoonstudios.com 001a4a43ea4c 27008
+VENDOR thinkbox PORT=2708
+FEATURE deadline thinkbox 8.00 permanent 135 SIGN="0F68 A9FD 0677 \
+	0A2B 6715 4141 5FE4 BA93 3D16 F8A8 6480 A623 596F 7763 C4B3 \
+	0F25 8433 4BB6 A045 5A5F 5872 3766 3685 A05D 8088 6BB4 7147 \
+	AAD3 7C81 5384"
+UPGRADE deadline thinkbox 8.00 8.10 03-oct-2016 135 SIGN="0220 70E0 \
+	DB07 B49E DF84 606F E88E 0E1C 8C9A ACED 8C2B BAA5 897C FEA1 \
+	30EB 1BF1 8670 DEC3 18CD C09F F76D 1B10 72BC 4E7F 7CDF 4F75 \
+	FD21 D070 559E 3FEC"
+FEATURE deadline-balancer thinkbox 1.00 26-jul-2017 3 SIGN="00EA 09D2 \
+	4943 4921 493B 33E0 5253 9BF2 C048 AE6C C959 2ED0 FD6F 734C \
+	9DD6 1684 D9A0 4526 57FE 573D 19CC 4736 C94C 5EA7 EC6A 5AB9 \
+	EB4A 3B9A 70D3 A34C"
+FEATURE draft thinkbox 1.60 26-jul-2017 50 SIGN="1D7B 25EC 94C5 5FB6 \
+	4F83 4797 35F4 B9EC 056D A4BF 8A1A F9E7 69C4 30AE E505 16EC \
+	1D3A 3893 B28D 045B 8A7E 7F5F 53C0 5A82 44FD 0696 7FE4 E922 \
+	1007 DC7B"
+
+((()))
+19Jan17  --siggy  deadline jobs list
+
+@@@ on vmdeadline
+
+/opt/Thinkbox/Deadline8/bin/deadlinecommand -GetJobIds | wc -l
+
+/opt/Thinkbox/Deadline8/bin/deadlinecommand GetFarmStatistics
+
+/opt/Thinkbox/Deadline8/bin/deadlinecommand Version
+
+((()))
+
+LOTS of stuff in NOTES-DTS
+
+((()))
+30May17  --siggy
+
+dsiegfriedt@dts3329:~ $ /opt/Thinkbox/Deadline8/bin/deadlinelauncher
+Launcher Thread - Launcher thread initializing...
+Launcher Thread - Launcher thread listening on port 17080
+Local version file: /opt/Thinkbox/Deadline8/bin/Version
+Network version file: /disney/share/deadline/Repository8/bin/Linux/Version
+Comparing version files...
+Version files match
+Launching Slave: 
+Local version file: /opt/Thinkbox/Deadline8/bin/Version
+Network version file: /disney/share/deadline/Repository8/bin/Linux/Version
+Comparing version files...
+Version files match
+Launching Pulse
+Deadline Pulse 8.0 [v8.0.4.1 Release (49ce3656c)]
+Deadline Slave 8.0 [v8.0.4.1 Release (49ce3656c)]
+Auto Configuration: Picking configuration based on: dts3329.disneytoonstudios.com / 10.106.224.6
+Auto Configuration: No auto configuration could be detected, using local configuration
+Exception on Startup: System.UnauthorizedAccessException: Access to the path "/var/lib/Thinkbox/Deadline8/slaves/.ini" is denied.
+  at System.IO.File.Delete (System.String path) <0x7f8cecf3ac90 + 0x0015c> in <filename unknown>:0 
+  at FranticX.IO.File2.Delete (System.String fileName, Int32 attempts, TimeSpan retryDelay) <0x415649f0 + 0x000be> in <filename unknown>:0 
+
+Deadline Slave will now exit.
+Launcher Thread - Remote Administration is now enabled
+Launcher Thread - Automatic Updates is now enabled
+Auto Configuration: Picking configuration based on: dts3329.disneytoonstudios.com / 10.106.224.6
+Auto Configuration: No auto configuration could be detected, using local configuration
+Server Thread - Auto Configuration: Listening for auto configuration requests on 0.0.0.0:17081:17081
+Slave - Final cleanup
+Slave - Shutdown complete
+
+^CShutting down
+dsiegfriedt@dts3329:~ $ ll /var/lib/Thinkbox/Deadline8/slaves/.ini
+-rw-rw-r--. 1 root root 94 Jan  3 15:17 /var/lib/Thinkbox/Deadline8/slaves/.ini
+dsiegfriedt@dts3329:~ $ cat /var/lib/Thinkbox/Deadline8/slaves/.ini
+[Deadline]
+SlaveListeningPort=46257
+SlaveProcessID=21751
+SlaveStartedByIdleDetection=False
+
+
+
+((()))
+22Jun17  deadline cli
+
+dsiegfriedt@vmdeadline:~ $ /opt/Thinkbox/Deadline8/bin/deadlinecommand --help
+
+SendEmail
+  Sends an email.
+    [to <Email>]             TO email address
+    [subject <Subject>]      The subject
+    [message <Message>]      The message, or the path to the file that
+                             contains the message
+    [cc <Email>]             CC email address (optional)
+    [attach <Attachment>]    Attachment file (optional)
+
+GetJobTaskAverageTime
+  Display average task render time for the job.
+    [Job ID]                 The job ID
+
+CompleteJob
+  Completes a job.
+    [Job ID(s)]              The job ID, or a list of job IDs separated by
+                             commas
+GetJobStatistics
+  Displays quick summary information of jobs
+
+GetJobDetails
+  Displays the job details.
+    [Job ID(s)]              The job ID, or a list of job IDs separated by
+                             commas
+JobStatistics
+  Shows statistics for jobs that have completed between the specified dates,
+  inclusive.
+    [Start Date]             The start date in the form yyyy-MM (ie: 2010-01)
+    [End Date]               The end date in the form yyyy-MM (ie: 2010-12)
+    [Pool Filter]            A comma separate list of pools (or an empty
+                             string for no filter)
+    [Group Filter]           A comma separate list of groups (or an empty
+                             string for no filter)
+    [Plugin Filter]          A comma separate list of plugins (or an empty
+                             string for no filter)
+GetFarmStatistics
+  Displays quick summary information of jobs and slaves
+
+
+GetFarmStatisticsEx
+  Displays quick summary information of jobs and slaves
+
+((()))
+28Jun17  installing deadline9 on deadline9.disneytoonstudios.com
+
+@@@as root on deaadline9
+~dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE9/DeadlineRepository-9.0.3.0-linux-x64-installer.run
+
+30Jun17
+
+
+((()))
+3Jul17  email from Chris
+
+Try now. I just edited the /etc/hosts table:
+
+[root@deadline9 ~]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+#::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.106.228.42   deadline9.disneytoonstudios.com deadline9
+
+I commented out the IPv6 entry for localhost. That, I believe, should do the trick!
+
+This should be in there if ipv6 is turned off in the kernel. 
+
+You can check with sysctl -a | grep ipv6 to see if it's enabled, if you get something back, then it's enabled, otherwise, if you just return w/ no output then it's disabled.
+
+
+@@@ show soft rlimits
+ulimit -a
+[root@deadline9 ~]# ulimit -a
+core file size          (blocks, -c) unlimited
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 14611
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 65536
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 14611
+                                ^^^^^^^^^^ 
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+
+@@@ to change  ***** does NOT survive reboot *****
+[root@deadline9 ~]# ulimit -u 65536
+                           ^^^^^^^^ 
+[root@deadline9 ~]# ulimit -a
+core file size          (blocks, -c) unlimited
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 14611
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 65536
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 65536
+                                ^^^^^^^^^^
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+
+@@@
+[root@deadline9 ~]# cat /etc/security/limits.conf 
+
+
+@@@ to survive a reboot
+https://docs.mongodb.com/master/tutorial/transparent-huge-pages/
+
+
+@@@ create this file with this content (this only worked for enable and not defrag(defrag below))
+
+[root@deadline9 ~]# ll /etc/tuned/no-thp/
+total 4
+-rw-r--r--. 1 root root 64 Jul  5 17:24 tuned.conf
+[root@deadline9 ~]# cat /etc/tuned/no-thp/tuned.conf 
+[main]
+include=virtual-guest
+
+[vm]
+transparent_hugepages=never
+
+@@@ to activate
+tuned-adm profile no-thp
+
+@@@ to get defrag to "never" had to add to /etc/rc.local
+^^^^^
+if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+   echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi
+
+ulimit -u 64000
+^^^^^
+
+@@@ to test
+ulimit -a
+cat /sys/kernel/mm/transparent_hugepage/enabled 
+cat /sys/kernel/mm/transparent_hugepage/defrag
+
+((()))
+12Jul17
+
+@@@ from support
+https://docs.thinkboxsoftware.com/products/deadline/9.0/1_User%20Manual/manual/install-db-repo-manual-db-install.html#install-manual-db-ref-label
+
+[root@deadline9 mongo]# yum install mongodb-org.x86_64
+[root@deadline9 mongo]# mongod --version
+db version v3.4.6
+git version: c55eb86ef46ee7aede3b1e2a5d184a7df4bfb5b5
+OpenSSL version: OpenSSL 1.0.1e-fips 11 Feb 2013
+allocator: tcmalloc
+modules: none
+build environment:
+    distmod: rhel70
+    distarch: x86_64
+    target_arch: x86_64
+
+cd /opt/Thinkbox/DeadlineDatabase9/mongo/application/
+cp /usr/bin/mongo* .
+cp /usr/bin/bsondump .
+
+cd /opt/Thinkbox/DeadlineDatabase9/mongo/data/
+mkdir data/logs
+
+((()))
+20Jul17  "create" db  (mongodb you do not create a db)
+https://www.tutorialspoint.com/mongodb/mongodb_create_database.htm
+
+[root@deadline9 mongo]# mongo
+MongoDB shell version v3.4.6
+connecting to: mongodb://127.0.0.1:7017
+MongoDB server version: 3.4.6
+Server has startup warnings: 
+2017-07-14T09:36:46.702-0700 I CONTROL  [initandlisten] 
+2017-07-14T09:36:46.702-0700 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2017-07-14T09:36:46.702-0700 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2017-07-14T09:36:46.702-0700 I CONTROL  [initandlisten] 
+> use admin
+switched to db admin
+> show dbs
+admin  0.000GB
+local  0.000GB
+> use DeadlineDatabase9
+switched to db DeadlineDatabase9
+> db
+DeadlineDatabase9
+> show dbs
+admin  0.000GB
+local  0.000GB
+@@@ nothing shows until you put something in. the below command does that
+> db.movie.insert({"name":"tutorials point"})
+WriteResult({ "nInserted" : 1 })
+> show dbs
+DeadlineDatabase9  0.000GB
+admin              0.000GB
+local              0.000GB
+> exit
+bye
+
+@@@ Other db commands
+@@@ collections is the mongodb word for databases
+
+db.help()		# duh help
+db.getName()
+show users		# list available uses
+show dbs		# list available db/collection
+db			# to check which db you are "using/attached/connected/collection"
+use <db name> 	        # to switch to a different db/collection
+
+@@@ had created the wrong name for deadline9 db :^(
+@@@ to delete a db in mongodb
+
+@@@ switch to the db to be deleted (dropped)
+> use DeadlineDatabase9
+switched to db DeadlineDatabase9
+
+@@@ show what db you are into/using/attached/?????
+> db
+DeadlineDatabase9
+
+@@@ drop it
+> db.dropDatabase()
+{ "dropped" : "DeadlineDatabase9", "ok" : 1 }
+
+@@@ there it is ....GONE
+> show dbs
+admin  0.000GB
+local  0.000GB
+> 
+
+@@@ now create the correct name
+use admin
+use deadline9db
+db.movie.insert({"name":"tutorials point"})
+
+> show dbs
+admin        0.000GB
+deadline9db  0.000GB
+local        0.000GB
+> 
+
+((()))
+23Jul17 file locations   #on deadline9.disneytoonstuios.com
+
+/usr/bin/mongod
+/var/lib/mongo
+/etc/mongod.config		#contains the port the db is looking 
+@@@ port: 27017
+/var/log/deadline9mongodb.log
+/var/log/mongodb
+/usr/lib/systemd/system/mongod.service
+/etc/mongod.conf
+/usr/share/doc/mongodb-org-server-3.4.6
+
+/etc/yum.repos.d/mongodb-enterprise.repo
+/etc/yum.repos.d/mongodb-org-3.4.repo
+/etc/selinux/targeted/active/modules/100/mongodb
+/etc/mongod.conf
+/etc/mongod.conf.rpmsave
+/tmp/repoinstalltemp/mongo
+/var/lib/yum/repos/x86_64/7Server/mongodb-org-3.4
+/var/lib/yum/repos/x86_64/7Server/mongodb-enterprise
+/var/cache/yum/x86_64/7Server/mongodb-org-3.4
+/var/cache/yum/x86_64/7Server/mongodb-enterprise
+/usr/lib/python2.7/site-packages/sos/plugins/mongodb.py
+/usr/lib/python2.7/site-packages/sos/plugins/mongodb.pyc
+/usr/lib/python2.7/site-packages/sos/plugins/mongodb.pyo
+/usr/share/augeas/lenses/dist/mongodbserver.aug
+/usr/share/man/man1/mongod.1
+/usr/share/gems/gems/awesome_print-1.0.2/lib/awesome_print/ext/mongo_mapper.rb
+/usr/share/gems/gems/awesome_print-1.0.2/lib/awesome_print/ext/mongoid.rb
+/usr/share/vim/vim74/keymap/mongolian_utf-8.vim
+/opt/Thinkbox/
+/data/db/mongod.lock
+/tmp/bitrock*
+/etc/selinux/targeted/active/modules/100/mongodb/
+
+
+for i in `find / -xdev -name "mong*"`; do echo $i; rm -rf $i; echo; done
+
+
+((()))
+25Jul17
+
+iptables -I INPUT 1 -p tcp --dport 27017 -j ACCEPT
+sudo useradd -d /dev/null -c "Deadline Repositry User" -M deadline
+groupadd deadline
+
+@@@ tried re-install again...with the option of installing a new db from the web.  it seems to be working.
+
+----------------------------------------------------------------------------
+Make note of where you choose to have this Certificate saved, as you will need 
+it for Client installations.
+
+Certificate Directory [/opt/Thinkbox/DeadlineDatabase9/certs]: 
+
+Certificate Password : <standard root passwd>
+Confirm Password : <standard root passwd>
+
+Use client certificate for DB user authentication [Y/n]: n
+----------------------------------------------------------------------------
+
+
+((()))
+3Aug17 quick mongo check
+
+[root@deadline9 lib]# 
+mongo deadline9db --eval "db.dropDatabase()"
+
+MongoDB shell version v3.4.6
+connecting to: mongodb://127.0.0.1:27017/deadline9db
+MongoDB server version: 3.4.6
+{ "dropped" : "deadline9db", "ok" : 1 }
+
+
+[root@deadline9 lib]# 
+mongo --eval "db.stats()" 
+
+MongoDB shell version v3.4.6
+connecting to: mongodb://127.0.0.1:27017
+MongoDB server version: 3.4.6
+{
+	"db" : "test",
+	"collections" : 0,
+	"views" : 0,
+	"objects" : 0,
+	"avgObjSize" : 0,
+	"dataSize" : 0,
+	"storageSize" : 0,
+	"numExtents" : 0,
+	"indexes" : 0,
+	"indexSize" : 0,
+	"fileSize" : 0,
+	"ok" : 1
+}
+
+echo $?
+0 == db is up/running/ok
+
+!!!!!
+
+nc -vv localhost 27017
+
+!!!!!
+
+
+((()))
+7Aug17  email from Dwight
+
+Can I have you choose not to reinstall? That will basically have Deadline try to completely reinstall the MongoDB app, when all you need to do is connect to the existing repo. Let me know. 
+
+NO change
+
+((()))
+
+9Aug17   
+
+@@@ install logs are in /tmp and are named bitrock_installer.log (SMH)
+
+wiped mongo off deadline9
+	 @@@ see list from 23Jul17
+
+reboot
+
+------------------
+
+
+/disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE9/DeadlineRepository-9.0.6.1-linux-x64-installer.run
+
+--mode text --backuprepo false --installmongodb true --dbOverwrite true --backupdb false
+=========================================================================================================
+
+@@@  10Sep17  WDI recommended punting on Deadline9 and wait till 10.  So we did  NUKED deadline9 (VM)
+
+=========================================================================================================
+((()))
+10Sep17  Deadline 10 
+
+Downloaded
+created deadline10 (VMWare)
+
+cp Deadline-10.0.2.0-linux-installers.tar /root
+
+untar Deadline-10.0.2.0-linux-installers.tar
+
+
+@@@ as root 
+
+script /root/10Sep17-dedaline-install
+
+./DeadlineRepository-10.0.2.0-linux-x64-installer.run 
+
+FAIL
+
+
+
+[root@deadline10 ~]# cat /opt/Thinkbox/DeadlineDatabase10/mongo/data/config.conf 
+#MongoDB config file
+
+systemLog:
+  destination: file
+  # Mongo DB's output will be logged here.
+  path: /opt/Thinkbox/DeadlineDatabase10/mongo/data/logs/log.txt
+  # Default to quiet mode to limit log output size. Set to 'false' when debugging.
+  quiet: true
+  # Increase verbosity level for more debug messages (max: 5)
+  verbosity: 0
+
+net:
+  # Port MongoDB will listen on for incoming connections
+  port: 27100
+  #ipv6: true
+  ipv6: false
+  ssl:
+    # SSL/TLS options
+    mode: disabled
+  http:
+    # Set to 'true' to enable REST interface
+    RESTInterfaceEnabled: false
+
+storage:
+  # Database files will be stored here
+  dbPath: /opt/Thinkbox/DeadlineDatabase10/mongo/data
+  engine: mmapv1
+
+security:
+  authorization: disabled
+[root@deadline10 ~]# 
+
+@@@ edited so ipv6 is false.... ALSO commented out ipv6 from /etc/hosts
+@@@ uppded verbosity to 5 to see if I can see WTF is going on
+
+./DeadlineRepository-10.0.2.0-linux-x64-installer.run (again)
+
+12Sep17
+@@@ troublshooting the error and a comment in one of them was something to the effect 
+"is it trying to connect to something that runs ipv6 ONLY"
+
+@@@ FML
+
+https://access.redhat.com/solutions/8709#rhel7enable
+
+@@@ I enabled ipv6 to see if that may fix the problem (here is hoping)
+
+@@@ Are you FUCKING kidding me....it worked
+
+
+^^^^^^^^^^^^^^^^^^
+[root@deadline10 ~]# ./DeadlineRepository-10.0.2.0-linux-x64-installer.run 
+----------------------------------------------------------------------------
+Welcome to the Deadline Repository 10.0.2.0 Setup Wizard.
+
+----------------------------------------------------------------------------
+Please read the following License Agreement. You must accept the terms of this 
+agreement before continuing with the installation.
+
+Press [Enter] to continue:
+Thinkbox End User License Agreement for Deadline Software
+
+<<<EULA>>>
+
+Do you accept this license? [y/n]: y
+
+----------------------------------------------------------------------------
+Repository Installation Directory
+
+After the installation has finished, you must share this directory with full 
+read and write permissions so that the Deadline Clients can access the 
+Repository. Refer to the Deadline installation documentation for more 
+information on sharing the Repository directory.
+
+Repository Directory [/opt/Thinkbox/DeadlineRepository10]: 
+
+Set full read/write access for files [Y/n]: y
+
+----------------------------------------------------------------------------
+MongoDB Database Setup
+
+You can connect to an existing MongoDB installation, or install a new instance on this machine. Note that you will likely have to edit your Firewall settings to allow the Deadline Clients to communicate with the MongoDB database.
+
+[1] Install a new MongoDB database on this machine?
+[2] Connect to an existing MongoDB database installation?
+Please choose an option [2] : 1
+
+A MongoDB database for Deadline 10 already exists on this machine. Reinstalling will erase all data from the database.
+
+If you choose to overwrite an existing MongoDB installation, a backup of the database's contents will be saved in the "backups" subdirectory of the MongoDB installation directory.
+
+Do you want to reinstall it? [y/N]: y
+
+MongoDB Installation Type
+
+You can have the installer download MongoDB automatically, or you can download the pre-packaged MongoDB binaries yourself and specify the location of the binaries package. Make sure to download the MongoDB binaries package (and not the source package), and note that the ZIP package is for Windows installations and the TAR.GZ package is for Linux and Mac OS X installations.
+
+[1] Download MongoDB (requires internet connection)
+[2] Pre-packaged Binaries
+Please choose an option [1] : 1
+
+Download MongoDB (requires internet connection)
+
+----------------------------------------------------------------------------
+MongoDB Installation
+
+This is the directory that the MongoDB database will be installed to.
+
+MongoDB Directory [/opt/Thinkbox/DeadlineDatabase10]: 
+
+This is the hostname and/or IP address at which client machines will attempt to 
+reach this database.
+
+MongoDB Hostname [deadline10.disneytoonstudios.com;10.106.228.146]: 
+
+MongoDB Port [27100]: 
+
+\The MongoDB Service For Deadline 10 is already running (PID 2590).
+The MongoDB Service For Deadline 10 is already running (PID 2590).
+----------------------------------------------------------------------------
+MongoDB Security
+
+Require client authentication via SSL/TLS [Y/n]: n
+
+You have selected not to secure your Database, which we do not recommend unless you can guarantee it will never be exposed external to your network.
+
+Are you sure you wish to continue with an unsecured Database? [Y/n]: y
+
+----------------------------------------------------------------------------
+Setup is now ready to begin installing Deadline Repository on your computer.
+
+Do you want to continue? [Y/n]: y
+
+----------------------------------------------------------------------------
+Please wait while Setup installs Deadline Repository on your computer.
+
+ Installing
+ 0% ______________ 50% ______________ 100%
+ #########################################
+
+----------------------------------------------------------------------------
+Setup has finished installing Deadline Repository on your computer.
+
+[root@deadline10 ~]# 
+
+^^^^^^^^^^^^^^^^^^
+https://docs.thinkboxsoftware.com/products/deadline/10.0/1_User%20Manual/index.html
+
+((()))
+13Sep17 setting up deadline10
+
+cp -r /opt/Thinkbox/DeadlineRepository10/ /disney/share/deadline/
+cd /disney/share/deadline/
+mv DeadlineRepository10 Repository10
+
+
+@@@ as a test I tried to browz to the mongodb to see if it responded
+http://10.106.228.146:27100
+@@@ got this
+It looks like you are trying to access MongoDB over HTTP on the native driver port.
+@@@ bin zipped
+
+cd /opt/Thinkbox/DeadlineRepository10/bin/Linux
+unzip bin.zip
+
+@@@ installing from /root had a weird placement problem :^(
+mv /root/Thinkbox/Deadline10/ /opt/Thinkbox/
+
+((()))
+14Sep17  deadline10 licensing   10 trial lics
+download/install ThinkboxLicenseServer-11.13.1.2.0-linux-x64-installer.run
+pointed at the file of trial licenes in my home account adn created the same file that are on deadline8
+
+WORKS 
+
+((()))
+15Sep17 backup of mongodb from vmdeadline (8)
+FROM:
+/var/lib/mongodb/
+
+TO:
+~/JOBS/DISNEYTS/DEADLINE/DEADLINE8/backup/mongodb/backup
+
+((()))
+
+27Sep17
+
+dsiegfriedt@dragonlady:~ $ ll /var/lib/Thinkbox/Deadline8/slaves/
+total 16K
+drwxrwxrwx. 2 nobody     nobody    53 Aug 14 11:10 .
+drwxrwxrwx. 5 root       root    4.0K Aug 14 11:10 ..
+-rw-rw-r--. 1 prodmanadm prodctn   93 Aug 14 11:10 .ini
+-rw-rw-r--. 1 prodmanadm prodctn   93 Aug 14 11:10 dragon2.ini
+-rw-rw-r--. 1 prodmanadm prodctn   93 Aug 14 11:10 dragon3.ini
+
+@@@ URLs
+https://docs.thinkboxsoftware.com/products/deadline/10.0/1_User%20Manual/manual/multiple-slaves.html
+
+@@@ commandline for setup
+
+/opt/Thinkbox/Deadline10/bin/deadlineslave -name "2" -nogui
+/opt/Thinkbox/Deadline10/bin/deadlineslave -name "3" -nogui
+
+WARNING: Ignoring HOME environment because effective user is root.
+Creating default config file:/var/lib/Thinkbox/Deadline10/slaves/bearcat2.ini
+Scanning for auto configuration
+Auto Configuration: No auto configuration for Repository Path could be detected, using local configuration
+Connecting to repository
+Info Thread - Created.
+Auto Configuration: Picking configuration based on: bearcat.disneytoonstudios.com / 10.106.224.10
+Auto Configuration: No auto configuration could be detected, using local configuration
+Purging old logs and temp files
+
+
+@@@ you will need to restart 
+systemctl stop deadline10launcher.service
+systemctl status deadline10launcher.service
+systemctl start deadline10launcher.service
+
+@@@ PULSE
+started on d20636
+
+((()))
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+@@@ taken from NOTES-DTS
+
+10Oct16  --siggy/Grace Deadlinemonitor
+
+
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+
+***************** 30Oct17 moved everything to the correct place... OUT of my homedir
+***************** /disney/depts/tech/systems/software/deadline/DEADLINE10/Deadline-10.0<version>
+***************** also fixed the "deadline-silent-install" to point to the correct PATH
+
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************
+
+chmod +x /disney/home/dsiegfriedt/JOBS/DISNEYTS/deadline-silent-install
+/disney/home/dsiegfriedt/JOBS/DISNEYTS/deadline-silent-install
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS $ cat deadline-silent-install 
+cd /disney/depts/tech/systems/software/deadline
+
+./DeadlineClient-8.0.4.1-linux-x64-installer.run --mode unattended --connectiontype Repository --repositorydir /disney/share/deadline/Repository8 --licenseserver 27008@vmdeadline  --daemonuser prodmanadm --launcherdaemon true
+
+install path = /opt/Thinkbox/Deadline8/
+
+17Oct16  gracet  troubleshooting vmdeadline
+
+Here're the steps for restarting deadline if it runs out of disk space again even after we made the config changes. 
+
+stop mongod 
+# systemctl stop mongod 
+
+Delete old, rotated logs. Look for files with mongod.log.date file name.I usually start with the oldest log file. DO NOT DELETE mongod.log. 
+
+# cd /var/log/mongod
+# rm mongod.log.2016-09-12T18-03-18
+
+Once you have cleared enough disk space, start mongod again 
+# systemctl start mongod 
+
+Check if 'deadlinemonitor' now launches properly (without any repo error) 
+# deadlinemonitor 
+
+Restart stalled slaves. Follow instructions here: 
+
+http://atlas:8090/display/TEC/Restarting+Stalled+Node
+
+((((()))))
+2Dec16  --siggy deadline stuff
+NOTE: see 10Oct16 for original notes
+
+SYSENG-143 Install deadlinepulse
+
+To start Pulse:
+On Linux, you can start Pulse from a terminal window by running the deadlinepulse script in the bin folder.
+
+ssh vmdeadline
+
+
+dsiegfriedt@vmdeadline:/opt/Thinkbox/Deadline8/bin $ less deadlinepulse
+#!/bin/sh
+cd `dirname "$0"` > /dev/null
+SHELL_PATH=`pwd -P`
+export LD_LIBRARY_PATH=${SHELL_PATH}:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${SHELL_PATH}/plugins/platforms:${LD_LIBRARY_PATH}
+export MONO_THREADS_PER_CPU=50
+exec ./mono --runtime=v4.0 --config "${SHELL_PATH}/deadline_mono_config" "${SHELL_PATH}/deadlinepulse.exe" "$@"
+cd - > /dev/null
+
+LOG location:
+dsiegfriedt@vmdeadline:/opt $ less /opt/Thinkbox/License\ Server/Thinkbox.log
+
+
+@@@@@
+http://docs.thinkboxsoftware.com/products/deadline/7.0/1_User%20Manual/manual/pulse.html
+
+to start on boot:
+http://docs.thinkboxsoftware.com/products/deadline/7.0/1_User%20Manual/manual/client-config.html#client-config-ref-label
+@@@@@
+
+env var
+dsiegfriedt@dts3329:~ $ echo $DEADLINE_PATH
+/opt/Thinkbox/Deadline8/bin
+
+slave instace:
+dsiegfriedt@dts3329:~ $ cat /var/lib/Thinkbox/Deadline8/slaves/.ini
+[Deadline]
+SlaveListeningPort=35181
+SlaveProcessID=30286
+SlaveStartedByIdleDetection=False
+
+dsiegfriedt@dts3329:~ $ cat /var/lib/Thinkbox/Deadline8/deadline.ini 
+[Deadline]
+NetworkRoot=/disney/share/deadline/Repository8
+LicenseMode=Standard
+LicenseServer=27008@vmdeadline
+Region=
+LauncherListeningPort=17080
+LauncherServiceStartupDelay=60
+AutoConfigurationPort=17081
+SlaveStartupPort=17083
+SlaveDataRoot=
+ConnectionType=Repository
+ProxyRoot=
+RestartStalledSlave=false
+###RestartStalledSlave=true
+NoGuiMode=false
+LaunchSlaveAtStartup=true
+AutoUpdateOverride=
+NetworkRoot0=/disney/share/deadline/Repository8
+###User=prodman #???
+
+@@@ commandline options for starting pulse
+deadlinepulse -help
+
+To start Pulse without a user interface, use the -nogui option:
+deadlinepulse -nogui
+
+To start Pulse without the splash screen, use the -nosplash option:
+deadlinepulse -nosplash
+
+To shut down Pulse if it’s already running, use the -shutdown option:
+deadlinepulse -shutdown
+
+You can run Pulse on any machine in your farm, including the Repository or Database machine. 
+
+From v7:
+Pulse Redundancy
+You can run now multiple instances of Pulse on separate machines as backups in case your Primary Pulse instance goes down. 
+    	there are other factors that should be considered
+
+
+((((()))))
+3Jan17  --siggy  deadline8 RPM build error
+
+
+[root@dts3329 rpmbuild]# rpmbuild -ba SPECS/deadline8.spec
+Executing(%prep): /bin/sh -e /tmp/rpm-tmp.wzNYnc
++ umask 022
++ cd /root/rpmbuild/BUILD
++ cd /root/rpmbuild/BUILD
++ rm -rf DTS-deadline8-1.1
++ /usr/bin/mkdir -p DTS-deadline8-1.1
++ cd DTS-deadline8-1.1
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ exit 0
+Executing(%build): /bin/sh -e /tmp/rpm-tmp.LE0ypV
++ umask 022
++ cd /root/rpmbuild/BUILD
++ cd DTS-deadline8-1.1
++ exit 0
+Executing(%install): /bin/sh -e /tmp/rpm-tmp.7yLCrE
++ umask 022
++ cd /root/rpmbuild/BUILD
++ '[' /root/rpmbuild/BUILDROOT/DTS-deadline8-1.1-0.x86_64 '!=' / ']'
++ rm -rf /root/rpmbuild/BUILDROOT/DTS-deadline8-1.1-0.x86_64
+++ dirname /root/rpmbuild/BUILDROOT/DTS-deadline8-1.1-0.x86_64
++ mkdir -p /root/rpmbuild/BUILDROOT
++ mkdir /root/rpmbuild/BUILDROOT/DTS-deadline8-1.1-0.x86_64
++ cd DTS-deadline8-1.1
++ mkdir -p /root/rpmbuild/BUILDROOT/DTS-deadline8-1.1-0.x86_64
++ cd /root/rpmbuild/BUILDROOT/DTS-deadline8-1.1-0.x86_64
++ tar xzf /root/rpmbuild/SOURCES/Deadline8.tgz
++ tar xzf /root/rpmbuild/SOURCES/var-lib.tgz
++ rm -f /tmp/Deadline8-rep-filelist
++ tar tzf /root/rpmbuild/SOURCES/Deadline8.tgz
++ grep -v '/$'
++ sed -e 's/^/\//'
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-compress
++ /usr/lib/rpm/redhat/brp-strip /usr/bin/strip
++ /usr/lib/rpm/redhat/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump
++ /usr/lib/rpm/redhat/brp-strip-static-archive /usr/bin/strip
++ /usr/lib/rpm/brp-python-bytecompile /usr/bin/python 1
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/lib/rpm/redhat/brp-java-repack-jars
+Processing files: DTS-deadline8-1.1-0.x86_64
+error: File must begin with "/": Deadline
+error: File must begin with "/": Client
+error: File must begin with "/": 8.desktop
+
+
+RPM build errors:
+    File must begin with "/": Deadline
+    File must begin with "/": Client
+    File must begin with "/": 8.desktop
+
+@@@ FUCKING spaces in file names
+[root@dts3329 rpmbuild]# ll /opt/Thinkbox/Deadline8/
+total 5612
+drwxrwxrwx. 6 nobody nobody    4096 Jan  3 15:16 bin
+-rwxrwxrwx. 1 nobody nobody     268 Jan  3 15:16 deadlinebalancer8.desktop
+-rwxrwxrwx. 1 nobody nobody     263 Jan  3 15:16 deadlinelauncher8.desktop
+-rwxrwxrwx. 1 nobody nobody     269 Jan  3 15:16 deadlinemonitor8.desktop
+-rwxrwxrwx. 1 nobody nobody     261 Jan  3 15:16 deadlinepulse8.desktop
+-rwxrwxrwx. 1 nobody nobody     261 Jan  3 15:16 deadlineslave8.desktop
+drwxrwxrwx. 2 nobody nobody    4096 Jan  3 14:59 icons
+drwxrwxrwx. 7 nobody nobody      62 Jan  3 14:59 mono
+-rwx------. 1 nobody nobody 5650367 Jan  3 15:16 uninstall
+-rw-------. 1 root   root     51809 Jan  3 15:16 uninstall.dat
+-rwxrwxrwx. 1 nobody nobody     186 Jan  3 15:16 Uninstall Deadline Client 8.desktop
+-rwxrwxrwx. 1 nobody nobody     186 Oct 12 12:47 Uninstall_Deadline_Client_8.desktop
+
+@@@ sooooooooooooooooooooo
+[root@dts3329 rpmbuild]# rm -f /opt/Thinkbox/Deadline8/Uninstall\ Deadline\ Client\ 8.desktop 
+
+@@@ recreate the Deadline8.tgz
+[root@dts3329 rpmbuild]# tar czvf SOURCES/Deadline8.tgz /opt/Thinkbox/Deadline8/
+
+@@@ cp it to a safe place
+[root@dts3329 rpmbuild]# cp SOURCES/Deadline8.tgz ~dsiegfriedt/JOBS/DISNEYTS/DEADLINE8/
+
+@@@ and maybe it worked?????
+@@@ see ~dsiegfriedt/JOBS/DISNEYTS/DEADLINE8/RPM-build-3Jan17
+
+@@@ spec file...as part of the build did a rm -f /opt/Thinkbox.... changed it to /tmp/Thinkbox 
+4Jan17
+@@@ spec file to change start from S20 to S99  AND to rm /opt/Thinkbox and /var/lib/
+
+
+((((()))))
+4Jan17  GraceT
+
+~dsiegfriedt/JOBS/DISNEYTS/DEADLINE8/RPM-build-3Jan17
+
+((((()))))
+10Jan17  --siggy   adding a network port to NetApp
+
+network port modify -node node1 -port e0? -autonegotiate-admin false -duplex-admin full -speed-admin 1000
+network port modify -node node2 -port e0? -autonegotiate-admin false -duplex-admin full -speed-admin 1000
+
+https://library.netapp.com/ecm/ecm_get_file/ECMP1636021
+
+25May17  Ree Deadline problems
+
+Frames owned by her
+configurations owned by Calin
+
+30May17
+
+768  17Apr17-16:41:28  
+for i in $(seq 8 46); do echo $i; ssh d2060$i ps -ef | grep dead; echo; done
+
+for i in $(seq 8 46); do echo $i; ssh d2070$i ps -ef | grep dead; echo; done
+
+
+@@@ information to collect
+cat /etc/redhat-release
+/opt/Thinkbox/Deadline8/bin/deadlinecommand Version
+rpm -qa | grep -i deadline
+
+~dsiegfriedt/dl-collection.bash
+
+for i in $(seq 10 46); do echo d206$i; ssh -t d206$i /disney/home/dsiegfriedt/dl-collection.bash >> /disney/home/dsiegfriedt/1; echo; done
+
+for i in $(seq 10 46); do echo d207$i; ssh -t d206$i /disney/home/dsiegfriedt/dl-collection.bash >> /disney/home/dsiegfriedt/1; echo; done
+
+@@@12 machines have different deadline.ini entries  LicenseServer do not have FQDN.  NOT sure if that does anything, but they shoud be the same
+*****d20612.disneytoonstudios.com
+*****d20622.disneytoonstudios.com
+*****d20626.disneytoonstudios.com
+*****d20627.disneytoonstudios.com
+*****d20640.disneytoonstudios.com
+*****d20711.disneytoonstudios.com
+*****d20723.disneytoonstudios.com
+*****d20724.disneytoonstudios.com
+*****d20737.disneytoonstudios.com
+*****d20743.disneytoonstudios.com
+*****d20745.disneytoonstudios.com
+*****d20746.disneytoonstudios.com
+
+11Jul17
+/opt/Thinkbox/Deadline8/bin/deadlinecommand GetFarmStatistics
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+((()))
+27Sep17  pulse
+
+@@@ was owned by root:root
+
+[root@d20636 Deadline10]# chown prodmanadm:prodctn pulse.ini
+
+[root@d20636 Deadline10]# pwd
+/var/lib/Thinkbox/Deadline10
+[root@d20636 Deadline10]# ll
+total 36
+-rw-rw-r--. 1 prodmanadm prodctn  14 Sep 27 14:01 balancer.ini
+drwxr-xr-x. 2 root       root     32 Sep 15 08:42 cert
+-rwxrwxrwx. 1 nobody     nobody  428 Sep 15 08:42 deadline.ini
+-rw-rw-r--. 1 prodmanadm prodctn  47 Sep 27 16:18 launcher.ini
+-rw-rw-r--. 1 prodmanadm prodctn  14 Sep 27 14:01 licenseforwarder.ini
+-rw-rw-r--. 1 prodmanadm prodctn  14 Sep 27 14:01 monitor.ini
+-rw-rw-r--. 1 prodmanadm prodctn  14 Sep 27 14:01 proxyserver.ini
+-rw-r--r--. 1 prodmanadm prodctn  90 Sep 27 11:59 pulse.ini
+-rw-rw-r--. 1 prodmanadm prodctn  14 Sep 27 14:01 remoteconnectionserver.ini
+drwxrwxrwx. 2 nobody     nobody   17 Sep 15 08:43 slaves
+-rw-rw-r--. 1 prodmanadm prodctn  14 Sep 27 14:01 webservice.ini
+
+systemctl stop deadline10launcher
+systemctl start deadline10launcher
+
+((()))
+9Oct17  Ree says that the slaves have the wrong ownership
+
+/var/lib/Thinkbox/Deadline10/slaves/
+
+chown prodmanadm:prodctn *.ini
+
+@@@ when installing try 
+
+su prodmanadm -c '/opt/Thinkbox/Deadline10/bin/deadlineslave -name "2" -nogui &'
+su prodmanadm -c '/opt/Thinkbox/Deadline10/bin/deadlineslave -name "3" -nogui &'
+
+check that perms are 664
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+move 5 hosts from the 8 to 10
+
+
+systemctl stop deadline8launcher
+
+/opt/Thinkbox/Deadline8/uninstall
+
+chkconfig --del deadline8launcher
+
+rm -f /etc/init.d/deadline8launcher
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<
+/etc/profile.d/deadlineclient.sh
+/etc/rc.d/rc0.d/K80deadline8launcher
+/etc/rc.d/rc1.d/K80deadline8launcher
+/etc/rc.d/rc2.d/K80deadline8launcher
+/etc/rc.d/rc3.d/S20deadline8launcher
+/etc/rc.d/rc4.d/S20deadline8launcher
+/etc/rc.d/rc5.d/S20deadline8launcher
+/etc/rc.d/rc6.d/K80deadline8launcher
+
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinebalancer8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinelauncher8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinemonitor8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlineslave8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinepulse8.desktop
+
+/opt/hgs*
+
+/opt/Thinkbox/Deadline8/*.desktop
+
+@@@ after deadline10/uninstall
+[root@dts3329 ~]# find / -xdev -iname "*deadline*"
+/etc/profile.d/deadlineclient.sh
+/etc/rc.d/init.d/deadline10launcher
+/etc/rc.d/rc0.d/K80deadline8launcher
+/etc/rc.d/rc0.d/K20deadline10launcher
+/etc/rc.d/rc1.d/K80deadline8launcher
+/etc/rc.d/rc1.d/K20deadline10launcher
+/etc/rc.d/rc2.d/K80deadline8launcher
+/etc/rc.d/rc2.d/K20deadline10launcher
+/etc/rc.d/rc3.d/S20deadline8launcher
+/etc/rc.d/rc3.d/S80deadline10launcher
+/etc/rc.d/rc4.d/S20deadline8launcher
+/etc/rc.d/rc4.d/S80deadline10launcher
+/etc/rc.d/rc5.d/S20deadline8launcher
+/etc/rc.d/rc5.d/S80deadline10launcher
+/etc/rc.d/rc6.d/K80deadline8launcher
+/etc/rc.d/rc6.d/K20deadline10launcher
+/root/.config/Thinkbox/Deadline Monitor 8.ini
+/root/.config/Thinkbox/Deadline Slave 8.ini
+/root/Thinkbox/Deadline8
+/root/Thinkbox/Deadline8/deadline.ini
+/root/Thinkbox/Deadline9
+/root/Thinkbox/Deadline10
+/root/Thinkbox/Deadline10/deadline.ini
+/tmp/Thinkbox/Deadline10
+/var/log/deadline8launcherservice.log
+/var/log/deadline9launcherservice.log
+/var/log/deadline10launcher.log
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinebalancer8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinelauncher8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinemonitor8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlineslave8.desktop
+/usr/share/kde-settings/kde-profile/default/share/applications/deadlinepulse8.desktop
+/usr/include/boost/asio/basic_deadline_timer.hpp
+/usr/include/boost/asio/deadline_timer.hpp
+/usr/include/boost/asio/deadline_timer_service.hpp
+/usr/include/boost/asio/detail/deadline_timer_service.hpp
+/usr/src/kernels/3.10.0-327.36.3.el7.x86_64/include/config/default/deadline.h
+/usr/src/kernels/3.10.0-327.36.3.el7.x86_64/include/config/iosched/deadline.h
+/opt/hfs15.5.673/toolkit/include/boost/asio/basic_deadline_timer.hpp
+/opt/hfs15.5.673/toolkit/include/boost/asio/deadline_timer_service.hpp
+/opt/hfs15.5.673/toolkit/include/boost/asio/deadline_timer.hpp
+/opt/hfs15.5.673/toolkit/include/boost/asio/detail/deadline_timer_service.hpp
+/opt/hfs16.0.504.20/toolkit/include/boost/asio/deadline_timer.hpp
+/opt/hfs16.0.504.20/toolkit/include/boost/asio/deadline_timer_service.hpp
+/opt/hfs16.0.504.20/toolkit/include/boost/asio/detail/deadline_timer_service.hpp
+/opt/hfs16.0.504.20/toolkit/include/boost/asio/basic_deadline_timer.hpp
+/opt/hfs16.0.671/toolkit/include/boost/asio/deadline_timer.hpp
+/opt/hfs16.0.671/toolkit/include/boost/asio/deadline_timer_service.hpp
+/opt/hfs16.0.671/toolkit/include/boost/asio/detail/deadline_timer_service.hpp
+/opt/hfs16.0.671/toolkit/include/boost/asio/basic_deadline_timer.hpp
+
+@@@ AND
+
+[root@dts3329 ~]# find / -xdev -iname "*thinkbox*"
+/root/.config/Thinkbox
+/root/Thinkbox
+/tmp/Thinkbox
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@@@ moved to /disney/apps/thinkbox/Deadline10/Deadline-10.0.6.3/
+###/disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/Deadline-10.0.6.3/deadline-silent-install
+
+su prodmanadm -c '/opt/Thinkbox/Deadline10/bin/deadlineslave -name "2" -nogui &'
+su prodmanadm -c '/opt/Thinkbox/Deadline10/bin/deadlineslave -name "3" -nogui &'
+
+sudo systemctl enable deadline10launcher
+
+OR
+
+chkconfig deadline10launcher on
+
+sudo systemctl start deadline10launcher
+
+**** FAILS to start on boot.   Opening a ticket with deadline
+
+failure output ~/JOBS/DISNEYTS/DEADLINE/DEADLINE10/fails-to-start-on-boot-error-10Oct17
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+((()))
+10Oct17  DL10 licenses
+
+Holden, Stephanie
+Attachments6:15 AM (4 hours ago)
+
+to me, Ree, thinkbox-sales 
+Hi Don,
+ 
+Thanks for your message! Deadline licenses are backwards compatible so you can choose to run the older version with the Deadline 10 licenses if you’d like! Attached you’ll find your updated license file.
+ 
+ 
+Deadline 10 can be downloaded from here:
+https://downloads.thinkboxsoftware.com/#/login
+The Deadline 10 user manual & release notes can be found here: https://docs.thinkboxsoftware.com/products/deadline/10.0/1_User%20Manual/index.html
+ 
+To deploy this new license if you have used the license server installer, simply re-install and specify the new license file. It will automatically restart only the Thinkbox license server. The installer and documentation can be downloaded from here: http://www.thinkboxsoftware.com/license-server-download
+ 
+If you configured a firewall and used a specific port, we've changed the default ports that our license server uses, so you should allow ports 27008 and 2708 to your firewall(s). Note that on Windows, the installer will have set up the Windows firewall for you so no change is needed.
+ 
+If there are license checkout issues, please send a screenshot or text of the error along with the “Thinkbox.log” file from the license installation directory to support@thinkboxsoftware.com so they can help you resolve it. Don’t hesitate to contact them for questions or concerns either.
+ 
+Happy Rendering
+
+Cheers,
+ 
+Stephanie Holden
+ 
+Amazon Web Services | Thinkbox Sales
+1-866-419-0283 option 1
+holdens@amazon.com  
+To receive a quicker response please be sure to include thinkbox-sales@amazon.com in your reply
+Learn more about adding Deadline’s new usage-based licensing to your farm: CLICK HERE !!!
+
+SERVER deadline10.disneytoonstudios.com 0050569ced2b 27008
+VENDOR thinkbox PORT=2708
+FEATURE deadline thinkbox 10.00 18-oct-2017 5 SIGN="1FDD F9E3 06D2 \
+	8730 16CE 2278 E9D3 6FEE 0B3D 8EBB 4CB2 0703 D25A 1A71 E223 \
+	146E 3942 1FB2 5D4A 7EE2 5D97 3992 BF23 CB6D F5B1 E24F 843B \
+	7C37 8B55 4B5B"
+FEATURE deadline-balancer thinkbox 1.00 18-oct-2017 3 SIGN="0BB1 A45A \
+	5F1A D521 DE35 528B 4B3D 1C9C E8B3 93C5 31AD D712 23F2 053B \
+	078A 10A1 3AFC 8D3B 6927 B1D0 38CB B391 9371 079B 8554 C3A7 \
+	7131 FBF9 8B9F 607E"
+FEATURE draft thinkbox 1.60 18-oct-2017 5 SIGN="1526 61AA 9EBD C498 \
+	D72B 0D77 B693 8140 AB40 9295 8EF3 D545 625E B0D3 D63A 1B28 \
+	13EF 2F49 60CF AC38 9F27 8245 21D0 EBBD B5BB 8857 91FA D181 \
+	689C B10D"
+
+[root@deadline10 License Server]# pwd
+/opt/Thinkbox/License Server
+
+[root@deadline10 License Server]# ll
+total 10324
+-rwxr-xr-x. 1 root root 1551536 Oct 27  2015 lmgrd
+-rwxr-xr-x. 1 root root 1362736 Oct 27  2015 lmutil
+-rwxr-xr-x. 1 root root 1582032 Dec 23  2015 thinkbox
+-rw-r--r--. 1 root root     739 Sep 14 14:22 Thinkbox.lic
+-rw-r--r--. 1 root root  628981 Oct 10 11:45 Thinkbox.log
+-rwxr-xr-x. 1 root root    1413 Dec 23  2015 thinkboxls
+-rwx------. 1 root root 5413201 Sep 14 15:43 uninstall
+-rw-------. 1 root root    4364 Sep 14 15:43 uninstall.dat
+-rwxr-xr-x. 1 root root     226 Sep 14 15:43 Uninstall Thinkbox License Server.desktop
+
+cp /disney/home/dsiegfriedt/Downloads/Thinkbox_license_DisneyToonz.lic .
+
+mv Thinkbox_license_DisneyToonz.lic Thinkbox.lic
+
+kill-HUP
+@@@NOPE :^(
+
+[root@deadline10 License Server]# ps -ef | grep lmgrd
+root      26091      1  0 Sep14 ?        00:06:53 /opt/Thinkbox/License Server/lmgrd -c /opt/Thinkbox/License Server/Thinkbox.lic -l /opt/Thinkbox/License Server/Thinkbox.log
+root      26092  26091  0 Sep14 ?        00:32:08 thinkbox -T deadline10.disneytoonstudios.com 11.13 3 -c :/opt/Thinkbox/License Server/Thinkbox.lic: -srv jv416chxdl6bnuH0Ngc9wytAxSzmjON7wTYp7Eimd8gZxXNdQ6fdXjFIwOG4c2u -daemon_port a94 --lmgrd_start 59bb0620 -vdrestart 0
+
+
+[root@deadline10 License Server]# pwd
+/opt/Thinkbox/License Server
+[root@deadline10 License Server]# ./thinkbox -T deadline10.disneytoonstudios.com 11.13 3 -c :/opt/Thinkbox/License\ Server/Thinkbox.lic: -srv jv416chxdl6bnuH0Ngc9wytAxSzmjON7wTYp7Eimd8gZxXNdQ6fdXjFIwOG4c2u -daemon_port a94 --lmgrd_start 59bb0620 -vdrestart 0
+
+[root@deadline10 License Server]# ./thinkboxls --help
+Usage: ./thinkboxls {start|stop|restart}
+
+
+********************** TO START LICENSE SERVER ********************** 
+
+[root@deadline10 License Server]# ./thinkboxls start
+
+********************** TO START LICENSE SERVER ********************** 
+
+[root@deadline10 License Server]# ps -fe | grep lmgrd
+root      81968      1  0 15:21 pts/0    00:00:00 /opt/Thinkbox/License Server/lmgrd -c /opt/Thinkbox/License Server/Thinkbox.lic -l /opt/Thinkbox/License Server/Thinkbox.log
+root      81969  81968  0 15:21 ?        00:00:00 thinkbox -T deadline10.disneytoonstudios.com 11.13 3 -c :/opt/Thinkbox/License Server/Thinkbox.lic: -srv zuZey4BtiUkRm5TgVvjEYLQ7dsNkRevlN09QYTeTO2QGGpqSXy7yMRv5xOrPRSs -daemon_port a94 --lmgrd_start 59dd47e5 -vdrestart 0
+
+!!!!!!!!!!!!!!!!!!!!!
+
+[root@deadline10 License Server]# ./lmutil lmstat -a -c Thinkbox.lic 
+lmutil - Copyright (c) 1989-2015 Flexera Software LLC. All Rights Reserved.
+Flexible License Manager status on Tue 10/10/2017 15:33
+
+License server status: 27008@deadline10.disneytoonstudios.com
+    License file(s) on deadline10.disneytoonstudios.com: /opt/Thinkbox/License Server/Thinkbox.lic:
+
+deadline10.disneytoonstudios.com: license server UP (MASTER) v11.13.1
+
+Vendor daemon status (on deadline10.disneytoonstudios.com):
+
+  thinkbox: UP v11.13.1
+Feature usage info:
+
+Users of deadline:  (Total of 5 licenses issued;  Total of 0 licenses in use)
+
+Users of deadline-balancer:  (Total of 3 licenses issued;  Total of 0 licenses in use)
+
+Users of draft:  (Total of 5 licenses issued;  Total of 0 licenses in use)
+
+
+>>>>>>>>>>>>>>>>>>>
+[root@deadline10 License Server]# ./lmutil lmreread
+lmutil - Copyright (c) 1989-2015 Flexera Software LLC. All Rights Reserved.
+
+lmreread successful
+[root@deadline10 License Server]# 
+[root@deadline10 License Server]# ./lmutil lmstat -a -c Thinkbox.lic 
+lmutil - Copyright (c) 1989-2015 Flexera Software LLC. All Rights Reserved.
+Flexible License Manager status on Tue 10/10/2017 15:37
+
+License server status: 27008@deadline10.disneytoonstudios.com
+    License file(s) on deadline10.disneytoonstudios.com: /opt/Thinkbox/License Server/Thinkbox.lic:
+
+deadline10.disneytoonstudios.com: license server UP (MASTER) v11.13.1
+
+Vendor daemon status (on deadline10.disneytoonstudios.com):
+
+  thinkbox: UP v11.13.1
+Feature usage info:
+
+Users of deadline:  (Total of 5 licenses issued;  Total of 3 licenses in use)
+
+  "deadline" v10.00, vendor: thinkbox, expiry: 18-oct-2017
+  floating license
+
+    prodmanadm d20742.disneytoonstudios.com /dev/tty (v10.00) (deadline10.disneytoonstudios.com/27008 218), start Tue 10/10 15:37
+    prodmanadm d20744.disneytoonstudios.com /dev/tty (v10.00) (deadline10.disneytoonstudios.com/27008 706), start Tue 10/10 15:37
+    prodmanadm d20746.disneytoonstudios.com /dev/tty (v10.00) (deadline10.disneytoonstudios.com/27008 598), start Tue 10/10 15:37
+
+Users of deadline-balancer:  (Total of 3 licenses issued;  Total of 0 licenses in use)
+
+Users of draft:  (Total of 5 licenses issued;  Total of 0 licenses in use)
+
+@@@ Thinkbox.lic is the TEMP one.... downloaded the wrong file?
+
+I did have the wrong file..........
+
+
+dsiegfriedt@dts3329:~ $ cat Downloads/Thinkbox_license_DisneyToonz\ \(1\).lic 
+SERVER vmdeadline.disneytoonstudios.com 001a4a43ea4c 27008
+VENDOR thinkbox PORT=2708
+FEATURE deadline thinkbox 10.00 permanent 135 SIGN="049A C9AA 93C0 \
+	D44E B942 D855 4F99 673B 4DEF C47D 4FB5 44A8 4EBF C78F 3C8C \
+	0A45 E99E A70C B1D1 D5CD FA63 5C8F B5AD 1E09 1CDB 4ACC ACC6 \
+	EE27 4D6F 8643"
+FEATURE deadline-balancer thinkbox 1.00 01-feb-2019 3 SIGN="1A53 A89F \
+	8188 4CD1 A7FD FC32 1CB0 2BBF B065 AD08 B108 1F3E B906 CE77 \
+	492D 1E92 71CD 485C 1A9C 71D0 BFDB 4375 582D CEBB 43CB 8BC0 \
+	E44C 1F69 DB9F A7F8"
+FEATURE draft thinkbox 1.60 01-feb-2019 50 SIGN="15CF 741D 67E3 7096 \
+	59E3 AD24 30B1 803F 074F 1BF8 103C 7C6C 60C5 E9BF 2C96 0D44 \
+	5FDA FC38 0C38 A470 5210 B7FF 0DDF 742B 9F6F 6629 6AED E0EC \
+	DF37 2A75"
+
+
+[root@deadline10 License Server]# cp /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/Thinkbox_license_DisneyToonz.lic .
+
+
+[root@deadline10 License Server]# ./lmutil lmreread
+lmutil - Copyright (c) 1989-2015 Flexera Software LLC. All Rights Reserved.
+
+   Port@Host            Vendors
+1) 27008@deadline10.disneytoonstudios.com thinkbox 
+2) 27008@vmdeadline.disneytoonstudios.com thinkbox 
+
+Server # [a=all, q=quit]?  1
+lmreread successful
+[root@deadline10 License Server]# 
+
+[root@deadline10 License Server]#  ./lmutil lmstat -a -c Thinkbox.lic 
+
+###WOOHOO
+
+[root@deadline10 License Server]# ps -ef | grep lmgrd
+root      35980  35295  0 16:59 pts/2    00:00:00 grep --color=auto lmgrd
+root      87256      1  0 Oct10 ?        00:04:22 /opt/Thinkbox/License Server/lmgrd -c /opt/Thinkbox/License Server/Thinkbox.lic -l /opt/Thinkbox/License Server/Thinkbox.log
+
+[root@deadline10 License Server]# kill 87256
+
+[root@deadline10 License Server]# /opt/Thinkbox/License\ Server/lmgrd -c /opt/Thinkbox/License\ Server/Thinkbox.lic -l /opt/Thinkbox/License\ Server/Thinkbox.log
+
+
+
+
+
+>>>>>>>>>>>>>>>>>>>
+
+!!!!!!!!!!!!!!!!!!!
+
+((()))
+11Oct17   deadline does not start at boot :^(
+
+less /etc/init.d/deadline10launcher
+
+as prodmanadm
+
+DEADLINEBIN="/opt/Thinkbox/Deadline10/bin"
+DEADLINELOG="/var/log/Thinkbox/Deadline10"
+DEADLINEVERSION="10"
+LAUNCHERSERVICEUSERNAME="prodmanadm"
+
+${DEADLINEBIN}/deadlinelauncher
+
+=================================================================
+Got a SIGABRT while executing native code. This usually indicates
+a fatal error in the mono runtime or one of the native libraries 
+used by your application.
+=================================================================
+
+@@@ looking at the mono stuff maybe...
+
+warning: File "/opt/Thinkbox/Deadline10/mono/bin/mono-sgen-gdb.py" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load:/usr/bin/mono-gdb.py".
+To enable execution of this file add
+	add-auto-load-safe-path /opt/Thinkbox/Deadline10/mono/bin/mono-sgen-gdb.py
+line to your configuration file "/disney/home/prodmanadm/.gdbinit".
+To completely disable this security protection add
+	set auto-load safe-path /
+line to your configuration file "/disney/home/prodmanadm/.gdbinit".
+For more information about this security protection see the
+"Auto-loading safe path" section in the GDB manual.  E.g., run from the shell:
+	info "(gdb)Auto-loading safe path"
+@@@ NOPE
+
+[prodmanadm@d20746 ~]$ ll /etc/init.d/deadline10launcher 
+-rwxr-xr-x. 1 root root 5451 Oct 10 14:11 /etc/init.d/deadline10launcher
+
+@@@ change group to prodctn and try again
+>>>>>>>>>>>>>>
+
+[root@d20746 ~]# ll /etc/init.d/deadline10launcher
+-rwxr-xr-x. 1 root prodctn 5451 Oct 10 14:11 /etc/init.d/deadline10launcher
+
+
+@@ Started at boot!!!   tested OK by Ree
+
+((()))
+11Oct17   slaves   ### TY Ree
+
+if you see ONLY slaves..
+
+cd /var/lib/Thinkbox/Deadline10/slaves/
+touch .ini
+chown prodmanadm:prodctn .ini
+chmod 664 .ini
+
+((()))
+12Oct17
+
+the playbook did in fact NOT fix the start on boot problem
+strace start showed that it fail trying to write to deadline10launcher.log
+
+cd /var/log
+chgrp prodctn deadline10launcher.log (from root)
+chmod 664 deadline10launcher.log (from 644)
+reboot
+@@@ NOPE :^(
+
+cd /opt/Thinkbox/Deadline10/bin
+
+chown prodmanadm:prodctn *
+
+@@@ NOPE
+
+@@@ all the dirs hax x available
+
+as prodmanadm....strace /etc/init.d/deadline10launcher start &> /tmp/1
+
+as root... strace su prodmanadm -c "/etc/init.d/deadline10launcher start" &> /tmp/1
+
+as root... strace su prodmanadm -c "/opt/Thinkbox/Deadline10/bin/deadlinelauncher" &> /tmp/1
+@@@ access to /opt/Thinkbox/Deadline10/bin/libpython2.7.so -> python/lib/libpython2.7.so
+@@@ ll /opt/Thinkbox/Deadline10/bin/| grep libpy
+@@@ lrwxrwxrwx.  1 root       root          26 Oct  9 22:28 libpython2.7.so -> python/lib/libpython2.7.so
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!
+#59 0x00007f2e2bfb8380 in ?? () from /opt/Thinkbox/Deadline10/bin/libpython2.7.so
+#60 0x00007f2dee629ec0 in ?? ()
+#61 0x00007f2e2bfbda00 in _PyExc_LookupError () from /opt/Thinkbox/Deadline10/bin/libpython2.7.so
+#62 0x0000000000000000 in ?? ()
+
+=================================================================
+Got a SIGABRT while executing native code. This usually indicates
+a fatal error in the mono runtime or one of the native libraries 
+used by your application.
+=================================================================
+
+[root@d20746 bin]# pwd
+/opt/Thinkbox/Deadline10/bin
+[root@d20746 bin]# ll | grep libpython2.7.so
+lrwxrwxrwx.  1 root       root          26 Oct  9 22:28 libpython2.7.so -> python/lib/libpython2.7.so
+       ^^^   so that shouldn't matter
+
+[root@d20746 bin]# ll python/lib/libpython2.7.so
+lrwxrwxrwx. 1 root root 19 Oct  9 22:27 python/lib/libpython2.7.so -> libpython2.7.so.1.0
+       ^^^   so that shouldn't matter
+
+[root@d20746 bin]# cd python/lib
+[root@d20746 lib]# ll
+total 5984
+lrwxrwxrwx.  1 root       root         19 Oct  9 22:27 libpython2.7.so -> libpython2.7.so.1.0
+       ^^^   so that shouldn't matter
+
+-rwxrwxrwx.  1 prodmanadm prodctn 6114570 Sep  5 17:52 libpython2.7.so.1.0
+       ^^^   so that shouldn't matter
+
+drwxrwxrwx.  2 nobody     nobody       59 Oct  9 22:27 pkgconfig
+drwxrwxrwx. 28 nobody     nobody     8192 Oct 10 17:12 python2.7
+
+
+as root ... strace "/opt/Thinkbox/Deadline10/bin/deadlinelauncher start" &> /tmp/1
+            strace "/etc/init.d/deadline10launcher start" &> /tmp/1
+
+@@@ NOPE 
+
+@@@ from /etc/init.d/deadline10launcher
+
+/bin/su ${LAUNCHERSERVICEUSERNAME} -c "[ -x '${DEADLINEBIN}/deadlinelauncher' ]"
+
+@@@ changed it to:
+/bin/su prodmanadm -c "[ -x '/opt/Thinkbox/Deadline10/bin/deadlinelauncher' ]"
+@@@ with the correct names rather than variables.
+@@@ NOPE
+
+strace /bin/su prodmanadm -c "[ -x '/opt/Thinkbox/Deadline10/bin/deadlinelauncher' ]" >& /tmp/1
+
+@@@ no error no start 
+
+@@@ start looking at the start script...... THAT is where it is failing.... 
+@@@ looks like it fails trying to touch the /var/lock/subsys (/var/run/lock/subsys)
+
+LETS HOPE
+
+/opt/Thinkbox/Deadline10/bin/
+[root@d20746 bin]# ll python/lib/python2.7/ | grep "r--"
+-rw-rw-r--.  1 prodmanadm prodctn  28698 Oct  9 22:28 _abcoll.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   6462 Oct  9 22:28 abc.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   2377 Oct  9 22:28 atexit.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  11582 Oct  9 22:28 base64.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  39568 Oct  9 22:28 codecs.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  27129 Oct  9 22:28 collections.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   5432 Oct  9 22:28 copy_reg.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   3788 Oct 10 17:12 fnmatch.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   6843 Oct 10 14:12 functools.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   4402 Oct  9 22:28 __future__.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   3836 Oct  9 22:28 genericpath.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   7290 Oct  9 22:28 hashlib.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  15087 Oct  9 22:28 heapq.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   2163 Oct  9 22:28 keyword.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   3446 Oct  9 22:28 linecache.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  27236 Oct  9 22:28 os.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  41574 Oct  9 22:28 pickle.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  38552 Oct 10 14:12 platform.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  12087 Oct  9 22:28 posixpath.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  14022 Oct  9 22:28 re.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   7920 Oct  9 22:28 shlex.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  19468 Oct 10 17:12 shutil.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  20227 Oct  9 22:28 site.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  12994 Oct  9 22:28 sre_compile.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   6340 Oct  9 22:28 sre_constants.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  21061 Oct  9 22:28 sre_parse.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   3041 Oct  9 22:28 stat.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  21938 Oct  9 22:28 string.pyc
+-rw-rw-r--.  1 prodmanadm prodctn    268 Oct  9 22:28 struct.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  43404 Oct  9 22:28 subprocess.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  18391 Oct  9 22:28 _sysconfigdata.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  18301 Oct  9 22:28 sysconfig.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  45561 Oct  9 22:28 threading.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  12259 Oct  9 22:28 traceback.pyc
+-rw-rw-r--.  1 prodmanadm prodctn   2928 Oct  9 22:28 types.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  11016 Oct  9 22:28 UserDict.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  14281 Oct  9 22:28 warnings.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  17384 Oct  9 22:28 weakref.pyc
+-rw-rw-r--.  1 prodmanadm prodctn  11070 Oct  9 22:28 _weakrefset.pyc
+
+ (39)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[root@d20746 ~]# ll /var/lib/Thinkbox/Deadline10/
+total 36
+-rw-r--r--. 1 root       root     14 Oct 10 14:11 balancer.ini
+drwxr-xr-x. 2 root       root     32 Oct  9 22:28 cert
+-rwxrwxrwx. 1 nobody     nobody  489 Oct 12 04:47 deadline.ini
+-rw-rw-r--. 1 prodmanadm prodctn  47 Oct 13 13:34 launcher.ini
+-rw-r--r--. 1 root       root     14 Oct 10 14:11 licenseforwarder.ini
+-rw-r--r--. 1 root       root     14 Oct 10 14:11 monitor.ini
+-rw-r--r--. 1 root       root     14 Oct 10 14:11 proxyserver.ini
+-rw-r--r--. 1 root       root     14 Oct 10 14:11 pulse.ini
+-rw-r--r--. 1 root       root     14 Oct 10 14:11 remoteconnectionserver.ini
+drwxrwxrwx. 2 nobody     nobody   17 Oct 11 11:28 slaves
+-rw-r--r--. 1 root       root     14 Oct 10 14:11 webservice.ini
+
+
+[root@d20746 ~]# find /opt/Thinkbox/Deadline10/ -name "*launcher*"
+/opt/Thinkbox/Deadline10/bin/deadlinelauncher.exe
+/opt/Thinkbox/Deadline10/bin/deadlinelauncher
+/opt/Thinkbox/Deadline10/deadlinelauncher10.desktop
+
+[root@d20746 ~]# ll /etc/init.d/
+total 44
+-rwxr-xr-x. 1 root prodctn  5451 Oct 10 14:11 deadline10launcher
+
+((()))
+17Oct17  new deadline license  # temp until we migrate all machines to 10
+
+dsiegfriedt@dts3329:~/Downloads $ cat ../JOBS/DISNEYTS/DEADLINE/DEADLINE10/Thinkbox_license_DisneyToonz.lic 
+SERVER deadline10.disneytoonstudios.com 0050569ced2b 27008
+VENDOR thinkbox PORT=2708
+FEATURE deadline thinkbox 10.00 15-nov-2017 135 SIGN="0EA6 201F 0187 \
+	3705 1B32 893B C176 2E50 97C9 5E2A C16F 7344 15B9 DA08 807F \
+	0CB0 F5AE 5B28 024D 8523 D90C 73BB 4E9F 100A 56A2 C738 8179 \
+	7010 DC77 9CA4"
+FEATURE deadline-balancer thinkbox 1.00 15-nov-2017 3 SIGN="032D 898A \
+	9368 37C0 73A4 0027 2FF6 46A5 9F84 AD21 35A5 019A D949 9951 \
+	DFD2 03CE 96FF 86D9 8BB6 FA07 CC30 462C 988D 7467 DC5D E182 \
+	60E7 DCAC 9200 9D65"
+FEATURE draft thinkbox 1.60 15-nov-2017 50 SIGN="01E1 4F2C 312E F6C7 \
+	D960 F501 AACE 34F7 7367 B2BA D741 A751 852E 4587 7E18 1ADF \
+	0200 6DB9 0C5E B56B C403 D1DB DBF8 E88D 4D04 2FCF B025 62D1 \
+	A2E0 11A2"
+
+
+((()))
+1Nov17   remove deadline does not cleanup after itself
+
+@@@ find version
+cat /opt/Thinkbox/Deadline10/bin/versioninfo.ini
+
+@@@ is 8 running
+systemctl status deadline8launcher
+
+@@@ STOP it
+systemctl stop deadline8launcher
+
+@@@ remove it
+/opt/Thinkbox/Deadline8/uninstall
+
+@@@ the uninstall leaves all kinds of cruft
+for i in `cat ~dsiegfriedt/JOBS/DISNEYTS/DEADLINE/after-uninstall-cleanup-list`; do echo $i; rm -rf $i; echo; done
+
+@@@ this installs the LnG version 
+/apps/thinkbox/Deadline10/Deadline-10.0.6.3/deadline-silent-install 
+
+((()))
+20Nov17  stop/start lmgrd on deadline10 (license server)
+
+service thinkboxls status
+service thinkboxls stop
+service thinkboxls start
+
+/opt/Thinkbox/License\ Server/lmgrd -c /opt/Thinkbox/License\ Server/Thinkbox.lic
+
+((()))
+30Nov17
+
+for i in $(seq 10 46); do echo d206$i; ssh -t d206$i sudo /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/upgrade-script.bash; echo; done
+
+for i in $(seq 10 46); do echo d207$i; ssh -t d207$i sudo /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/upgrade-script.bash; echo; done
+
+for i in hercules catalina warhawk corsair spitfire; do echo d206$i; ssh -t d206$i sudo /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/upgrade-script.bash; echo; done
+
+and den
+
+avenger
+bearcat
+dragonlady
+electra
+fightingfalcon
+globemaster
+kingcobra
+liberator
+lightning
+marauder
+meteor
+norsman
+raptor
+shootingstar
+sluf
+starfire
+tempest
+wildcat
+
+
+((()))
+4Dec17   adding slaves to the z820 workstations
+
+slave-cmd.bash
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/DEADLINE/DEADLINE10 $ cat slave-cmd.bash 
+#!/bin/bash
+
+# add 2 "slaves" to each of the z820 workstations
+
+#avenger bearcat dragonlady electra fightingfalcon globemaster kingcobra liberator lightning meteor norsman raptor shootingstar sluf tempest hercules catalina warhawk corsair spitfire
+
+# 
+
+@@@ can look here for slave files
+ll -a /var/lib/Thinkbox/Deadline10/slaves/
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/DEADLINE/DEADLINE10 $ for i in `cat z820.txt`; do echo $i; ssh -t $i slave-cmd.bash; echo; done
+
+((()))
+
+17Jan18   push version 10.0.9.7
+
+@@@ have to stop all process to upgrade the repository
+
+@@@ stopping
+for i in $(seq 10 35); do echo d206$i; ssh -t d206$i sudo systemctl stop deadline10launcher; done
+
+for i in $(seq 37 46); do echo d206$i; ssh -t d206$i sudo systemctl stop deadline10launcher; done
+
+for i in $(seq 10 46); do echo d207$i; ssh -t d207$i sudo systemctl stop deadline10launcher; done
+
+for i in hercules catalina warhawk corsair spitfire; do echo $i; ssh -t $i sudo systemctl stop deadline10launcher; done
+
+for i in `cat /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/1`; do echo $i; ssh -t $i sudo systemctl stop deadline10launcher; done
+
+@@@ checking
+for i in $(seq 10 35); do echo d206$i; ssh -t d206$i systemctl status deadline10launcher; done > 17Jan18
+
+for i in $(seq 37 46); do echo d206$i; ssh -t d206$i systemctl status deadline10launcher; done >> 17Jan18
+
+for i in $(seq 10 46); do echo d207$i; ssh -t d207$i systemctl status deadline10launcher; done >> 17Jan18
+
+for i in hercules catalina warhawk corsair spitfire; do echo $i; ssh -t $i systemctl status deadline10launcher; done >> 17Jan18
+
+for i in `cat /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/1`; do echo $i; ssh -t $i systemctl status deadline10launcher; done >> 17Jan18
+
+
+@@@ install repository
+./DeadlineRepository-10.0.9.7-linux-x64-installer.run 
+
+@@@ install script
+/disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/deadline10.0.9.7/linux/upgrade-script.bash
+
+dsiegfriedt@dts3329:~/JOBS/DISNEYTS/DEADLINE $ cat DEADLINE10/deadline10.0.9.7/linux/upgrade-script.bash 
+#!/bin/bash
+
+# 29Nov17  --siggy
+# this is a backup if the ansible playbook doesn't run
+# see collector:/etc/ansible/playbooks/DL-remove-8.yml
+# see collector:/etc/ansible/playbooks/DL-install-config-10.yml
+
+# 2Jan18 may update to DL10.0.7 or beyond
+
+# First stop Deadline
+/usr/bin/systemctl stop deadline10launcher
+
+# Run the uninstaller
+/opt/Thinkbox/Deadline10/uninstall
+
+# clean all the cruft the uninstaller leaves
+for i in `cat /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/after-uninstall-cleanup-list`; do echo $i; rm -rf $i; echo; done
+
+# install Deadline10.0.9.7
+/apps/deadline/Deadline10/Deadline-10.0.9.7/DeadlineClient-10.0.9.7-linux-x64-installer.run
+
+for i in $(seq 10 35); do echo d206$i; ssh -t d206$i sudo /disney/apps/deadline/Deadline10/Deadline-10.0.9.7/deadline-silent-install; echo; done
+
+for i in $(seq 37 46); do echo d206$i; ssh -t d206$i sudo /disney/apps/deadline/Deadline10/Deadline-10.0.9.7/deadline-silent-install; echo; done
+
+for i in $(seq 10 46); do echo d207$i; ssh -t d207$i sudo /disney/apps/deadline/Deadline10/Deadline-10.0.9.7/deadline-silent-install; echo; done
+
+for i in `cat /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/1`; do echo $i; ssh -t $i sudo /disney/apps/deadline/Deadline10/Deadline-10.0.9.7/deadline-silent-install; echo; done
+
+@@@ add slaves to desktops
+for i in `cat /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/1`; do echo $i; ssh -t $i sudo /disney/home/dsiegfriedt/JOBS/DISNEYTS/DEADLINE/DEADLINE10/slave-cmd.bash; echo; done
+
+((()))
+19Mar18  Repository upgrade (file locations)
+
+installed using the /disney/apps/thinkbox/Deadline10/Deadline-10.0.9.7/ path
+@@@ see ~/JOBS/DISNEYTS/DEADLINE/DEADLINE10/19Mar18-Repository-upgrade-out
+
+deadline does not see upgrade ... open dedadline monitor => Help => About sees 
+
+Deadline Monitor 10.0
+
+A queue and network monitoring tool for the Deadline Render Management System
+
+Deadline Client Version: 10.0.9.7 Release  (dfef9544f)
+FranticX Client Version: 2.4.0.0 Release  (5753a1d4d)
+
+License Mode: Standard
+License Server: 27008@deadline10
+
+Repository Version: 10.0.2.0  (a7ad49d82)
+Integration Version: 10.0.2.0  (a7ad49d82)
+3PL Settings Version: 28/11/2017
+
+
+
+@@@ looking local on deadline10...
+
+[root@deadline10 ~]# ll -rt /disney/apps/thinkbox/Deadline10/Deadline-10.0.9.7/
+total 3702777
+-rwxrwxrwx.  1 nobody nobody       296 Jan 16 15:18 deadline-silent-install
+-rwxrwxrwx.  1 nobody nobody  19598675 Jan 16 15:20 AWSPortalLink-1.0.9-linux-x64-installer.run
+-rwxrwxrwx.  1 nobody nobody 730705920 Jan 16 15:20 Deadline-10.0.9.7-linux-installers.tar
+-rwxrwxrwx.  1 nobody nobody 225647744 Jan 16 15:20 DeadlineClient-10.0.9.7-linux-x64-installer.run
+-rwxr-xr-x.  1 root   root   485454074 Jan 16 15:20 DeadlineRepository-10.0.9.7-linux-x64-installer.run
+-rwxrwxrwx.  1 nobody nobody       642 Jan 17 14:32 upgrade-script.bash
+drwxrwxrwx.  5 nobody nobody       423 Jan 17 15:43 Deadline10
+-rwxrwxrwx.  1 nobody nobody 693171252 Jan 19 10:23 Deadline-10.0.9.7-osx-installers.dmg
+-rwxrwxrwx.  1 nobody nobody 679012694 Jan 19 10:23 Deadline-10.0.9.7-windows-installers.zip
+drwxrwxrwx.  3 nobody nobody        28 Jan 19 15:42 Thinkbox
+drwxrwxrwx.  3 nobody nobody        24 Mar 19 15:37 api
+drwxrwxrwx.  2 nobody nobody         0 Mar 19 15:37 backup
+drwxrwxrwx.  5 nobody nobody        69 Mar 19 15:37 bin
+drwxrwxrwx.  8 nobody nobody       151 Mar 19 15:37 custom
+drwxrwxrwx.  2 nobody nobody         0 Mar 19 15:37 jobs
+drwxrwxrwx.  2 nobody nobody         0 Mar 19 15:37 jobsArchived
+drwxrwxrwx.  4 nobody nobody        46 Mar 19 15:38 reports
+drwxrwxrwx.  2 nobody nobody        40 Mar 19 15:39 vmx
+drwxrwxrwx.  3 nobody nobody        34 Mar 19 15:39 balancer
+drwxrwxrwx.  7 nobody nobody       131 Mar 19 15:39 cloud
+drwxrwxrwx. 11 nobody nobody       227 Mar 19 15:39 events
+drwxrwxrwx. 11 nobody nobody       198 Mar 19 15:39 maxStartup
+drwxrwxrwx. 13 nobody nobody       281 Mar 19 15:39 scripts
+drwxrwxrwx. 44 nobody nobody      1081 Mar 19 15:39 submission
+drwxrwxrwx.  7 nobody nobody       148 Mar 19 15:39 draft
+drwxrwxrwx. 92 nobody nobody      2383 Mar 19 15:39 plugins
+drwxrwxrwx.  2 nobody nobody        32 Mar 19 15:40 pythonsync
+drwxrwxrwx.  2 nobody nobody       159 Mar 19 16:32 settings
+-rwxr-xr-x.  1 root   root         245 Mar 19 16:32 Uninstall Deadline Repository 10.desktop
+-rwx------.  1 root   root     5595419 Mar 19 16:32 uninstall
+-rw-------.  1 root   root       75372 Mar 19 16:32 uninstall.dat
+
+[root@deadline10 ~]# cat /opt/Thinkbox/DeadlineRepository10/settings/repository.ini 
+[DeadlineRepository]
+Version=10.0.9.7
+VersionInformation=dfef9544f
+[DeadlineIntegration]
+Version=10.0.9.7
+VersionInformation=dfef9544f
+
+@@@ NOW over to /disney... 
+
+cd /disney/apps/thinkbox/Deadline10
+[root@deadline10 Deadline10]# find . -name settings
+./Deadline-10.0.9.7/settings
+
+[root@deadline10 Deadline10]# cat ./Deadline-10.0.9.7/settings/repository.ini 
+[DeadlineRepository]
+Version=10.0.9.7
+VersionInformation=dfef9544f
+[DeadlineIntegration]
+Version=10.0.9.7
+VersionInformation=dfef9544f
+
+
+
+((()))
+20Mar18  
+
+@@@ on deadline10
+
+/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongodb status
+
+/opt/Thinkbox/DeadlineDatabase10/mongo/application/bin/mongo --port 27100
+>
+
+
+
+>db
+test
+>
+
+ll /opt/Thinkbox/DeadlineDatabase10/mongo/data/
+total 1081380
+-rwxrwxrwx. 1 root root       715 Jan 17 11:36 config.conf
+-rw-------. 1 root root  67108864 Mar 20 11:33 deadline10db.0
+-rw-------. 1 root root 134217728 Mar 19 16:42 deadline10db.1
+-rw-------. 1 root root 268435456 Mar 20 00:29 deadline10db.2
+-rw-------. 1 root root 536870912 Mar 20 11:33 deadline10db.3
+-rw-------. 1 root root  16777216 Mar 20 11:33 deadline10db.ns
+drwxr-xr-x. 2 root root      4096 Mar 20 11:33 diagnostic.data
+drwxr-xr-x. 2 root root        27 Mar 20 10:34 journal
+-rw-------. 1 root root  67108864 Mar 20 10:33 local.0
+-rw-------. 1 root root  16777216 Mar 20 10:33 local.ns
+drwxrwxrwx. 2 root root      4096 Mar 20 10:33 logs
+-rw-r--r--. 1 root root         6 Mar 20 10:33 mongod.lock
+-rw-r--r--. 1 root root        69 Jan 17 11:36 storage.bson
+
+[root@deadline10 application]# cat ../data/config.conf 
+#MongoDB config file
+
+systemLog:
+  destination: file
+  # Mongo DB's output will be logged here.
+  path: /opt/Thinkbox/DeadlineDatabase10/mongo/data/logs/log.txt
+  # Default to quiet mode to limit log output size. Set to 'false' when debugging.
+  quiet: true
+  # Increase verbosity level for more debug messages (max: 5)
+  verbosity: 0
+
+net:
+  # Port MongoDB will listen on for incoming connections
+  port: 27100
+  ipv6: true
+  ssl:
+    # SSL/TLS options
+    mode: disabled
+  http:
+    # Set to 'true' to enable REST interface
+    RESTInterfaceEnabled: false
+
+storage:
+  # Database files will be stored here
+  dbPath: /opt/Thinkbox/DeadlineDatabase10/mongo/data
+  engine: mmapv1
+
+security:
+  authorization: disabled
+
+
+((()))
+26MAr18  deadline10 repository
+
+@@@ nodes point to /disney/share/deadline/Repository10 to report job information
+@@@ deadline10monitor looks at /disney/apps/deadline/Deadline10/Deadline-10.0.9.7/ for it's updates.
+
+@@@ sent email to Dwight this morning proposing this.
+@@@ spoke with Ree she seem to think it is a good idea.
+...
+so I am back to this.... would there be any problems if I just pointed, using soft links, everything to where I wanted them.
+
+For instance
+link /disney/apps/deadline/Deadline10/Deadline-10.0.9.7 /disney/apps/deadline/Deadline10
+AND 
+/disney/share/deadline/Repository10 /disney/apps/deadline/Deadline10
+...
+
+cat /var/lib/Thinkbox/Deadline10/deadline.ini 
+[Deadline]
+LicenseMode=Standard
+LicenseServer=27008@deadline10.disneytoonstudios.com
+Region=
+LauncherListeningPort=17000
+LauncherServiceStartupDelay=60
+AutoConfigurationPort=17001
+SlaveStartupPort=17003
+SlaveDataRoot=
+RestartStalledSlave=false
+NoGuiMode=false
+LaunchSlaveAtStartup=true
+AutoUpdateOverride=
+ConnectionType=Repository
+NetworkRoot=/disney/share/deadline/Repository10
+DbSSLCertificate=
+NetworkRoot0=/disney/share/deadline/Repository10
+[root@d20625 Repository10]# 
+
+((()))
+27Mar18 Repository moves using soft links
+
+cd /disney/apps/deadline/Deadline10/
+
+mkdir OTHERS
+mv Deadline-10.0.2.0/ OTHERS/
+mv Deadline-10.0.6.3/ OTHERS/
+
+cd /disney/apps/deadline
+
+mv Deadline10 Deadline10-versions
+
+[root@dts3329 deadline]# ll Deadline10-versions/
+total 36
+drwxrwxrwx. 22 root root 1085 Mar 27 10:40 Deadline-10.0.9.7
+drwxr-xr-x.  4 root root   70 Mar 27 10:36 OTHERS
+
+[root@dts3329 deadline]# ll
+total 103
+drwxrwxrwx. 9 root root 568 Jul  5  2016 8.0.4.1
+drwxr-xr-x. 4 root root  59 Mar 27 10:36 Deadline10-versions
+lrwxrwxrwx. 1 root root   8 Jun 30  2016 Deadline8 -> 8.0.4.1/
+lrwxrwxrwx. 1 root root  38 Mar 27 10:43 Repository10 -> Deadline10-versions/Deadline-10.0.9.7/
+
+<<<<<>>>>>>
+
+cd /disney/share/deadline
+
+mv Repository10 Repository10-ORIG-27Mar18
+ln -s /disney/apps/deadline/Repository10/ Repository10
+
+[root@dts3329 deadline]# pwd
+/disney/share/deadline
+
+[root@dts3329 deadline]# ll
+lrwxrwxrwx.  1 root root  35 Mar 27 10:45 Repository10 -> /disney/apps/deadline/Repository10/
+drwxrwxrwx. 19 root root 532 Sep 13  2017 Repository10-ORIG-27Mar18
+drwxrwxrwx. 19 root root 531 Mar  2 17:05 Repository8
+
+
+@@@ to move back
+
+cd /disney/apps/deadline
+rm -i Repository10
+mv Repository10-ORIG-27Mar18 Repository10
+
+@@@ perm errors.... 
+@@@ Ree and I spoke and going to change /disney (+++) to prodctn group
+@@@ had to chmod to group write (775)
+
+@@@ repeat in
+apps
+thinkbox
+Deadline10-versions
+Deadline-10.0.9.7
+./*
+
+@@@ slack to Ree
+don.siegfriedt1:46 PM
+OK so I changed the group to "prodctn" from /disney all the way down to /disney/apps/thinkbox/Deadline10-versions/Deadline-10.0.9.7/* (and perms to 775 where needed).  Give it a try and let me know
+
+
+((()))
+19Apr18  the machine that was removed from the renderfarm is:
+
+d20636
+
+((()))
+21May18  want to shut off slaves of floor machines
+
+/opt/Thinkbox/Deadline10/bin/deadlineslave -shutdown
+
+@@@ going to put it in the crontab of the floor machines.
+
+((()))
+5Jun18  thinkbox/deadline download
+
+https://downloads.thinkboxsoftware.com/#/
+
+and login with amazon login (from secret file)
+
+((()))
+
+
+((()))
+
+
+
+
+
+
+
+
+

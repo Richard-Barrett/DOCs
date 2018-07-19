@@ -1,0 +1,89 @@
+﻿XonTech Systems KVM Virtualization
+
+1.Modify the BIOS to recognize that virtualization will be used.
+
+2.Install RHEL V5.5 or later, check “Virtualization” when prompted.
+(If reinstalling later, Virtualization packages are located on the RHEL V5.5 DVD under the VT directory.)
+3.Before configuring clients, a network bridge needs to be configured.
+(This step only needs to be performed for an initial setup.)
+ brctl show – shows the current configuration (Ignore the virbr0  bridge)
+brctl addbr br0 – adds br0 as a bridge
+brctl addif br0 eth0 – adds the br0 bridge to the eth0 ethernet port
+cp /etc/sysconfig/network-scripts/ifcfg-eth0  /etc/sysconfig/network-scripts/ifcfg-br0
+edit ifcfg-br0 to look similar to the example below:
+DEVICE=br0
+TYPE=Bridge
+BOOTPROTO=static
+IPADDR=###.###.###.###    (put appropriate numbers here)
+NETMASK=###.###.###.###  (put appropriate numbers here)
+GATEWAY=###.###.###.###  (put appropriate numbers here)
+ONBOOT=yes
+                                NOTE: DEVICE is br0 and not eth0
+
+Also edit ifcfg-eth0 to look similar to this:
+DEVICE=eth0
+HWADDR=##:##:##:##:##:##
+ONBOOT=yes
+TYPE=Ethernet
+IPV6INIT=no
+USERCTL=no
+BRIDGE=br0
+ 
+4.service network restart – restarts the network service to incorporate the changes that were just made.
+
+Note: The 4 steps above only need to be run one time per actual hardware server.
+Managing Virtualization after Installation
+
+1.Run virt-manager, right click on the Linux server name and select “New”
+2.Click on Forward
+3.Type in a name for the template server and click on Forward.
+4.Select Fully Virtualized
+CPU Architecture: X86_64, i686, i386, etc…
+Hypervisor: KVM
+5.Select Local Install  and click on Forward.
+6.Select CDROM or DVD
+Path to Install: DVDROM  itself
+7.Click on Forward.
+8.Select File Disk Image, click on Browser & select a directory to store the image files.
+(Eg. /usr/images/server99.img)
+9.Click on Forward.
+10.Select Shared Physical Device and select eth0 (Bridge <bridge name>).
+11.Click on Forward.
+12.Select memory allocation & # of CPU’s, click on Forward.
+13.Click on Forward, click on Finish.
+
+Suggestion: Setup a template server.  If a new server needs to be created, the template server can be used as a base to create new virtual servers.
+Creating A Server From A Template:
+1.cd /etc/libvirt/qemu – directory where the xml files reside.
+
+2.cp <Server template>.xml <new server name>.xml
+
+3.Use uuidgen to create a unique windows identifier 
+(Eg. 0794f34a-b856-4e1c-ab0c-86a0e6d784a8). 
+
+4.Edit the <new server name>.xml file and change the following:
+<name><server##.img></name>
+<mac address=’54:52:00:##:##:##’ /> (The first 3 sets of numbers lets Red Hat know that this is a virtual server.  The last 3 sets of #’s you can use any unique #’s).
+<uuid> USE THE uuidgen GENERATED ID </uuid>
+<source file=’/<server name.img>’/>
+
+5.cp </usr/images/server name.img> </usr/images/new server name.img>    
+The /usr/images directory is the sample name used in step #8 of Managing Virtualization after Installation.
+
+6.Chmod 600 /etc/libvirt/qemu/<new server name.xml>
+
+7.Chmod 755 /usr/images/<new server name.img>
+
+8.Virsh define /etc/libvirt/qemu/<new server name.xml>
+Virtualization Utilities:
+virt-manager – X11 GUI utility for managing & monitoring virtual hosts.
+virt-viewer – X11 utility that brings up the graphical console of a virtual host.
+virt-install – Command-line utility to create & configure a new virtual host.
+virsh – General command-line virtual host management.
+	drbdadm – Used to administer shared block devices.
+
+Additional Notes
+/var/run/libvirt/qemu – This is where the running virtual servers reside.
+/etc/libvirt/qemu – This is where the stopped virtual servers reside.
+
+

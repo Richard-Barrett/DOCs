@@ -1,0 +1,213 @@
+12Feb14  danmo
+
+lahttp3 has X installed (start with startx) and then you can fire off firefox FASTER!!!
+
+6Mar14  --siggy   found Dan's NetApp scripts
+[nixmgt@lasysmon ~]$ ll /usr/local/scripts/netapp/
+total 32
+-rw-r--r-- 1 root root 146 Oct 26 07:36 netapp_drsan3_break
+-rw-r--r-- 1 root root 358 Oct 26 07:05 netapp_drsan3_quiesce
+-rw-r--r-- 1 root root 350 Oct 26 07:06 netapp_drsan3_resume
+-rw-r--r-- 1 root root 191 Oct 26 15:45 netapp_drsan3_resync
+-rw-r--r-- 1 root root 579 Oct 26 07:37 netapp_drsan4_break
+-rw-r--r-- 1 root root 685 Feb 18 13:44 netapp_drsan4_quiesce
+-rw-r--r-- 1 root root 669 Feb 18 13:44 netapp_drsan4_resume
+-rw-r--r-- 1 root root 717 Feb 18 13:44 netapp_drsan4_resync
+
+*****
+
+9Mar15  --siggy
+
+laptop IP = 10.130.12.14
+GW = 10.54.12.1
+NM = 255.255.255.0
+DNS = 10.54.8.38
+
+*****
+
+10Mar15  --siggy
+
+make sure yuou chmod +x disaster*
+
+#simulation failed on 2 newly added VMs because disaster and disaster.local were not executable
+#~dsiegfri/REPUBLIC/DISASTER has all teh specifi disaster.local files
+
+*****
+
+17Mar15 disaster script layout from lacchttpprd1 
+
+********************************************************************************************
+[root@lacchttpprd1 dr]# cat /usr/local/bin/disaster
+#Beginings of the new standard disaster script
+#2jun14  --siggy
+
+#!/bin/bash
+
+cat /usr/local/scripts/dr/hosts > /etc/hosts
+cat /usr/local/scripts/dr/resolv.conf > /etc/resolv.conf
+/sbin/service network restart
+cat /usr/local/scripts/dr/krb5.conf > /etc/krb5.conf
+logger -t DISASTER-SCRIPT "disaster script has been run"
+
+/usr/local/bin/disaster.local
+[root@lacchttpprd1 dr]# cat /usr/local/bin/disaster.local 
+
+
+#lacchttpprd1
+#/usr/local/bin/disaster
+#!/bin/bash
+/bin/cp /usr/local/scripts/dr/ifcfg-eth0:1.dr /etc/sysconfig/network-scripts/ifcfg-eth0:1
+/etc/init.d/network restart
+/etc/init.d/httpd restart
+
+
+[root@lacchttpprd1 dr]# pwd
+/usr/local/scripts/dr
+[root@lacchttpprd1 dr]# cat ifcfg-eth0\:1.dr 
+# Intel Corporation 82545EM Gigabit Ethernet Controller (Copper)
+DEVICE=eth0:1
+BOOTPROTO=static
+IPADDR=10.54.8.62
+NETMASK=255.255.255.0
+ONBOOT=yes
+NETWORKING_IPV6=no
+IPV6INIT=no
+
+
+[root@lacchttpprd1 dr]# pwd
+/usr/local/scripts/dr
+[root@lacchttpprd1 dr]# ll
+total 16
+-rw-r--r--. 1 root root  206 Mar  5 10:56 hosts
+-rw-r--r--. 1 root root  178 Mar  5 15:09 ifcfg-eth0:1.dr
+-rw-r--r--. 1 root root 1962 Mar  5 15:06 krb5.conf
+-rw-r--r--. 1 root root   89 Mar  5 10:56 resolv.conf
+
+*****
+
+9Apr15
+
+[root@lacchttpprd1 ~]# cd /usr/local/scripts/dr/
+[root@lacchttpprd1 dr]# ll
+total 16
+-rw-r--r--. 1 root root  206 Mar  5 10:56 hosts
+-rw-r--r--. 1 root root  178 Mar  5 15:09 ifcfg-eth0:1.dr
+-rw-r--r--. 1 root root 1962 Mar  5 15:06 krb5.conf
+-rw-r--r--. 1 root root   89 Mar  5 10:56 resolv.conf
+
+
+[root@lacchttpprd1 dr]# cat hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.54.8.34	lacchttpprd1.ri-net.com lacchttpprd1
+
+
+[root@lacchttpprd1 dr]# cat resolv.conf 
+search ri-net.com
+nameserver 10.54.8.1
+nameserver 10.130.24.200
+nameserver 10.130.33.206
+
+
+[root@lacchttpprd1 dr]# cat krb5.conf 
+[libdefaults]
+ default_realm = RI-NET.COM
+ default_tgs_enctypes = aes256-cts aes128-cts arcfour-hmac-md5 des-cbc-md5 des-cbc-crc
+ default_tkt_enctypes = aes256-cts aes128-cts arcfour-hmac-md5 des-cbc-md5 des-cbc-crc
+ permitted_enctypes = aes256-cts aes128-cts arcfour-hmac-md5 des-cbc-md5 des-cbc-crc
+ dns_lookup_realm = true
+ dns_lookup_kdc = true
+ passwd_check_s_address = false
+udp_preference_limit = 1
+ ccache_type = 3
+ kdc_timesync = 0
+[domain_realm]
+ cvgafgdc01.afginc.com = AFGINC.COM
+ cvgdc01.ga.afginc.com = GA.AFGINC.COM
+ brswp10102.gaiid.afginc.com = GAIID.AFGINC.COM
+ cvggwdc01.gateway.afginc.com = GATEWAY.AFGINC.COM
+ .ri-net.com = RI-NET.COM
+ cvgafgdc02.afginc.com = AFGINC.COM
+ cvgdc02.ga.afginc.com = GA.AFGINC.COM
+ cvggwdc02.gateway.afginc.com = GATEWAY.AFGINC.COM
+ dblwp10102.gaiid.afginc.com = GAIID.AFGINC.COM
+ drdc03.ri-net.com = RI-NET.COM
+ ladc03.ri-net.com = RI-NET.COM
+ ri-net.com = RI-NET.COM
+[realms]
+AFGINC.COM = {
+ kdc = cvgafgdc01.afginc.com:88
+ master_kdc = cvgafgdc01.afginc.com:88
+ kpasswd = cvgafgdc01.afginc.com:464
+ kpasswd_server = cvgafgdc01.afginc.com:464
+}
+GA.AFGINC.COM = {
+ kdc = cvgdc01.ga.afginc.com:88
+ master_kdc = cvgdc01.ga.afginc.com:88
+ kpasswd = cvgdc01.ga.afginc.com:464
+ kpasswd_server = cvgdc01.ga.afginc.com:464
+}
+GAIID.AFGINC.COM = {
+ kdc = brswp10102.gaiid.afginc.com:88
+ master_kdc = brswp10102.gaiid.afginc.com:88
+ kpasswd = brswp10102.gaiid.afginc.com:464
+ kpasswd_server = brswp10102.gaiid.afginc.com:464
+}
+GATEWAY.AFGINC.COM = {
+ kdc = cvggwdc01.gateway.afginc.com:88
+ master_kdc = cvggwdc01.gateway.afginc.com:88
+ kpasswd = cvggwdc01.gateway.afginc.com:464
+ kpasswd_server = cvggwdc01.gateway.afginc.com:464
+}
+RI-NET.COM = {
+ kdc = drdc03.ri-net.com:88
+ kdc = ladc03.ri-net.com:88
+ master_kdc = drdc03.ri-net.com:88
+ master_kdc = ladc03.ri-net.com:88
+ kpasswd = drdc03.ri-net.com:464
+ kpasswd = ladc03.ri-net.com:464
+ kpasswd_server = drdc03.ri-net.com:464
+ kpasswd_server = ladc03.ri-net.com:464
+}
+
+*****
+********************************************************************************************
+20Oct15  --siggy  add lalpccmprd1
+
+ssh lalpccmprd1
+[root@lalpccmprd1 bin]# cd /usr/local/bin
+
+[root@lalpccmprd1 bin]# cat > disaster
+
+#Beginings of the new standard disaster script
+#2jun14  --siggy
+#/usr/local/bin/disaster
+
+#!/bin/bash
+
+cat /usr/local/scripts/dr/hosts > /etc/hosts
+cat /usr/local/scripts/dr/resolv.conf > /etc/resolv.conf
+/sbin/service network restart
+cat /usr/local/scripts/dr/krb5.conf > /etc/krb5.conf
+logger -t DISASTER-SCRIPT "disaster script has been run"
+
+/usr/local/bin/disaster.local
+
+[root@lalpccmprd1 local]# mkdir -p scripts/dr
+[root@lalpccmprd1 local]# cd scripts/dr/
+[root@lalpccmprd1 dr]# cp /etc/hosts .
+[root@lalpccmprd1 dr]# cp /etc/resolv.conf .
+[root@lalpccmprd1 dr]# cp /etc/krb5.conf .
+
+[root@lalpccmprd1 dr]# vi hosts   #correct IP 10.54.8.???
+[root@lalpccmprd1 dr]# vi resolv.conf #correct nameserver 10.54.8.38
+[root@lalpccmprd1 dr]# vi krb5.conf #correct dc (change ladc03 to drdc03))
+
+[root@lalpccmprd1 dr]# cd /usr/local/bin
+[root@lalpccmprd1 bin]# touch disaster.local
+[root@lalpccmprd1 bin]# chmod +x disaster.local 
+
+
+********************************************************************************************
+
+********************************************************************************************

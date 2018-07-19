@@ -1,0 +1,18 @@
+Decrypt file to make sure you have it in a txt form
+
+gpg --decrypt /nfs/local/admin/conf/admin/gpg/stuff.txt.gpg > siggy.txt
+gpg -c siggy.txt 
+
+Will ask for a pass phrase...and create a siggy.txt.gpg
+**************************
+
+IT DOESN'T DELETE THE ORIGINAL TXT FILE
+
+**************************
+
+rm -f siggy.txt
+
+gpg --decrypt /nfs/local/admin/conf/admin/gpg/siggy.txt.gpg 
+
+Pass phrase:
+

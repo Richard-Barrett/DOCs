@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Name: PAM-Mod
+#
+# Purpose: To modify the /etc/PAM.d/system-auth file on all nodes.
+#
+# Calls To: None
+#
+#  Author       Date            Version
+# -------------+----------------+-----------
+# Ron M.        11/8/07          1.0
+#
+#*********************************************************
+for i in `cat /etc/beowulf/bcs/allnodes`
+do
+echo $i
+rsh $i '(mv /etc/pam.d/system-auth /etc/pam.d/ORIG-system-auth; rcp ~ebb142/PAM-change/system-auth /etc/pam.d/)'
+done

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#--siggy 6Aug08
+# hosts-fix
+
+# back up existing file
+cp /etc/hosts /etc/hosts.ORIG
+
+# To identify how file was updated
+echo "## This file has been deplyed via Bladelogic (LAX1 Media Core)  ## " >> /etc/hosts-NEW
+
+# this will delete the short name form the loopback line 
+cat /etc/hosts | grep 127 | awk '{print $1"\t\t"$3"\t"$4}' >> /etc/hosts-NEW
+
+# this will give you the local host entry for /etc/hosts
+host `cat /etc/hosts | grep 127 | awk '{print$2}'` | awk '{print $4"\t\t"$1"\t"$1}' | cut -d. -f1-7 >> /etc/hosts-NEW
+
+# move NEW file to correct location
+mv -f/etc/hosts-NEW /etc/hosts

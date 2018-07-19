@@ -1,0 +1,96 @@
+#!/bin/bash
+#*****************************************************************
+# Name: ER-networking
+#
+# Purpose: To set up bonding
+#
+# Calls To: None
+#
+# Usage: ER-networking
+#
+# Author          Date            Version         Comments
+# ---------------+----------------+---------------+-------------
+# Siggy           18dec09          1.0               
+#
+#*****************************************************************
+
+modprobe bonding miimon=100 max_bonds=1
+
+
+#Set variables
+WORKINGDIR=/etc/sysconfig/network-scripts
+
+#Back up eth files
+mv $WORKINGDIR/ifcfg-eth0 $WORKINGDIR/ORIG-eth0
+mv $WORKINGDIR/ifcfg-eth1 $WORKINGDIR/ORIG-eth1
+
+#Collect info for new files
+IPADDR0=IPADDR=`ifconfig eth0 | grep Mask | awk -F: '{print $4}'`
+IPADDR1=IPADDR=`ifconfig eth1 | grep Mask | awk -F: '{print $4}'`
+
+NETMASK0=NETMASK=`cat $WORKINGDIR/ORIG-eth0 | grep NETM`
+NETMASK1=NETMASK=255.255.0.0
+
+HWADD0=`ifconfig eth0 | grep HWaddr | awk -F: '{print $5}'`
+HWADD1=`ifconfig eth0 | grep HWaddr | awk -F: '{print $5}'`
+
+GATEW=GATEWAY=`netstat -rn | tail -1 | awk '{print $2}'`
+echo $GATEW >> /etc/sysconfig/network
+
+# Set eth0
+cat > $WORKINGDIR/ifcfg-eth0 <<EOF
+DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD0
+EOF
+if [ ! $? -eq 0 ];then /usr/bin/touch /tmp/eth0FAILED ; exit 0; fi
+
+# Set eth1
+cat > $WORKINGDIR/ifcfg-eth1 <<EOF
+DEVICE=eth1
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+$HWADD1
+EOF
+if [ ! $? -eq 0 ];then /usr/bin/touch /tmp/eth1FAILED ; exit0; fi
+
+# Set bond0
+cat > $WORKINGDIR/ifcfg-bond0<<EOF
+DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+TYPE=Ethernet
+BONDING_OPTS="mode=4"
+$IPADDR0
+$NETMASK0
+EOF
+if [ ! $? -eq 0 ];then /usr/bin/touch /tmp/bond0FAILED ; exit 0; fi
+
+#Set bond0.1111
+cat > $WORKINGDIR/ifcfg-bond0.1111 <<EOF
+DEVICE=bond0.1111
+BOOTPROTO=none
+ONBOOT=yes
+BONDING_OPTS="mode=4 xmit_hash_policy=layer3+4"
+VLAN=yes
+$IPADDR1
+$NETMASK1
+EOF
+if [ ! $? -eq 0 ];then /usr/bin/touch /tmp/bond0.1111FAILED ; exit 0; fi
+
+#add to the end of /etc/modeprobe.conf
+
+MODPROBEDIR=/etc
+
+cp $MODPROBEDIR/modprobe.conf $MODPROBEDIR/ORIG-modprobe.conf
+echo "alias	bond0	bonding" >> $MODPROBEDIR/modprobe.conf
+echo "options bonding miimon=100 max_bonds=1" >> $MODPROBEDIR/modprobe.conf
+
+lsmod | grep bond > /dev/null 2>&1
+if [ ! $? -eq 0 ];then /usr/bin/touch /tmp/modprobeFAILED ; exit 0; fi
+
+/sbin/service network restart

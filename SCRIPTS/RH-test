@@ -1,0 +1,29 @@
+!#/bin/bash
+
+#needs to look like this:
+#      #
+#     ##
+#    ###
+#   ####
+#  #####
+
+#*****
+
+echo "enter a number from 1 to 100"
+read n
+
+while [ $n -gt 0 ]; do
+        printf "%*s%s\n" $n  "&"
+        let n=n-1
+done
+
+#gives you:
+# siggy@Manfred:~/SCRIPTS$ ./RH-test
+#./RH-test: line 1: !#/bin/bash: No such file or directory
+#enter a number from 1 to 100
+#5
+#    #
+#   #
+#  #
+# #
+##

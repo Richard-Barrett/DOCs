@@ -1,0 +1,88 @@
+9Nov15  --siggy   grab from history on laccpsap1 (assume OT got it running....)
+
+  702  yum --nogpg localinstall splunkforwarder-4.2.3-105575-linux-2.6-x86_64.rpm 
+  703  /opt/splunkforwarder/bin/splunk start
+  704  cd /opt/splunkforwarder/etc/apps/search/local
+
+  762  cd /opt/splunkforwarder/etc/apps/search/local
+  763  ls
+  764  vi inputs.conf 
+  765  service splunk restart
+  766  service splunkd restart
+  767  /opt/splunkforwarder/bin/splunk enable boot-start
+  768  service splunk restart
+  769  /opt/splunkforwarder/bin/splunk add forward-server 10.130.24.171
+  770  /opt/splunkforwarder/bin/splunk add forward-server 10.130.24.171
+  771  /opt/splunkforwarder/bin/splunk add forward-server 10.130.24.171:9997
+  772  /opt/splunkforwarder/bin/splunk add forward-server 10.130.24.171:9997 -auth admin:changeme
+  773  /opt/splunkforwarder/bin/splunk list forward-server
+
+
+/opt/splunkforwarder/etc/apps/search/local/
+  788  cat inputs.conf 
+
+
+(())
+24Nov15  --siggy
+
+[root@lalogmgr ~]# history | grep user
+  625  ./splunk add user dsiegfri
+  626  ./splunk add user help
+  629  ./splunk list users
+  630  ./splunk list user
+  633  cd /etc/user
+  634  ll /etc | grep user
+  639  userdel -rf danmo
+  644  useradd cifsuser
+  646  useradd dsiegfri
+  650  splunk remove user danmo
+  659  ll /opt/splunk/etc/users/
+  661  /opt/splunk/bin/splunk remove user danmo
+  664  /opt/splunk/bin/splunk remove user danmo
+  674  ./splunk list users
+  675  ./splunk list user
+  695  ll users/
+  708  ll apps/user-prefs/
+  712  ./splunk add user vdodwad -password passwd123 -role user -email vdodwad@ri-net.com -name vdodwad -auth admin:changeme
+  713  ./splunk add user vdodwad -password passwd123 -role user -email vdodwad@ri-net.com -realname vdodwad -auth admin:changeme
+  714  ./splunk add user lkammara -password passwd123 -role user -email lkammara@ri-net.com  -realname lkammara -auth admin:changeme
+  715  ./splunk add user ksundara -password passwd123 -role user -email ksundara@ri-net.com -realname ksundara -auth admin:changeme
+  716  ./splunk add user mdhanpal -password passwd123 -role user -email mdhanpal@ri-net.com -realname mdhanpal -auth admin:changeme
+  717  ./splunk add user amarathimmanahalli -password passwd123 -role user -email amarathimmanahalli@ri-net.com -realname amarathimmanahalli -auth admin:changeme
+  796  bin/splunk add user mserrano -password passwd123 -role user -email mserrano@ri-net.com -name mserrano -auth admin:changeme
+  797  bin/splunk add user mserrano -password passwd123 -role user -email mserrano@ri-net.com -realname mserrano -auth admin:changeme
+  820  /opt/splunk/bin/splunk list user
+  851  /opt/splunk/bin/splunk list user
+  852  /opt/splunk/bin/splunk list user
+  902  /opt/splunk/bin/splunk show users
+  903  /opt/splunk/bin/splunk show user
+  976  less /etc/minicom.users 
+ 1001  /opt/splunk/bin/splunk list user
+ 1002  /opt/splunk/bin/splunk list user
+ 1008  ll /opt/splunk/etc/users/
+ 1010  ll /opt/splunk/etc/users/dsiegfri/
+ 1011  ll /opt/splunk/etc/users/dsiegfri/user-prefs/
+ 1012  ll /opt/splunk/etc/users/dsiegfri/user-prefs/local/
+ 1013  cat /opt/splunk/etc/users/dsiegfri/user-prefs/local/user-prefs.conf 
+ 1014  history | grep user
+
+cd /opt/splunk/bin 
+(())
+25Nov15  --siggy
+/opt/splunk/bin/splunk add user sgarg4 -password passwd123 -role user -email sgarg4@ri-net.com -name sgarg4 -auth admin:changeme
+/opt/splunk/bin/splunk add user sgarg4 -password passwd123 -role user -email sgarg4@ri-net.com -auth admin:changeme
+/opt/splunk/bin/splunk list user
+
+login: admin
+passwd: k...
+
+(())
+31Dec15  --siggy
+browser to lalogmgr
+dsiegfri
+AD passwd
+
+added myself to the "admin" group
+
+(())
+

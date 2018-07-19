@@ -1,0 +1,1 @@
+sub handler {       # 1st argument is signal name    local($sig) = @_;    print "Caught a SIG$sig--shutting down\n";    close(LOG);    exit(0);}$SIG{INT} = 'handler';$SIG{QUIT} = 'handler';...$SIG{INT} = 'DEFAULT';    # restore default action$SIG{QUIT} = 'IGNORE';    # ignore SIGQUIT

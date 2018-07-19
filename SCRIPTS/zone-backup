@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# zone-backup
+# 17oct08  --siggy
+# backup all the zone files
+# 19nov08 Gerald asked that more stuff be backed up (new SOURCE and new "tar" command)
+
+# original "SOURCE"  19nov08  --siggy
+# SOURCE=/nfs/common/named/chroot-production/var/named/zones-*
+
+SOURCE=/nfs/common/named/
+DESTINATION=/nfs/local/named/chroot-production/var/named/BACKUP
+WHEN=`echo $(date +%d%b%C%y"-"%H%M-%S)`
+WHO=`who am i | awk '{print $1}'`
+
+# 19nov08  --siggy
+# original tar command  "tar cjf $DESTINATION/DNS-BU-$WHO-$WHEN.bz2 $SOURCE"
+# added -p (permissions) --exclude proc directory
+
+tar cjpf $DESTINATION/DNS-BU-$WHO-$WHEN.bz2 --exclude proc $SOURCE
+#echo "$DESTINATION/DNS-BU-$WHO-$WHEN $SOURCE"
+
+# Will give you tarballs that are named:
+# /nfs/local/named/chroot-production/var/named/BACKUP/DNS-BU-dsiegfri-22Oct2008-1121-56.bz2  
+
+# &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+# I also think we should clean this file up (once a week) to remove BU files older than 30 days
+
+# find /nfs/local/named/chroot-production/var/named/BACKUP/ -atime +30 -exec rm -f '{}' ';' 

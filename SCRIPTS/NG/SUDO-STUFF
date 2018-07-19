@@ -1,0 +1,52 @@
+
+#OFFTIME=`date | awk '{print $4}' | awk -F: '{print $1}' | expr $OFFTIME + 6
+#0 $OFFTIME * * * /root/sudo-OFF
+
+cd /etc
+if (-x sudoers-DISABLE); then
+	else {
+	mv sudoers sudoers-ENABLED
+	ln -s sudoers-ENABLED sudoers
+}
+
+mv sudoers sudoers-DISABLED
+ln -s sudoers-DISABLED sudoers
+
+
+*****
+
+#!/bin/bash
+
+# sudo-ON
+
+cd /etc
+rm -f sudoers
+ln -s sudoers-ENABLE sudoers
+cp /var/spool/cron/root /tmp/root.SAFE
+WHATTIME=`date | awk '{print $4}' | awk -F: '{print $1}'`;  OFFTIME=`expr $WHATTIME + 6`
+echo "0 $OFFTIME * * * /root/sudo-OFF" >> /var/spool/cron/root
+
+*****
+
+#!/bin/bash
+
+# sudo-OFF
+
+cd /etc
+rm -f sudoers
+ln -s sudoers-DISABLE sudoers
+cp /tmp/root.SAFE /var/spool/cron/root
+rm -f /tmp/root.SAFE
+
+*****
+# /etc/sudo-ENABLE
+
+ebb142 ALL=(ALL) ALL
+
+*****
+
+# /etc/sudo-DISABLE
+
+#ebb142 ALL=(ALL) ALL
+
+*****

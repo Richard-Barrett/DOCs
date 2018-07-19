@@ -1,0 +1,541 @@
+http://documents.bmc.com/supportu/documents/55/09/95509/9509.pdf
+
+**********************************************************************************************
+
+<config>
+  <initial-command>
+    <command prompt="%">nsh</command>
+  </initial-command>
+  <prompt>%</prompt>
+  <authentication-mechanism>SRP</authentication-mechanism>
+  <authentication-profile-file>C:\Program Files\BMC BladeLogic\OM\br\authenticationProfiles.xml</authentication-profile-file>
+  <executable-directory>C:\Program Files\BMC BladeLogic\OM\bin</executable-directory>
+  <script-directory>C:\Program Files\BMC BladeLogic\OM\scripts</script-directory>
+  <script-executable>nsh</script-executable>
+  <jython-executable>bljython</jython-executable>
+  <default-user-role>BLAdmins</default-user-role>
+  <profile-name>defaultProfile</profile-name>
+  <user-credential-file>c:\user_info.dat</user-credential-file>
+  <timeout-secs>300</timeout-secs>
+</config>
+
+**********************************************************************************************
+
+rpm -ihv java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386.rpm 
+warning: java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386.rpm: Header V3 DSA signature: NOKEY, key ID 37017186
+error: Failed dependencies:
+	jpackage-utils >= 1.7.3-1jpp.2 is needed by java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386
+	libXi.so.6 is needed by java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386
+	libXtst.so.6 is needed by java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386
+	libasound.so.2 is needed by java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386
+	libasound.so.2(ALSA_0.9) is needed by java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386
+	libasound.so.2(ALSA_0.9.0rc4) is needed by java-1.6.0-openjdk-1.6.0.0-0.30.b09.el5.i386
+[root@pl1rad750 ~]# yum list \ grep alsa
+
+**********************************************************************************************
+
+
+
+
+AO 
+hostnames are based on BladeLogic name (shortname or FQHN)
+
+#################
+
+non sequiturs drive me to .... eat lampshades.
+
+###############
+
+Rm -rf server/.jxta/cm/* server/.jxta/ro-pipe-advertizements/*
+
+###################
+
+20aug09
+
+###################
+
+
+from Wook's email
+
+Hi Wook,
+
+My name is Matthew Highcove. Thank you for contacting BMC Customer Support.  My goal is to provide you with an excellent customer service experience. If for any reason you feel this issue is not progressing properly, please discuss it with me or contact my support manager, Marike Owen (Marike_Owen@bmc.com).
+
+This is a known issue with custom icons in modules in 7.5.02.01. If you open a process, right-click on a blank place in the workflow, click "Properties" and click "Icon", you'll see the full stack trace. The file CustomIconMetaData.properties inside the module used to store icons is full of \uxxxx codes (\u0023, etc.), and Development Studio is unable to read them properly. Here are the steps to fix this:
+
+1) Determine which module is the problem.
+2) Open your module with WinRar or another archiving program.
+3) Go to $MODULE_NAME\customIcons\small\ and open CustomIconMetaData.properties
+4) You should see a long list of /uxxxx codes. Copy all of these to the Clipboard.
+5) Open the same file in your DevStudio workspace.
+6) You should see a bunch of garbage in the file. Highlight it all and paste the contents of the Clipboard to overwrite it. Then save the file.
+7) Restart DevStudio.
+
+Originally, we traced the problem to specific modules because they would fail the import process, but if all of your modules are seeing this error, you can perform these steps to many modules. Steps 2-4 only need to be completed once; once readable information is in your clipboard, you can add it to multiple files.
+
+I'm including my CustomIconMetaData.properties as well, in case something goes wrong or the module can't be unarchived. The root cause of this issue is still unknown, but we believe that it's because Windows saved the .properties file in a format that converted it from escaped codes to what amounted to random characters. We do know that it has not been observed in 7.5.02.03, but it probably has not been tested exhaustively.
+
+/Users/dsiegfriedt/DevStudio/LAX1 PROD ENV-2009-08-12T180225Z/LAX1PROD/Adapter_Tests/customIcons/small/CustomIconMetaData.properties
+
+
+Correct file in ~siggy/BMC/
+###################
+
+11:09AM
+
+start with everyone bulding there own (stand alone) workflows.  At some time in teh future talk about sharing generic flows
+
+[root@pl1rad750 logs]# pwd
+/nfs/local/bmcao/cdp/tomcat/logs
+[Root@pl1rad750 logs]# hostname
+pl1rad750.admin.edmunds.com
+
+move module
+
+create new with sam name in new location
+       copy&paste contents
+
+ALL workflows will need to be stepped through to see what pointers are wrong
+
+*************
+1sep09  when the grid is hosed!!!!!
+
+
+/nfs/local/bmcao/cdp/bin
+./Server.sh stop
+
+cd /nfs/local/bmcao/cdp/server/.jxta
+
+rm -rf cm/*
+rm -rf ro-pipe-advertisements/*
+       
+./server.sh start
+
+vi server.sh
+   edit -Xmx1536m 
+   edit -d64 (add in front of server)
+
+*************
+
+
+tail -100 /nfs/local/bmcao/cdp/tomcat/logs/grid.log | more
+
+Grid.log has most traffic
+
+catalina.out has the tomcat logs
+
+tail -100 /nfs/local/bmcao/cdp/tomcat/logs/catalina.out | more
+
+Heap Dumps
+/nfs/local/bmcao/cdp
+
+
+
+restarting grid(s)
+
+cd /nfs/local/bmcao/cdp/bin
+
+./server.sh stop -force
+
+cd /nfs/local/bmcao/cdp/server/.jxta
+
+rm -rf cm/*
+rm -rf ro-pipe-advertisement/*
+
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+11sep09  1328
+
+[root@pl1rad746 bin]# ps -ef | grep java
+root     22785     1 99 13:09 pts/1    00:00:48 /usr/java/jdk1.5.0_20/bin/java -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled -server -Xms1024m -Xmx1536m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.util.logging.config.file=/nfs/local/bmcao/cdp/tomcat/conf/logging.properties -Djava.awt.headless=true -DJXTA_HOME=/nfs/local/bmcao/cdp/server/.jxta -Dmessages.home.dir=/nfs/local/bmcao/cdp -Djava.endorsed.dirs=/nfs/local/bmcao/cdp/tomcat/endorsed -classpath :/nfs/local/bmcao/cdp/tomcat/bin/bootstrap.jar -Dcatalina.base=/nfs/local/bmcao/cdp/tomcat -Dcatalina.home=/nfs/local/bmcao/cdp/tomcat -Djava.io.tmpdir=/nfs/local/bmcao/cdp/tomcat/temp org.apache.catalina.startup.Bootstrap start
+root     22943 15505  0 13:10 pts/1    00:00:00 grep java
+[root@pl1rad746 bin]# X11 connection rejected because of wrong authentication.
+
+[root@pl1rad746 bin]# 
+[root@pl1rad746 bin]# 
+
+
+[root@pl1rad746 bin]# ./server.sh stop -force
+22785
+Forcibly stopping server...
+Using CATALINA_BASE:   /nfs/local/bmcao/cdp/tomcat
+Using CATALINA_HOME:   /nfs/local/bmcao/cdp/tomcat
+Using CATALINA_TMPDIR: /nfs/local/bmcao/cdp/tomcat/temp
+Using JRE_HOME:       /usr/java/jdk1.5.0_20
+Sep 11, 2009 1:26:39 PM org.apache.catalina.startup.Catalina stopServer
+SEVERE: Catalina.stop: 
+java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.PlainSocketImpl.doConnect(PlainSocketImpl.java:333)
+	at java.net.PlainSocketImpl.connectToAddress(PlainSocketImpl.java:195)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:367)
+	at java.net.Socket.connect(Socket.java:524)
+	at java.net.Socket.connect(Socket.java:474)
+	at java.net.Socket.<init>(Socket.java:371)
+	at java.net.Socket.<init>(Socket.java:184)
+	at org.apache.catalina.startup.Catalina.stopServer(Catalina.java:421)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:592)
+	at org.apache.catalina.startup.Bootstrap.stopServer(Bootstrap.java:337)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:415)
+Killing: 22785
+/nfs/local/bmcao/cdp/tomcat/bin/catalina.sh: line 324: kill: (22785) - No such process
+Return code is 1
+Stopping: [
+Error - An error occurred while stopping the server (killed process)
+
+[root@pl1rad746 bin]# ps -ef | grep java
+root     23903 15505  0 13:26 pts/1    00:00:00 grep java
+
+[root@pl1rad746 bin]# ./server.sh start
+
+Error - The server is already running.
+
+**************************
+*********** This  was caused by the server.pid not being deleted ***************
+*********** rm -f /nfs/local/bmcao/cdp/bin/server.pid ***************
+**************************
+
+[root@pl1rad746 bin]# ./server.sh start
+Using CATALINA_OPTS:
+     -Djava.awt.headless=true
+     -DJXTA_HOME=/nfs/local/bmcao/cdp/server/.jxta
+     -Dmessages.home.dir=/nfs/local/bmcao/cdp
+Starting server...
+Using CATALINA_BASE:   /nfs/local/bmcao/cdp/tomcat
+Using CATALINA_HOME:   /nfs/local/bmcao/cdp/tomcat
+Using CATALINA_TMPDIR: /nfs/local/bmcao/cdp/tomcat/temp
+Using JRE_HOME:       /usr/java/jdk1.5.0_20
+Return code is 0
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+submitting a ticket
+
+https://webapps.bmc.com/signon/content/logon.jsp
+
+http://www.bmc.com/support/reg?c=n
+Issue Management => Submit New Issue
+
+Hi Kenny
+Here is your Support ID for Orchestrator information
+            ID = 433309
+            Password = edm 
+Let me know if you have any issues using this. 
+Bill
+
+collecting data for BMC AO Issues
+
+cd /nfs/local/bmcao/cdp/tomcat/logs
+   
+mkdir 11sep09
+cp grid.log 11sep09
+cp catalina.out 11sep09
+
+cd /nfs/local/bmcao/cdp/am/logs
+cp am.log ../../tomcat/logs/11sep09
+
+Cd /nfs/local/bmcao/cdp
+cp java_pid5430.hprof tomcat/logs/11sep09
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+[root@tl1rvm700 sbin]# hostname
+tl1rvm700.poc.edmunds.com
+[root@tl1rvm700 sbin]# pwd
+/usr/local/sbin
+[root@tl1rvm700 sbin]# ll
+total 12
+-rwxr-xr-x 1 root root 8845 Jul 10 07:44 provision_domain.sh
+
+
+[root@pl1rns704 sbin]# hostname
+pl1rns704.admin.edmunds.com
+[root@pl1rns704 sbin]# pwd
+/usr/local/sbin
+[root@pl1rns704 sbin]# ll
+total 12
+-rwxr-xr-x 1 root root 3568 Aug 28 12:06 add_dns_record.sh
+drwxr-xr-x 2 root root 4096 Aug 28 12:04 archives
+-rwxr-xr-x 1 root root 2878 Jul  9 14:58 remove_dns_record.sh
+
+
+Grant LDAP Access has the Perl script
+
+#!/usr/bin/perl
+#################################################### 
+# Ron Eickler : 2009-08-17 - Initial Creation
+#################################################### 
+
+use CGI;
+use strict;
+use Data::Dumper;
+use Net::LDAP;
+use Getopt::Long;
+use Array::Unique;
+
+# Login credentials
+my $ldapserver = "pl1rad740.admin.edmunds.com";
+my $binddn = "cn=eiradmin,ou=Roles,dc=edmunds,dc=com"; 
+my $ldap_password = "eiradmin";
+
+# The location where netgroups are placed
+my $basedn = "ou=HostBasedAccess,ou=NetGroups,dc=edmunds,dc=com";
+
+#####################################################
+
+my @USERNAMES;
+my @HOSTS;
+
+my $DEBUG=0;
+my $VERBOSE=0;
+
+my $optresults = GetOptions( "h=s@" => \@HOSTS,
+                             "u=s@" => \@USERNAMES,
+                             "d" => \$DEBUG,
+                             "v" => \$VERBOSE,
+                           );
+
+# Connect to the LDAP server
+my $ldap = Net::LDAP->new( $ldapserver, debug => $DEBUG ) or die "$@";
+
+# Bind as the user specified in the config section
+my $mesg = $ldap->bind( $binddn, password => "$ldap_password" ) or die "$@";
+
+# Debug output
+print "Binded as $binddn\n" if $VERBOSE;
+print Dumper( $mesg ) if $DEBUG;
+print Dumper( @HOSTS ) . "\n" if $DEBUG;
+print Dumper( @USERNAMES ) . "\n" if $DEBUG;
+
+# Check usage
+if ( ! @HOSTS || ! @USERNAMES ) { &usage(); }
+
+# call the add user function
+&add_user( \@USERNAMES, \@HOSTS ); 
+
+# CLose ldap connection
+$ldap->unbind();
+
+# Function to create a newgroup
+sub create_netgroup() 
+{
+    my $HOST = shift;
+
+    my $cn = $HOST . '_Users';
+    my $dn = "cn=" . $cn . "," . $basedn;
+
+    print "Creating NetGroup " . $dn . "\n" if $VERBOSE;
+
+    # Perform an ldap add
+    my $result = $ldap->add( $dn, attr => [ 'cn' => $cn, 'objectclass' => ['top','nisNetgroup'] ] );
+
+    # DEbug output
+    print Dumper( $result ) if $DEBUG;
+
+    # Exit if there was an error on the LDAP call
+    $result->code && die "Failed to add entry at line " . __LINE__ . ": ", $result->error ;
+
+}
+
+sub add_user()
+{
+    my ( $USERNAMES, $HOSTS ) = @_;
+
+
+    # Loop through the hosts passed on the command line
+    foreach my $HOST ( @{$HOSTS} ) {
+
+        print "Granting access to $HOST\n" if $VERBOSE;
+
+        my $cn = $HOST . "_Users";
+        my $dn = "cn=" . $cn . "," . $basedn;
+
+        my @nisNetgroupTriple;
+        my $result; 
+
+        # Ensure that the nisNetgroupTriple array is unique or LDAP will error out
+        tie @nisNetgroupTriple, 'Array::Unique';
+
+        # Check to see if an "ou" already exists for this host
+        $result = $ldap->search( base   => "$basedn",
+                                 filter => "cn=" . $cn,
+        );
+
+        # Debug output
+        print Dumper( $result ) if $DEBUG;
+
+        # If no results were found on our search, we'll call the create_netgroup function
+        if ( $result->entries eq 0 ) {
+            print "Creating Orginizational Unit for $HOST.\n" if $VERBOSE;
+            &create_netgroup( $HOST );
+
+            # Get the new entry we just added
+            $result = $ldap->search( base   => "$basedn",
+                                     filter => "cn=" . $cn,
+                                     attr   =>  [ 'nisNetgroupTriple' ]
+            );
+        }
+
+        # debug output
+        print Dumper( $result->entries ) if $DEBUG;
+
+        # Add existing users to the list to add back in
+        foreach my $entry ( $result->entries ) {
+            foreach my $value ( $entry->get_value( 'nisNetgroupTriple' ) ) {
+                push ( @nisNetgroupTriple, $value );
+            }
+        }
+
+        # Add in the users that were passed on the command line
+        foreach my $USERNAME ( @{$USERNAMES} ) {
+            print "  - Adding $USERNAME\n" if $VERBOSE;
+            push ( @nisNetgroupTriple, "(-,$USERNAME,-)" );
+        }
+
+        # Do an ldap modify (replace)
+        my $modify_result = $ldap->modify( $dn, replace => { 'nisNetgroupTriple' => [ @nisNetgroupTriple ] } );
+        $modify_result->code && die "Failed to add entry at line " . __LINE__ . ": ", $modify_result->error . "\n";
+
+        # debug output
+        print Dumper( $modify_result ) if $DEBUG;
+    }
+}
+
+# Function to show how to use this script.
+sub usage() 
+{
+    print "Usage: $0 -u <username> -h <hostname> [-u <additional username> -h <additional host>]\n";
+    print "-h Host (required)\n";
+    print "-u Username (required)\n";
+
+    exit 1;
+}
+
+
+**********************************
+
+18sep09
+
+[root@pl1rad746 common]# /usr/java/jdk1.5.0_20/bin/keytool -Import -keystore /usr/java/jdk1.5.0_20/jre/lib/security/cacerts -file dhcp-40.cer -alias 10.96.192.208 
+
+Enter keystore password:  changeit
+
+
+*****
+/usr/java/jdk1.5.0_20/bin/keytool -list
+/usr/java/jdk1.5.0_20/jre/lib/security/cacert
+		(email under BMC 14sep09)
+	Root CA Certificate - AddTrustExternalCARoot.crt
+	Intermediate CA Certificate - UTNAddTrustSGCCA.crt
+	Intermediate CA Certificate - ComodoUTNSGCCA.crt
+	Intermediate CA Certificate - ComodoHighAssuranceSecureServerCA.crt
+
+
+/nfs/common/dhcp-40.cer   (this is, and was added for F5)
+
+/root/.keystore
+	where the cert is installed if you don't give a path AND where we want it.
+	Your Comodo InstantSSL Certificate - wookie.crt
+*****Email from jon
+
+Create a new key:
+
+keytool -genkey -dname
+"CN=pl1rad750.admin.edmunds.com,OU=Systems
+Administration,O=Edmunds.com,L=Santa Monica, ST=CA, C=US" -alias tomcat
+-keypass changeit -keystore ~root/.keystore -storepass changeit -validity
+$((365*5))
+
+(You should probably change the above information to use a service name instead of a server name, say bmccdp.admin.edmunds.com)
+
+Create a CSR:
+
+  keytool -certreq -file ~/pl1rad750.csr -alias tomcat
+
+Then submit that CSR to Comodo.
+
+Once you get the certificate back, you can import the cert using:
+
+  keytool -import -alias tomcat -file /path/to/cert/from/comodo.cert
+
+
+This is basically taken from here:
+
+http://java.sun.com/j2se/1.3/docs/tooldocs/win32/keytool.html
+
+That documentation is old, for 1.3 on Windows but the process is identical for Linux.
+
+
+-jon
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+CN=ProdCDP.edmunds.com
+CN=ProdAP4.edmunds.com for pl1rad744
+CN=ProdAP5.edmunds.com for pl1rad745
+
+/usr/java/jdk1.5.0_20/jre/bin/keytool -Genkey -dname "CN=ProdCDP.edmunds.com,OU=Systems Adminstration.O=Edmunds.com,L=Santa Monica, ST=CA,C=US" -alias CDPtomcat -keypass changeit -keystore ~root/.keystore -storepass changeit -validity $((365*5))
+
+/Usr/java/jdk1.5.0_20/jre/bin/keytool -certreq -file ~/ProdAP4.csr -alias AP4tomcat
+****changeit****
+
+
+Subject: Re: For once a work related questionDate: Tuesday, November 17, 2009 10:25 AMFrom: Houle, Steve <Steve_Houle@bmc.com>To: Don Siegfriedt <DSiegfriedt@edmunds.com>Conversation: For once a work related questionI think I know what you are asking, maybe.You say XPath, in which case multiple "commands" are nested, like excel functions usually are.  For most functions, like substring-before(), the first parameter is the source, and the second is whatever is needed.  So you'd put the first function in as the source of the second.  Like:    Source string: <text>I want the word after this word, and not after this word.</text>The XPath of:     substring-before( substring-after( ., "word, " ), " ")Which would give you "and".I don't know if this is what you were asking, but I decided I wanted to answer it anyway.  :-PWook--Steve "Wookie" Houlemail: steve_houle@bmc.comcell: +1.917.653.5099________________________________From: Don Siegfriedt <dsiegfriedt@edmunds.com>Date: Tue, 17 Nov 2009 11:53:58 -0600To: Wook <Steve_Houle@bmc.com>Subject: For once a work related questionGreetings!<RANT>We were told that automation is NOW the highest priority!  Yeah that meansthat the site can go down but Kenny and I have to work on making the newstuff work.   I swear I will never understand business!</RANT>How you doin?XPATH question... Forgot how to string multiple commands together in theeditor..... Tried ";" "+" "and" all giving me various errors and/or "True"(not helpful)Specifically we are trying to strip the XML off to use a path on mountingsome storage.Any help would be appreciated.--  --siggyDon SiegfriedtSenior Systems Administratoredmunds.com(310) 309-3054dsiegfriedt@edmunds.comSubject: Re: SSH output XML Date: Tuesday, November 17, 2009 10:15 AMFrom: Houle, Steve <Steve_Houle@bmc.com>To: "Sexton, Kenny" <Ksexton@edmunds.com>, Don Siegfriedt <DSiegfriedt@edmunds.com>Conversation: SSH output XML The deal with the lame-ass examples in the docs are that we assume you already know XML/XPath/XSLT when you get to this point.  Nobody does, but we assume anyway.I don't have any good examples.  I have a simple FAQ doc I wrote once, that has some simple examples, but they might get you started to where you might be able to figure it out yourself.  It's attached.In your XML below, if you just want the <line> elements, the XPath looks like    //lineIf you want to search for lines with specific things in them, it is something like    //line[ starts-with(., "pl1nv") ]Or    //line[ contains(., "pl1nv") ]Wook--Steve "Wookie" Houlemail: steve_houle@bmc.comcell: +1.917.653.5099________________________________From: Kenny Sexton <ksexton@edmunds.com>Date: Tue, 17 Nov 2009 10:49:59 -0600To: Wook <Steve_Houle@bmc.com>Subject: SSH output XMLWook,For the life of me I cannot figure out how to sort this SSH output XML.<ssh-command-output>  <metadata>    <status>success</status>  </metadata>  <targets-output>    <target-output host="pl1rad705.admin.edmunds.com">      <metadata>        <os-id>Linux</os-id>        <os-version>2.6.9-55.ELsmp</os-version>        <status>success</status>      </metadata>      <commands-output>        <command-output>          <metadata>           <command>/opt/EIR_Master/bin/EIR_Storage.pl --fstab --environment preprod_media --tag QA-CRE-Kenny</command>            <line-count>4</line-count>           <execution-milliseconds>520</execution-milliseconds>            <exit-code>0</exit-code>            <status>success</status>          </metadata>          <output>            <line index="1">pl1nvf102-1111.nfs.edmunds.com:/vol/preprod_media_apps/QA-CRE-Kenny     /apps    nfs                rw,rsize=32768,wsize=32768,hard,nointr,bg,tcp,vers=3,timeo=600</line>            <line index="2">pl1nvf103-1111.nfs.edmunds.com:/vol/preprod_media_content/QA-CRE-Kenny               /content                nfs          rw,rsize=32768,wsize=32768,hard,nointr,bg,tcp,vers=3,timeo=600</line>            <line index="3">pl1nvf104-1111.nfs.edmunds.com:/vol/preprod_media_deployments/QA-CRE-Kenny                /deployments   nfs          rw,rsize=32768,wsize=32768,hard,nointr,bg,tcp,vers=3,timeo=600</line>            <line index="4">pl1nvf105-1111.nfs.edmunds.com:/vol/preprod_media_logs/QA-CRE-Kenny       /logs      nfs                rw,rsize=32768,wsize=32768,hard,nointr,bg,tcp,vers=3,timeo=600</line>          </output>        </command-output>      </commands-output>    </target-output>  </targets-output></ssh-command-output>All I need as the output is the 4 data lines that start with pl1nvf.I really need some better XML examples then the lame ass ones that come in the documentation.Thanks for your help.Thanks,Kenny SextonManager, Systems AutomationEdmunds.com(310)309-6474
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+1dec09 1718
+
+http://pl1rad750.admin.edmunds.com:8080/baoam/administration/main.jsf
+
+http://pl1rad750.admin.edmunds.com:8080/baocdp/gm/index.jsf
+
+http://pl1rad746.admin.edmunds.com:8080/baocdp/gm/index.jsf
+
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+2dec09  --siggy
+
+Install the components of the BAO platform in the following order:
+ 
+linux_bao_server_installer_7_5_02_04.tar
+linux_bao_base_adapter_installer_7_5_02_04.tar
+linux_bao_application_adapter_installer_7_5_02_04.tar
+linux_bao_modules_installer_7_5_02_04.tar
+ 
+For your reference:  TechincalBulletin_Atrium_Orchestrator_7_5_02_04.pdf
+
+Eric Pawlyshyn
+Sr Prof Svcs Consultant
+Atrium Orchestrator / Remedy AR System & ITSM
+BMC Software
+
+mobile: +1 440.654.3720 (Note: new number)
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+2dec09  Ankur
+
+Rather than trying to remember how to VNC into the atrium boxes, Ankur showed us this.
+
+ssh pl1rad746.admin.edmunds.com -X
+sudo /nfs/common/bmc/software/7.50.02.04/linux_bao_application_adapter_installer_7_5_02_04.bin
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+14apr10  --siggy
+
+when you can't login to either Provisioning or Configuration Managers...
+
+/usr/lib/rsc/users.local
+
+is corrupt or missing.....
+Backup copy in ~dsiegfriedt
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&

@@ -1,0 +1,1 @@
+use DirHandle;my $d = new DirHandle ".";   # open the current directoryif (defined $d) {    while (defined($_ = $d->read)) { something($_); }    $d->rewind;    while (defined($_ = $d->read)) { something_else($_); }}

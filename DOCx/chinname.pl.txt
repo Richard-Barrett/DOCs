@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>Donald Siegfriedt:  Your Chinese Name is Shi Tanning</TITLE>
+<BASE HREF="http://www.mandarintools.com/">
+</HEAD>
+<BODY BGCOLOR="gold">
+<CENTER>
+<TABLE BORDER=5 BORDERCOLOR="red">
+<TR>
+<TD>
+<IMG height=96 width=64 SRC="namegif/77F3.gif">
+<IMG height=96 width=64 SRC="namegif/5766.gif">
+<IMG height=96 width=64 SRC="namegif/5BE7.gif">
+</TD></TR></TABLE>
+</CENTER><P>
+
+<TABLE CELLSPACING=5 BORDER WIDTH="100%" BGCOLOR="red">
+<TR>
+<TD VALIGN=TOP width="33%">
+<H3>Surname (first character)</H3>
+<IMG ALIGN=LEFT SRC="http://www.mandarintools.com/cgi-bin/ugif/77F3.gif">
+<UL>
+   <LI>Shi
+</UL>
+</TD>
+<TD width="33%">
+<H3>Given Name (middle character)</H3>
+<IMG ALIGN=LEFT SRC="http://www.mandarintools.com/cgi-bin/ugif/5766.gif">
+<UL>
+   <LI>Tan
+   <LI>flat, smooth; self-possessed
+</UL>
+<P>
+</TD>
+<TD width="33%">
+<H3>Given Name (last character):</H3>
+<IMG ALIGN=LEFT SRC="http://www.mandarintools.com/cgi-bin/ugif/5BE7.gif">
+<UL>
+  <LI>ning
+  <LI>repose, serenity, peace; peaceful
+</UL>
+</TD>
+</TR>
+</TABLE>
+<P>
+<CENTER>Hear the name pronounced: <A HREF="http://www.bell-labs.com/cgi-user/tts/mandarintts?text=shi2tan3ning2&rate=slowest&audio=.wav">Shi Tanning</A></CENTER>
+<P><CENTER>You were born in the Year of the Monkey <IMG ALIGN=ABSMIDDLE SRC="http://www.mandarintools.com/cgi-bin/ugif/7334.gif"></CENTER>.<P><CENTER>Why do I keep getting <A HREF="http://www.mandarintools.com/faq.html#namer">different names</A>?</CENTER>
+<P>
+<HR>
+   Hello, Donald Siegfriedt!  Above is the Chinese name which 
+was "inspired" by your English name.  Chinese uses characters rather
+than an alphabet, so names cannot be directly translated from English
+to Chinese.  However, Chinese characters can be chosen which approximate
+the English pronounciation, which is what this program does.
+<P>
+   Chinese names generally have 3 characters.  The surname, which is
+usually 1 character, comes first.  Next are one or two characters which
+are chosen by the parents (or the grandparents in traditional Chinese
+culture).  This program chooses the surname and given names according
+to the spelling of your name and the characteristics you choose.  The
+selection is not unique though.  Everytime you use this tool, you will
+likely get a different name.  So if you don't like the first name
+you get, try again.
+<P>
+   This page is mostly created for entertainment.  Real Chinese names
+should be chosen by someone who knows the nuances of Chinese language
+and culture.  Ask a native speaker if you want a Chinese name you will
+actually use.  Also, this tool will not translate Chinese names written
+in English back to their original Chinese form.
+<P>
+   If you came to this page directly, you might also enjoy visiting some
+of my <A HREF="http://www.mandarintools.com" TARGET="_top">other tools</A> for learning and using Chinese.  Please visit my <A HREF="http://www.mandarintools.com/contact.html">guestbook</A> if you have comments or
+questions about this tool.
+</BODY>
+</HTML>

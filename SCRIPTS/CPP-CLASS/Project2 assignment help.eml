@@ -1,0 +1,85 @@
+X-Account-Key: account1
+X-UIDL: 20080218180057M0400brfste0002ic
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Received: from nlpi044.prodigy.net ([207.115.36.73])
+          by isp.att.net (frfwmxc04) with ESMTP
+          id <20080218180056M04007mtpfe>; Mon, 18 Feb 2008 18:00:57 +0000
+X-Originating-IP: [207.115.36.73]
+X-Originating-IP: [208.12.122.34]
+Received: from xmrc0101.northgrum.com (xmrc0101.northgrum.com [208.12.122.34])
+	by nlpi044.prodigy.net (8.13.8 inb regex/8.13.8) with ESMTP id m1II0t2N008649
+	for <siggy56@pacbell.net>; Mon, 18 Feb 2008 12:00:55 -0600
+Received: from xbhc0001.northgrum.com ([157.127.103.104]) by xmrc0101.northgrum.com with InterScan Message Security Suite; Mon, 18 Feb 2008 10:12:37 -0800
+Received: from XBHTX102.northgrum.com ([134.223.192.23]) by xbhc0001.northgrum.com over TLS secured channel with Microsoft SMTPSVC(6.0.3790.2499);
+	 Mon, 18 Feb 2008 10:00:54 -0800
+Received: from XMBTX132.northgrum.com ([134.223.195.13]) by XBHTX102.northgrum.com over TLS secured channel with Microsoft SMTPSVC(6.0.3790.1830);
+	 Mon, 18 Feb 2008 12:00:53 -0600
+X-MimeOLE: Produced By Microsoft Exchange V6.5
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Project2 assignment help
+Date: Mon, 18 Feb 2008 12:00:42 -0600
+Message-ID: <9485003E3935C641AB4755AFEAE5CB2A0BC27A@XMBTX132.northgrum.com>
+In-Reply-To: <021620082336.22209.47B773780005D645000056C122218683269B0A02D204040A0D0C0E9FBFC0CA970909079C@att.net>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Thread-Topic: Project2 assignment help
+Thread-Index: Achw9N2siZZoLdqZRRC6CAeAaKGfcgBYWFjQ
+References: <021620082336.22209.47B773780005D645000056C122218683269B0A02D204040A0D0C0E9FBFC0CA970909079C@att.net>
+From: "Dousette, Patricia" <patricia.dousette@ngc.com>
+To: <siggy56@pacbell.net>
+X-OriginalArrivalTime: 18 Feb 2008 18:00:53.0978 (UTC) FILETIME=[344673A0:01C87258]
+
+Don,
+	As a starting point - start with a class definition with the
+data and types of functions you will need to implement this virtual
+array.  Then begin implementing the functions (constructor and overload
+function - int& operator[] (int index);).  I promise to give some major
+hints in tomorrow nights class.  It is OK to use a temporary file
+although you do not really need one.  It might be a good idea for you to
+implement the COMPLEX class version with the + overload function that is
+in the notes - just to begin understanding the class and overload
+concepts.  Then after tomorrow nights class you can tackle the virtual
+array class.
+
+	See you tomorrow night.
+
+	Pat=20
+
+-----Original Message-----
+From: siggy56@pacbell.net [mailto:siggy56@pacbell.net]=20
+Sent: Saturday, February 16, 2008 3:36 PM
+To: Dousette, Patricia
+Subject: Project2 assignment help
+
+Greetings
+
+I'm looking for a good starting point.  I know I am behind (missing a
+week), but I'd like to buy a clue ;^)
+
+I'm not sure where to start on this assignment.  My first thought was to
+start with reading (and trying to develop) an array.  While reading I
+thought I should be concentrating on a function, when I started reading
+about functions I came upon classes.  Then back to array(s).  Round and
+round I go...
+
+Where should I start?
+
+Another question:
+
+Under requirements, you state "...and utilize the file for the array
+storage." =20
+With the assumption that this class could be used to inspect a file on
+disk.  Is it OK to use a temporary file for any changes (JUST to protect
+the original
+(input) file)?
+
+THANKS
+
+Don Siegfriedt
+

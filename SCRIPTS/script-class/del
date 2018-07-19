@@ -1,0 +1,17 @@
+#!/bin/ksh
+
+#28apr01
+
+# del *
+#	(y /n /a /q)
+#	(yes to delete /no to delete /all /quit)
+
+
+
+rm -i $i
+
+if $i = a
+	for i ($#)
+	rm $i
+end
+

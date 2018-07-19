@@ -1,0 +1,42 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific aliases and functions
+shopt -s histappend
+export PROMPT_COMMAND="history -n; history -a"
+HISTSIZE=100000
+export HISTTIMEFORMAT=%d%b%y-%H":"%M":"%S"  "
+
+PS1="\[\e[32m\]\u@\h:\w \$\[\e[m\] "
+
+alias ll='ls -lavh'
+alias waldo='ssh siggy@10.200.69.210'
+alias elron='ssh linux@10.200.65.214'
+alias aruba='ssh root@10.200.69.25'
+alias cube8='ssh root@10.200.65.94'
+alias isilon-cupertino='ssh root@10.200.65.70'
+
+alias bb='xscreensaver-command -lock'
+alias secrets='openssl des3 -d -salt -in encryptedfile.txt -out deleteme.txt'
+alias makesecret='openssl des3 -salt -in deleteme.txt -out encryptedfile.txt; rm -f deleteme.txt'
+
+#for centos RDT
+alias windos='rdesktop -g 1150x850 -u 453617 10.23.173.5'
+
+
+#for centos RDT
+alias laptop='rdesktop -u 453617 -d la -g 1800x1000 -a 16 -r sound:local 10.23.174.72'
+
+alias CORE1='ssh admin@10.124.223.1'
+alias C1='ssh vpl@10.124.215.253'
+alias C3='ssh vpl@10.124.215.2'
+alias C4='ssh vpl@10.124.215.3'
+alias C5='ssh vpl@10.124.215.4'
+alias C6='ssh vpl@10.124.215.5'
+alias C15='ssh vpl@10.124.215.13'
+alias C16='ssh vpl@10.124.215.14'
+alias VNCtoC1='vncviewer 10.124.215.253:2'

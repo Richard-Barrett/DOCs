@@ -1,0 +1,12 @@
+#! /bin/ksh
+
+TOTAL=0
+for ITEM
+do
+  grep $ITEM pricefile
+  if [ $? -ne 0 ]
+  then
+     echo $ITEM does not exist
+  fi
+done
+

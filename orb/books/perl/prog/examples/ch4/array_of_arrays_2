@@ -1,0 +1,1 @@
+# reading from a filewhile ( <> ) {    push @LoL, [ split ];}# calling a functionfor $i ( 1 .. 10 ) {    $LoL[$i] = [ somefunc($i) ];}# using temp varsfor $i ( 1 .. 10 ) {    @tmp = somefunc($i);    $LoL[$i] = [ @tmp ];}# add to an existing rowpush @{ $LoL[0] }, "wilma", "betty";

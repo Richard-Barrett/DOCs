@@ -1,0 +1,175 @@
+29Oct10 AMPL
+
+SatSlot   O/E    Transponder    EZRA
+-------------------------------------
+99	  18v	 Tr14		9.9
+99	  13v	 Tr3		9.8
+101	  18v	 Tr8		12.6
+101	  13v	 Tr9		10.9
+103	  O	 Tr11a		9.9
+103	  E	 Tr16		9.1 
+
+6Jul11 AMPL
+
+101/9		10.9dB
+101/8		12.6
+110/10 (30)	10.8
+119/27 		10.8
+119/32		10.8
+95/12		7.8
+103a/11		9.9
+103a/16		9.1
+99/3		9.8
+99/14		9.9
+
+
+U.S. NEL testing (27Apr11  --siggy/AMPL/Ken P)
+SatSlot   Transponder
+---------------------
+101       Tr2       Look for LOCKED
+
+#*****
+2Feb11  --siggy
+
+imagezip -R1 /dev/sdc > f13-32.ndz
+
+
+#*****
+28Feb11  dmicheals
+
+Don, Dennis,
+ 
+As you are the most likely here on the early shift.
+The command details are in fsrec1:/root/README, near the bottom. Once you're on fsrec1, you can refresh on the command syntax there.
+ 
+Symptoms: Testers/Developers can't login, ssh into fsrec1 takes "significant" time (anything over 5 seconds, but likely 2+ minutes).
+AND
+top shows portmap at or near 100%
+OR, from another system
+rpcinfo -p fsrec1                       # times out
+ 
+killing and restarting portmap fixes that problem, but then portmap doesn't "know" the ports it's supposed to publish.
+ 
+Solution: Either restart every service that registers with portmap, no that doesn't work as locker is now incorporated into the kernel and the only way to restart it is a reboot....
+SO: Save the state of portmap prior to it pegging
+pmap_dump > somefile            # Saves state of portmap, this has to be run BEFORE portmap pegs.
+ 
+I run the command after each boot (though most of the services are now locked to specific ports in /etc/sysconfig/nfs)
+ 
+pmap_dump > /root/portmap.inf           # Careful not to overwrite this file if portmap is catatonic
+ 
+On restart of portmap run
+ 
+        # pmap_set < /root/portmap.info
+ 
+That will populate portmap with the ports at the time of the last pmap_dump. Test the various services (or check their start times to see if they have been restarted since boot
+To list all the service ports published by portmap
+rpcinfo -p [hostname]
+ 
+To find when the system was last rebooted
+who -r  # shows last boot time
+         run-level 3  2011-01-31 08:13                   last=S
+PS shows that process start time, if that's when the system rebooted, you can be fairly sure the correct port number was in portmap.info
+ps -ef | grep rpc
+rpc       2016     1  0 07:20 ?        00:00:05 portmap         # NOTE that start time for portmap is today
+root     16298     1  0 Jan31 ?        00:00:11 rpc.statdroot     16378     1  0 Jan31 ?        00:00:00 rpc.idmapd
+root     17077     1  0 Jan31 ?        00:00:00 rpc.ypxfrd
+root     17392     1  0 Jan31 ?        00:00:00 rpc.rquotad
+root     17462     1  0 Jan31 ?        01:13:05 rpc.mountd --descriptors 10240
+root     17505     1  0 Jan31 ?        00:00:00 rpc.yppasswdd -D /var/yp/files
+ 
+psg ypbind
+root     17097     1  0 Jan31 ?        00:00:08 ypbindpsg nfs
+root     17433     1  0 Jan31 ?        00:29:00 [nfsd]
+After getting fsrec1 back in order, confirm cvs2's vsftpd and NFS mounts off fsrec1 are in order
+That's another How-To
+ 
+Dave
+#*****
+Set up IM 
+
+Protocol = XMPP
+Username = dsiegfriedt
+Domain = 10.23.161.96
+
+#*****
+14Nov12  Dave gnome wierdness
+
+newcvs2:/scripts/FixGnome
+
+#*****
+12Feb13  Dave/Larry trying to get to STBlogs
+
+from newcvs2.... ssh sweng@stblogs  (keys in place no passwd needed)
+
+#*****
+22feb13  AMPL import users into VLP 
+
+on C1
+cd /opt/sherpa_install/vpl_install_package
+java -jar CSVImporter.jar -v -t users -u alynch -p D1recTV! -f ./GCSTestUsers1.csv
+
+[root@vpl-benson vpl_install_package]# cat GCSTestUsers1.csv
+"firstName","lastName","emailAddress","password","userName","userType","maxLockedIrds"
+"Minh","Truong","minhtn@gcs-vn.com","DirecTV","minhtn","CCA_USER","4"
+
+****** the passwd Expired flag does NOT show but is in fact set during import *****
+
+imported list in C1:/root/user-import-22feb13-siggy 
+
+#*****
+6mar13   addingf a printer
+
+B&W = 10.23.166.240
+color = 10.23.166.239
+
+*****
+20mar13  DaveM
+For avocent   Java needs to be pointed at javaws
+
+In browser:
+
+Edit=>Preferences=>Applications=>JNPL..... "Use other" ... "File System" ... /usr/java/jdk1.7.0_13/bin/javaws
+
+/usr/java/jdk1.7.0_13/jre/bin/java
+
+*****
+3may13 Larry adding repo to stbpush (so I can add openconnect)
+scp etna:/var/cfengine/repository/service/yum/eng-support.repo.redhat_5_8 eng-support.repo
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+
+*****
+

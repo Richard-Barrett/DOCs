@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -f /home/home/siggy/passwd-list.txt ]; then
+
+echo
+echo "Encrypting passwd-list.txt"
+echo
+
+openssl des3 -salt -in passwd-list.txt -out passwd-list.enc
+
+echo "deleting passwd-list.txt"
+
+	if [ -f /home/home/siggy/passwd-list.enc ]; then
+
+		/bin/rm -f /home/home/siggy/passwd-list.txt
+
+	else
+		echo "ENCRYPTED file not present.  Do you want to still logout?"
+
+	fi
+fi

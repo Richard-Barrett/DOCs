@@ -1,0 +1,213 @@
+20May15  --siggy  retention policy explination
+https://phdtechsupport.zendesk.com/hc/en-us/articles/202531900-Manage-Retention-Policies-dialog-8-0-
+
+28Oct15  --siggy ueb info
+
+laplitiuni1 = 10.130.26.71
+laplitiuni2 = 10.130.26.72
+laplitiuni3 = 10.130.26.73
+laplitiuni4 = 10.130.26.74
+laplitiuni5 = 10.130.26.75
+laplitiuni9_mgmt = 10.130.26.76
+
+from lasan6:/etc/exports
+/vol/ueb_BU_cc6	-sec=sys,rw,root=10.130.26.71,anon=0,nosuid
+/vol/ueb_BU_pc8	-sec=sys,rw,root=10.130.26.72,anon=0,nosuid
+/vol/ueb_BU_prd	-sec=sys,rw,root=10.130.26.73,anon=0,nosuid
+/vol/ueb_BU_qa	-sec=sys,rw,root=10.130.26.74,anon=0,nosuid
+/vol/ueb_BU_ops	-sec=sys,rw,root=10.130.26.75,anon=0,nosuid
+/vol/ueb_BU_dev	-sec=sys,rw,root=10.130.26.76,anon=0,nosuid
+
+
+
+((()))
+
+2Nov15  --siggy enable/disable ueb backups
+    ~dsiegfri/REPUBLIC/UNITRENDS/(en/dis)abled-BU.jpg
+    Settings => Storage and Retention => Backup Browser
+    	     Select Device Name
+	     	    enabled is "checked"
+		    disabler is "unchecked"
+
+((()))
+https://www.youtube.com/v/K-el0G7qEho?fs=1&autoplay=1
+
+((()))
+1Dec15  --siggy  on laphd8_mgmt
+
+crontab -l shows
+
+00 14 * * * /usr/local/bin/daily_report.py | mail --append="Content Type: text html; Content_Disposition: inline; cahrset=UTF-8" -s "Unitrends Backup Jobs Status Report" <list of people>
+
+((()))
+22Jan16  --siggy email list change
+
+Settings => Systems, Updates, and Licensing => General Configuration [Advanced] => Unattended Backup Information
+
+((()))
+2Feb16  --siggy UEB info
+Name/IP:  	laplitiuni1/10.130.26.71
+Release:  	8.2.0-7.201509281959
+Asset Tag:  	93657122-117a-47f3-9764-79179d7aafce (Asset Number)
+Install Date:	Thu 22 Oct 2015 02:33:13 PM PDT
+
+((()))
+1Feb16-Unitrends
+
+      * Siegfriedt, Donald <dsiegfriedt@ri-net.com>
+        <mailto:dsiegfriedt@ri-net.com>
+      * **
+      * Today at 8:52 AM
+To
+      * Don `siggy` Siegfriedt <mailto:siggy56@pacbell.net>
+
+login as: admin
+admin@10.130.25.113 <mailto:admin@10.130.25.113>'s password:
+Welcome to Ubuntu 12.04.4 LTS (GNU/Linux 3.2.0-60-virtual x86_64)
+
+* Documentation:  https://help.ubuntu.com/
+Last login: Fri Jan 29 02:44:20 2016 from 10.239.68.55
+$ psql servic=client
+psql: invalid connection option "servic"
+$ psql service=client
+WARNING: password file "/home/admin/.pgpass" has group or world access;
+permissions should be u=rw (0600) or less
+psql (9.2.8)
+Type "help" for help.
+
+#this is in history.... you can use up-arrow
+
+update client_job
+set job_status = 3,
+job_state = 7,
+timestamp = extract(epoch from now()),
+start_date = case when start_date is null then now() else
+start_date end,
+finish_date = now()
+where job_state < 6;
+
+#UPDATE 5318
+
+update client_jobinventory
+set job_status = 3,
+job_state = 7,
+timestamp = extract(epoch from now()),
+start_date = case when start_date is null then now() else
+start_date end,
+finish_date = now()
+where job_state < 6;
+
+#UPDATE 269977
+
+
+client=#
+client=#
+client=#
+client=# top
+client-# \q         # (Ctrl-d)
+$ top
+top - 16:31:11 up 3 days, 13:08,  1 user,  load average: 0.85, 0.80, 0.68
+Tasks: 236 total,  2 running, 231 sleeping,  0 stopped,  3 zombie
+Cpu(s): 12.1%us,  3.6%sy,  0.0%ni, 83.7%id,  0.4%wa,  0.0%hi,  0.2%si, 
+0.0%st
+Mem:  12307176k total,  7245624k used,  5061552k free,  306084k buffers
+Swap:  2096124k total,        0k used,  2096124k free,  2758396k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+18063 root      20  0 42072 9264 2176 S    2  0.1  0:00.07 imvirt
+7423 root      20  0 3390m 111m  12m S    2  0.9  0:52.04 management_cont
+
+{SNIP}
+
+$ restart phdvb-engine
+restart: Unable to connect to system bus: Failed to connect to socket
+/var/run/d
+
+#This command restarts all of the phd8 engines (not reboot) just restarts the app.
+
+$ restart phdvb
+restart: Unable to connect to system bus: Failed to connect to socket
+/var/run/d
+$ ls
+pgadmin.log
+$ sduo restart phdvb-engine
+-sh: 7: sduo: not found
+$ sudo restart phdvb-engine
+restart: Unknown instance:
+$ sudo restart phdvb
+phdvb start/running, process 30428
+$ sudo restart phdvb-engine 1
+restart: Env must be KEY=VALUE pairs
+$ sudo restart phdvb-engine laphd8_13
+restart: Env must be KEY=VALUE pairs
+$ ^C
+$
+((()))
+5Feb16-UVB-kill-all-the-jobs
+
+[9Feb16  --siggy&Guru
+from console.... C&P did not work... typing did]
+
+ssh admin@10.130.25.113
+
+psql service=client  <CR> 
+update client_job  <CR>
+set job_status = 3, job_state = 7, timestamp = extract(epoch from now()), start_date = case when start_date is null then now() else start_date end, finish_date = now() where job_state < 6;  <CR>
+
+Ctrl-d to exit
+
+((()))
+16Feb16  --siggy   finding/fixing locked snaps
+
+https://kb.vmware.com/selfservice/search.do?cmd=displayKC&docType=kc&docTypeID=DT_KB_1_1&externalId=10051
+
+for i in $(seq 15 34); do echo $i; ssh root@laesxi$i /bin/vim-cmd vmsvc/getallvms;echo;done > /tmp/16feb16-wherismylock
+
+[root@lasysmon scripts]# cat /tmp/16feb16-wherismylock | grep lapcdbdv4
+127    lapcdbdv4      [lasan3_nfs_pcdev02] lapcdbdv4/lapcdbdv4.vmx       windows7Server64Guest   vmx-08    PC DEV DB               
+
+[root@lasysmon scripts]# cat /tmp/16feb16-wherismylock | grep laccdmdbdv2
+73     laccdmdbdv2    [lasan4_nfs_dev01] laccdmdbdv2/laccdmdbdv2.vmx      windows7Server64Guest   vmx-08    CC DEV Datamart DB
+
+
+mount lasan4:/vol/vmware_nfs_dev/vmware_nfs_dev /test
+
+less /test/laccdmdbdv2/vmware.log 
+     SNIP
+016-02-16T16:38:15.142Z| vcpu-0| I120: SnapshotVMXConsolidateOnlineCB: Done with consolidate
+2016-02-16T16:38:21.701Z| vcpu-0| I120: HBACommon: First write on scsi0:0.fileName='/vmfs/volumes/0490f2bb-ddd70884/laccdmdbdv2/laccdmdbdv2-000006.vmdk'
+2016-02-16T16:38:21.701Z| vcpu-0| I120: DDB: "longContentID" = "77dca7b69bdbcde1dde60d1422d8a263" (was "962de12a7091d6f9c89edbecc6721d61")
+2016-02-16T16:38:21.708Z| vcpu-0| I120: DISKLIB-CHAIN : DiskChainUpdateContentID: old=0xc6721d61, new=0x22d8a263 (77dca7b69bdbcde1dde60d1422d8a263)
+
+migrating teh datastore off and back clears all locks
+
+((()))
+25Feb16  GURU sent the link to UEB v 9
+http://www.unitrends.com/products/enterprise-backup-software/unitrends-enterprise-backup
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+
+((()))
+

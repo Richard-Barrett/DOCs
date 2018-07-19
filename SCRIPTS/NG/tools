@@ -1,0 +1,24 @@
+
+#when df -h hangs the terminal...
+for i in `cat /etc/beowulf/bcs/gand-list`; do echo $i; ssh $i df -h; done
+
+for i in `cat /etc/beowulf/bcs/allnodes`; do echo $i; rsh $i '(umount /ms27-1; mount /ms27-1)'; done
+
+/bin/kill -9 `ps -ef | grep bbb163 | grep -v grep | awk '{print $2}'`
+
+for i in `ps -ef | grep mount  | grep -v auto| awk '{print $2}'`; do kill -9 $i; done
+
+for i in `cat /etc/fstab | grep /ms | awk '{print $2}'`; do echo $i; ls -la $i; done
+
+for i in `cat /etc/beowulf/bcs/allnodes`; do echo $i; rsh $i mount /ms; done
+
+for i in `cat /etc/beowulf/bcs/gand-list`; do echo $i; ssh $i /HYDRA/bin/status; done
+
+for i in `cat /etc/beowulf/bcs/allnodes`; do echo $i >> /root/node-mounts; rsh $i mount >> /root/node-mounts; done
+
+
+for i in `mount | grep /ms | awk '{print $3}'`; do umount $i; done
+
+for i in `mount | grep -v auto | grep gandalf | awk '{print $3}' | grep ms | sort`;  do echo $i; ls -al $i | grep lost; done
+
+

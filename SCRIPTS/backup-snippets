@@ -1,0 +1,32 @@
+#!/bin/bash
+
+for i in `ls /home | grep -v exclude | grep -v CONFIG-FILES`
+do
+WHEN=`date +%d%b%g`
+echo "Working on $i on $WHEN"
+#tar cpjf /media/72831fa5-c7f2-4f45-9440-f0b409573c46/manfred2-$i-BU-$WHEN.bz2 -X /home/exclude-list /home/$i
+#tar cpjf /media/72831fa5-c7f2-4f45-9440-f0b409573c46/Farmer3pointOh-$i-BU-$WHEN.bz2 -X /home/exclude-list /home/$i
+done
+
+
+
+# Exclude list
+#*.iso
+#BMC
+#Desktop
+#Documents
+#Downloads
+#Library
+#jython2.5rc2
+#.Trash
+#DEVTUDIO
+#GENTOO
+#HADOOP
+#DOCX
+#XML
+#Sites
+#PPT
+#PYTHON
+#Perforce
+#Public
+#.*

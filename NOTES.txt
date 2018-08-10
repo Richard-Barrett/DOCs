@@ -8652,14 +8652,94 @@ systemd-analyze critical-chain
 systemd-analyze plot
 
 **********************************************************************
+6Aug18
+
+HTTP status codes (from interview question from Amazon)
+1xx Informational response
+
+An informational response indicates that the request was received and understood. It is issued on a provisional 
+basis while request processing continues. It alerts the client to wait for a final response. The message consists 
+only of the status line and optional header fields, and is terminated by an empty line. As the HTTP/1.0 standard 
+did not define any 1xx status codes, servers must not[note 1] send a 1xx response to an HTTP/1.0 compliant client 
+except under experimental conditions.
+
+2xx Success
+
+This class of status codes indicates the action requested by the client was received, understood and accepted.
+
+3xx Redirection
+
+This class of status code indicates the client must take additional action to complete the request. Many of 
+these status codes are used in URL redirection.
+
+A user agent may carry out the additional action with no user interaction only if the method used in the second 
+request is GET or HEAD. A user agent may automatically redirect a request. A user agent should detect and 
+intervene to prevent cyclical redirects.
+
+4xx Client errors
+
+This class of status code is intended for situations in which the error seems to have been caused by the client. 
+Except when responding to a HEAD request, the server should include an entity containing an explanation of the 
+error situation, and whether it is a temporary or permanent condition. These status codes are applicable to any 
+request method. User agents should display any included entity to the user.
+
+5xx Server errors
+
+The server failed to fulfil a request.
+
+Response status codes beginning with the digit "5" indicate cases in which the server is aware that it has 
+encountered an error or is otherwise incapable of performing the request. Except when responding to a HEAD 
+request, the server should include an entity containing an explanation of the error situation, and indicate 
+whether it is a temporary or permanent condition. Likewise, user agents should display any included entity 
+to the user. These response codes are applicable to any request method.
+
+**********************************************************************
+6Aug18 statically/dynamically linked files
+
+Static linking is the result of the linker copying all library routines used in the program into the executable image. 
+This may require more disk space and memory than dynamic linking, but is both faster and more portable, since it 
+does not require the presence of the library on the system where it is run.
+
+Dynamic linking is accomplished by placing the name of a sharable library in the executable image. Actual linking 
+with the library routines does not occur until the image is run, when both the executable and the library are 
+placed in memory. An advantage of dynamic linking is that multiple programs can share a single copy of the library.
 
 
 **********************************************************************
+10Aug18 kernel info
 
+$ uname -r
+4.15.0-30-generic
+^  ^ ^  ^    ^
+|  | |  |    |
+|  | |  |    |
+|  | |  |    +-- the distribution-specific string
+|  | |  +------- the latest bug fix
+|  | +---------- the minor revision
+|  +------------ the major revision
++--------------- the kernel version
 
+OR
 
-**********************************************************************
+$ uname -a
+Linux butterfly 4.15.0-30-generic #32-Ubuntu SMP Thu Jul 26 17:42:43 UTC 2018 
+----- --------- ----------------- -------------------------------------------
+  |       |            |                             |
+  |       |            +- kernel version             +---- compilation stats
+  |       +-- hostname
+  +-- kernel name
 
+x86_64 x86_64 x86_64 GNU/Linux
+  |      |      |       |
+  |      |      |       +-- operating system
+  |      |      +---------- OS architecture
+  |      +----------------- processor architecture
+  +------------------------ machine architecture
+
+OR
+
+$ cat /proc/version
+Linux version 4.15.0-30-generic (buildd@lgw01-amd64-060) (gcc version 7.3.0 (Ubuntu 7.3.0-16ubuntu3)) #32-Ubuntu SMP Thu Jul 26 17:42:43 UTC 2018
 
 **********************************************************************
 

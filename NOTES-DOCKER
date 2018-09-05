@@ -1,5 +1,9 @@
 @@@ started 27Aug18 while at home looking for a job
 
+https://vmarena.com/learning-docker-part-1/
+https://vmarena.com/learning-docker-part-2/
+https://vmarena.com/learning-docker-part-3/
+
 FROM HISTORY
 
 sudo yum install docker-ce
@@ -38,14 +42,100 @@ rpm -ql containerd.io-1.2.0-1.0.beta.0.el7.x86_64
 ^^^^^
 29Aug18
 
-docker run -d -name webserver1 <pulled image name>
+docker run -d --name webserver1 <pulled image name>
 
 -d = detached
--name = what the local DNS will map it to
+--name = what the local DNS will map it to
+
+image search "sudo docker search redis"
+
+
 
 image available with "docker pull <image name>
 
+
 ^^^^^
+5Sep18 
+
+siggy@STRAX:~/GIT/homebase $ sudo docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+9db2ca6ccae0: Pull complete 
+Digest: sha256:4b8ff392a12ed9ea17784bd3c9a8b1fa3299cac44aca35a85c90c5e3c7afacdc
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/engine/userguide/
+
+@@@ list running images
+
+siggy@STRAX:~/GIT/homebase $ sudo docker container ls -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+5947e738d4fe        hello-world         "/hello"                 11 minutes ago      Exited (0) 11 minutes ago                       laughing_lumiere
+a466b6ba52c7        a41c82c0998a        "docker-entrypoint.s…"   9 days ago          Exited (0) 9 days ago                           gracious_aryabhata
+3abf85916664        16508e5c265d        "/bin/bash"              9 days ago          Exited (0) 9 days ago                           dazzling_kirch
+a91a557375ba        16508e5c265d        "/bin/bash"              9 days ago          Exited (0) 9 days ago                           fervent_swanson
+9125e3f8dbc3        16508e5c265d        "/bin/bash"              9 days ago          Exited (0) 9 days ago                           reverent_noyce
+
+
+
+siggy@STRAX:~/GIT/homebase $ sudo docker container run -d --name "Bob" redis
+b0ccc729946829d4b5728479972b4c36abf28bceeaf78235d933ced568f1d76c
+siggy@STRAX:~/GIT/homebase $ sudo docker container ls -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+b0ccc7299468        redis               "docker-entrypoint.s…"   21 seconds ago      Up 20 seconds               6379/tcp            Bob
+{SNIP}
+
+
+siggy@STRAX:~/GIT/homebase $ sudo docker container stop Bob
+Bob
+
+
+siggy@STRAX:~/GIT/homebase $ sudo docker container ls -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+b0ccc7299468        redis               "docker-entrypoint.s…"   47 seconds ago      Exited (0) 4 seconds ago                        Bob
+{SNIP}
+
+siggy@STRAX:~/GIT/homebase $ sudo docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+redis               latest              e1a73233e3be        14 hours ago        83.4MB
+ubuntu              latest              16508e5c265d        2 weeks ago         84.1MB
+hello-world         latest              2cb0d9787c4d        8 weeks ago         1.85kB
+siggy@STRAX:~/GIT/homebase $ 
+
+OR
+
+siggy@STRAX:~/GIT/homebase $ sudo docker image ls
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+redis               latest              e1a73233e3be        14 hours ago        83.4MB
+ubuntu              latest              16508e5c265d        2 weeks ago         84.1MB
+hello-world         latest              2cb0d9787c4d        8 weeks ago         1.85kB
+
+Use 
+docker image rm
+ command to remove the downloaded image from the system
+
+sudo docker image rm <IMAEGE ID> 
+  OR 
+sudo docker image rm < IMAGE NAME >
 
 
 ^^^^^

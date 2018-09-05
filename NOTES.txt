@@ -8742,7 +8742,22 @@ $ cat /proc/version
 Linux version 4.15.0-30-generic (buildd@lgw01-amd64-060) (gcc version 7.3.0 (Ubuntu 7.3.0-16ubuntu3)) #32-Ubuntu SMP Thu Jul 26 17:42:43 UTC 2018
 
 **********************************************************************
+13Aug18  size matters @@@ all in bytes
 
+https://www.networkworld.com/article/3296631/linux/displaying-data-in-a-human-friendly-way-on-linux.html?idg_eid=763170596ee7239c6c4e2af060618d8e&email_SHA1_lc=b2de1d88a7eef81a927d2383e78591bd3dd30766&cid=cw_nlt_All_IDGE_Newsletter_2018-08-14&utm_source=Sailthru&utm_medium=email&utm_campaign=IDG%20Enterprise%20Top%20Stories%202018-08-14&utm_term=All_IDGE_Newsletter
+
+2**10 =					1,024 = 1 KiB (kibibyte)
+2**20 = 			    1,048,576 = 1 MiB (mebibyte)
+2**30 = 			1,073,741,824 = 1 GiB (gibibyte)
+2**40 = 		    1,099,511,627,776 = 1 TiB (tebibyte)
+2**50 = 		  1,125,899,906,842,624 = PiB (pebibyte)
+2**60 = 	      1,152,921,504,606,846,976 = EiB (exbibyte)
+2**70 = 	1,180,591,620,717,411,303,424 = 1 ZiB (zebibyte)
+2**80 =     1,208,925,819,614,629,174,706,176 = 1 YiB (yobibyte)
+
+@@@ be careful
+KB = 1000 = 10**3
+KiB = 1024 = 2**10
 
 **********************************************************************
 
